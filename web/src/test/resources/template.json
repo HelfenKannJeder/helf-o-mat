@@ -1,0 +1,24 @@
+{
+  "template": "helfomat*",
+  "settings": {
+  },
+  "mappings": {
+    "organisation": {
+      "properties": {
+        "questions": {
+          "type": "nested",
+          "properties": {
+            "question": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "description": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        }
+      }
+    }
+  }
+}

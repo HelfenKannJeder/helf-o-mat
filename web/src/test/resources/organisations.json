@@ -1,0 +1,146 @@
+[
+  {
+    "id": "b20a8c40-dd9a-4288-a25a-99e90ae43a99",
+    "name": "Technisches Hilfswerk (THW)",
+    "description": "Das THW ist die Hilfsorganisation des Bundes und unterstützt die für die Gefahrenabwehr zuständigen Stellen auch mit Spezialgerät bei der Bekämpfung von Schadenslagen aller Art. Ein weiterer gesetzlicher Auftrag ist die Leistung von Hilfe im Zivilschutz. Das Tätigkeitsgebiet des THW beschränkt sich nicht nur auf Deutschland, so wurden bei zahlreichen Einsätzen rund um den Globus humanitäre Hilfe geleistet.",
+    "website": "http://www.thw.de",
+    "logo": "thw_169x60.png",
+    "pictures": [
+      "Sauerstofflanze4_01.jpg",
+      "AGT5_02.jpg",
+      "AGT7_02.jpg",
+      "Radlader1_01.jpg",
+      "Uebung_Zug_Atemschutz1_01.jpg",
+      "xynthia4_01.jpg"
+    ],
+    "addresses": [],
+    "questions": [
+      {
+        "uid": 17,
+        "question": "Möchtest Du gerne Einsatzfahrzeuge - ggf. auch mit Blaulicht und Martinshorn - fahren?",
+        "description": "Zur Rettung von Menschen, Tieren und Sachwerten zählt im Einsatzfall jede Minute. Als Fahrer eines Einsatzfahrzeuges bist Du dafür verantwortlich, dass Du und Deine Mannschaft sicher und schnell zur Einsatzstelle kommen.",
+        "answer": "NO",
+        "position": 1
+      },
+      {
+        "uid": 18,
+        "question": "Möchtest Du Dich in medizinischer Hilfe ausbilden lassen und diese leisten?",
+        "description": "Wenn in Folge z. B. eines Unfalls Menschen ernsthafte Verletzungen erlitten haben, benötigen sie Deine Hilfe. Du bist für das Erkennen von Gefahren für den Betroffenen sowie die Durchführung der richtigen Maßnahmen verantwortlich.",
+        "answer": "NO",
+        "position": 2
+      },
+      {
+        "uid": 22,
+        "question": "Ist Kochen eine Deiner Leidenschaften?",
+        "description": "Könntest Du Dir vorstellen, die Verpflegung von wenigen bis einigen hundert Einsatzkräften zu verantworten, ohne dass dabei der Feldkochherd ruiniert wird?",
+        "answer": "NO",
+        "position": 3
+      },
+      {
+        "uid": 19,
+        "question": "Du hast keine Angst vor Feuer, nur Respekt. Möchtest Du lernen, wie man es löscht?",
+        "description": "Zum effizienten Löschen von Bränden ist überlegtes Handeln erforderlich: Erlaubt die aktuelle Situation, einen Gebäudebrand von innen unter schwerem Atemschutz zu bekämpfen oder ist ein Außenangriff zu bevorzugen?",
+        "answer": "NO",
+        "position": 4
+      },
+      {
+        "uid": 21,
+        "question": "Kannst Du sehr kurzfristig, ggf. auch innerhalb Deiner Arbeitszeiten, für Einsätze zur Verfügung stehen?",
+        "description": "Brände oder Verkehrsunfälle erfordern schnelles Handeln. Hier solltest Du in der Lage sein, Deinen Arbeitsplatz zu verlassen. Es finden sich aber genügend Möglichkeiten, die entsprechende Vorlaufzeiten erlauben.",
+        "answer": "NO",
+        "position": 5
+      },
+      {
+        "uid": 20,
+        "question": "Hast Du Interesse daran, Menschen bei Verkehrsunfällen aus Fahrzeugen zu retten?",
+        "description": "Zwei Fahrzeuge sind zusammengestoßen, die Fahrzeugführer eingeklemmt und nicht ansprechbar. Hauptziel der Rettung ist es nun, die verunglückten Personen in kürzestmöglicher Zeit aus ihrem Fahrzeug zu befreien und einer intensivmedizinischen Betreuung in einem Krankenhaus zuzuführen.",
+        "answer": "NO",
+        "position": 6
+      },
+      {
+        "uid": 23,
+        "question": "Möchtest Du aktiv im Naturschutz mitwirken?",
+        "description": "Neben der Beseitigung von Umweltschäden nach Unfällen (z. B. Ölverschmutzung von Stränden) leisten Einsatzorganisationen auch beispielsweise bei der Renaturierung von Steinbrüchen oder dem Anlegen von Wanderwegen einen wertvollen Beitrag.",
+        "answer": "NO",
+        "position": 7
+      },
+      {
+        "uid": 33,
+        "question": "Klettern, Bergsteigen, Verletzte retten - auch aus der Kletterwand? Wäre das etwas für Dich?",
+        "description": "Die Rettung verunglückter Menschen aus Höhen (Baukran, Sendeanlagen, ...) oder Tiefen (Schächte, Gruben, Höhlen, ...) erfordert gute Kondition und spezielles Wissen, was man Dir gerne vermittelt.",
+        "answer": "NO",
+        "position": 8
+      },
+      {
+        "uid": 24,
+        "question": "Bist Du handwerklich begabt? Den Umgang mit Kettensäge und Trennschleifer möchtest Du erlernen?",
+        "description": "Technisches Gerät zur Menschenrettung und Gefahrenabwehr zählt bei einigen Einsatzorganisationen zur Basisausstattung.",
+        "answer": "YES",
+        "position": 9
+      },
+      {
+        "uid": 34,
+        "question": "Deinen Hund zum Suchhund ausbilden, mit ihm vermisste Menschen orten und retten? Interesse?",
+        "description": "Die Rettungshundeausbildung ist sowohl für den Hund als auch für den Rettungshundeführer anspruchsvoll. Dank Dir und Deinem Hund können jedoch viele Menschen in hilfloser Lage vor dem sicheren Tod gerettet werden.",
+        "answer": "NO",
+        "position": 10
+      },
+      {
+        "uid": 25,
+        "question": "Hast Du was für Wassersport übrig? Boot fahren, Retten von Menschen aus Gewässern?",
+        "description": "Möchtest Du Tauchen lernen oder den Bootsführerschein machen? Einige Einsatzorganisationen haben ihren Schwerpunkt im Bereich der Wasserrettung gesetzt und könnten Deine Hilfe gebrauchen.",
+        "answer": "NO",
+        "position": 11
+      },
+      {
+        "uid": 28,
+        "question": "Möchtest Du aktiv als Besatzungsmitglied eines Rettungs- oder Krankentransportwagens mitfahren?",
+        "description": "Von erfahrenen Kollegen kannst Du hier praxisnah Deine Kenntnisse in medizinischer Versorgung vertiefen. Oder möchtest Du nur Rettungswagen fahren?",
+        "answer": "NO",
+        "position": 12
+      },
+      {
+        "uid": 26,
+        "question": "Magst Du die Bergwelt? Kannst Du Dir vorstellen, hier Menschen zu retten?",
+        "description": "Die Rettung verletzter Personen auf Skipisten oder im Bergland erfordert spezielle Kenntnisse und gute Konditionen.",
+        "answer": "NO",
+        "position": 13
+      },
+      {
+        "uid": 29,
+        "question": "Bist Du handwerklich interessiert und kannst Strom, Heizung, Wasser, etc. in Notunterkünften installieren?",
+        "description": "Im Rahmen des Aufbaus von Notunterkünften im In- und Ausland ist die Bereitstellung von Strom und Wasser erforderlich. Wenn Du bereits handwerkliche Erfahrungen hast oder Dir solche aneignen möchtest, bist Du hier richtig.",
+        "answer": "NO",
+        "position": 14
+      },
+      {
+        "uid": 27,
+        "question": "Betreuung von unverletzten Menschen, mit ihnen sprechen, die wichtigsten Dinge des Lebens organisieren und verteilen - Dein Ding?",
+        "description": "Gehst Du gerne auf Menschen zu und möchtest in Notlage geratene besonders hilfebedürftiger Personen, wie beispielsweise ältere Menschen, behinderte Personen oder Eltern mit Kleinkindern betreuen?",
+        "answer": "NO",
+        "position": 15
+      },
+      {
+        "uid": 30,
+        "question": "Fährst Du gerne Motorrad? Kommst Du auch mit etwas größeren Maschinen klar?  ",
+        "description": "Ein Unfall auf der Autobahn mit Verletzten. Schnell entwickelt sich ein Stau. Mit dem mit Blaulicht ausgestatteten Motorrad kommst Du schnell zur Unfallstelle und kannst Hilfe leisten.",
+        "answer": "NO",
+        "position": 16
+      },
+      {
+        "uid": 31,
+        "question": "Gebrochene Knochen schocken Dich nicht - auf die richtige Behandlung kommt es an. Interesse?",
+        "description": "Du bist medizinisch interessiert und möchtest in diesem Umfeld bei Unfällen oder Großveranstaltungen professionelle Hilfe leisten?",
+        "answer": "NO",
+        "position": 17
+      },
+      {
+        "uid": 32,
+        "question": "Radlader-, Baggerfahren - schwere Baumaschinen fahren?",
+        "description": "Zur Unterstützung beispielsweise bei der Brandbekämpfung, bei der Deichverteidigung, der Ladungsbergung oder der Rettung verschütteter Personen kommen Baumaschinen zum Einsatz.",
+        "answer": "NO",
+        "position": 18
+      }
+    ]
+  }
+]

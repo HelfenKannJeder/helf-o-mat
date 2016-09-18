@@ -1,0 +1,4 @@
+elasticsearch:
+  index: helfomat
+  type:
+    organisation: organisation
