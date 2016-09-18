@@ -1,5 +1,9 @@
-<ul>
-    <li *ngFor="let question of questions">
-        {{question.question}}
-    </li>
-</ul>
+<div class="jumbotron" *ngFor="let question of questions">
+    <h1>{{question.question}}</h1>
+    <p>{{question.description}}</p>
+    <p>
+        <a class="btn btn-success btn-lg" href="#" role="button">Yes</a>
+        <a class="btn btn-warning btn-lg" href="#" role="button">Maybe</a>
+        <a class="btn btn-danger btn-lg" href="#" role="button">No</a>
+    </p>
+</div>
