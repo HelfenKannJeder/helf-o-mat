@@ -11,16 +11,12 @@ import {Router, ActivatedRoute} from "@angular/router";
 })
 export class QuestionOverviewComponent extends AbstractQuestionComponent implements OnInit {
 
-    @Output() organisations: EventEmitter<any> = new EventEmitter();
+    @Output() public organisations: EventEmitter<any> = new EventEmitter();
 
     constructor(protected router: Router,
                 protected route: ActivatedRoute,
                 protected helfomatService: HelfomatService) {
         super();
-
-        route.params.subscribe((route) => {
-            this.organisations.emit('test');
-        });
     }
 
 }

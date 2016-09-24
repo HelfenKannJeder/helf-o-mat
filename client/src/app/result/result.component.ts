@@ -18,8 +18,8 @@ export class ResultComponent implements OnInit {
     ngOnInit() {
     }
 
-    updateOrganisations(event) {
-        this.searchService.search();
+    updateOrganisations(answers) {
+        this.searchService.search(answers);
     }
 
 }

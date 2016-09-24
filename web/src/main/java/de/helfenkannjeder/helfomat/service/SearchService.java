@@ -1,9 +1,11 @@
 package de.helfenkannjeder.helfomat.service;
 
+import de.helfenkannjeder.helfomat.domain.Answer;
 import de.helfenkannjeder.helfomat.domain.Question;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -16,11 +18,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 /**
  * @author Valentin Zickner
@@ -42,20 +47,40 @@ public class SearchService {
         this.type = type;
     }
 
-    public List<Map<String, Object>> findOrganisation() {
-        return executeQueryAndExtractResult(matchAllQuery());
+    public List<Map<String, Object>> findOrganisation(List<Answer> answers) {
+        BoolQueryBuilder boolQueryBuilder = boolQuery();
+        for (Answer answer : answers) {
+            if (answer.getAnswer() == -1 || answer.getAnswer() == 1) {
+                String answerString = "NO";
+                if (answer.getAnswer() == 1) {
+                    answerString = "YES";
+                }
+                boolQueryBuilder.should(
+                        nestedQuery("questions",
+                                boolQuery()
+                                        .must(termQuery("questions.uid", answer.getId()))
+                                        .must(termQuery("questions.answer", answerString))
+                        )
+                );
+            }
+        }
+
+        return executeQueryAndExtractResult(boolQueryBuilder);
     }
 
-    private List<Map<String, Object>> executeQueryAndExtractResult(MatchAllQueryBuilder queryBuilder) {
+    private List<Map<String, Object>> executeQueryAndExtractResult(QueryBuilder queryBuilder) {
         List<Map<String, Object>> organisations = new ArrayList<>();
         SearchHits hits = executeQuery(queryBuilder).getHits();
         for (SearchHit hit : hits.getHits()) {
-            organisations.add(hit.getSource());
+            Map<String, Object> response = new HashMap<>(hit.getSource());
+            response.put("_score", hit.getScore());
+            response.put("_scoreNorm", hit.getScore() / hits.getMaxScore() * 100);
+            organisations.add(response);
         }
         return organisations;
     }
 
-    private SearchResponse executeQuery(MatchAllQueryBuilder queryBuilder) {
+    private SearchResponse executeQuery(QueryBuilder queryBuilder) {
         return client
                 .prepareSearch(index)
                 .setTypes(type)
@@ -74,6 +99,11 @@ public class SearchService {
                                         .field("questions.question")
                                         .size(DEFAULT_MAX_RESULT_SIZE)
                                         .subAggregation(
+                                                AggregationBuilders.terms("id")
+                                                        .field("questions.uid")
+                                                        .size(1)
+                                        )
+                                        .subAggregation(
                                                 AggregationBuilders.terms("description")
                                                         .field("questions.description")
                                                         .size(1)
@@ -89,6 +119,7 @@ public class SearchService {
         return questions.getBuckets().stream()
                 .map(s -> {
                     Question question = new Question(s.getKeyAsString());
+                    question.setId(String.valueOf(getSubbucketInteger(s, "id")));
                     question.setDescription(getSubbucketString(s, "description"));
                     question.setPosition(getSubbucketInteger(s, "position"));
                     return question;

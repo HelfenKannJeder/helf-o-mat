@@ -4,7 +4,21 @@
 <div class="col-md-4">
 </div>
 <div class="col-md-4">
-    <ul>
-        <li *ngFor="let organisation of organisations | async">{{organisation.name}}</li>
-    </ul>
+    <div class="panel panel-default" *ngFor="let organisation of organisations | async">
+        <div class="panel-heading">{{organisation.name}}</div>
+        <div class="panel-body">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped"
+                     role="progressbar"
+                     [attr.aria-valuenow]="organisation._scoreNorm"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     [style.width.%]="organisation._scoreNorm">
+                    <span class="sr-only">{{organisation._scoreNorm}}% Complete</span>
+                </div>
+            </div>
+            {{organisation.url}}
+        </div>
+    </div>
+
 </div>

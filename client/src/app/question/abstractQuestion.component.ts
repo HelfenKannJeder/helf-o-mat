@@ -1,8 +1,11 @@
 import {HelfomatService} from "./helfomat.service";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import {Question} from "./question.model";
+import {EventEmitter} from "@angular/core";
 
 export default class AbstractQuestionComponent {
+
+    public organisations: EventEmitter<any> = new EventEmitter();
 
     private showIndex: number = 0;
     private questions: Question[] = [];
@@ -11,16 +14,27 @@ export default class AbstractQuestionComponent {
     protected route: ActivatedRoute;
     protected helfomatService: HelfomatService;
 
+    constructor() {
+    }
+
     ngOnInit(): void {
         this.showIndex = 0;
-        this.route.params.forEach((params: Params) => {
+        this.helfomatService.findQuestions().subscribe(q => this.questions = q);
+        this.route.params.subscribe((params: Params) => {
             if (params.hasOwnProperty('answers')) {
                 this.userAnswers = JSON.parse(params['answers']);
                 this.showIndex = this.userAnswers.length;
+
+                let transmitAnswers = [];
+                this.userAnswers.forEach((answer, index) => {
+                    if (this.questions[index] !== undefined) {
+                        let id = this.questions[index].id;
+                        transmitAnswers.push({id, answer});
+                    }
+                });
+                this.organisations.emit(transmitAnswers);
             }
         });
-
-        this.helfomatService.findQuestions().subscribe(q => this.questions = q);
     }
 
     getAnswerClasses(button: number, question: Question, conditionalClass: string): string[] {

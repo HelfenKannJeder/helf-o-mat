@@ -4,11 +4,20 @@ package de.helfenkannjeder.helfomat.domain;
  * @author Valentin Zickner
  */
 public class Question {
+    private String id;
     private String question;
     private String description;
     private int position;
 
     public Question() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Question(String question) {

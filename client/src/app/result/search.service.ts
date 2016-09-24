@@ -27,8 +27,8 @@ export class SearchService {
         return this._organisations$.asObservable();
     }
 
-    search() {
-        this.http.post('api/search', {}).map((response: Response) => response.json()).subscribe(data => {
+    search(answers) {
+        this.http.post('api/search', answers).map((response: Response) => response.json()).subscribe(data => {
             this.dataStore.organisations = data;
             this._organisations$.next(this.dataStore.organisations);
         })
