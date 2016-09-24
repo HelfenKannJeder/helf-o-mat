@@ -1,9 +1,12 @@
-<div class="jumbotron" *ngFor="let question of questions">
+<div class="jumbotron" *ngFor="let question of questions; let i = index" [hidden]="i != showIndex" style="margin: 0 auto;">
     <h1>{{question.question}}</h1>
     <p>{{question.description}}</p>
     <p>
-        <a class="btn btn-success btn-lg" href="#" role="button">Yes</a>
-        <a class="btn btn-warning btn-lg" href="#" role="button">Maybe</a>
-        <a class="btn btn-danger btn-lg" href="#" role="button">No</a>
+        <a class="btn btn-success btn-lg" role="button" (click)="answerQuestion(1, question);">Yes</a>
+        <a class="btn btn-warning btn-lg" role="button" (click)="answerQuestion(0, question);">Maybe</a>
+        <a class="btn btn-danger btn-lg" role="button" (click)="answerQuestion(-1, question);">No</a>
+    </p>
+    <p style="text-align: center">
+        <span *ngFor="let answer of userAnswers" class="glyphicon glyphicon-stop" aria-hidden="true"></span>
     </p>
 </div>

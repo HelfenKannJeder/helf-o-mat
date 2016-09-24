@@ -1,0 +1,10 @@
+<div class="col-md-4">
+    <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
+</div>
+<div class="col-md-4">
+</div>
+<div class="col-md-4">
+    <ul>
+        <li *ngFor="let organisation of organisations | async">{{organisation.name}}</li>
+    </ul>
+</div>

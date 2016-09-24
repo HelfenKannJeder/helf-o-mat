@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {Question} from './question.model';
-import {HelfomatService} from './helfomat.service';
+import {Component, OnInit} from "@angular/core";
+import AbstractQuestionComponent from "./abstractQuestion.component";
+import {HelfomatService} from "./helfomat.service";
+import {Router, ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'app-question',
@@ -8,16 +9,11 @@ import {HelfomatService} from './helfomat.service';
     styleUrls: ['./question.component.css'],
     providers: [HelfomatService]
 })
-export class QuestionComponent implements OnInit {
-    private questions: Question[] = [];
-
-    constructor(private helfomatService: HelfomatService) {
-    }
-
-    ngOnInit() {
-        this.helfomatService.findQuestions().subscribe(
-            q => this.questions = q
-        );
+export class QuestionComponent extends AbstractQuestionComponent implements OnInit {
+    constructor(protected router: Router,
+                protected route: ActivatedRoute,
+                protected helfomatService: HelfomatService) {
+        super();
     }
 
 }
