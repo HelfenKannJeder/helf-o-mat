@@ -7,7 +7,7 @@ import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.nested.InternalNested;
+import org.elasticsearch.search.aggregations.bucket.nested.Nested;
 import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -65,7 +65,7 @@ public class SearchService {
     }
 
     public List<Question> findQuestions() {
-        InternalNested internalNested = client.prepareSearch(index)
+        Nested nested = client.prepareSearch(index)
                 .addAggregation(AggregationBuilders
                         .nested("questions")
                         .path("questions")
@@ -85,7 +85,7 @@ public class SearchService {
                                         )
                         )
                 ).get().getAggregations().get("questions");
-        StringTerms questions = internalNested.getAggregations().get("question");
+        StringTerms questions = nested.getAggregations().get("question");
         return questions.getBuckets().stream()
                 .map(s -> {
                     Question question = new Question(s.getKeyAsString());
