@@ -5,5 +5,6 @@ export default class Organisation {
     public name: string;
     public description: string;
     public website: string;
+    public _scoreNorm: number;
     public addresses: Address[] = [];
 }

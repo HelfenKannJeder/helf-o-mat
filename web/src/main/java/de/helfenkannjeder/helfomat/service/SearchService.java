@@ -15,6 +15,9 @@ import org.elasticsearch.search.aggregations.bucket.nested.Nested;
 import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -77,27 +80,42 @@ public class SearchService {
                 )
         );
 
-        return executeQueryAndExtractResult(boolQueryBuilder);
+        SortBuilder sortBuilder =
+                SortBuilders
+                        .geoDistanceSort("addresses.location")
+                        .setNestedPath("addresses")
+                        .point(position.getLat(), position.getLon())
+                        .unit(DistanceUnit.KILOMETERS)
+                        .order(SortOrder.DESC);
+        return executeQueryAndExtractResult(boolQueryBuilder, sortBuilder);
     }
 
-    private List<Map<String, Object>> executeQueryAndExtractResult(QueryBuilder queryBuilder) {
+    private List<Map<String, Object>> executeQueryAndExtractResult(QueryBuilder queryBuilder, SortBuilder sortBuilder) {
         List<Map<String, Object>> organisations = new ArrayList<>();
-        SearchHits hits = executeQuery(queryBuilder).getHits();
+        SearchHits hits = executeQuery(queryBuilder, sortBuilder).getHits();
+        Float maxScore = null;
+
         for (SearchHit hit : hits.getHits()) {
+            if (maxScore == null) {
+                maxScore = hit.getScore();
+            }
+
             Map<String, Object> response = new HashMap<>(hit.getSource());
             response.put("_score", hit.getScore());
-            response.put("_scoreNorm", hit.getScore() / hits.getMaxScore() * 100);
+            response.put("_scoreNorm", (hit.getScore() * 100) / maxScore);
             organisations.add(response);
         }
         return organisations;
     }
 
-    private SearchResponse executeQuery(QueryBuilder queryBuilder) {
+    private SearchResponse executeQuery(QueryBuilder queryBuilder, SortBuilder sortBuilder) {
         return client
                 .prepareSearch(index)
                 .setTypes(type)
                 .setQuery(queryBuilder)
                 .setSize(100)
+                .addSort(SortBuilders.scoreSort())
+                .addSort(sortBuilder)
                 .execute()
                 .actionGet();
     }

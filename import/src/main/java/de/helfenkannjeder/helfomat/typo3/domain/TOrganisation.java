@@ -1,11 +1,14 @@
 package de.helfenkannjeder.helfomat.typo3.domain;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.List;
 
@@ -22,6 +25,11 @@ public class TOrganisation {
     private String website;
     private String logo;
     private String pictures;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "organisationtype")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private TOrganisationType organisationtype;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "organisation")
@@ -67,5 +75,13 @@ public class TOrganisation {
 
     public void setGroups(List<TGroup> groups) {
         this.groups = groups;
+    }
+
+    public TOrganisationType getOrganisationtype() {
+        return organisationtype;
+    }
+
+    public void setOrganisationtype(TOrganisationType organisationtype) {
+        this.organisationtype = organisationtype;
     }
 }

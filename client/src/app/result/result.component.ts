@@ -32,7 +32,6 @@ export class ResultComponent implements OnInit {
             this.position,
             this.distance
         ).subscribe((searchParams: [Answer[], GeoPoint, number]) => {
-            console.log(searchParams);
             this.searchService.search(searchParams[0], searchParams[1], searchParams[2]);
         });
     }

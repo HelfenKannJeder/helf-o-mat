@@ -7,6 +7,8 @@ import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
 import LatLng = google.maps.LatLng;
 import MapTypeId = google.maps.MapTypeId;
+import Point = google.maps.Point;
+import Size = google.maps.Size;
 import GeoPoint from "../organisation/geopoint.model";
 
 @Component({
@@ -58,12 +60,22 @@ export class MapComponent implements OnInit {
             this.markers = [];
 
             organisations.forEach((organisation: Organisation) => {
-                if (organisation.addresses.length > 0) {
+                if (organisation.addresses.length > 0 && organisation.mapPin !== undefined) {
                     let address: Address = organisation.addresses[0];
+                    var icon = {
+                        url: "https://helfenkannjeder.de/uploads/pics/" + organisation.mapPin,
+                        size: new Size(32, 32),
+                        origin: new Point(0, 0),
+                        anchor: new Point(10, 32),
+                        scaledSize: new Size(32, 32)
+                    };
+
                     this.markers.push(new Marker({
                         position: this.convertGeoPointToLatLng(address.location),
                         map: this.map,
-                        title: organisation.name
+                        title: organisation.name,
+                        icon: icon,
+                        opacity: organisation._scoreNorm / 100
                     }));
                 }
             });
@@ -85,7 +97,7 @@ export class MapComponent implements OnInit {
         // Add circle overlay and bind to marker
         this.positionCircle = new Circle({
             map: this.map,
-            radius: distance * 1000,
+            radius: (distance + 1) * 1000,
             fillOpacity: 0.05,
             strokeWeight: 0.1,
             fillColor: '#000000'
