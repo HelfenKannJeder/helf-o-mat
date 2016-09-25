@@ -1,7 +1,8 @@
 import {Component, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import GeoPoint from "../organisation/geopoint.model";
+import Answer from "../organisation/answer.model";
 
 @Component({
     selector: 'app-result',
@@ -11,19 +12,33 @@ import GeoPoint from "../organisation/geopoint.model";
 })
 export class ResultComponent implements OnInit {
 
-    private organisations;
-    private position = <Observable<GeoPoint>>Observable.from([new GeoPoint(49.038883, 8.348804)]);
+    // Inputs
+    private _answers$: Subject<Answer[]>;
+    private position = <Observable<GeoPoint>>Observable.from([new GeoPoint(49.009432, 8.403922)]);
     private distance = Observable.from([10]);
 
+    // Outputs
+    private organisations;
+
     constructor(private searchService: SearchService) {
+        this._answers$ = <Subject<Answer[]>>new Subject();
         this.organisations = searchService.organisations$;
+
     }
 
     ngOnInit() {
+        Observable.combineLatest(
+            this._answers$.asObservable(),
+            this.position,
+            this.distance
+        ).subscribe((searchParams: [Answer[], GeoPoint, number]) => {
+            console.log(searchParams);
+            this.searchService.search(searchParams[0], searchParams[1], searchParams[2]);
+        });
     }
 
-    updateOrganisations(answers) {
-        this.searchService.search(answers);
+    updateOrganisations(answers: Answer[]) {
+        this._answers$.next(answers);
     }
 
 }

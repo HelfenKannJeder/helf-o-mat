@@ -2,10 +2,11 @@ import {HelfomatService} from "./helfomat.service";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import {Question} from "./question.model";
 import {EventEmitter} from "@angular/core";
+import Answer from "../organisation/answer.model";
 
 export default class AbstractQuestionComponent {
 
-    public organisations: EventEmitter<any> = new EventEmitter();
+    public organisations: EventEmitter<Answer[]> = <EventEmitter<Answer[]>>new EventEmitter();
 
     private showIndex: number = 0;
     private questions: Question[] = [];
@@ -25,7 +26,7 @@ export default class AbstractQuestionComponent {
                 this.userAnswers = JSON.parse(params['answers']);
                 this.showIndex = this.userAnswers.length;
 
-                let transmitAnswers = [];
+                let transmitAnswers: Answer[] = [];
                 this.userAnswers.forEach((answer, index) => {
                     if (this.questions[index] !== undefined) {
                         let id = this.questions[index].id;

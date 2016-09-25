@@ -1,9 +1,11 @@
 package de.helfenkannjeder.helfomat.service;
 
 import de.helfenkannjeder.helfomat.domain.Answer;
+import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.domain.Question;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -24,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.geoDistanceQuery;
 import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
@@ -47,7 +50,7 @@ public class SearchService {
         this.type = type;
     }
 
-    public List<Map<String, Object>> findOrganisation(List<Answer> answers) {
+    public List<Map<String, Object>> findOrganisation(List<Answer> answers, GeoPoint position, double distance) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         for (Answer answer : answers) {
             if (answer.getAnswer() == -1 || answer.getAnswer() == 1) {
@@ -64,6 +67,15 @@ public class SearchService {
                 );
             }
         }
+
+        boolQueryBuilder.filter(
+                nestedQuery("addresses",
+                        geoDistanceQuery("addresses.location")
+                                .lat(position.getLat())
+                                .lon(position.getLon())
+                                .distance(distance, DistanceUnit.KILOMETERS)
+                )
+        );
 
         return executeQueryAndExtractResult(boolQueryBuilder);
     }
@@ -85,6 +97,7 @@ public class SearchService {
                 .prepareSearch(index)
                 .setTypes(type)
                 .setQuery(queryBuilder)
+                .setSize(100)
                 .execute()
                 .actionGet();
     }

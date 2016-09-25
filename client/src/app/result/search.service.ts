@@ -3,6 +3,8 @@ import {Http, Response} from "@angular/http";
 import "rxjs/add/operator/map";
 import {Observable, Subject} from "rxjs";
 import Organisation from "../organisation/organisation.model";
+import Answer from "../organisation/answer.model";
+import GeoPoint from "../organisation/geopoint.model";
 
 @Injectable()
 export class SearchService {
@@ -27,8 +29,12 @@ export class SearchService {
         return this._organisations$.asObservable();
     }
 
-    search(answers) {
-        this.http.post('api/search', answers).map((response: Response) => response.json()).subscribe(data => {
+    search(answers: Answer[], position: GeoPoint, distance: number) {
+        this.http.post('api/search', {
+            answers,
+            position,
+            distance
+        }).map((response: Response) => response.json()).subscribe(data => {
             this.dataStore.organisations = data;
             this._organisations$.next(this.dataStore.organisations);
         })

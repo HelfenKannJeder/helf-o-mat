@@ -30,8 +30,8 @@ export class MapComponent implements OnInit {
 
     ngOnInit() {
         var mapProp = {
-            center: new google.maps.LatLng(49.038883, 8.348804),
-            zoom: 11,
+            center: new LatLng(51.163375, 10.447683),
+            zoom: 12,
             mapTypeId: MapTypeId.ROADMAP,
             zoomControl: true,
             mapTypeControl: true,
