@@ -36,7 +36,7 @@ export class MapComponent implements OnInit {
             zoom: 12,
             mapTypeId: MapTypeId.ROADMAP,
             zoomControl: true,
-            mapTypeControl: true,
+            mapTypeControl: false,
             scaleControl: true,
             streetViewControl: false,
             rotateControl: false,
