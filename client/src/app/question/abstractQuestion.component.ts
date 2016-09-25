@@ -3,6 +3,7 @@ import {Router, ActivatedRoute, Params} from "@angular/router";
 import {Question} from "./question.model";
 import {EventEmitter} from "@angular/core";
 import Answer from "../organisation/answer.model";
+import {Observable} from "rxjs";
 
 export default class AbstractQuestionComponent {
 
@@ -20,8 +21,14 @@ export default class AbstractQuestionComponent {
 
     ngOnInit(): void {
         this.showIndex = 0;
-        this.helfomatService.findQuestions().subscribe(q => this.questions = q);
-        this.route.params.subscribe((params: Params) => {
+        Observable.combineLatest(
+            this.helfomatService.findQuestions(),
+            this.route.params
+        )
+        .subscribe((item: [Question[], Params]) => {
+            this.questions = item[0];
+            let params = item[1];
+
             if (params.hasOwnProperty('answers')) {
                 this.userAnswers = JSON.parse(params['answers']);
                 this.showIndex = this.userAnswers.length;
