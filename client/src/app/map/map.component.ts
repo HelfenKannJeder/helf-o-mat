@@ -24,8 +24,6 @@ export class MapComponent implements OnInit {
     private markers: Marker[] = [];
     private positionMarker: Marker;
     private positionCircle: Circle;
-    private currentPosition: LatLng;
-    private currentDistance: number;
 
     constructor() {
     }
@@ -44,14 +42,13 @@ export class MapComponent implements OnInit {
         };
         this.map = new Map(document.getElementById("googleMap"), mapProp);
 
-        this.position.subscribe((newPosition: GeoPoint) => {
-            var mapsPosition = this.convertGeoPointToLatLng(newPosition);
+        Observable.combineLatest(
+            this.position,
+            this.distance
+        ).subscribe((newSearchRange: [GeoPoint, number]) => {
+            var mapsPosition = this.convertGeoPointToLatLng(newSearchRange[0]);
             this.map.setCenter(mapsPosition);
-            this.drawUserPosition(mapsPosition, this.currentDistance);
-        });
-
-        this.distance.subscribe((distance: number) => {
-            this.drawUserPosition(this.currentPosition, distance);
+            this.drawUserPosition(mapsPosition, newSearchRange[1]);
         });
 
         this.organisations.subscribe((organisations) => {
@@ -94,9 +91,6 @@ export class MapComponent implements OnInit {
             fillColor: '#000000'
         });
         this.positionCircle.bindTo('center', this.positionMarker, 'position');
-
-        this.currentPosition = position;
-        this.currentDistance = distance;
     }
 
     private convertGeoPointToLatLng(location: GeoPoint): LatLng {
