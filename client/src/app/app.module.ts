@@ -8,6 +8,7 @@ import {MapComponent} from "./map/map.component";
 import {routing, appRoutingProviders} from "./app.routing";
 import {ResultComponent} from "./result/result.component";
 import {QuestionOverviewComponent} from "./question/questionOverview.component";
+import { ListComponent } from './list/list.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import {QuestionOverviewComponent} from "./question/questionOverview.component";
         QuestionComponent,
         QuestionOverviewComponent,
         MapComponent,
-        ResultComponent
+        ResultComponent,
+        ListComponent
     ],
     imports: [
         BrowserModule,

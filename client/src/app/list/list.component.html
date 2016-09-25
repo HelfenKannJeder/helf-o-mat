@@ -1,0 +1,26 @@
+<div class="panel panel-default" *ngFor="let organisation of organisations | async">
+    <div class="panel-heading">{{organisation.name}}</div>
+    <div class="panel-body">
+        <div class="media">
+            <div class="media-left media-top media-logo">
+                <a href="#">
+                    <img class="media-object" [attr.src]="getImagePath(organisation.logo)"
+                         [attr.alt]="organisation.name">
+                </a>
+            </div>
+            <div class="media-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped"
+                         role="progressbar"
+                         [attr.aria-valuenow]="organisation._scoreNorm"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         [style.width.%]="organisation._scoreNorm">
+                        <span class="sr-only">{{organisation._scoreNorm}}% Complete</span>
+                    </div>
+                </div>
+                <a [attr.href]="organisation.website">{{organisation.website}}</a>
+            </div>
+        </div>
+    </div>
+</div>

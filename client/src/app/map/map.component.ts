@@ -1,6 +1,9 @@
 import {Component, OnInit, Input} from "@angular/core";
 import Organisation from "../organisation/organisation.model";
 import Address from "../organisation/address.model";
+import {Observable} from "rxjs";
+import Map = google.maps.Map;
+import Marker = google.maps.Marker;
 
 @Component({
     selector: 'app-map',
@@ -9,7 +12,9 @@ import Address from "../organisation/address.model";
 })
 export class MapComponent implements OnInit {
 
-    @Input() organisations: Organisation[];
+    @Input() organisations: Observable<Organisation[]>;
+
+    private markers: Marker[] = [];
 
     constructor() {
     }
@@ -17,7 +22,7 @@ export class MapComponent implements OnInit {
     ngOnInit() {
         var mapProp = {
             center: new google.maps.LatLng(49.038883, 8.348804),
-            zoom: 5,
+            zoom: 11,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             zoomControl: true,
             mapTypeControl: true,
@@ -26,19 +31,25 @@ export class MapComponent implements OnInit {
             rotateControl: false,
             fullscreenControl: true
         };
-        var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        var map = new Map(document.getElementById("googleMap"), mapProp);
 
-        console.log(this.organisations);
-        this.organisations.forEach((organisation: Organisation) => {
-            let address: Address = organisation.addresses[0];
-            console.log(address);
-            var marker = new google.maps.Marker({
-                position: {lat: address.location.lat, lng: address.location.lon},
-                map: map,
-                title: organisation.name
+        this.organisations.subscribe((organisations) => {
+            this.markers.forEach((marker) => {
+                marker.setMap(null);
+            });
+            this.markers = [];
+
+            organisations.forEach((organisation: Organisation) => {
+                if (organisation.addresses.length > 0) {
+                    let address: Address = organisation.addresses[0];
+                    this.markers.push(new Marker({
+                        position: {lat: address.location.lat, lng: address.location.lon},
+                        map: map,
+                        title: organisation.name
+                    }));
+                }
             });
         });
-
     }
 
 }
