@@ -6,5 +6,6 @@ export default class Organisation {
     public description: string;
     public website: string;
     public _scoreNorm: number;
+    public mapPin: string;
     public addresses: Address[] = [];
 }

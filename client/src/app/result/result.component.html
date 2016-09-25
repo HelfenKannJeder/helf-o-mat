@@ -2,7 +2,11 @@
     <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
 </div>
 <div class="col-md-4">
-    <helfomat-map [organisations]="organisations" [position]="position" [distance]="distance"></helfomat-map>
+    <helfomat-map
+            [organisations]="organisations"
+            [position]="position"
+            [distance]="distance"
+            (updatePosition)="_position$.next($event)"></helfomat-map>
 </div>
 <div class="col-md-4">
     <helfomat-list [organisations]="organisations"></helfomat-list>

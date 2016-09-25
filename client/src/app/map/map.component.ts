@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from "@angular/core";
+import {Component, OnInit, Input, EventEmitter} from "@angular/core";
 import Organisation from "../organisation/organisation.model";
 import Address from "../organisation/address.model";
 import {Observable} from "rxjs";
@@ -10,6 +10,7 @@ import MapTypeId = google.maps.MapTypeId;
 import Point = google.maps.Point;
 import Size = google.maps.Size;
 import GeoPoint from "../organisation/geopoint.model";
+import {Output} from "@angular/core/src/metadata/directives";
 
 @Component({
     selector: 'helfomat-map',
@@ -21,6 +22,8 @@ export class MapComponent implements OnInit {
     @Input() organisations: Observable<Organisation[]>;
     @Input() position: Observable<GeoPoint>;
     @Input() distance: Observable<number>;
+
+    @Output() updatePosition: EventEmitter<GeoPoint> = new EventEmitter<GeoPoint>();
 
     private map: Map;
     private markers: Marker[] = [];
@@ -91,7 +94,12 @@ export class MapComponent implements OnInit {
         // Create marker
         this.positionMarker = new Marker({
             map: this.map,
-            position: position
+            position: position,
+            draggable: true
+        });
+
+        google.maps.event.addListener(this.positionMarker, "drag", (event) => {
+            this.updatePosition.next(new GeoPoint(event.latLng.lat(), event.latLng.lng()))
         });
 
         // Add circle overlay and bind to marker

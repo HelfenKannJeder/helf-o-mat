@@ -14,6 +14,7 @@ export class ResultComponent implements OnInit {
 
     // Inputs
     private _answers$: Subject<Answer[]>;
+    private _position$: Subject<GeoPoint>;
     private position = <Observable<GeoPoint>>Observable.from([new GeoPoint(49.009432, 8.403922)]);
     private distance = Observable.from([10]);
 
@@ -22,14 +23,19 @@ export class ResultComponent implements OnInit {
 
     constructor(private searchService: SearchService) {
         this._answers$ = <Subject<Answer[]>>new Subject();
+        this._position$ = <Subject<GeoPoint>>new Subject();
         this.organisations = searchService.organisations$;
 
     }
 
     ngOnInit() {
+        let positionObservable = Observable.concat(this.position, this._position$.asObservable())
+            .debounceTime(100)
+            .distinctUntilChanged();
+
         Observable.combineLatest(
             this._answers$.asObservable(),
-            this.position,
+            positionObservable,
             this.distance
         ).subscribe((searchParams: [Answer[], GeoPoint, number]) => {
             this.searchService.search(searchParams[0], searchParams[1], searchParams[2]);
