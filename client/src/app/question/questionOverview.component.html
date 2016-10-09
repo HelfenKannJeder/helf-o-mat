@@ -1,0 +1,13 @@
+<ul class="list-group">
+    <li class="list-group-item" *ngFor="let question of questions">
+        <span class="badge">
+            <a [ngClass]="getAnswerClasses(1, question, 'btn-success')" role="button"
+               (click)="answerQuestion(1, question);">Yes</a>
+            <a [ngClass]="getAnswerClasses(0, question, 'btn-warning')" role="button"
+               (click)="answerQuestion(0, question);">Maybe</a>
+            <a [ngClass]="getAnswerClasses(-1, question, 'btn-danger')" role="button"
+               (click)="answerQuestion(-1, question);">No</a>
+        </span>
+        {{question.question}}
+    </li>
+</ul>

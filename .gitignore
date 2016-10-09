@@ -1,4 +1,7 @@
 *.iml
 .idea
-data
+node_modules
+.mvn
 target
+web/data
+import/data

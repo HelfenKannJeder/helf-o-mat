@@ -41,6 +41,11 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         organisation.setLogo(tOrganisation.getLogo());
         organisation.setWebsite(tOrganisation.getWebsite());
         String pictures = tOrganisation.getPictures();
+
+        if (tOrganisation.getOrganisationtype() != null) {
+            organisation.setMapPin(tOrganisation.getOrganisationtype().getPicture());
+        }
+
         if (pictures != null) {
             organisation.setPictures(Arrays.asList(pictures.split(",")));
         }

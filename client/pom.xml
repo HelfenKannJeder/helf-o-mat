@@ -11,4 +11,43 @@
         <artifactId>base</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.0</version>
+
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <nodeVersion>v5.5.0</nodeVersion>
+                    <npmVersion>3.10.7</npmVersion>
+                    <installDirectory>target/build</installDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

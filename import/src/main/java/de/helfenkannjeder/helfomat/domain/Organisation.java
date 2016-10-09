@@ -20,6 +20,7 @@ public class Organisation {
     private List<String> pictures;
     private List<Address> addresses;
     private List<Question> questions;
+    private String mapPin;
 
     public String getId() {
         return id;
@@ -91,5 +92,13 @@ public class Organisation {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public void setMapPin(String mapPin) {
+        this.mapPin = mapPin;
+    }
+
+    public String getMapPin() {
+        return mapPin;
     }
 }
