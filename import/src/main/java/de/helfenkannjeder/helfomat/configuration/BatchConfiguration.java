@@ -79,8 +79,7 @@ public class BatchConfiguration {
     public Job importDataJob(JobBuilderFactory jobBuilderFactory,
                              Step importQuestionFromJpa,
                              @Qualifier("importOrganisationFromJpa") Step importOrganisationFromJpa,
-                             @Qualifier("importOrganisationFromThw") Step importOrganisationFromThw) {
-                             @Qualifier("importOrganisationFromJpa") Step importOrganisationFromJpa,
+                             @Qualifier("importOrganisationFromThw") Step importOrganisationFromThw,
                              Step renameAliasStep) {
         return jobBuilderFactory.get("importDataJob")
                 .start(importQuestionFromJpa)
@@ -88,7 +87,5 @@ public class BatchConfiguration {
                 .next(importOrganisationFromThw)
                 .next(renameAliasStep)
                 .build();
-
     }
-
 }

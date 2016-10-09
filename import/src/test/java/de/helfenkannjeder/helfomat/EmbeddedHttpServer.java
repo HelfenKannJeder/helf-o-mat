@@ -35,9 +35,9 @@ public class EmbeddedHttpServer {
 		}
 
 		@Override
-		public void handle(HttpExchange t) throws IOException {
-			t.sendResponseHeaders(200, resource.contentLength());
-			OutputStream outputStream = t.getResponseBody();
+		public void handle(HttpExchange httpExchange) throws IOException {
+			httpExchange.sendResponseHeaders(200, resource.contentLength());
+			OutputStream outputStream = httpExchange.getResponseBody();
 			FileCopyUtils.copy(resource.getInputStream(), outputStream);
 			outputStream.close();
 		}
