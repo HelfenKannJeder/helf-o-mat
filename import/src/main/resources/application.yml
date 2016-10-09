@@ -28,3 +28,4 @@ crawler:
   thw:
     domain: http://thw.de/
     resultsPerPage: 10
+    httpRequestTimeout: 60000

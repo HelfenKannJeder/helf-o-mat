@@ -19,14 +19,17 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 
 	private Iterator<Element> iterator;
 	private int resultsPerPage;
+	private int httpRequestTimeout;
 	private char currentLetter = 'A';
 	private int currentPage = 1;
 	private String domain;
 
 	public ThwCrawlerItemReader(@Value("${crawler.thw.domain}") String domain,
-								@Value("${crawler.thw.resultsPerPage}") int resultsPerPage) {
+								@Value("${crawler.thw.resultsPerPage}") int resultsPerPage,
+								@Value("${crawler.thw.httpRequestTimeout}") int httpRequestTimeout) {
 		this.domain = domain;
 		this.resultsPerPage = resultsPerPage;
+		this.httpRequestTimeout = httpRequestTimeout;
 	}
 
 	@Override
@@ -51,12 +54,13 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 	private Organisation readNextOrganisationItem() throws IOException {
 			Element oeLink = iterator.next();
 			String url = domain + oeLink.attr("href");
-			Document oeDetailsDocument = Jsoup.connect(url).get();
+			Document oeDetailsDocument = Jsoup.connect(url).timeout(httpRequestTimeout).get();
 			return extractOrganisation(oeDetailsDocument);
 	}
 
 	private void requestOverviewPage(char letter, int page) throws IOException {
 		Document document = Jsoup.connect(domain + "DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html")
+				.timeout(httpRequestTimeout)
 				.data("oe_plzort", "PLZ+oder+Ort")
 				.data("sorting", "cityasc")
 				.data("resultsPerPage", String.valueOf(resultsPerPage))

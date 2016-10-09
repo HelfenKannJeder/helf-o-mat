@@ -17,7 +17,7 @@ public class ThwCrawlerItemReaderTest {
 		EmbeddedHttpServer.setContent("/DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html?oe_plzort=PLZ+oder+Ort&sorting=cityasc&resultsPerPage=2&oe_typ=ortsverbaende&oe_umkreis=25&letter=A&page=3", "de/thw/overview/a_3.html");
 		EmbeddedHttpServer.setContent("/DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html?oe_plzort=PLZ+oder+Ort&sorting=cityasc&resultsPerPage=2&oe_typ=ortsverbaende&oe_umkreis=25&letter=B&page=1", "de/thw/overview/b_1.html");
 		EmbeddedHttpServer.setContent("/SharedDocs/Organisationseinheiten/DE/Ortsverbaende/A/Aachen_Ortsverband.html", "de/thw/detail/thw-ov-aachen.html");
-		thwCrawlerItemReader = new ThwCrawlerItemReader("http://localhost:" + EmbeddedHttpServer.PORT + "/", 2);
+		thwCrawlerItemReader = new ThwCrawlerItemReader("http://localhost:" + EmbeddedHttpServer.PORT + "/", 2, 3000);
 	}
 
 //	@Test
