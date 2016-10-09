@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.UUID;
 
 @Component
 public class ThwCrawlerItemReader implements ItemReader<Organisation> {
@@ -79,6 +80,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 
 	private Organisation extractOrganisation(Document oeDetailsDocument) {
 		Organisation organisation = new Organisation();
+		organisation.setId(UUID.randomUUID().toString());
 
 		organisation.setName("THW " + oeDetailsDocument.select("div#main").select(".photogallery").select(".isFirstInSlot").text());
 
