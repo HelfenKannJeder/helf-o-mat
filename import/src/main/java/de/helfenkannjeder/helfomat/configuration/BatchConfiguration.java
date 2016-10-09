@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.configuration;
 
+import de.helfenkannjeder.helfomat.batch.CreateIndexBatchletStep;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.service.ListCache;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
@@ -8,6 +9,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.jsr.step.batchlet.BatchletAdapter;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -61,8 +63,15 @@ public class BatchConfiguration {
         return stepBuilderFactory.get("importOrganisationFromThw")
                 .<Organisation, Organisation>chunk(100)
                 .reader(organisationItemReader)
-                //.processor(organisationProcessor)
                 .writer(organisationItemWriter)
+                .build();
+    }
+
+    @Bean
+    public Step renameAliasStep(StepBuilderFactory stepBuilderFactory,
+                                CreateIndexBatchletStep createIndexBatchletStep) {
+        return stepBuilderFactory.get("renameAliasStep")
+                .tasklet(new BatchletAdapter(createIndexBatchletStep))
                 .build();
     }
 
@@ -71,11 +80,15 @@ public class BatchConfiguration {
                              Step importQuestionFromJpa,
                              @Qualifier("importOrganisationFromJpa") Step importOrganisationFromJpa,
                              @Qualifier("importOrganisationFromThw") Step importOrganisationFromThw) {
+                             @Qualifier("importOrganisationFromJpa") Step importOrganisationFromJpa,
+                             Step renameAliasStep) {
         return jobBuilderFactory.get("importDataJob")
                 .start(importQuestionFromJpa)
                 .next(importOrganisationFromJpa)
                 .next(importOrganisationFromThw)
+                .next(renameAliasStep)
                 .build();
 
     }
+
 }

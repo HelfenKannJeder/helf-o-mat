@@ -20,6 +20,10 @@ spring:
       uris: http://localhost:9200
       read-timeout: 10000
 
+  batch:
+    job:
+      enabled: false
+
 crawler:
   thw:
     domain: http://thw.de/

@@ -36,7 +36,7 @@ public class HelfomatImportApplication {
         @Override
         public void run(String... strings) throws Exception {
             JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-            jobParametersBuilder.addDate("currentTime", new Date());
+            jobParametersBuilder.addDate("date", new Date());
             jobLauncher.run(job, jobParametersBuilder.toJobParameters());
         }
     }
