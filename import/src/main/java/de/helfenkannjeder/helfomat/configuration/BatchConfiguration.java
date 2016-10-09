@@ -54,12 +54,27 @@ public class BatchConfiguration {
     }
 
     @Bean
+    @Qualifier("importOrganisationFromThw")
+    public Step importOrganisationFromThw(StepBuilderFactory stepBuilderFactory,
+                                          ItemReader<Organisation> organisationItemReader,
+                                          ItemWriter<Organisation> organisationItemWriter) {
+        return stepBuilderFactory.get("importOrganisationFromThw")
+                .<Organisation, Organisation>chunk(100)
+                .reader(organisationItemReader)
+                //.processor(organisationProcessor)
+                .writer(organisationItemWriter)
+                .build();
+    }
+
+    @Bean
     public Job importDataJob(JobBuilderFactory jobBuilderFactory,
                              Step importQuestionFromJpa,
-                             @Qualifier("importOrganisationFromJpa") Step importOrganisationFromJpa) {
+                             @Qualifier("importOrganisationFromJpa") Step importOrganisationFromJpa,
+                             @Qualifier("importOrganisationFromThw") Step importOrganisationFromThw) {
         return jobBuilderFactory.get("importDataJob")
                 .start(importQuestionFromJpa)
                 .next(importOrganisationFromJpa)
+                .next(importOrganisationFromThw)
                 .build();
 
     }

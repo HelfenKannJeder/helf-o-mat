@@ -19,3 +19,8 @@ spring:
     jest:
       uris: http://localhost:9200
       read-timeout: 10000
+
+crawler:
+  thw:
+    domain: http://thw.de/
+    resultsPerPage: 10
