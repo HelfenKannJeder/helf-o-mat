@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.batch;
 
 import de.helfenkannjeder.helfomat.domain.Organisation;
+import org.apache.log4j.Logger;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 @JobScope
 public class ElasticsearchItemWriter implements ItemWriter<Organisation> {
 
+    private static final Logger LOGGER = Logger.getLogger(ElasticsearchItemWriter.class);
+
     private ElasticsearchTemplate elasticsearchTemplate;
     private Date date;
 
@@ -33,7 +36,7 @@ public class ElasticsearchItemWriter implements ItemWriter<Organisation> {
 
     @Override
     public void write(List<? extends Organisation> items) throws Exception {
-        items.forEach(System.out::println);
+        items.forEach(LOGGER::debug);
 
         List<IndexQuery> indexQueries = items.stream()
                 .map(item -> new IndexQueryBuilder()

@@ -1,11 +1,8 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
-
 import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.Organisation;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,8 +11,14 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
+
 @Component
 public class ThwCrawlerItemReader implements ItemReader<Organisation> {
+
+    private static final Logger LOGGER = Logger.getLogger(ThwCrawlerItemReader.class);
 
 	private Iterator<Element> iterator;
 	private int resultsPerPage;
@@ -39,7 +42,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 			if (!iterator.hasNext() && currentLetter <= 'Z') {
 				currentLetter++;
 				currentPage = 1;
-				System.out.println("next Letter: " + currentLetter);
+				LOGGER.debug("next Letter: " + currentLetter);
 				requestOverviewPage(currentLetter, currentPage);
 			}
 		}
@@ -69,7 +72,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 				.data("letter", String.valueOf(letter))
 				.data("page", String.valueOf(page))
 				.get();
-		System.out.println("requested document: " + document.location());
+		LOGGER.debug("requested document: " + document.location());
 		Elements oeLinks = document.select("[href*=SharedDocs/Organisationseinheiten/DE/Ortsverbaende]");
 		iterator = oeLinks.iterator();
 	}
