@@ -6,7 +6,7 @@ import {Router, ActivatedRoute} from "@angular/router";
 @Component({
     selector: 'app-question-overview',
     templateUrl: './questionOverview.component.html',
-    styleUrls: ['./questionOverview.component.css'],
+    styleUrls: ['./questionOverview.component.scss'],
     providers: [HelfomatService]
 })
 export class QuestionOverviewComponent extends AbstractQuestionComponent implements OnInit {

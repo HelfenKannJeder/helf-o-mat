@@ -12,6 +12,7 @@ export default class AbstractQuestionComponent {
     private showIndex: number = 0;
     private questions: Question[] = [];
     private userAnswers: number[] = [];
+    protected unansweredQuestions: number[] = [];
     protected router: Router;
     protected route: ActivatedRoute;
     protected helfomatService: HelfomatService;
@@ -29,6 +30,7 @@ export default class AbstractQuestionComponent {
             this.questions = item[0];
             let params = item[1];
 
+            var numberOfAnswers: number = 0;
             if (params.hasOwnProperty('answers')) {
                 this.userAnswers = JSON.parse(params['answers']);
                 this.showIndex = this.userAnswers.length;
@@ -40,8 +42,10 @@ export default class AbstractQuestionComponent {
                         transmitAnswers.push({id, answer});
                     }
                 });
+                numberOfAnswers = this.userAnswers.length;
                 this.organisations.emit(transmitAnswers);
             }
+            this.unansweredQuestions = Array(this.questions.length - numberOfAnswers).fill(0);
         });
     }
 
@@ -53,6 +57,13 @@ export default class AbstractQuestionComponent {
         } else {
             classes.push('btn-default');
         }
+        return classes;
+    }
+
+    classOfAnswer(answer: number): string[] {
+        let classes = [];
+        let possibleAnswers = ['no', 'maybe', 'yes'];
+        classes.push('answer-' + possibleAnswers[answer + 1]);
         return classes;
     }
 

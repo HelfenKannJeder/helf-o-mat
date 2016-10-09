@@ -1,12 +1,27 @@
-<div class="jumbotron" *ngFor="let question of questions; let i = index" [hidden]="i != showIndex" style="margin: 0 auto;">
-    <h1>{{question.question}}</h1>
-    <p>{{question.description}}</p>
+<div class="jumbotron" *ngFor="let question of questions; let i = index" [hidden]="i != showIndex"
+     style="margin: 0 auto;">
+    <div class="fix-height">
+        <h1>{{question.question}}</h1>
+        <p class="description">{{question.description}}</p>
+    </div>
     <p>
-        <a class="btn btn-success btn-lg" role="button" (click)="answerQuestion(1, question);">Yes</a>
-        <a class="btn btn-warning btn-lg" role="button" (click)="answerQuestion(0, question);">Maybe</a>
-        <a class="btn btn-danger btn-lg" role="button" (click)="answerQuestion(-1, question);">No</a>
+        <a class="btn btn-lg" role="button" (click)="answerQuestion(1, question);">
+            <img src="assets/images/yes.png"/><br />
+            Ja
+        </a>
+        <a class="btn btn-lg" role="button" (click)="answerQuestion(0, question);">
+            <img src="assets/images/maybe.png"/><br />
+            Egal
+        </a>
+        <a class="btn btn-lg" role="button" (click)="answerQuestion(-1, question);">
+            <img src="assets/images/no.png"/><br />
+            Nein
+        </a>
     </p>
     <p style="text-align: center">
-        <span *ngFor="let answer of userAnswers" class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+        <span *ngFor="let answer of userAnswers" class="glyphicon glyphicon-stop answer"
+              [ngClass]="classOfAnswer(answer)" aria-hidden="true"></span>
+        <span *ngFor="let number of unansweredQuestions" class="glyphicon glyphicon-stop answer answer-missing"
+              aria-hidden="true"></span>
     </p>
 </div>

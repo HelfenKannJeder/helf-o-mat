@@ -1,0 +1,40 @@
+.jumbotron {
+  background: none;
+  text-align: left;
+
+  h1 {
+    font-size: 2em;
+    font-weight: bold;
+    color: #3579db;
+  }
+
+  p {
+    font-size: 1em;
+  }
+
+  .fix-height {
+    height: 10em;
+  }
+
+  .answer {
+    font-size: 1.25em;
+    text-align: center;
+
+    &.answer-yes {
+      color: #009547;
+    }
+
+    &.answer-maybe {
+      color: #F6BB00;
+    }
+
+    &.answer-no {
+      color: #E13225;
+    }
+
+    &.answer-missing {
+      color: lightgray;
+    }
+  }
+
+}

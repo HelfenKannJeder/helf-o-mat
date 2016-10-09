@@ -9,6 +9,8 @@ import LatLng = google.maps.LatLng;
 import MapTypeId = google.maps.MapTypeId;
 import Point = google.maps.Point;
 import Size = google.maps.Size;
+import ControlPosition = google.maps.ControlPosition;
+import SearchBox = google.maps.places.SearchBox;
 import GeoPoint from "../organisation/geopoint.model";
 import {Output} from "@angular/core/src/metadata/directives";
 
@@ -47,12 +49,41 @@ export class MapComponent implements OnInit {
         };
         this.map = new Map(document.getElementById("googleMap"), mapProp);
 
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new SearchBox(input);
+        this.map.controls[ControlPosition.TOP_LEFT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        this.map.addListener('bounds_changed', () => {
+            searchBox.setBounds(this.map.getBounds());
+        });
+
+        searchBox.addListener('places_changed', () => {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            this.updatePosition.next(this.convertLatLngToGeoPoint(places[0].geometry.location));
+        });
+
+        google.maps.event.addListener(this.map, "bounds_changed", () => {
+            var northEast = this.convertLatLngToGeoPoint(this.map.getBounds().getNorthEast());
+            var southWest = this.convertLatLngToGeoPoint(this.map.getBounds().getSouthWest());
+            console.log("map bounds{", northEast, southWest);
+        });
+
         Observable.combineLatest(
             this.position,
             this.distance
         ).subscribe((newSearchRange: [GeoPoint, number]) => {
             var mapsPosition = this.convertGeoPointToLatLng(newSearchRange[0]);
-            this.map.setCenter(mapsPosition);
+            if (this.map.getBounds() == undefined
+                || !this.map.getBounds().contains(mapsPosition)) {
+                this.map.setCenter(mapsPosition);
+            }
             this.drawUserPosition(mapsPosition, newSearchRange[1]);
         });
 
@@ -85,6 +116,10 @@ export class MapComponent implements OnInit {
         });
     }
 
+    ngAfterViewInit() {
+        google.maps.event.trigger(this.map, "resize");
+    }
+
     drawUserPosition(position: LatLng, distance: number) {
         if (this.positionMarker !== undefined) {
             this.positionMarker.setMap(null);
@@ -99,7 +134,7 @@ export class MapComponent implements OnInit {
         });
 
         google.maps.event.addListener(this.positionMarker, "drag", (event) => {
-            this.updatePosition.next(new GeoPoint(event.latLng.lat(), event.latLng.lng()))
+            this.updatePosition.next(this.convertLatLngToGeoPoint(event.latLng));
         });
 
         // Add circle overlay and bind to marker
@@ -115,6 +150,10 @@ export class MapComponent implements OnInit {
 
     private convertGeoPointToLatLng(location: GeoPoint): LatLng {
         return new LatLng(location.lat, location.lon);
+    }
+
+    private convertLatLngToGeoPoint(location: LatLng): GeoPoint {
+        return new GeoPoint(location.lat(), location.lng());
     }
 
 }
