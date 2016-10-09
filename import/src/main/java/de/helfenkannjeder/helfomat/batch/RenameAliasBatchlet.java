@@ -18,14 +18,14 @@ import static org.springframework.batch.core.ExitStatus.COMPLETED;
  */
 @Component
 @JobScope
-public class CreateIndexBatchletStep extends AbstractBatchlet {
+public class RenameAliasBatchlet extends AbstractBatchlet {
 
     private ElasticsearchTemplate elasticsearchTemplate;
     private Date date;
 
     @Autowired
-    public CreateIndexBatchletStep(ElasticsearchTemplate elasticsearchTemplate,
-                                   @Value("#{jobParameters[date]}") Date date) {
+    public RenameAliasBatchlet(ElasticsearchTemplate elasticsearchTemplate,
+                               @Value("#{jobParameters[date]}") Date date) {
         this.elasticsearchTemplate = elasticsearchTemplate;
         this.date = date;
     }

@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.configuration;
 
-import de.helfenkannjeder.helfomat.batch.CreateIndexBatchletStep;
+import de.helfenkannjeder.helfomat.batch.RenameAliasBatchlet;
+import de.helfenkannjeder.helfomat.batch.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.service.ListCache;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
@@ -68,21 +69,31 @@ public class BatchConfiguration {
     }
 
     @Bean
+    public Step createIndexStep(StepBuilderFactory stepBuilderFactory,
+                                CreateIndexBatchlet createIndexBatchlet) {
+        return stepBuilderFactory.get("createIndexStep")
+                .tasklet(new BatchletAdapter(createIndexBatchlet))
+                .build();
+    }
+
+    @Bean
     public Step renameAliasStep(StepBuilderFactory stepBuilderFactory,
-                                CreateIndexBatchletStep createIndexBatchletStep) {
+                                RenameAliasBatchlet renameAliasBatchlet) {
         return stepBuilderFactory.get("renameAliasStep")
-                .tasklet(new BatchletAdapter(createIndexBatchletStep))
+                .tasklet(new BatchletAdapter(renameAliasBatchlet))
                 .build();
     }
 
     @Bean
     public Job importDataJob(JobBuilderFactory jobBuilderFactory,
+                             Step createIndexStep,
                              Step importQuestionFromJpa,
                              @Qualifier("importOrganisationFromJpa") Step importOrganisationFromJpa,
                              @Qualifier("importOrganisationFromThw") Step importOrganisationFromThw,
                              Step renameAliasStep) {
         return jobBuilderFactory.get("importDataJob")
-                .start(importQuestionFromJpa)
+                .start(createIndexStep)
+                .next(importQuestionFromJpa)
                 .next(importOrganisationFromJpa)
                 .next(importOrganisationFromThw)
                 .next(renameAliasStep)
