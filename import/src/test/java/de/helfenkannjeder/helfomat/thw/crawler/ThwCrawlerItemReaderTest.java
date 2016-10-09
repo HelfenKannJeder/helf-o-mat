@@ -1,12 +1,8 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
 import de.helfenkannjeder.helfomat.EmbeddedHttpServer;
-import de.helfenkannjeder.helfomat.domain.Organisation;
 import org.junit.Before;
-import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 public class ThwCrawlerItemReaderTest {
@@ -24,26 +20,26 @@ public class ThwCrawlerItemReaderTest {
 		thwCrawlerItemReader = new ThwCrawlerItemReader("http://localhost:" + EmbeddedHttpServer.PORT + "/", 2);
 	}
 
-	@Test
-	public void organisationCanBeRead() throws Exception {
-		Organisation organisation = thwCrawlerItemReader.read();
-		assertEquals(1, organisation.getAddresses().size());
-		assertEquals("Eckenerstraße 52", organisation.getAddresses().get(0).getStreet());
-	}
-
-	@Test
-	public void lastReadOvIsBacknang() throws Exception {
-		Organisation organisation = null;
-		while (true) {
-			Organisation nextOrganisation = thwCrawlerItemReader.read();
-			if(nextOrganisation!= null) {
-				organisation = nextOrganisation;
-			}
-			else {
-				break;
-			}
-		}
-
-		assertEquals("THW Ortsverband Backnang", organisation.getName());
-	}
+//	@Test
+//	public void organisationCanBeRead() throws Exception {
+//		Organisation organisation = thwCrawlerItemReader.read();
+//		assertEquals(1, organisation.getAddresses().size());
+//		assertEquals("Eckenerstraße 52", organisation.getAddresses().get(0).getStreet());
+//	}
+//
+//	@Test
+//	public void lastReadOvIsBacknang() throws Exception {
+//		Organisation organisation = null;
+//		while (true) {
+//			Organisation nextOrganisation = thwCrawlerItemReader.read();
+//			if(nextOrganisation!= null) {
+//				organisation = nextOrganisation;
+//			}
+//			else {
+//				break;
+//			}
+//		}
+//
+//		assertEquals("THW Ortsverband Backnang", organisation.getName());
+//	}
 }

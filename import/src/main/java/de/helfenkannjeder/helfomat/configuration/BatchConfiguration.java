@@ -5,11 +5,13 @@ import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.service.ListCache;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.typo3.domain.TQuestion;
+import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.jsr.step.batchlet.BatchletAdapter;
+import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -61,7 +63,28 @@ public class BatchConfiguration {
                                           ItemReader<Organisation> organisationItemReader,
                                           ItemWriter<Organisation> organisationItemWriter) {
         return stepBuilderFactory.get("importOrganisationFromThw")
-                .<Organisation, Organisation>chunk(100)
+				.listener(new ChunkListener() {
+					@Override
+					public void beforeChunk(ChunkContext chunkContext) {
+
+					}
+
+					@Override
+					public void afterChunk(ChunkContext chunkContext) {
+						try {
+							System.out.println("wating 40s");
+							Thread.sleep(60*1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public void afterChunkError(ChunkContext chunkContext) {
+
+					}
+				})
+                .<Organisation, Organisation>chunk(20)
                 .reader(organisationItemReader)
                 .writer(organisationItemWriter)
                 .build();

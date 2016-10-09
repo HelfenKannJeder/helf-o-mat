@@ -49,19 +49,14 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 	}
 
 	private Organisation readNextOrganisationItem() throws IOException {
-		try {
 			Element oeLink = iterator.next();
 			String url = domain + oeLink.attr("href");
 			Document oeDetailsDocument = Jsoup.connect(url).get();
 			return extractOrganisation(oeDetailsDocument);
-		}
-		catch (Exception ex) {
-			return  readNextOrganisationItem();
-		}
 	}
 
 	private void requestOverviewPage(char letter, int page) throws IOException {
-		Elements oeLinks = Jsoup.connect(domain + "DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html")
+		Document document = Jsoup.connect(domain + "DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html")
 				.data("oe_plzort", "PLZ+oder+Ort")
 				.data("sorting", "cityasc")
 				.data("resultsPerPage", String.valueOf(resultsPerPage))
@@ -69,8 +64,9 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 				.data("oe_umkreis", "25") // ignored
 				.data("letter", String.valueOf(letter))
 				.data("page", String.valueOf(page))
-				.get()
-				.select("[href*=SharedDocs/Organisationseinheiten/DE/Ortsverbaende]");
+				.get();
+		System.out.println("requested document: " + document.location());
+		Elements oeLinks = document.select("[href*=SharedDocs/Organisationseinheiten/DE/Ortsverbaende]");
 		iterator = oeLinks.iterator();
 	}
 
