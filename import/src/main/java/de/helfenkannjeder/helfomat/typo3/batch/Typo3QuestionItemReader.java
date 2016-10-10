@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.typo3.batch;
 
 import de.helfenkannjeder.helfomat.typo3.domain.TQuestion;
 import de.helfenkannjeder.helfomat.typo3.repository.Typo3QuestionRepository;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.database.AbstractPagingItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Valentin Zickner
  */
 @Component
+@JobScope
 public class Typo3QuestionItemReader extends AbstractPagingItemReader<TQuestion> {
 
     private Typo3QuestionRepository typo3QuestionRepository;

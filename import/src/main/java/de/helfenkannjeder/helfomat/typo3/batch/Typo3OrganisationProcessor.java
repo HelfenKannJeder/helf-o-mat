@@ -9,6 +9,7 @@ import de.helfenkannjeder.helfomat.typo3.domain.TGroupOfGroupTemplate;
 import de.helfenkannjeder.helfomat.typo3.domain.TGroupTemplate;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.typo3.domain.TQuestion;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
  * @author Valentin Zickner
  */
 @Component
+@JobScope
 public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, Organisation> {
 
     private final ListCache<TQuestion> allQuestions;

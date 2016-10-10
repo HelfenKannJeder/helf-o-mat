@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 @Component
+@JobScope
 public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 
     private static final Logger LOGGER = Logger.getLogger(ThwCrawlerItemReader.class);
@@ -44,7 +46,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 				currentLetter++;
 				currentPage = 1;
 				LOGGER.debug("next Letter: " + currentLetter);
-				requestOverviewPage(currentLetter, currentPage);
+				requestOverviewPage(currentLetter, currentPage++);
 			}
 		}
 
@@ -73,7 +75,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 				.data("letter", String.valueOf(letter))
 				.data("page", String.valueOf(page))
 				.get();
-		LOGGER.debug("requested document: " + document.location());
+		LOGGER.info("requested document: " + document.location());
 		Elements oeLinks = document.select("[href*=SharedDocs/Organisationseinheiten/DE/Ortsverbaende]");
 		iterator = oeLinks.iterator();
 	}
@@ -90,6 +92,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 		Address address = extractAddressFromDocument(oeDetailsDocument);
 		organisation.setAddresses(Collections.singletonList(address));
 
+		LOGGER.debug("New organisation: " + organisation);
 		return organisation;
 	}
 

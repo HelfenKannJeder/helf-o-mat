@@ -1,18 +1,16 @@
 package de.helfenkannjeder.helfomat.configuration;
 
-import de.helfenkannjeder.helfomat.batch.RenameAliasBatchlet;
 import de.helfenkannjeder.helfomat.batch.CreateIndexBatchlet;
+import de.helfenkannjeder.helfomat.batch.RenameAliasBatchlet;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.service.ListCache;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.typo3.domain.TQuestion;
-import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.jsr.step.batchlet.BatchletAdapter;
-import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
