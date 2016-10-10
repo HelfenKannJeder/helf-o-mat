@@ -3,36 +3,45 @@ package de.helfenkannjeder.helfomat.thw.crawler;
 import de.helfenkannjeder.helfomat.EmbeddedHttpServer;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @SpringBootTest
 public class ThwCrawlerItemReaderTest {
 
+    private static final String OVERVIEW_URL = "/DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html";
     private ThwCrawlerItemReader thwCrawlerItemReader;
+
+    @BeforeClass
+    public static void setUpServer() throws Exception {
+        EmbeddedHttpServer.start();
+        EmbeddedHttpServer.setContent(OVERVIEW_URL, null, "de/thw/overview/a_3.html"); // Default
+        EmbeddedHttpServer.setContent(OVERVIEW_URL, getOverviewParameter("A", 1), "de/thw/overview/a_1.html");
+        EmbeddedHttpServer.setContent(OVERVIEW_URL, getOverviewParameter("A", 2), "de/thw/overview/a_2.html");
+        EmbeddedHttpServer.setContent(OVERVIEW_URL, getOverviewParameter("A", 3), "de/thw/overview/a_3.html");
+        EmbeddedHttpServer.setContent(OVERVIEW_URL, getOverviewParameter("B", 1), "de/thw/overview/b_1.html");
+        EmbeddedHttpServer.setContent(getOrganisationUrl("A", "Aachen_Ortsverband"), null, "de/thw/detail/thw-ov-aachen.html");
+        EmbeddedHttpServer.setContent(getOrganisationUrl("A", "Aalen_Ortsverband"), null, "de/thw/detail/thw-ov-aalen.html");
+        EmbeddedHttpServer.setContent(getOrganisationUrl("A", "Achern_Ortsverband"), null, "de/thw/detail/thw-ov-achern.html");
+        EmbeddedHttpServer.setContent(getOrganisationUrl("A", "Achim_Ortsverband"), null, "de/thw/detail/thw-ov-achim.html");
+        EmbeddedHttpServer.setContent(getOrganisationUrl("B", "Backnang_Ortsverband"), null, "de/thw/detail/thw-ov-backnang.html");
+    }
 
     @Before
     public void setUp() throws Exception {
-        EmbeddedHttpServer.start();
-        EmbeddedHttpServer.setContent(getOverviewUrl("A", 1), "de/thw/overview/a_1.html");
-        EmbeddedHttpServer.setContent(getOverviewUrl("A", 2), "de/thw/overview/a_2.html");
-        EmbeddedHttpServer.setContent(getOverviewUrl("A", 3), "de/thw/overview/a_3.html");
-        EmbeddedHttpServer.setContent(getOverviewUrl("B", 1), "de/thw/overview/b_1.html");
-        EmbeddedHttpServer.setContent(getOrganisationUrl("A", "Aachen_Ortsverband"), "de/thw/detail/thw-ov-aachen.html");
-
         thwCrawlerItemReader = new ThwCrawlerItemReader("http://localhost:" + EmbeddedHttpServer.PORT + "/", 2, 3000);
     }
 
-    private String getOrganisationUrl(final String letter, final String name) {
+    private static String getOrganisationUrl(final String letter, final String name) {
         return "/SharedDocs/Organisationseinheiten/DE/Ortsverbaende/" + letter + "/" + name + ".html";
     }
 
-    private String getOverviewUrl(final String letter, final int page) {
-        return "/DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html?" +
-                "oe_plzort=PLZ+oder+Ort&" +
+    private static String getOverviewParameter(final String letter, final int page) {
+        return "oe_plzort=PLZ+oder+Ort&" +
                 "sorting=cityasc&" +
                 "resultsPerPage=2&" +
                 "oe_typ=ortsverbaende&" +
@@ -42,7 +51,6 @@ public class ThwCrawlerItemReaderTest {
     }
 
     @Test
-    @Ignore
     public void organisationCanBeRead() throws Exception {
         Organisation organisation = thwCrawlerItemReader.read();
         assertEquals(1, organisation.getAddresses().size());
@@ -50,18 +58,15 @@ public class ThwCrawlerItemReaderTest {
     }
 
     @Test
-    @Ignore
     public void lastReadOvIsBacknang() throws Exception {
-        Organisation organisation = null;
-        while (true) {
-            Organisation nextOrganisation = thwCrawlerItemReader.read();
-            if (nextOrganisation != null) {
-                organisation = nextOrganisation;
-            } else {
-                break;
-            }
-        }
+        Organisation nextOrganisation = null;
+        Organisation organisation;
+        do {
+            organisation = nextOrganisation;
+            nextOrganisation = thwCrawlerItemReader.read();
+        } while (nextOrganisation != null);
 
+        assertNotNull(organisation);
         assertEquals("THW Ortsverband Backnang", organisation.getName());
     }
 }
