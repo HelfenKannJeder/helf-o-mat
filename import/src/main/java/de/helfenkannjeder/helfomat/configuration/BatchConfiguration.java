@@ -64,27 +64,7 @@ public class BatchConfiguration {
                                           ItemReader<Organisation> organisationItemReader,
                                           ItemWriter<Organisation> organisationItemWriter) {
         return stepBuilderFactory.get("importOrganisationFromThw")
-				.listener(new ChunkListener() {
-					@Override
-					public void beforeChunk(ChunkContext chunkContext) {
-
-					}
-
-					@Override
-					public void afterChunk(ChunkContext chunkContext) {
-						try {
-							System.out.println("wating 40s");
-							Thread.sleep(60*1000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-
-					@Override
-					public void afterChunkError(ChunkContext chunkContext) {
-
-					}
-				})
+				.listener(new WaitChunkListener(60*1000))
                 .<Organisation, Organisation>chunk(20)
                 .reader(organisationItemReader)
                 .writer(organisationItemWriter)
