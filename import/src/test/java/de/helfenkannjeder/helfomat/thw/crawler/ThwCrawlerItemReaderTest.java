@@ -58,6 +58,19 @@ public class ThwCrawlerItemReaderTest {
     }
 
     @Test
+    public void read_executeTwice_verifyOrganisationCorrect() throws Exception {
+        // Act
+        Organisation organisation1 = thwCrawlerItemReader.read();
+        Organisation organisation2 = thwCrawlerItemReader.read();
+
+        // Assert
+        assertNotNull(organisation1);
+        assertNotNull(organisation2);
+        assertEquals("THW Ortsverband Aachen", organisation1.getName());
+        assertEquals("THW Ortsverband Aalen", organisation2.getName());
+    }
+
+    @Test
     public void lastReadOvIsBacknang() throws Exception {
         Organisation nextOrganisation = null;
         Organisation organisation;
