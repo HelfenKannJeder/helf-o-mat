@@ -1,11 +1,14 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
 import de.helfenkannjeder.helfomat.EmbeddedHttpServer;
+import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -81,5 +84,28 @@ public class ThwCrawlerItemReaderTest {
 
         assertNotNull(organisation);
         assertEquals("THW Ortsverband Backnang", organisation.getName());
+    }
+    
+    @Test
+    public void read_withGroupsOfAachen_returnsCorrectListOfOrganisations() throws Exception {
+        // Arrange
+        // Start with the second one, less complexity in group structure
+        thwCrawlerItemReader.read();
+
+        // Act
+        Organisation organisation = thwCrawlerItemReader.read();
+        
+        // Assert
+        assertNotNull(organisation);
+        assertEquals("THW Ortsverband Aalen", organisation.getName());
+        List<Group> groups = organisation.getGroups();
+        assertNotNull(groups);
+        assertEquals(5, groups.size());
+        assertEquals("Zugtrupp", groups.get(0).getName());
+        assertEquals("Bergungsgruppe 1", groups.get(1).getName());
+        assertEquals("Bergungsgruppe 2, Typ B", groups.get(2).getName());
+        assertEquals("Fachgruppe Räumen Typ A (ALT)", groups.get(3).getName());
+        assertEquals("Fachgruppe Ortung Typ B", groups.get(4).getName());
+
     }
 }

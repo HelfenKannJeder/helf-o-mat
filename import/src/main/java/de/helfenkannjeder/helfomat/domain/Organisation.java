@@ -16,6 +16,7 @@ public class Organisation {
     private List<Address> addresses;
     private List<Question> questions;
     private String mapPin;
+    private List<Group> groups;
 
     public String getId() {
         return id;
@@ -95,5 +96,13 @@ public class Organisation {
 
     public String getMapPin() {
         return mapPin;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 }

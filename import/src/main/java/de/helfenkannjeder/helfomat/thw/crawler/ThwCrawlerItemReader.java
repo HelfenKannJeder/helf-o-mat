@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
 import de.helfenkannjeder.helfomat.domain.Address;
+import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -13,8 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -92,8 +95,26 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 		Address address = extractAddressFromDocument(oeDetailsDocument);
 		organisation.setAddresses(Collections.singletonList(address));
 
+		organisation.setGroups(extractGroups(oeDetailsDocument));
+
 		LOGGER.debug("New organisation: " + organisation);
 		return organisation;
+	}
+
+	private List<Group> extractGroups(Document oeDetailsDocument) {
+		List<Group> groups = new ArrayList<>();
+		Elements technicalUnits = oeDetailsDocument.select("ul#accordion-box").select("h4");
+		for (Element technicalUnit : technicalUnits) {
+			Elements links = technicalUnit.select("a");
+			Element nameElement = technicalUnit;
+			if (links.size() == 1) {
+				nameElement = links.first();
+			}
+			Group group = new Group();
+			group.setName(nameElement.text());
+			groups.add(group);
+		}
+		return groups;
 	}
 
 	private Address extractAddressFromDocument(Document oeDetailsDocument) {
