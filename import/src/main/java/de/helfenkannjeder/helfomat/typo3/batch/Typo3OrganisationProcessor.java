@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.typo3.batch;
 
 import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
+import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.domain.Question;
 import de.helfenkannjeder.helfomat.service.ListCache;
@@ -91,6 +92,13 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         });
 
         organisation.setQuestions(questionList);
+
+        organisation.setGroups(tOrganisation.getGroups().stream().map(tGroup -> {
+            Group group = new Group();
+            group.setName(tGroup.getName());
+            group.setDescription(tGroup.getDescription());
+            return group;
+        }).collect(Collectors.toList()));
 
         return organisation;
     }
