@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
+import com.google.common.base.Preconditions;
 import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.domain.Group;
@@ -58,7 +59,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 			if (!iterator.hasNext() && currentLetter <= 'Z') {
 				currentLetter++;
 				currentPage = 1;
-				LOGGER.debug("next Letter: " + currentLetter);
+				LOGGER.debug("Next letter: " + currentLetter);
 				requestOverviewPage(currentLetter, currentPage++);
 			}
 		}
@@ -88,7 +89,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 				.data("letter", String.valueOf(letter))
 				.data("page", String.valueOf(page))
 				.get();
-		LOGGER.info("requested document: " + document.location());
+		LOGGER.debug("requested document: " + document.location());
 		Elements oeLinks = document.select("[href*=SharedDocs/Organisationseinheiten/DE/Ortsverbaende]");
 		iterator = oeLinks.iterator();
 	}
@@ -97,7 +98,9 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 		Organisation organisation = new Organisation();
 		organisation.setId(UUID.randomUUID().toString());
 
-		organisation.setName("THW " + oeDetailsDocument.select("div#main").select(".photogallery").select(".isFirstInSlot").text());
+        String organisationName = "THW " + oeDetailsDocument.select("div#main").select(".photogallery").select(".isFirstInSlot").text();
+        LOGGER.info("Read organisation: " + organisationName);
+        organisation.setName(Preconditions.checkNotNull(organisationName));
 
 		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
 		organisation.setWebsite(contactDataDiv.select(".url").select("a").attr("href"));
@@ -107,7 +110,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 
 		organisation.setGroups(extractGroups(oeDetailsDocument));
 
-		LOGGER.debug("New organisation: " + organisation);
+		LOGGER.trace("New organisation: " + organisation);
 		return organisation;
 	}
 
@@ -154,6 +157,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 		Document document = Jsoup.connect(mapLink)
 				.timeout(httpRequestTimeout)
 				.get();
+        LOGGER.debug("Requested document: " + document.location());
         String javascriptContent = document.select("script[type=text/javascript]:not(script[src])").html();
 
         double latitude = extractCoordinateFromJavascript(javascriptContent, LATITUDE_PATTERN);
