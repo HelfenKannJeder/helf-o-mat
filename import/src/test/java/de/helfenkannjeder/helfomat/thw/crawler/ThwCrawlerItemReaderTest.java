@@ -55,7 +55,7 @@ public class ThwCrawlerItemReaderTest {
 
     @Before
     public void setUp() throws Exception {
-        thwCrawlerItemReader = new ThwCrawlerItemReader(helfomatConfiguration, "http://localhost:" + EmbeddedHttpServer.PORT + "/", false, 2, 3000);
+        thwCrawlerItemReader = new ThwCrawlerItemReader(helfomatConfiguration, "http://localhost:" + EmbeddedHttpServer.PORT + "/", false, 2, 3000, "mapPin", "logo");
     }
 
     private static String getOrganisationUrl(final String letter, final String name) {

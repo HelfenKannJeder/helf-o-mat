@@ -29,6 +29,8 @@ crawler:
     domain: http://thw.de/
     resultsPerPage: 10
     httpRequestTimeout: 60000
+    logo: THW-Logo_BReg.png
+    mapPin: blue-pushpin.png
 
 helfomat:
   questions:

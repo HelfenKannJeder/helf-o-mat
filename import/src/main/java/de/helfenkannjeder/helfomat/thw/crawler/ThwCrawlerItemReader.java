@@ -47,18 +47,24 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 	private String domain;
     private static final Pattern LATITUDE_PATTERN = Pattern.compile("lat = parseFloat\\((\\d+\\.\\d+)\\)");
     private static final Pattern LONGITUDE_PATTERN = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)");
+	private String mapPin;
+	private String logo;
 
-    @Autowired
+	@Autowired
     public ThwCrawlerItemReader(HelfomatConfiguration helfomatConfiguration,
-                                @Value("${crawler.thw.domain}") String domain,
-                                @Value("${crawler.thw.followDomainNames:true}") boolean followDomainNames,
-                                @Value("${crawler.thw.resultsPerPage}") int resultsPerPage,
-                                @Value("${crawler.thw.httpRequestTimeout}") int httpRequestTimeout) {
+								@Value("${crawler.thw.domain}") String domain,
+								@Value("${crawler.thw.followDomainNames:true}") boolean followDomainNames,
+								@Value("${crawler.thw.resultsPerPage}") int resultsPerPage,
+								@Value("${crawler.thw.httpRequestTimeout}") int httpRequestTimeout,
+								@Value("${crawler.thw.mapPin}") String mapPin,
+								@Value("${crawler.thw.logo}") String logo) {
         this.helfomatConfiguration = helfomatConfiguration;
         this.domain = domain;
 		this.followDomainNames = followDomainNames;
 		this.resultsPerPage = resultsPerPage;
 		this.httpRequestTimeout = httpRequestTimeout;
+		this.mapPin = mapPin;
+		this.logo = logo;
 	}
 
 	@Override
@@ -113,6 +119,9 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 
 		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
 		organisation.setWebsite(contactDataDiv.select(".url").select("a").attr("href"));
+
+		organisation.setMapPin(mapPin);
+		organisation.setLogo(logo);
 
 		Address address = extractAddressFromDocument(oeDetailsDocument);
 		organisation.setAddresses(Collections.singletonList(address));
