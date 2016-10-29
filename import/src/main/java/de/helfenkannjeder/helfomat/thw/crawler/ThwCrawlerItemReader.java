@@ -16,7 +16,6 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -36,35 +35,21 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 
     private static final Logger LOGGER = Logger.getLogger(ThwCrawlerItemReader.class);
 
-    private HelfomatConfiguration helfomatConfiguration;
+    private final ThwCrawlerConfiguration thwCrawlerConfiguration;
+    private final HelfomatConfiguration helfomatConfiguration;
 
     private Iterator<Element> iterator;
-	private boolean followDomainNames;
-	private int resultsPerPage;
-	private int httpRequestTimeout;
+
 	private char currentLetter = 'A';
 	private int currentPage = 1;
-	private String domain;
     private static final Pattern LATITUDE_PATTERN = Pattern.compile("lat = parseFloat\\((\\d+\\.\\d+)\\)");
     private static final Pattern LONGITUDE_PATTERN = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)");
-	private String mapPin;
-	private String logo;
 
 	@Autowired
     public ThwCrawlerItemReader(HelfomatConfiguration helfomatConfiguration,
-								@Value("${crawler.thw.domain}") String domain,
-								@Value("${crawler.thw.followDomainNames:true}") boolean followDomainNames,
-								@Value("${crawler.thw.resultsPerPage}") int resultsPerPage,
-								@Value("${crawler.thw.httpRequestTimeout}") int httpRequestTimeout,
-								@Value("${crawler.thw.mapPin}") String mapPin,
-								@Value("${crawler.thw.logo}") String logo) {
+                                ThwCrawlerConfiguration thwCrawlerConfiguration) {
         this.helfomatConfiguration = helfomatConfiguration;
-        this.domain = domain;
-		this.followDomainNames = followDomainNames;
-		this.resultsPerPage = resultsPerPage;
-		this.httpRequestTimeout = httpRequestTimeout;
-		this.mapPin = mapPin;
-		this.logo = logo;
+        this.thwCrawlerConfiguration = thwCrawlerConfiguration;
 	}
 
 	@Override
@@ -88,17 +73,17 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 
 	private Organisation readNextOrganisationItem() throws IOException {
 			Element oeLink = iterator.next();
-			String url = domain + oeLink.attr("href");
-			Document oeDetailsDocument = Jsoup.connect(url).timeout(httpRequestTimeout).get();
+			String url = this.thwCrawlerConfiguration.getDomain() + oeLink.attr("href");
+			Document oeDetailsDocument = Jsoup.connect(url).timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout()).get();
 			return extractOrganisation(oeDetailsDocument);
 	}
 
 	private void requestOverviewPage(char letter, int page) throws IOException {
-		Document document = Jsoup.connect(domain + "DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html")
-				.timeout(httpRequestTimeout)
+		Document document = Jsoup.connect(this.thwCrawlerConfiguration.getDomain() + "DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html")
+				.timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout())
 				.data("oe_plzort", "PLZ+oder+Ort")
 				.data("sorting", "cityasc")
-				.data("resultsPerPage", String.valueOf(resultsPerPage))
+				.data("resultsPerPage", String.valueOf(this.thwCrawlerConfiguration.getResultsPerPage()))
 				.data("oe_typ", "ortsverbaende")
 				.data("oe_umkreis", "25") // ignored
 				.data("letter", String.valueOf(letter))
@@ -120,8 +105,8 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
 		organisation.setWebsite(contactDataDiv.select(".url").select("a").attr("href"));
 
-		organisation.setMapPin(mapPin);
-		organisation.setLogo(logo);
+		organisation.setMapPin(this.thwCrawlerConfiguration.getMapPin());
+		organisation.setLogo(this.thwCrawlerConfiguration.getLogo());
 
 		Address address = extractAddressFromDocument(oeDetailsDocument);
 		organisation.setAddresses(Collections.singletonList(address));
@@ -193,15 +178,15 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 	private GeoPoint extractLocationFromDocument(Document oeDetailsDocument) throws IOException {
 		String mapLink = oeDetailsDocument.select("a#servicemaplink").attr("href");
 
-		if (!followDomainNames) {
+		if (!this.thwCrawlerConfiguration.isFollowDomainNames()) {
             URL url = new URL(mapLink);
-            URL domain = new URL(this.domain);
+            URL domain = new URL(this.thwCrawlerConfiguration.getDomain());
             URL resultUrl = new URL(domain.getProtocol(), domain.getHost(), domain.getPort(), url.getFile());
             mapLink = resultUrl.toExternalForm();
         }
 
 		Document document = Jsoup.connect(mapLink)
-				.timeout(httpRequestTimeout)
+				.timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout())
 				.get();
         LOGGER.debug("Requested document: " + document.location());
         String javascriptContent = document.select("script[type=text/javascript]:not(script[src])").html();
