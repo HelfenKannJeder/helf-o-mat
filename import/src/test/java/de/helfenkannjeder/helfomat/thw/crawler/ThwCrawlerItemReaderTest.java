@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
 import de.helfenkannjeder.helfomat.EmbeddedHttpServer;
+import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import org.junit.Before;
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 public class ThwCrawlerItemReaderTest {
 
     private static final String OVERVIEW_URL = "/DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html";
+    private static final String MAPVIEW_URL = "/DE/THW/Bundesanstalt/Dienststellen/Kartenansicht/kartenansicht_node.html";
     private ThwCrawlerItemReader thwCrawlerItemReader;
 
     @BeforeClass
@@ -32,11 +34,17 @@ public class ThwCrawlerItemReaderTest {
         EmbeddedHttpServer.setContent(getOrganisationUrl("A", "Achern_Ortsverband"), null, "de/thw/detail/thw-ov-achern.html");
         EmbeddedHttpServer.setContent(getOrganisationUrl("A", "Achim_Ortsverband"), null, "de/thw/detail/thw-ov-achim.html");
         EmbeddedHttpServer.setContent(getOrganisationUrl("B", "Backnang_Ortsverband"), null, "de/thw/detail/thw-ov-backnang.html");
+
+        EmbeddedHttpServer.setContent(MAPVIEW_URL, "oeId=2000612", "de/thw/map/thw-ov-aachen.html");
+        EmbeddedHttpServer.setContent(MAPVIEW_URL, "oeId=2000121", "de/thw/map/thw-ov-aalen.html");
+        EmbeddedHttpServer.setContent(MAPVIEW_URL, "oeId=2000108", "de/thw/map/thw-ov-achern.html");
+        EmbeddedHttpServer.setContent(MAPVIEW_URL, "oeId=2000429", "de/thw/map/thw-ov-achim.html");
+        EmbeddedHttpServer.setContent(MAPVIEW_URL, "oeId=2000041", "de/thw/map/thw-ov-backnang.html");
     }
 
     @Before
     public void setUp() throws Exception {
-        thwCrawlerItemReader = new ThwCrawlerItemReader("http://localhost:" + EmbeddedHttpServer.PORT + "/", 2, 3000);
+        thwCrawlerItemReader = new ThwCrawlerItemReader("http://localhost:" + EmbeddedHttpServer.PORT + "/", false, 2, 3000);
     }
 
     private static String getOrganisationUrl(final String letter, final String name) {
@@ -58,6 +66,24 @@ public class ThwCrawlerItemReaderTest {
         Organisation organisation = thwCrawlerItemReader.read();
         assertEquals(1, organisation.getAddresses().size());
         assertEquals("Eckenerstraße 52", organisation.getAddresses().get(0).getStreet());
+    }
+
+    @Test
+    public void organisationCanBeRead_withCoordinatesOfOrganisation_returnsOrganisationWithCoordinates() throws Exception {
+        // Arrange
+
+
+        // Act
+        Organisation organisation = thwCrawlerItemReader.read();
+
+        // Assert
+        assertEquals("THW Ortsverband Aachen", organisation.getName());
+        List<Address> addresses = organisation.getAddresses();
+        assertNotNull(addresses);
+        assertEquals(1, addresses.size());
+        assertNotNull(addresses.get(0).getLocation());
+        assertEquals(50.756488, addresses.get(0).getLocation().getLat(), 0.0000001);
+        assertEquals(6.158488, addresses.get(0).getLocation().getLon(), 0.0000001);
     }
 
     @Test

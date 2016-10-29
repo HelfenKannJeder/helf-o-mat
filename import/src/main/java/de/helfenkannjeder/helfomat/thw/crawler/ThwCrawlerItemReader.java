@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
 import de.helfenkannjeder.helfomat.domain.Address;
+import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import org.apache.log4j.Logger;
@@ -10,15 +11,19 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @JobScope
@@ -26,17 +31,22 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 
     private static final Logger LOGGER = Logger.getLogger(ThwCrawlerItemReader.class);
 
-	private Iterator<Element> iterator;
+    private Iterator<Element> iterator;
+	private boolean followDomainNames;
 	private int resultsPerPage;
 	private int httpRequestTimeout;
 	private char currentLetter = 'A';
 	private int currentPage = 1;
 	private String domain;
+    private static final Pattern LATITUDE_PATTERN = Pattern.compile("lat = parseFloat\\((\\d+\\.\\d+)\\)");
+    private static final Pattern LONGITUDE_PATTERN = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)");
 
-	public ThwCrawlerItemReader(@Value("${crawler.thw.domain}") String domain,
+    public ThwCrawlerItemReader(@Value("${crawler.thw.domain}") String domain,
+								@Value("${crawler.thw.followDomainNames:true}") boolean followDomainNames,
 								@Value("${crawler.thw.resultsPerPage}") int resultsPerPage,
 								@Value("${crawler.thw.httpRequestTimeout}") int httpRequestTimeout) {
 		this.domain = domain;
+		this.followDomainNames = followDomainNames;
 		this.resultsPerPage = resultsPerPage;
 		this.httpRequestTimeout = httpRequestTimeout;
 	}
@@ -83,7 +93,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 		iterator = oeLinks.iterator();
 	}
 
-	private Organisation extractOrganisation(Document oeDetailsDocument) {
+	private Organisation extractOrganisation(Document oeDetailsDocument) throws IOException {
 		Organisation organisation = new Organisation();
 		organisation.setId(UUID.randomUUID().toString());
 
@@ -117,7 +127,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 		return groups;
 	}
 
-	private Address extractAddressFromDocument(Document oeDetailsDocument) {
+	private Address extractAddressFromDocument(Document oeDetailsDocument) throws IOException {
 		Address address = new Address();
 
 		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
@@ -126,6 +136,36 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 		address.setCity(addressDiv.select(".locality").text());
 		address.setStreet(addressDiv.select(".street-address").text());
 
+		address.setLocation(extractLocationFromDocument(oeDetailsDocument));
+
 		return address;
 	}
+
+	private GeoPoint extractLocationFromDocument(Document oeDetailsDocument) throws IOException {
+		String mapLink = oeDetailsDocument.select("a#servicemaplink").attr("href");
+
+		if (!followDomainNames) {
+            URL url = new URL(mapLink);
+            URL domain = new URL(this.domain);
+            URL resultUrl = new URL(domain.getProtocol(), domain.getHost(), domain.getPort(), url.getFile());
+            mapLink = resultUrl.toExternalForm();
+        }
+
+		Document document = Jsoup.connect(mapLink)
+				.timeout(httpRequestTimeout)
+				.get();
+        String javascriptContent = document.select("script[type=text/javascript]:not(script[src])").html();
+
+        double latitude = extractCoordinateFromJavascript(javascriptContent, LATITUDE_PATTERN);
+        double longitude = extractCoordinateFromJavascript(javascriptContent, LONGITUDE_PATTERN);
+        return new GeoPoint(latitude, longitude);
+	}
+
+    private double extractCoordinateFromJavascript(String javascriptContent, Pattern pattern) {
+        Matcher matcher = pattern.matcher(javascriptContent);
+        if (matcher.find()) {
+            return Double.parseDouble(matcher.group(1));
+        }
+        throw new ParseException("Cannot find coordinate inside of javascript, used " + pattern.toString());
+    }
 }
