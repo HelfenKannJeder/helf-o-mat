@@ -1,13 +1,16 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
 import de.helfenkannjeder.helfomat.EmbeddedHttpServer;
+import de.helfenkannjeder.helfomat.configuration.HelfomatConfiguration;
 import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
+import de.helfenkannjeder.helfomat.domain.Question;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,6 +28,9 @@ public class ThwCrawlerItemReaderTest {
     private static final String OVERVIEW_URL = "/DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html";
     private static final String MAPVIEW_URL = "/DE/THW/Bundesanstalt/Dienststellen/Kartenansicht/kartenansicht_node.html";
     private ThwCrawlerItemReader thwCrawlerItemReader;
+
+    @Autowired
+    private HelfomatConfiguration helfomatConfiguration;
 
     @BeforeClass
     public static void setUpServer() throws Exception {
@@ -49,7 +55,7 @@ public class ThwCrawlerItemReaderTest {
 
     @Before
     public void setUp() throws Exception {
-        thwCrawlerItemReader = new ThwCrawlerItemReader("http://localhost:" + EmbeddedHttpServer.PORT + "/", false, 2, 3000);
+        thwCrawlerItemReader = new ThwCrawlerItemReader(helfomatConfiguration, "http://localhost:" + EmbeddedHttpServer.PORT + "/", false, 2, 3000);
     }
 
     private static String getOrganisationUrl(final String letter, final String name) {
@@ -116,16 +122,16 @@ public class ThwCrawlerItemReaderTest {
         assertNotNull(organisation);
         assertEquals("THW Ortsverband Backnang", organisation.getName());
     }
-    
+
     @Test
-    public void read_withGroupsOfAachen_returnsCorrectListOfOrganisations() throws Exception {
+    public void read_withGroupsOfAalen_returnsCorrectListOfOrganisations() throws Exception {
         // Arrange
         // Start with the second one, less complexity in group structure
         thwCrawlerItemReader.read();
 
         // Act
         Organisation organisation = thwCrawlerItemReader.read();
-        
+
         // Assert
         assertNotNull(organisation);
         assertEquals("THW Ortsverband Aalen", organisation.getName());
@@ -137,6 +143,35 @@ public class ThwCrawlerItemReaderTest {
         assertEquals("Bergungsgruppe 2, Typ B", groups.get(2).getName());
         assertEquals("Fachgruppe Räumen Typ A (ALT)", groups.get(3).getName());
         assertEquals("Fachgruppe Ortung Typ B", groups.get(4).getName());
-
     }
+
+    @Test
+    public void read_withQuestionsOfAachen_returnsCorrectListOfQuestions() throws Exception {
+        // Arrange
+
+
+        // Act
+        Organisation organisation = thwCrawlerItemReader.read();
+
+        // Assert
+        List<Question> questions = organisation.getQuestions();
+        assertNotNull(questions);
+        assertEquals(18, questions.size());
+        assertQuestion("Möchtest Du gerne Einsatzfahrzeuge - ggf. auch mit Blaulicht und Martinshorn - fahren?",
+                Question.Answer.MAYBE,
+                questions.get(0));
+        assertQuestion("Du hast keine Angst vor Feuer, nur Respekt. Möchtest Du lernen, wie man es löscht?",
+                Question.Answer.NO,
+                questions.get(2));
+        assertQuestion("Deinen Hund zum Suchhund ausbilden, mit ihm vermisste Menschen orten und retten? Interesse?",
+                Question.Answer.YES,
+                questions.get(17));
+    }
+
+    private static void assertQuestion(String expectedQestion, Question.Answer expectedAnswer, Question question) {
+        assertNotNull(question);
+        assertEquals(expectedQestion, question.getQuestion());
+        assertEquals(expectedAnswer, question.getAnswer());
+    }
+
 }

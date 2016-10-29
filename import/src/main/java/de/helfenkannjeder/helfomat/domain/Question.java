@@ -7,10 +7,17 @@ public class Question {
     private long uid;
     private String question;
     private String description;
-    private Answer answer;
+    private Answer answer = Answer.MAYBE;
     private int position;
 
     public Question() {
+    }
+
+    public Question(long uid, String question, int position, Answer answer) {
+        this.uid = uid;
+        this.question = question;
+        this.position = position;
+        this.answer = answer;
     }
 
     public Question(Question question, Answer answer) {
@@ -62,6 +69,6 @@ public class Question {
     }
 
     public enum Answer {
-        YES, NO
+        YES, MAYBE, NO
     }
 }
