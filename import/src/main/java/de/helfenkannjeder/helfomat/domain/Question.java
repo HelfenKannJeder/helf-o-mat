@@ -10,6 +10,17 @@ public class Question {
     private Answer answer;
     private int position;
 
+    public Question() {
+    }
+
+    public Question(Question question, Answer answer) {
+        this.setUid(question.getUid());
+        this.setQuestion(question.getQuestion());
+        this.setAnswer(answer);
+        this.setPosition(question.getPosition());
+        this.setDescription(question.getDescription());
+    }
+
     public long getUid() {
         return uid;
     }

@@ -3,6 +3,7 @@ package de.helfenkannjeder.helfomat.configuration;
 import de.helfenkannjeder.helfomat.batch.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.batch.RenameAliasBatchlet;
 import de.helfenkannjeder.helfomat.domain.Organisation;
+import de.helfenkannjeder.helfomat.domain.Question;
 import de.helfenkannjeder.helfomat.service.ListCache;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.typo3.domain.TQuestion;
@@ -27,17 +28,12 @@ public class BatchConfiguration {
     @Bean
     public Step importQuestionFromJpa(StepBuilderFactory stepBuilderFactory,
                                       ItemReader<TQuestion> questionItemReader,
-                                      ListCache<TQuestion> listCache) {
+                                      ItemProcessor<TQuestion, Question> questionItemProcessor,
+                                      ListCache<Question> listCache) {
         return stepBuilderFactory.get("importQuestionFromJpa")
-                .<TQuestion, TQuestion>chunk(20)
+                .<TQuestion, Question>chunk(20)
                 .reader(questionItemReader)
-                .processor(question -> {
-                    if (question.getHelfomat() == 3) {
-                        return question;
-                    } else {
-                        return null;
-                    }
-                })
+                .processor(questionItemProcessor)
                 .writer(e -> e.forEach(listCache::add))
                 .build();
     }

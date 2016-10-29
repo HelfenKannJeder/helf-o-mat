@@ -9,7 +9,6 @@ import de.helfenkannjeder.helfomat.service.ListCache;
 import de.helfenkannjeder.helfomat.typo3.domain.TGroupOfGroupTemplate;
 import de.helfenkannjeder.helfomat.typo3.domain.TGroupTemplate;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
-import de.helfenkannjeder.helfomat.typo3.domain.TQuestion;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +27,10 @@ import java.util.stream.Stream;
 @JobScope
 public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, Organisation> {
 
-    private final ListCache<TQuestion> allQuestions;
+    private final ListCache<Question> allQuestions;
 
     @Autowired
-    public Typo3OrganisationProcessor(ListCache<TQuestion> allQuestions) {
+    public Typo3OrganisationProcessor(ListCache<Question> allQuestions) {
         this.allQuestions = allQuestions;
     }
 
@@ -66,15 +65,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         }).collect(Collectors.toList()));
 
         final List<Question> questionList = allQuestions.getAll().stream()
-                .map(tQuestion1 -> {
-                    Question question1 = new Question();
-                    question1.setUid(tQuestion1.getUid());
-                    question1.setQuestion(tQuestion1.getQuestion());
-                    question1.setDescription(tQuestion1.getDescription());
-                    question1.setAnswer(Question.Answer.NO);
-                    question1.setPosition(tQuestion1.getSort());
-                    return question1;
-                })
+                .map(tQuestion1 -> new Question(tQuestion1, Question.Answer.NO))
                 .collect(Collectors.toList());
 
         tOrganisation.getGroups().forEach(tGroup -> {
