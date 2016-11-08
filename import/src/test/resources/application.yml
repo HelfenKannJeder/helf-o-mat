@@ -1,0 +1,121 @@
+spring:
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  datasource:
+    url: "jdbc:h2:mem:"
+
+  data:
+    elasticsearch:
+      cluster-name: application
+      cluster-nodes: localhost:9300
+
+  elasticsearch:
+    jest:
+      uris: http://localhost:9200
+      read-timeout: 10000
+
+  batch:
+    job:
+      enabled: false
+
+crawler:
+  thw:
+    domain: http://thw.de/
+    resultsPerPage: 10
+    httpRequestTimeout: 60000
+    logo: THW-Logo_BReg.png
+    mapPin: blue-pushpin.png
+
+helfomat:
+  questions:
+  - uid: 17
+    question: "Möchtest Du gerne Einsatzfahrzeuge - ggf. auch mit Blaulicht und Martinshorn - fahren?"
+    defaultAnswer: "NO"
+    groups:
+    - phrase: "Bergungsgruppe"
+      answer: "MAYBE"
+    position: 1
+  - uid: 18,
+    question: "Möchtest Du Dich in medizinischer Hilfe ausbilden lassen und diese leisten?"
+    defaultAnswer: "MAYBE"
+    position: 2
+  - uid: 19,
+    question: "Du hast keine Angst vor Feuer, nur Respekt. Möchtest Du lernen, wie man es löscht?"
+    defaultAnswer: "NO"
+    position: 3
+  - uid: 20,
+    question: "Hast Du Interesse daran, Menschen bei Verkehrsunfällen aus Fahrzeugen zu retten?"
+    defaultAnswer: "MAYBE"
+    position: 4
+  - uid: 21,
+    question: "Kannst Du sehr kurzfristig, ggf. auch innerhalb Deiner Arbeitszeiten, für Einsätze zur Verfügung stehen?"
+    defaultAnswer: "MAYBE"
+    position: 5
+  - uid: 22,
+    question: "Ist Kochen eine Deiner Leidenschaften?"
+    defaultAnswer: "NO"
+    groups:
+    - phrase: "Logistik-Verpflegungstrupp"
+      answer:
+    position: 6
+  - uid: 23,
+    question: "Möchtest Du aktiv im Naturschutz mitwirken?"
+    defaultAnswer: "NO"
+    position: 7
+  - uid: 24,
+    question: "Bist Du handwerklich begabt? Den Umgang mit Kettensäge und Trennschleifer möchtest Du erlernen?"
+    defaultAnswer: "YES"
+    position: 8
+  - uid: 25,
+    question: "Hast Du was für Wassersport übrig? Boot fahren, Retten von Menschen aus Gewässern?"
+    defaultAnswer: "NO"
+    groups:
+    - phrase: "Wassergefahren"
+      answer: "YES"
+    position: 9
+  - uid: 26,
+    question: "Magst Du die Bergwelt? Kannst Du Dir vorstellen, hier Menschen zu retten?"
+    defaultAnswer: "NO"
+    position: 10
+  - uid: 27,
+    question: "Betreuung von unverletzten Menschen, mit ihnen sprechen, die wichtigsten Dinge des Lebens organisieren und verteilen - Dein Ding?"
+    defaultAnswer: "NO"
+    position: 11
+  - uid: 28,
+    question: "Möchtest Du aktiv als Besatzungsmitglied eines Rettungs- oder Krankentransportwagens mitfahren?"
+    defaultAnswer: "NO"
+    position: 12
+  - uid: 29,
+    question: "Bist Du handwerklich interessiert und kannst Strom, Heizung, Wasser, etc. in Notunterkünften installieren?"
+    defaultAnswer: "YES"
+    position: 13
+  - uid: 30,
+    question: "Fährst Du gerne Motorrad? Kommst Du auch mit etwas größeren Maschinen klar?"
+    defaultAnswer: "NO"
+    position: 14
+  - uid: 31,
+    question: "Gebrochene Knochen schocken Dich nicht - auf die richtige Behandlung kommt es an. Interesse?"
+    defaultAnswer: "NO"
+    position: 15
+  - uid: 32,
+    question: "Radlader-, Baggerfahren - schwere Baumaschinen fahren?"
+    defaultAnswer: "NO"
+    groups:
+    - phrase: "Räumen"
+      answer: "YES"
+    position: 16
+  - uid: 33,
+    question: "Klettern, Bergsteigen, Verletzte retten - auch aus der Kletterwand? Wäre das etwas für Dich?"
+    defaultAnswer: "MAYBE"
+    position: 17
+  - uid: 34,
+    question: "Deinen Hund zum Suchhund ausbilden, mit ihm vermisste Menschen orten und retten? Interesse?"
+    defaultAnswer: "NO"
+    groups:
+    - phrase: "Ortung Typ A"
+      answer: "YES"
+    position: 18
