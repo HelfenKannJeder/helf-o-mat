@@ -51,16 +51,23 @@ export class ResultComponent implements OnInit {
     }
 
     ngOnInit() {
-        // TODO: Split in two separate calls for circle and for bounding box / zoom
         Observable.combineLatest(
             this._answers$.asObservable(),
+            this.position,
+            this.distance
+        ).subscribe(([answer, position, distance]:
+            [Answer[], GeoPoint, number]) => {
+            this.searchService.search(answer, position, distance);
+        });
+
+        Observable.combineLatest(
             this.position,
             this.distance,
             this._boundingBox$.asObservable(),
             this.zoom
-        ).subscribe(([answer, position, distance, boundingBox, zoom]:
-            [Answer[], GeoPoint, number, BoundingBox, number]) => {
-            this.searchService.search(answer, position, distance, boundingBox, zoom);
+        ).subscribe(([position, distance, boundingBox, zoom]:
+            [GeoPoint, number, BoundingBox, number]) => {
+            this.searchService.boundingBox(position, distance, boundingBox, zoom);
         });
     }
 

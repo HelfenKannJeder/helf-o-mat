@@ -1,16 +1,17 @@
-package de.helfenkannjeder.helfomat.domain;
+package de.helfenkannjeder.helfomat.dto;
+
+import de.helfenkannjeder.helfomat.domain.Answer;
+import de.helfenkannjeder.helfomat.domain.GeoPoint;
 
 import java.util.List;
 
 /**
  * @author Valentin Zickner
  */
-public class SearchRequest {
+public class SearchRequestDto {
     private List<Answer> answers;
     private GeoPoint position;
     private double distance;
-    private BoundingBox boundingBox;
-    private int zoom;
 
     public List<Answer> getAnswers() {
         return answers;
@@ -34,21 +35,5 @@ public class SearchRequest {
 
     public void setDistance(double distance) {
         this.distance = distance;
-    }
-
-    public BoundingBox getBoundingBox() {
-        return boundingBox;
-    }
-
-    public void setBoundingBox(BoundingBox boundingBox) {
-        this.boundingBox = boundingBox;
-    }
-
-    public int getZoom() {
-        return zoom;
-    }
-
-    public void setZoom(int zoom) {
-        this.zoom = zoom;
     }
 }

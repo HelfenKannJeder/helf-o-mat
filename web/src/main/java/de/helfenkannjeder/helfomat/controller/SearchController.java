@@ -1,8 +1,10 @@
 package de.helfenkannjeder.helfomat.controller;
 
 import de.helfenkannjeder.helfomat.domain.Question;
-import de.helfenkannjeder.helfomat.domain.SearchRequest;
-import de.helfenkannjeder.helfomat.dto.SearchResultDto;
+import de.helfenkannjeder.helfomat.dto.BoundingBoxRequestDto;
+import de.helfenkannjeder.helfomat.dto.SearchRequestDto;
+import de.helfenkannjeder.helfomat.dto.ClusteredGeoPointDto;
+import de.helfenkannjeder.helfomat.dto.OrganisationDto;
 import de.helfenkannjeder.helfomat.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,21 +32,24 @@ public class SearchController {
         return searchService.findQuestions();
     }
 
-    @RequestMapping(path = "/search", method = RequestMethod.POST)
-    public SearchResultDto search(@RequestBody SearchRequest searchRequest) {
-        return new SearchResultDto(
-                searchService.findOrganisation(
-                        searchRequest.getAnswers(),
-                        searchRequest.getPosition(),
-                        searchRequest.getDistance()
-                ),
-                searchService.findClusteredGeoPoints(
-                        searchRequest.getPosition(),
-                        searchRequest.getDistance(),
-                        searchRequest.getBoundingBox(),
-                        searchRequest.getZoom()
-                )
+    @RequestMapping(path = "/organisation/search", method = RequestMethod.POST)
+    public List<OrganisationDto> search(@RequestBody SearchRequestDto searchRequestDto) {
+        return searchService.findOrganisation(
+                        searchRequestDto.getAnswers(),
+                        searchRequestDto.getPosition(),
+                        searchRequestDto.getDistance()
+                );
+    }
+
+    @RequestMapping(path = "/organisation/boundingBox", method = RequestMethod.POST)
+    public List<ClusteredGeoPointDto> boundingBox(@RequestBody BoundingBoxRequestDto searchRequestDto) {
+        return searchService.findClusteredGeoPoints(
+                searchRequestDto.getPosition(),
+                searchRequestDto.getDistance(),
+                searchRequestDto.getBoundingBox(),
+                searchRequestDto.getZoom()
         );
     }
+
 
 }

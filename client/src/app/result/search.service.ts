@@ -39,17 +39,25 @@ export class SearchService {
         return this._clusteredOrganisations$.asObservable();
     }
 
-    search(answers: Answer[], position: GeoPoint, distance: number, boundingBox: BoundingBox, zoom: number) {
-        this.http.post('api/search', {
+    search(answers: Answer[], position: GeoPoint, distance: number) {
+        this.http.post('api/organisation/search', {
             answers,
+            position,
+            distance
+        }).map((response: Response) => response.json()).subscribe(data => {
+            this.dataStore.organisations = data;
+            this._organisations$.next(this.dataStore.organisations);
+        });
+    }
+
+    boundingBox(position: GeoPoint, distance: number, boundingBox: BoundingBox, zoom: number) {
+        this.http.post('api/organisation/boundingBox', {
             position,
             distance,
             boundingBox,
             zoom
         }).map((response: Response) => response.json()).subscribe(data => {
-            this.dataStore.organisations = data.organisations;
-            this._organisations$.next(this.dataStore.organisations);
-            this.dataStore.clusteredOrganisations = data.clusteredOrganisations;
+            this.dataStore.clusteredOrganisations = data;
             this._clusteredOrganisations$.next(this.dataStore.clusteredOrganisations);
         });
     }
