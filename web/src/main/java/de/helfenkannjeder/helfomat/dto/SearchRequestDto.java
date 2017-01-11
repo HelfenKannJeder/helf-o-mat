@@ -1,31 +1,28 @@
 package de.helfenkannjeder.helfomat.dto;
 
-import de.helfenkannjeder.helfomat.domain.Answer;
-import de.helfenkannjeder.helfomat.domain.GeoPoint;
-
 import java.util.List;
 
 /**
  * @author Valentin Zickner
  */
 public class SearchRequestDto {
-    private List<Answer> answers;
-    private GeoPoint position;
+    private List<QuestionAnswerDto> answers;
+    private GeoPointDto position;
     private double distance;
 
-    public List<Answer> getAnswers() {
+    public List<QuestionAnswerDto> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<Answer> answers) {
+    public void setAnswers(List<QuestionAnswerDto> answers) {
         this.answers = answers;
     }
 
-    public GeoPoint getPosition() {
+    public GeoPointDto getPosition() {
         return position;
     }
 
-    public void setPosition(GeoPoint position) {
+    public void setPosition(GeoPointDto position) {
         this.position = position;
     }
 

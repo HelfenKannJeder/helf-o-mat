@@ -1,12 +1,13 @@
 package de.helfenkannjeder.helfomat.service;
 
-import de.helfenkannjeder.helfomat.domain.Answer;
-import de.helfenkannjeder.helfomat.domain.BoundingBox;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
-import de.helfenkannjeder.helfomat.domain.Question;
 import de.helfenkannjeder.helfomat.dto.AddressDto;
+import de.helfenkannjeder.helfomat.dto.BoundingBoxDto;
 import de.helfenkannjeder.helfomat.dto.ClusteredGeoPointDto;
+import de.helfenkannjeder.helfomat.dto.GeoPointDto;
 import de.helfenkannjeder.helfomat.dto.OrganisationDto;
+import de.helfenkannjeder.helfomat.dto.QuestionAnswerDto;
+import de.helfenkannjeder.helfomat.dto.QuestionDto;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.DistanceUnit;
@@ -62,12 +63,12 @@ public class SearchService {
         this.type = type;
     }
 
-    public List<OrganisationDto> findOrganisation(List<Answer> answers,
+    public List<OrganisationDto> findOrganisation(List<QuestionAnswerDto> questionAnswerDtos,
                                                   GeoPoint position,
                                                   double distance) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
-        for (Answer answer : answers) {
-            QueryBuilder questionQuery = buildQuestionQuery(answer);
+        for (QuestionAnswerDto questionAnswerDto : questionAnswerDtos) {
+            QueryBuilder questionQuery = buildQuestionQuery(questionAnswerDto);
             if (questionQuery != null) {
                 boolQueryBuilder.should(questionQuery);
             }
@@ -97,11 +98,11 @@ public class SearchService {
 
     public List<ClusteredGeoPointDto> findClusteredGeoPoints(GeoPoint position,
                                                              double distance,
-                                                             BoundingBox boundingBox, int zoom) {
+                                                             BoundingBoxDto boundingBoxDto, int zoom) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         boolQueryBuilder.filter(nestedQuery("addresses",
                 boolQuery()
-                        .must(filterBox(boundingBox))
+                        .must(filterBox(boundingBoxDto))
                         .mustNot(filterDistance(position, distance))
                 )
         );
@@ -126,32 +127,32 @@ public class SearchService {
         return extractClusteredOrganisations(searchResponse);
     }
 
-    private QueryBuilder buildQuestionQuery(Answer answer) {
-        if (isQuestionAnswered(answer)) {
+    private QueryBuilder buildQuestionQuery(QuestionAnswerDto questionAnswerDto) {
+        if (isQuestionAnswered(questionAnswerDto)) {
             return null;
         }
 
         return nestedQuery("questions",
                 boolQuery()
-                        .must(termQuery("questions.uid", answer.getId()))
-                        .must(termQuery("questions.answer", convertAnswerToString(answer)))
+                        .must(termQuery("questions.uid", questionAnswerDto.getId()))
+                        .must(termQuery("questions.answer", convertAnswerToString(questionAnswerDto)))
         );
     }
 
-    private static boolean isQuestionAnswered(Answer answer) {
-        return answer.getAnswer() != -1 && answer.getAnswer() != 1;
+    private static boolean isQuestionAnswered(QuestionAnswerDto questionAnswerDto) {
+        return questionAnswerDto.getAnswer() != -1 && questionAnswerDto.getAnswer() != 1;
     }
 
-    private static String convertAnswerToString(Answer answer) {
-        if (answer.getAnswer() == 1) {
+    private static String convertAnswerToString(QuestionAnswerDto questionAnswerDto) {
+        if (questionAnswerDto.getAnswer() == 1) {
             return "YES";
         }
         return "NO";
     }
 
-    private GeoBoundingBoxQueryBuilder filterBox(BoundingBox boundingBox) {
-        GeoPoint topRight = boundingBox.getNorthEast();
-        GeoPoint bottomLeft = boundingBox.getSouthWest();
+    private GeoBoundingBoxQueryBuilder filterBox(BoundingBoxDto boundingBoxDto) {
+        GeoPointDto topRight = boundingBoxDto.getNorthEast();
+        GeoPointDto bottomLeft = boundingBoxDto.getSouthWest();
 
         return geoBoundingBoxQuery("addresses.location")
                 .topRight(topRight.getLat(), topRight.getLon())
@@ -171,7 +172,9 @@ public class SearchService {
                 .getAggregations().<GeoHashGrid>get("grouped_organizations")
                 .getBuckets().stream()
                 .map(bucket -> new ClusteredGeoPointDto(
-                        GeoPoint.fromGeoPoint((org.elasticsearch.common.geo.GeoPoint) bucket.getKey()),
+                        GeoPointDto.fromGeoPoint(
+                                GeoPoint.fromGeoPoint((org.elasticsearch.common.geo.GeoPoint) bucket.getKey())
+                        ),
                         bucket.getDocCount()
                 ))
                 .collect(Collectors.toList());
@@ -213,7 +216,7 @@ public class SearchService {
                 (String) address.get("addressAppendix"),
                 (String) address.get("city"),
                 (String) address.get("zipcode"),
-                extractGeoPoint((Map<String, Object>) address.get("location")),
+                GeoPointDto.fromGeoPoint(extractGeoPoint((Map<String, Object>) address.get("location"))),
                 (String) address.get("telephone"),
                 (String) address.get("website")
         );
@@ -238,7 +241,7 @@ public class SearchService {
                 .actionGet();
     }
 
-    public List<Question> findQuestions() {
+    public List<QuestionDto> findQuestions() {
         Nested nested = client.prepareSearch(index)
                 .addAggregation(AggregationBuilders
                         .nested("questions")
@@ -272,15 +275,15 @@ public class SearchService {
 
     }
 
-    private Question bucketToQuestion(Terms.Bucket s) {
+    private QuestionDto bucketToQuestion(Terms.Bucket s) {
         String id = String.valueOf(this.getSubbucket(s, "id", this::convertIntBucket).orElse(0));
         String question = s.getKeyAsString();
         String description = this.getSubbucket(s, "description", this::convertStringBucket).orElse(null);
         Integer position = this.getSubbucket(s, "position", this::convertIntBucket).orElse(0);
-        return new Question(id, question, description, position);
+        return new QuestionDto(id, question, description, position);
     }
 
-    private int sortQuestions(Question q1, Question q2) {
+    private int sortQuestions(QuestionDto q1, QuestionDto q2) {
         return q1.getPosition() < q2.getPosition() ? -1 : 1;
     }
 

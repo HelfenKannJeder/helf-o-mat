@@ -1,22 +1,19 @@
 package de.helfenkannjeder.helfomat.dto;
 
-import de.helfenkannjeder.helfomat.domain.BoundingBox;
-import de.helfenkannjeder.helfomat.domain.GeoPoint;
-
 /**
  * @author Valentin Zickner
  */
 public class BoundingBoxRequestDto {
-    private GeoPoint position;
+    private GeoPointDto position;
     private double distance;
-    private BoundingBox boundingBox;
+    private BoundingBoxDto boundingBox;
     private int zoom;
 
-    public GeoPoint getPosition() {
+    public GeoPointDto getPosition() {
         return position;
     }
 
-    public void setPosition(GeoPoint position) {
+    public void setPosition(GeoPointDto position) {
         this.position = position;
     }
 
@@ -28,12 +25,12 @@ public class BoundingBoxRequestDto {
         this.distance = distance;
     }
 
-    public BoundingBox getBoundingBox() {
+    public BoundingBoxDto getBoundingBox() {
         return boundingBox;
     }
 
-    public void setBoundingBox(BoundingBox boundingBox) {
-        this.boundingBox = boundingBox;
+    public void setBoundingBox(BoundingBoxDto boundingBoxDto) {
+        this.boundingBox = boundingBoxDto;
     }
 
     public int getZoom() {

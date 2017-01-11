@@ -5,6 +5,29 @@
     map
 </div>
 
-<div class="col-md-12">
-    organisation {{organisation}}
+<div class="col-md-12" *ngIf="organisation">
+    <h1>{{organisation.name}}</h1>
+
+    <h2>Address</h2>
+    <p *ngFor="let address of organisation.addresses">
+        {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
+        Telephone: {{address.telephone}}
+    </p>
+
+    <h2>Contact</h2>
+
+    <h2>Description</h2>
+    <p>{{organisation.description}}</p>
+
+    <h2>Events</h2>
+
+    <h2>Groups</h2>
+    <div *ngFor="let group of organisation.groups">
+    <h3>{{group.name}}</h3>
+    {{group.description}}
+    </div>
+
+    <h2>Persons</h2>
+
+
 </div>

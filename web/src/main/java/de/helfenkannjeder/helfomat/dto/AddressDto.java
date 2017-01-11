@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.dto;
 
-import de.helfenkannjeder.helfomat.domain.GeoPoint;
+import de.helfenkannjeder.helfomat.domain.Address;
 
 /**
  * @author Valentin Zickner
@@ -10,14 +10,14 @@ public class AddressDto {
     private String addressAppendix;
     private String city;
     private String zipcode;
-    private GeoPoint location;
+    private GeoPointDto location;
     private String telephone;
     private String website;
 
     public AddressDto() {
     }
 
-    public AddressDto(String street, String addressAppendix, String city, String zipcode, GeoPoint location, String
+    public AddressDto(String street, String addressAppendix, String city, String zipcode, GeoPointDto location, String
             telephone, String website) {
         this.street = street;
         this.addressAppendix = addressAppendix;
@@ -44,7 +44,7 @@ public class AddressDto {
         return zipcode;
     }
 
-    public GeoPoint getLocation() {
+    public GeoPointDto getLocation() {
         return location;
     }
 
@@ -54,5 +54,17 @@ public class AddressDto {
 
     public String getWebsite() {
         return website;
+    }
+
+    static AddressDto fromAddress(Address address) {
+        return new AddressDto(
+                address.getStreet(),
+                address.getAddressAppendix(),
+                address.getCity(),
+                address.getZipcode(),
+                GeoPointDto.fromGeoPoint(address.getLocation()),
+                address.getTelephone(),
+                address.getWebsite()
+        );
     }
 }

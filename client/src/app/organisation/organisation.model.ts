@@ -1,4 +1,5 @@
 import Address from "./address.model";
+import Group from "./group.model";
 
 export default class Organisation {
     public id: string;
@@ -8,5 +9,6 @@ export default class Organisation {
     public scoreNorm: number;
     public mapPin: string;
     public addresses: Address[] = [];
+    public groups: Group[] = [];
     public logo: string;
 }
