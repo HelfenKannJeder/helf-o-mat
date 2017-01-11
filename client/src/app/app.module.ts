@@ -9,6 +9,7 @@ import {routing, appRoutingProviders} from "./app.routing";
 import {ResultComponent} from "./result/result.component";
 import {QuestionOverviewComponent} from "./question/questionOverview.component";
 import { ListComponent } from './list/list.component';
+import {OrganisationComponent} from "./organisation/organisation.component";
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { ListComponent } from './list/list.component';
         QuestionOverviewComponent,
         MapComponent,
         ResultComponent,
-        ListComponent
+        ListComponent,
+        OrganisationComponent
     ],
     imports: [
         BrowserModule,
