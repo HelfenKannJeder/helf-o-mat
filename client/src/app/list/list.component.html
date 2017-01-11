@@ -12,11 +12,11 @@
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped"
                          role="progressbar"
-                         [attr.aria-valuenow]="organisation._scoreNorm"
+                         [attr.aria-valuenow]="organisation.scoreNorm"
                          aria-valuemin="0"
                          aria-valuemax="100"
-                         [style.width.%]="organisation._scoreNorm">
-                        <span class="sr-only">{{organisation._scoreNorm}}% Complete</span>
+                         [style.width.%]="organisation.scoreNorm">
+                        <span class="sr-only">{{organisation.scoreNorm}}% Complete</span>
                     </div>
                 </div>
                 <a [attr.href]="organisation.website">{{organisation.website}}</a>

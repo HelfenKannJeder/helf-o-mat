@@ -1,21 +1,20 @@
 package de.helfenkannjeder.helfomat.dto;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Valentin Zickner
  */
 public class SearchResultDto {
-    private final List<Map<String, Object>> organisations; // TODO: Cleanup structure with domain objects equivalent to frontend objects
+    private final List<OrganisationDto> organisations;
     private final List<ClusteredGeoPointDto> clusteredOrganisations;
 
-    public SearchResultDto(List<Map<String, Object>> organisations, List<ClusteredGeoPointDto> clusteredOrganisations) {
+    public SearchResultDto(List<OrganisationDto> organisations, List<ClusteredGeoPointDto> clusteredOrganisations) {
         this.organisations = organisations;
         this.clusteredOrganisations = clusteredOrganisations;
     }
 
-    public List<Map<String, Object>> getOrganisations() {
+    public List<OrganisationDto> getOrganisations() {
         return organisations;
     }
 

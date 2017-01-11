@@ -117,7 +117,7 @@ export class MapComponent implements OnInit {
                         map: this.map,
                         title: organisation.name,
                         icon: icon,
-                        opacity: organisation._scoreNorm / 100
+                        opacity: organisation.scoreNorm / 100
                     }));
                 }
             });

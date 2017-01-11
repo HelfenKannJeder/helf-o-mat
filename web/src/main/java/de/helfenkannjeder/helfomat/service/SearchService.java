@@ -4,7 +4,9 @@ import de.helfenkannjeder.helfomat.domain.Answer;
 import de.helfenkannjeder.helfomat.domain.BoundingBox;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.domain.Question;
+import de.helfenkannjeder.helfomat.dto.AddressDto;
 import de.helfenkannjeder.helfomat.dto.ClusteredGeoPointDto;
+import de.helfenkannjeder.helfomat.dto.OrganisationDto;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.DistanceUnit;
@@ -27,7 +29,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,9 +62,9 @@ public class SearchService {
         this.type = type;
     }
 
-    public List<Map<String, Object>> findOrganisation(List<Answer> answers,
-                                                      GeoPoint position,
-                                                      double distance) {
+    public List<OrganisationDto> findOrganisation(List<Answer> answers,
+                                                  GeoPoint position,
+                                                  double distance) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         for (Answer answer : answers) {
             QueryBuilder questionQuery = buildQuestionQuery(answer);
@@ -176,20 +177,52 @@ public class SearchService {
                 .collect(Collectors.toList());
     }
 
-    private List<Map<String, Object>> extractOrganisations(SearchResponse searchResponse) {
-        List<Map<String, Object>> organisations = new ArrayList<>();
+    private List<OrganisationDto> extractOrganisations(SearchResponse searchResponse) {
+        List<OrganisationDto> organisations = new ArrayList<>();
         Float maxScore = null;
         for (SearchHit hit : searchResponse.getHits().getHits()) {
             if (maxScore == null) {
                 maxScore = hit.getScore();
             }
 
-            Map<String, Object> response = new HashMap<>(hit.getSource());
-            response.put("_score", hit.getScore());
-            response.put("_scoreNorm", (hit.getScore() * 100) / maxScore);
-            organisations.add(response);
+            OrganisationDto organisationDto = extractOrganisation(hit.getSource());
+            organisationDto.setScoreNorm((hit.getScore() * 100) / maxScore);
+            organisations.add(organisationDto);
         }
         return organisations;
+    }
+
+    @SuppressWarnings("unchecked")
+    private OrganisationDto extractOrganisation(Map<String, Object> source) {
+        List<Map<String, Object>> addresses = (List<Map<String, Object>>) source.get("addresses");
+        return new OrganisationDto(
+                (String) source.get("id"),
+                (String) source.get("name"),
+                (String) source.get("description"),
+                (String) source.get("website"),
+                (String) source.get("mapPin"),
+                addresses.stream().map(this::extractAddress).collect(Collectors.toList())
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    private AddressDto extractAddress(Map<String, Object> address) {
+        return new AddressDto(
+                (String) address.get("street"),
+                (String) address.get("addressAppendix"),
+                (String) address.get("city"),
+                (String) address.get("zipcode"),
+                extractGeoPoint((Map<String, Object>) address.get("location")),
+                (String) address.get("telephone"),
+                (String) address.get("website")
+        );
+    }
+
+    private GeoPoint extractGeoPoint(Map<String, Object> geoPoint) {
+        return new GeoPoint(
+                (double) geoPoint.get("lat"),
+                (double) geoPoint.get("lon")
+        );
     }
 
     private SearchResponse executeQuery(QueryBuilder queryBuilder, SortBuilder sortBuilder) {
