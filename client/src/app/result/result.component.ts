@@ -20,6 +20,7 @@ export class ResultComponent implements OnInit {
     private _zoom$: Subject<number>;
     private position: Observable<GeoPoint>;
     private distance = Observable.from([10]);
+    private zoom: Observable<number>;
 
     // Outputs
     private organisations;
@@ -40,6 +41,13 @@ export class ResultComponent implements OnInit {
             .debounceTime(100)
             .distinctUntilChanged();
 
+        this.zoom = Observable.concat(
+            Observable.from([12]),
+            this._zoom$.asObservable()
+        )
+            .debounceTime(100)
+            .distinctUntilChanged();
+
     }
 
     ngOnInit() {
@@ -49,7 +57,7 @@ export class ResultComponent implements OnInit {
             this.position,
             this.distance,
             this._boundingBox$.asObservable(),
-            this._zoom$.asObservable()
+            this.zoom
         ).subscribe(([answer, position, distance, boundingBox, zoom]:
             [Answer[], GeoPoint, number, BoundingBox, number]) => {
             this.searchService.search(answer, position, distance, boundingBox, zoom);

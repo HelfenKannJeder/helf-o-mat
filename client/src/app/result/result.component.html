@@ -4,6 +4,7 @@
         [clusteredOrganisations]="clusteredOrganisations"
         [position]="position"
         [distance]="distance"
+        [zoom]="zoom"
         (updatePosition)="_position$.next($event)"
         (updateBoundingBox)="_boundingBox$.next($event)"
         (updateZoom)="_zoom$.next($event)"></helfomat-map>

@@ -2,6 +2,10 @@ import {Component, OnInit, Input, EventEmitter} from "@angular/core";
 import Organisation from "../organisation/organisation.model";
 import Address from "../organisation/address.model";
 import {Observable} from "rxjs";
+import GeoPoint from "../organisation/geopoint.model";
+import {Output} from "@angular/core/src/metadata/directives";
+import BoundingBox from "../organisation/boundingbox.model";
+import ClusteredGeoPoint from "../organisation/clusteredGeoPoint.model";
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
@@ -11,10 +15,6 @@ import Point = google.maps.Point;
 import Size = google.maps.Size;
 import ControlPosition = google.maps.ControlPosition;
 import SearchBox = google.maps.places.SearchBox;
-import GeoPoint from "../organisation/geopoint.model";
-import {Output} from "@angular/core/src/metadata/directives";
-import BoundingBox from "../organisation/boundingbox.model";
-import ClusteredGeoPoint from "../organisation/clusteredGeoPoint.model";
 
 @Component({
     selector: 'helfomat-map',
@@ -26,6 +26,7 @@ export class MapComponent implements OnInit {
     @Input() organisations: Observable<Organisation[]>;
     @Input() position: Observable<GeoPoint>;
     @Input() distance: Observable<number>;
+    @Input() zoom: Observable<number>;
     @Input() clusteredOrganisations: Observable<ClusteredGeoPoint[]>;
 
     @Output() updatePosition: EventEmitter<GeoPoint> = new EventEmitter<GeoPoint>();
@@ -43,8 +44,6 @@ export class MapComponent implements OnInit {
 
     ngOnInit() {
         let mapProp = {
-            center: new LatLng(51.163375, 10.447683),
-            zoom: 12,
             mapTypeId: MapTypeId.ROADMAP,
             zoomControl: true,
             mapTypeControl: false,
@@ -56,7 +55,7 @@ export class MapComponent implements OnInit {
         this.map = new Map(document.getElementById("googleMap"), mapProp);
 
         // Create the search box and link it to the UI element.
-        let searchText : HTMLInputElement = <HTMLInputElement>document.getElementById('pac-input');
+        let searchText: HTMLInputElement = <HTMLInputElement>document.getElementById('pac-input');
         let searchBox = new SearchBox(searchText);
         this.map.controls[ControlPosition.TOP_LEFT].push(searchText);
 
@@ -93,6 +92,10 @@ export class MapComponent implements OnInit {
                 this.map.setCenter(mapsPosition);
             }
             this.drawUserPosition(mapsPosition, newSearchRange[1]);
+        });
+
+        this.zoom.subscribe((zoom: number) => {
+            this.map.setZoom(zoom);
         });
 
         this.organisations.subscribe((organisations) => {
