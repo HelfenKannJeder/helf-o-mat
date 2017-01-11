@@ -13,17 +13,19 @@ public class OrganisationDto {
     private float scoreNorm;
     private String mapPin;
     private List<AddressDto> addresses;
+    private String logo;
 
     public OrganisationDto() {
     }
 
-    public OrganisationDto(String id, String name, String description, String website, String mapPin, List<AddressDto> addresses) {
+    public OrganisationDto(String id, String name, String description, String website, String mapPin, List<AddressDto> addresses, String logo) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.website = website;
         this.mapPin = mapPin;
         this.addresses = addresses;
+        this.logo = logo;
     }
 
     public String getId() {
@@ -52,6 +54,10 @@ public class OrganisationDto {
 
     public List<AddressDto> getAddresses() {
         return addresses;
+    }
+
+    public String getLogo() {
+        return logo;
     }
 
     public void setScoreNorm(float scoreNorm) {

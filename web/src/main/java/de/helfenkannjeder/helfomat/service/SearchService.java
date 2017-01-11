@@ -201,7 +201,8 @@ public class SearchService {
                 (String) source.get("description"),
                 (String) source.get("website"),
                 (String) source.get("mapPin"),
-                addresses.stream().map(this::extractAddress).collect(Collectors.toList())
+                addresses.stream().map(this::extractAddress).collect(Collectors.toList()),
+                (String) source.get("logo")
         );
     }
 

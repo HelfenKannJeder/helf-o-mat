@@ -8,4 +8,5 @@ export default class Organisation {
     public scoreNorm: number;
     public mapPin: string;
     public addresses: Address[] = [];
+    public logo: string;
 }
