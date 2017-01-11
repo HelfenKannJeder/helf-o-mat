@@ -9,6 +9,8 @@ public class SearchRequest {
     private List<Answer> answers;
     private GeoPoint position;
     private double distance;
+    private BoundingBox boundingBox;
+    private int zoom;
 
     public List<Answer> getAnswers() {
         return answers;
@@ -32,5 +34,21 @@ public class SearchRequest {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
+    }
+
+    public void setBoundingBox(BoundingBox boundingBox) {
+        this.boundingBox = boundingBox;
+    }
+
+    public int getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(int zoom) {
+        this.zoom = zoom;
     }
 }

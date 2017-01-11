@@ -24,6 +24,13 @@ public class Question {
         this.question = question;
     }
 
+    public Question(String id, String question, String description, int position) {
+        this.id = id;
+        this.question = question;
+        this.description = description;
+        this.position = position;
+    }
+
     public String getQuestion() {
         return question;
     }

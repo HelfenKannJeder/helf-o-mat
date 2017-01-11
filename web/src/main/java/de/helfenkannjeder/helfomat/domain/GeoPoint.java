@@ -10,7 +10,7 @@ public class GeoPoint {
     public GeoPoint() {
     }
 
-    public GeoPoint(double lat, double lon) {
+    private GeoPoint(double lat, double lon) {
         this.lat = lat;
         this.lon = lon;
     }
@@ -29,5 +29,9 @@ public class GeoPoint {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    public static GeoPoint fromGeoPoint(org.elasticsearch.common.geo.GeoPoint geoPoint) {
+        return new GeoPoint(geoPoint.lat(), geoPoint.lon());
     }
 }

@@ -1,9 +1,12 @@
 <div style="clear: both"></div>
 <helfomat-map
         [organisations]="organisations"
+        [clusteredOrganisations]="clusteredOrganisations"
         [position]="position"
         [distance]="distance"
-        (updatePosition)="_position$.next($event)"></helfomat-map>
+        (updatePosition)="_position$.next($event)"
+        (updateBoundingBox)="_boundingBox$.next($event)"
+        (updateZoom)="_zoom$.next($event)"></helfomat-map>
 <div class="col-md-6">
     <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
 </div>
