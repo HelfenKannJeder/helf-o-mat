@@ -1,7 +1,10 @@
 package de.helfenkannjeder.helfomat.domain;
 
 public enum OrganisationType {
-    THW("Technisches Hilfswerk");
+    THW("Technisches Hilfswerk"),
+    Aktivbuero("Aktivbüro"),
+    Sonstige("Sonstige"),
+    Helfenkannjeder("HelfenKannJeder");
 
     String name;
 
