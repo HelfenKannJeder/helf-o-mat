@@ -12,6 +12,7 @@ import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.domain.OrganisationBuilder;
 import de.helfenkannjeder.helfomat.domain.OrganisationType;
+import de.helfenkannjeder.helfomat.typo3.UrlUnifier;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisationType;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -41,12 +42,12 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
                 .setType(tOrganisation.getOrganisationtype().getName())
                 .setDescription(tOrganisation.getDescription())
                 .setLogo(tOrganisation.getLogo())
-                .setWebsite(tOrganisation.getWebsite())
+                .setWebsite(UrlUnifier.unifyOrganisationWebsiteUrl(tOrganisation.getWebsite()))
                 .setMapPin(tOrganisation.getOrganisationtype().getPicture())
                 .setPictures(extractPictures(tOrganisation.getPictures()))
                 .setAddresses(
                         tOrganisation.getAddresses().stream().map(tAddress -> new AddressBuilder()
-                                .setWebsite(tAddress.getWebsite())
+                                .setWebsite(UrlUnifier.unifyOrganisationWebsiteUrl(tAddress.getWebsite()))
                                 .setTelephone(tAddress.getTelephone())
                                 .setStreet(tAddress.getStreet())
                                 .setAddressAppendix(tAddress.getAddressappendix())
