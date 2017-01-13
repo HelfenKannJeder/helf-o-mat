@@ -1,5 +1,11 @@
 package de.helfenkannjeder.helfomat.typo3.batch;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.domain.Group;
@@ -13,12 +19,6 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Valentin Zickner
@@ -36,9 +36,15 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
 
     @Override
     public Organisation process(TOrganisation tOrganisation) throws Exception {
+        // We dont want to import organisations without a specified type
+        if(tOrganisation.getOrganisationtype() == null) {
+            return null;
+        }
+
         Organisation organisation = new Organisation();
         organisation.setId(UUID.randomUUID().toString());
         organisation.setName(tOrganisation.getName());
+        organisation.setType(tOrganisation.getOrganisationtype().getName());
         organisation.setDescription(tOrganisation.getDescription());
         organisation.setLogo(tOrganisation.getLogo());
         organisation.setWebsite(tOrganisation.getWebsite());
