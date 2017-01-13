@@ -1,16 +1,5 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import de.helfenkannjeder.helfomat.configuration.HelfomatConfiguration;
 import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.AddressBuilder;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
@@ -18,7 +7,6 @@ import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.domain.OrganisationBuilder;
 import de.helfenkannjeder.helfomat.domain.OrganisationType;
-import de.helfenkannjeder.helfomat.domain.Question;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,9 +18,18 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static java.util.Collections.singletonList;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.singletonList;
 
 @Component
 @JobScope
@@ -41,7 +38,6 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
     private static final Logger LOGGER = Logger.getLogger(ThwCrawlerItemReader.class);
 
     private final ThwCrawlerConfiguration thwCrawlerConfiguration;
-    private final HelfomatConfiguration helfomatConfiguration;
 
     private Iterator<Element> iterator;
 
@@ -51,9 +47,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
     private static final Pattern LONGITUDE_PATTERN = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)");
 
 	@Autowired
-    public ThwCrawlerItemReader(HelfomatConfiguration helfomatConfiguration,
-                                ThwCrawlerConfiguration thwCrawlerConfiguration) {
-        this.helfomatConfiguration = helfomatConfiguration;
+    public ThwCrawlerItemReader(ThwCrawlerConfiguration thwCrawlerConfiguration) {
         this.thwCrawlerConfiguration = thwCrawlerConfiguration;
 	}
 
@@ -115,44 +109,18 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 				.setLogo(this.thwCrawlerConfiguration.getLogo())
 				.setAddresses(singletonList(extractAddressFromDocument(oeDetailsDocument)))
 				.setGroups(groups)
-				.setQuestions(extractQuestions(groups))
 				.build();
 
 		LOGGER.trace("New organisation: " + organisation);
 		return organisation;
 	}
 
-    private List<Question> extractQuestions(List<Group> groups) {
-        return helfomatConfiguration.getQuestions().stream()
-                .map(questionMapping -> {
-                    Question question = new Question(
-                            questionMapping.getUid(),
-                            questionMapping.getQuestion(),
-                            questionMapping.getPosition(),
-                            questionMapping.getDefaultAnswer()
-                    );
-
-                    for (HelfomatConfiguration.QuestionMapping.GroupMapping group : questionMapping.getGroups()) {
-                        if (groupExistsWithPhrase(groups, group.getPhrase())) {
-                            question.setAnswer(group.getAnswer());
-                        }
-                    }
-
-                    return question;
-                })
-                .collect(Collectors.toList());
-    }
-
-    private boolean groupExistsWithPhrase(List<Group> groups, String phrase) {
-        return groups.stream().anyMatch(group -> group.getName().contains(phrase));
-    }
-
-    private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
+	private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
 		List<Group> groups = new ArrayList<>();
 		Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
 		for (Element groupElement : groupElements) {
-            Group group = new Group();
-            group.setName(getGroupName(groupElement));
+			Group group = new Group();
+			group.setName(getGroupName(groupElement));
 			groups.add(group);
 		}
 		return groups

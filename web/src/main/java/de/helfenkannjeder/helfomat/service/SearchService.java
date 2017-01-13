@@ -69,10 +69,7 @@ public class SearchService {
                                                   double distance) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         for (QuestionAnswerDto questionAnswerDto : questionAnswerDtos) {
-            QueryBuilder questionQuery = buildQuestionQuery(questionAnswerDto);
-            if (questionQuery != null) {
-                boolQueryBuilder.should(questionQuery);
-            }
+            boolQueryBuilder.should(buildQuestionQuery(questionAnswerDto));
         }
 
         boolQueryBuilder.filter(nestedQuery("addresses", filterDistance(position, distance)));
@@ -129,23 +126,16 @@ public class SearchService {
     }
 
     private QueryBuilder buildQuestionQuery(QuestionAnswerDto questionAnswerDto) {
-        if (isQuestionUnanswered(questionAnswerDto)) {
-            return null;
+        BoolQueryBuilder questionQuery = boolQuery()
+                .minimumNumberShouldMatch(1)
+                .must(termQuery("questions.uid", questionAnswerDto.getId()))
+                .should(termQuery("questions.answer", questionAnswerDto.getAnswer().toString()).boost(2.0f));
+
+        for (AnswerDto neighbour : questionAnswerDto.getAnswer().getNeighbours()) {
+            questionQuery.should(termQuery("questions.answer", neighbour.toString()).boost(1.0f));
         }
 
-        return nestedQuery("questions",
-                boolQuery()
-                        .must(termQuery("questions.uid", questionAnswerDto.getId()))
-                        .must(termQuery("questions.answer", convertAnswerToString(questionAnswerDto)))
-        );
-    }
-
-    private static boolean isQuestionUnanswered(QuestionAnswerDto questionAnswerDto) {
-        return questionAnswerDto == null || questionAnswerDto.getAnswer().equals(AnswerDto.MAYBE);
-    }
-
-    private static String convertAnswerToString(QuestionAnswerDto questionAnswerDto) {
-        return questionAnswerDto.getAnswer().toString();
+        return nestedQuery("questions", questionQuery);
     }
 
     private GeoBoundingBoxQueryBuilder filterBox(BoundingBoxDto boundingBoxDto) {

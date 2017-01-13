@@ -3,11 +3,9 @@ package de.helfenkannjeder.helfomat.configuration;
 import de.helfenkannjeder.helfomat.batch.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.batch.RenameAliasBatchlet;
 import de.helfenkannjeder.helfomat.domain.Organisation;
-import de.helfenkannjeder.helfomat.domain.Question;
-import de.helfenkannjeder.helfomat.filter.DuplicateOrganisationFilterProcessor;
-import de.helfenkannjeder.helfomat.service.ListCache;
+import de.helfenkannjeder.helfomat.processor.AnswerQuestionsProcessor;
+import de.helfenkannjeder.helfomat.processor.DuplicateOrganisationFilterProcessor;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
-import de.helfenkannjeder.helfomat.typo3.domain.TQuestion;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -26,17 +24,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BatchConfiguration {
 
-    @Bean
-    public Step importQuestionFromJpa(StepBuilderFactory stepBuilderFactory,
-                                      ItemReader<TQuestion> questionItemReader,
-                                      ItemProcessor<TQuestion, Question> questionItemProcessor,
-                                      ListCache<Question> listCache) {
-        return stepBuilderFactory.get("importQuestionFromJpa")
-                .<TQuestion, Question>chunk(20)
-                .reader(questionItemReader)
-                .processor(questionItemProcessor)
-                .writer(e -> e.forEach(listCache::add))
-                .build();
+    private final AnswerQuestionsProcessor answerQuestionsProcessor;
+
+    public BatchConfiguration(AnswerQuestionsProcessor answerQuestionsProcessor) {
+        this.answerQuestionsProcessor = answerQuestionsProcessor;
     }
 
     @Bean
@@ -48,7 +39,10 @@ public class BatchConfiguration {
         return stepBuilderFactory.get("importOrganisationFromJpa")
                 .<TOrganisation, Organisation>chunk(100)
                 .reader(organisationItemReader)
-                .processor(organisationProcessor)
+                .processor(tOrganisation -> {
+                    Organisation organisation = organisationProcessor.process(tOrganisation);
+                    return this.answerQuestionsProcessor.process(organisation);
+                })
                 .writer(organisationItemWriter)
                 .build();
     }
@@ -60,10 +54,13 @@ public class BatchConfiguration {
                                           DuplicateOrganisationFilterProcessor duplicateOrganisationFilterProcessor,
                                           ItemWriter<Organisation> organisationItemWriter) {
         return stepBuilderFactory.get("importOrganisationFromThw")
-				.listener(new WaitChunkListener(60*1000))
+                .listener(new WaitChunkListener(60 * 1000))
                 .<Organisation, Organisation>chunk(20)
                 .reader(organisationItemReader)
-                .processor(duplicateOrganisationFilterProcessor)
+                .processor(organisation -> {
+                    organisation = duplicateOrganisationFilterProcessor.process(organisation);
+                    return this.answerQuestionsProcessor.process(organisation);
+                })
                 .writer(organisationItemWriter)
                 .build();
     }
@@ -87,13 +84,11 @@ public class BatchConfiguration {
     @Bean
     public Job importDataJob(JobBuilderFactory jobBuilderFactory,
                              Step createIndexStep,
-                             Step importQuestionFromJpa,
                              @Qualifier("importOrganisationFromJpa") Step importOrganisationFromJpa,
                              @Qualifier("importOrganisationFromThw") Step importOrganisationFromThw,
                              Step renameAliasStep) {
         return jobBuilderFactory.get("importDataJob")
                 .start(createIndexStep)
-                .next(importQuestionFromJpa)
                 .next(importOrganisationFromJpa)
                 .next(importOrganisationFromThw)
                 .next(renameAliasStep)

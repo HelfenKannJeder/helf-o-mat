@@ -9,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class Typo3OrganisationProcessorTest {
 
-    private Typo3OrganisationProcessor typo3OrganisationProcessor = new Typo3OrganisationProcessor(null);
+    private Typo3OrganisationProcessor typo3OrganisationProcessor = new Typo3OrganisationProcessor();
 
     @Test
     public void organisationsWithoutTypeAreIgnored() throws Exception {

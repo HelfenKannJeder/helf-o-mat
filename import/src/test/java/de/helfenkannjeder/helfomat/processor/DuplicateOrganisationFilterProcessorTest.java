@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.filter;
+package de.helfenkannjeder.helfomat.processor;
 
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.repository.OrganisationRepository;

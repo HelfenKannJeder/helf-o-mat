@@ -1,7 +1,5 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
-import java.util.List;
-
 import de.helfenkannjeder.helfomat.EmbeddedHttpServer;
 import de.helfenkannjeder.helfomat.configuration.HelfomatConfiguration;
 import de.helfenkannjeder.helfomat.domain.Address;
@@ -16,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -60,7 +60,7 @@ public class ThwCrawlerItemReaderTest {
         thwCrawlerConfiguration.setFollowDomainNames(false);
         thwCrawlerConfiguration.setResultsPerPage(2);
         thwCrawlerConfiguration.setHttpRequestTimeout(3000);
-        thwCrawlerItemReader = new ThwCrawlerItemReader(helfomatConfiguration, thwCrawlerConfiguration);
+        thwCrawlerItemReader = new ThwCrawlerItemReader(thwCrawlerConfiguration);
     }
 
     private static String getOrganisationUrl(final String letter, final String name) {
@@ -161,29 +161,6 @@ public class ThwCrawlerItemReaderTest {
 
         // Assert
         assertEquals(9, organisation.getGroups().size());
-    }
-
-    @Test
-    public void read_withQuestionsOfAachen_returnsCorrectListOfQuestions() throws Exception {
-        // Arrange
-
-
-        // Act
-        Organisation organisation = thwCrawlerItemReader.read();
-
-        // Assert
-        List<Question> questions = organisation.getQuestions();
-        assertNotNull(questions);
-        assertEquals(18, questions.size());
-        assertQuestion("Möchtest Du gerne Einsatzfahrzeuge - ggf. auch mit Blaulicht und Martinshorn - fahren?",
-                Question.Answer.MAYBE,
-                questions.get(0));
-        assertQuestion("Du hast keine Angst vor Feuer, nur Respekt. Möchtest Du lernen, wie man es löscht?",
-                Question.Answer.NO,
-                questions.get(2));
-        assertQuestion("Deinen Hund zum Suchhund ausbilden, mit ihm vermisste Menschen orten und retten? Interesse?",
-                Question.Answer.YES,
-                questions.get(17));
     }
 
     private static void assertQuestion(String expectedQestion, Question.Answer expectedAnswer, Question question) {

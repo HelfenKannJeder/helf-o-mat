@@ -22,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -122,17 +121,5 @@ public class SearchControllerTest {
                 .andExpect(jsonPath("$[12].question").value("Magst Du die Bergwelt? Kannst Du Dir vorstellen, hier Menschen zu retten?"))
                 .andExpect(jsonPath("$[13].question").value("Bist Du handwerklich interessiert und kannst Strom, Heizung, Wasser, etc. in Notunterkünften installieren?"));
                 // @formatter:on
-    }
-
-    @Test
-    public void searchOrganisation_withOneOrganisationAndWithoutGeoPosition_returnsOrganisation() throws Exception {
-        // Arrange
-
-        // Act + Assert
-        mockMvc.perform(post("/search"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(1));
     }
 }
