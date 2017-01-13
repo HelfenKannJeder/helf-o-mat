@@ -22,6 +22,11 @@ spring:
     job:
       enabled: false
 
+elasticsearch:
+  index: helfomat
+  type:
+    organisation: organisation
+
 crawler:
   thw:
     domain: http://thw.de/
