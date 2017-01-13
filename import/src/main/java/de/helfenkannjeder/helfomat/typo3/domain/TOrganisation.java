@@ -31,12 +31,12 @@ public class TOrganisation {
     @NotFound(action = NotFoundAction.IGNORE)
     private TOrganisationType organisationtype;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
     @Where(clause="deleted=0")
     private List<TAddress> addresses;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
     @Where(clause="deleted=0")
     private List<TGroup> groups;
