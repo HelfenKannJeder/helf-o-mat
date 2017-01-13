@@ -32,6 +32,7 @@ export class MapComponent implements OnInit {
     @Output() updatePosition: EventEmitter<GeoPoint> = new EventEmitter<GeoPoint>();
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();
     @Output() updateZoom: EventEmitter<number> = new EventEmitter<number>();
+    @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
 
     private map: Map;
     private markers: Marker[] = [];
@@ -119,13 +120,17 @@ export class MapComponent implements OnInit {
                         scaledSize: new Size(32, 32)
                     };
 
-                    this.markers.push(new Marker({
+                    let marker = new Marker({
                         position: MapComponent.convertGeoPointToLatLng(address.location),
                         map: this.map,
                         title: organisation.name,
                         icon: icon,
                         opacity: organisation.scoreNorm / 100
-                    }));
+                    });
+                    marker.addListener('click', () => {
+                        this.openOrganisation.emit(organisation);
+                    });
+                    this.markers.push(marker);
                 }
             });
         });

@@ -4,6 +4,8 @@ import {Observable, Subject} from "rxjs";
 import GeoPoint from "../organisation/geopoint.model";
 import UserAnswer from "../organisation/userAnswer.model";
 import BoundingBox from "../organisation/boundingbox.model";
+import Organisation from "../organisation/organisation.model";
+import {Router, ActivatedRoute, Params} from "@angular/router";
 
 @Component({
     selector: 'app-result',
@@ -18,6 +20,7 @@ export class ResultComponent implements OnInit {
     private _position$: Subject<GeoPoint>;
     private _boundingBox$: Subject<BoundingBox>;
     private _zoom$: Subject<number>;
+    private _organisation$: Subject<Organisation>;
     private position: Observable<GeoPoint>;
     private distance = Observable.from([10]);
     private zoom: Observable<number>;
@@ -26,11 +29,14 @@ export class ResultComponent implements OnInit {
     private organisations;
     private clusteredOrganisations;
 
-    constructor(private searchService: SearchService) {
+    constructor(private searchService: SearchService,
+                private router: Router,
+                private route: ActivatedRoute) {
         this._answers$ = <Subject<UserAnswer[]>>new Subject();
         this._position$ = <Subject<GeoPoint>>new Subject();
         this._boundingBox$ = <Subject<BoundingBox>>new Subject();
         this._zoom$ = <Subject<number>>new Subject();
+        this._organisation$ = <Subject<Organisation>>new Subject();
         this.organisations = searchService.organisations$;
         this.clusteredOrganisations = searchService.clusteredOrganisations$;
 
@@ -69,6 +75,17 @@ export class ResultComponent implements OnInit {
             [GeoPoint, number, BoundingBox, number]) => {
             this.searchService.boundingBox(position, distance, boundingBox, zoom);
         });
+
+        Observable.combineLatest(
+            this._organisation$.asObservable(),
+            this.route.params
+        )
+            .subscribe(([organisation, params]: [Organisation, Params]) => {
+                this.router.navigate(['/organisation', {
+                    organisation: organisation.id,
+                    answers: params['answers']
+                }]);
+            });
     }
 
     updateOrganisations(answers: UserAnswer[]) {

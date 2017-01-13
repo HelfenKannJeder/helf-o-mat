@@ -8,10 +8,14 @@
             [zoom]="zoom"
             (updatePosition)="_position$.next($event)"
             (updateBoundingBox)="_boundingBox$.next($event)"
-            (updateZoom)="_zoom$.next($event)"></helfomat-map>
-</div><div class="col-md-6">
+            (updateZoom)="_zoom$.next($event)"
+            (openOrganisation)="_organisation$.next($event)"></helfomat-map>
+</div>
+<div class="col-md-6">
     <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
 </div>
 <div class="col-md-6">
-    <helfomat-list [organisations]="organisations"></helfomat-list>
+    <helfomat-list
+            [organisations]="organisations"
+            (openOrganisation)="_organisation$.next($event)"></helfomat-list>
 </div>
