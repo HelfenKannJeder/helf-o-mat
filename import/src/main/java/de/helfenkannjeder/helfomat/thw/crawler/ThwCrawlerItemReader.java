@@ -104,7 +104,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 		LOGGER.info("Read organisation: " + organisationName);
 
 		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
-		List<Group> groups = extractGroups(oeDetailsDocument);
+		List<Group> groups = extractDistinctGroups(oeDetailsDocument);
 
 		Organisation organisation = new OrganisationBuilder()
 				.setId(UUID.randomUUID().toString())
@@ -147,7 +147,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
         return groups.stream().anyMatch(group -> group.getName().contains(phrase));
     }
 
-    private List<Group> extractGroups(Document oeDetailsDocument) {
+    private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
 		List<Group> groups = new ArrayList<>();
 		Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
 		for (Element groupElement : groupElements) {
@@ -155,7 +155,10 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
             group.setName(getGroupName(groupElement));
 			groups.add(group);
 		}
-		return groups;
+		return groups
+				.stream()
+				.distinct()
+				.collect(Collectors.toList());
 	}
 
     private String getGroupName(Element headlineElement) {

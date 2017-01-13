@@ -1,5 +1,7 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
+import java.util.List;
+
 import de.helfenkannjeder.helfomat.EmbeddedHttpServer;
 import de.helfenkannjeder.helfomat.configuration.HelfomatConfiguration;
 import de.helfenkannjeder.helfomat.domain.Address;
@@ -14,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -148,6 +148,19 @@ public class ThwCrawlerItemReaderTest {
         assertEquals("Bergungsgruppe 2, Typ B", groups.get(2).getName());
         assertEquals("Fachgruppe Räumen Typ A (ALT)", groups.get(3).getName());
         assertEquals("Fachgruppe Ortung Typ B", groups.get(4).getName());
+    }
+
+    @Test
+    public void duplicateGroupsAreNotImported() throws Exception {
+        // e.g. zugtrupp is only imported once even if there is a zugtrupp for each TZ
+
+        // Arrange
+
+        // Act
+        Organisation organisation = thwCrawlerItemReader.read();
+
+        // Assert
+        assertEquals(9, organisation.getGroups().size());
     }
 
     @Test
