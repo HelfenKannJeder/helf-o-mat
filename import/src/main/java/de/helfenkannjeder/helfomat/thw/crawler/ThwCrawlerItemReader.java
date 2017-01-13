@@ -149,21 +149,25 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 
     private List<Group> extractGroups(Document oeDetailsDocument) {
 		List<Group> groups = new ArrayList<>();
-		Elements technicalUnits = oeDetailsDocument.select("ul#accordion-box").select("h4");
-		for (Element technicalUnit : technicalUnits) {
-			Elements links = technicalUnit.select("a");
-			Element nameElement = technicalUnit;
-			if (links.size() == 1) {
-				nameElement = links.first();
-			}
-			Group group = new Group();
-			group.setName(nameElement.text());
+		Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
+		for (Element groupElement : groupElements) {
+            Group group = new Group();
+            group.setName(getGroupName(groupElement));
 			groups.add(group);
 		}
 		return groups;
 	}
 
-	private Address extractAddressFromDocument(Document oeDetailsDocument) throws IOException {
+    private String getGroupName(Element headlineElement) {
+        Elements linkElement = headlineElement.select("a");
+        if (!linkElement.isEmpty()) { // <h4><a>...</a></h4>
+            return linkElement.first().text();
+        }
+        // <h4>...</h4>
+        return headlineElement.text();
+    }
+
+    private Address extractAddressFromDocument(Document oeDetailsDocument) throws IOException {
 		Address address = new AddressBuilder().build();
 
 		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
