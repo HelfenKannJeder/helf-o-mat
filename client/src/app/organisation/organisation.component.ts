@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {OrganisationService} from "./organisation.service";
 import Organisation from "./organisation.model";
+import {Answer} from "../shared/answer.model";
 
 @Component({
     selector: 'organisation',
@@ -13,11 +14,18 @@ export class OrganisationComponent implements OnInit {
 
     private organisation: Organisation;
     private params: Params;
+    private userAnswers: Answer[]; // Necessary in the template
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private organisationService: OrganisationService) {
-        this.route.params.subscribe((params: Params) => this.params = params);
+        this.route.params.subscribe((params: Params) => {
+            this.params = params;
+
+            if (params.hasOwnProperty('answers')) {
+                this.userAnswers = JSON.parse(params['answers']);
+            }
+        });
         this.route.params
             .switchMap((params: Params) => this.organisationService.getOrganisation(params['organisation']))
             .subscribe((organisation: Organisation) => {

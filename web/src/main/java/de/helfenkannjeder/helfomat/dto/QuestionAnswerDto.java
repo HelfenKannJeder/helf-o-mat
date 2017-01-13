@@ -5,7 +5,7 @@ package de.helfenkannjeder.helfomat.dto;
  */
 public class QuestionAnswerDto {
     private String id;
-    private int answer;
+    private AnswerDto answer;
 
     public String getId() {
         return id;
@@ -15,11 +15,11 @@ public class QuestionAnswerDto {
         this.id = id;
     }
 
-    public int getAnswer() {
+    public AnswerDto getAnswer() {
         return answer;
     }
 
-    public void setAnswer(int answer) {
+    public void setAnswer(AnswerDto answer) {
         this.answer = answer;
     }
 }

@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.service;
 
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.dto.AddressDto;
+import de.helfenkannjeder.helfomat.dto.AnswerDto;
 import de.helfenkannjeder.helfomat.dto.BoundingBoxDto;
 import de.helfenkannjeder.helfomat.dto.ClusteredGeoPointDto;
 import de.helfenkannjeder.helfomat.dto.GeoPointDto;
@@ -128,7 +129,7 @@ public class SearchService {
     }
 
     private QueryBuilder buildQuestionQuery(QuestionAnswerDto questionAnswerDto) {
-        if (isQuestionAnswered(questionAnswerDto)) {
+        if (isQuestionUnanswered(questionAnswerDto)) {
             return null;
         }
 
@@ -139,15 +140,12 @@ public class SearchService {
         );
     }
 
-    private static boolean isQuestionAnswered(QuestionAnswerDto questionAnswerDto) {
-        return questionAnswerDto.getAnswer() != -1 && questionAnswerDto.getAnswer() != 1;
+    private static boolean isQuestionUnanswered(QuestionAnswerDto questionAnswerDto) {
+        return questionAnswerDto == null || questionAnswerDto.getAnswer().equals(AnswerDto.MAYBE);
     }
 
     private static String convertAnswerToString(QuestionAnswerDto questionAnswerDto) {
-        if (questionAnswerDto.getAnswer() == 1) {
-            return "YES";
-        }
-        return "NO";
+        return questionAnswerDto.getAnswer().toString();
     }
 
     private GeoBoundingBoxQueryBuilder filterBox(BoundingBoxDto boundingBoxDto) {

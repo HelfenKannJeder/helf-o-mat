@@ -1,12 +1,12 @@
 <ul class="list-group">
     <li class="list-group-item" *ngFor="let question of questions">
         <span class="badge">
-            <a [ngClass]="getAnswerClasses(1, question, 'btn-success')" role="button"
-               (click)="answerQuestion(1, question);">Yes</a>
-            <a [ngClass]="getAnswerClasses(0, question, 'btn-warning')" role="button"
-               (click)="answerQuestion(0, question);">Maybe</a>
-            <a [ngClass]="getAnswerClasses(-1, question, 'btn-danger')" role="button"
-               (click)="answerQuestion(-1, question);">No</a>
+            <a role="button" (click)="answerQuestion('YES', question);"><img
+                    src="{{ 'YES' | answerImage:isInactive('YES', question)}}" class="thumb"/></a>
+            <a role="button" (click)="answerQuestion('MAYBE', question);"><img
+                    src="{{ 'MAYBE' | answerImage:isInactive('MAYBE', question)}}" class="thumb"/></a>
+            <a role="button" (click)="answerQuestion('NO', question);"><img
+                    src="{{ 'NO' | answerImage:isInactive('NO', question)}}" class="thumb"/></a>
         </span>
         {{question.question}}
     </li>

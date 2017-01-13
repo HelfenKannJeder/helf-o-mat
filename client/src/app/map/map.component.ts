@@ -70,10 +70,14 @@ export class MapComponent implements OnInit {
         });
 
         this.map.addListener('bounds_changed', () => {
-            searchBox.setBounds(this.map.getBounds());
+            let bounds = this.map.getBounds();
+            if (bounds == null) {
+                return;
+            }
+            searchBox.setBounds(bounds);
 
-            const northEast = MapComponent.convertLatLngToGeoPoint(this.map.getBounds().getNorthEast());
-            const southWest = MapComponent.convertLatLngToGeoPoint(this.map.getBounds().getSouthWest());
+            const northEast = MapComponent.convertLatLngToGeoPoint(bounds.getNorthEast());
+            const southWest = MapComponent.convertLatLngToGeoPoint(bounds.getSouthWest());
 
             this.updateBoundingBox.emit(new BoundingBox(northEast, southWest));
         });

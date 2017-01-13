@@ -5,16 +5,16 @@
         <p class="description">{{question.description}}</p>
     </div>
     <p>
-        <a class="btn btn-lg" role="button" (click)="answerQuestion(1, question);">
-            <img src="assets/images/yes.png"/><br />
+        <a class="btn btn-lg" role="button" (click)="answerQuestion('YES', question);">
+            <img src="{{ 'YES' | answerImage}}"/><br/>
             Ja
         </a>
-        <a class="btn btn-lg" role="button" (click)="answerQuestion(0, question);">
-            <img src="assets/images/maybe.png"/><br />
+        <a class="btn btn-lg" role="button" (click)="answerQuestion('MAYBE', question);">
+            <img src="{{ 'MAYBE' | answerImage}}"/><br/>
             Egal
         </a>
-        <a class="btn btn-lg" role="button" (click)="answerQuestion(-1, question);">
-            <img src="assets/images/no.png"/><br />
+        <a class="btn btn-lg" role="button" (click)="answerQuestion('NO', question);">
+            <img src="{{ 'NO' | answerImage}}"/><br/>
             Nein
         </a>
     </p>

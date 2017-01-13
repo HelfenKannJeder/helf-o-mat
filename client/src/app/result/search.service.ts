@@ -3,7 +3,7 @@ import {Http, Response} from "@angular/http";
 import "rxjs/add/operator/map";
 import {Observable, Subject} from "rxjs";
 import Organisation from "../organisation/organisation.model";
-import Answer from "../organisation/answer.model";
+import UserAnswer from "../organisation/userAnswer.model";
 import GeoPoint from "../organisation/geopoint.model";
 import BoundingBox from "../organisation/boundingbox.model";
 import ClusteredGeoPoint from "../organisation/clusteredGeoPoint.model";
@@ -39,7 +39,7 @@ export class SearchService {
         return this._clusteredOrganisations$.asObservable();
     }
 
-    search(answers: Answer[], position: GeoPoint, distance: number) {
+    search(answers: UserAnswer[], position: GeoPoint, distance: number) {
         this.http.post('api/organisation/search', {
             answers,
             position,

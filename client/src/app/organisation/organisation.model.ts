@@ -1,5 +1,6 @@
 import Address from "./address.model";
 import Group from "./group.model";
+import AnsweredQuestion from "./answeredQuestion.model";
 
 export default class Organisation {
     public id: string;
@@ -10,5 +11,6 @@ export default class Organisation {
     public mapPin: string;
     public addresses: Address[] = [];
     public groups: Group[] = [];
+    public questions: AnsweredQuestion[] = [];
     public logo: string;
 }

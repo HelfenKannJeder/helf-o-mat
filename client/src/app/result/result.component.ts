@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
 import {Observable, Subject} from "rxjs";
 import GeoPoint from "../organisation/geopoint.model";
-import Answer from "../organisation/answer.model";
+import UserAnswer from "../organisation/userAnswer.model";
 import BoundingBox from "../organisation/boundingbox.model";
 
 @Component({
@@ -14,7 +14,7 @@ import BoundingBox from "../organisation/boundingbox.model";
 export class ResultComponent implements OnInit {
 
     // Inputs
-    private _answers$: Subject<Answer[]>;
+    private _answers$: Subject<UserAnswer[]>;
     private _position$: Subject<GeoPoint>;
     private _boundingBox$: Subject<BoundingBox>;
     private _zoom$: Subject<number>;
@@ -27,7 +27,7 @@ export class ResultComponent implements OnInit {
     private clusteredOrganisations;
 
     constructor(private searchService: SearchService) {
-        this._answers$ = <Subject<Answer[]>>new Subject();
+        this._answers$ = <Subject<UserAnswer[]>>new Subject();
         this._position$ = <Subject<GeoPoint>>new Subject();
         this._boundingBox$ = <Subject<BoundingBox>>new Subject();
         this._zoom$ = <Subject<number>>new Subject();
@@ -56,7 +56,7 @@ export class ResultComponent implements OnInit {
             this.position,
             this.distance
         ).subscribe(([answer, position, distance]:
-            [Answer[], GeoPoint, number]) => {
+            [UserAnswer[], GeoPoint, number]) => {
             this.searchService.search(answer, position, distance);
         });
 
@@ -71,7 +71,7 @@ export class ResultComponent implements OnInit {
         });
     }
 
-    updateOrganisations(answers: Answer[]) {
+    updateOrganisations(answers: UserAnswer[]) {
         this._answers$.next(answers);
     }
 

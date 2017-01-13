@@ -2,16 +2,17 @@ import {HelfomatService} from "./helfomat.service";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import {Question} from "./question.model";
 import {EventEmitter} from "@angular/core";
-import Answer from "../organisation/answer.model";
+import UserAnswer from "../organisation/userAnswer.model";
 import {Observable} from "rxjs";
+import {Answer} from "../shared/answer.model";
 
 export default class AbstractQuestionComponent {
 
-    public organisations: EventEmitter<Answer[]> = <EventEmitter<Answer[]>>new EventEmitter();
+    public organisations: EventEmitter<UserAnswer[]> = <EventEmitter<UserAnswer[]>>new EventEmitter();
 
     private showIndex: number = 0;
     private questions: Question[] = [];
-    private userAnswers: number[] = [];
+    private userAnswers: Answer[] = [];
     protected unansweredQuestions: number[] = [];
     protected router: Router;
     protected route: ActivatedRoute;
@@ -26,16 +27,15 @@ export default class AbstractQuestionComponent {
             this.helfomatService.findQuestions(),
             this.route.params
         )
-        .subscribe((item: [Question[], Params]) => {
-            this.questions = item[0];
-            let params = item[1];
+        .subscribe(([questions, params]: [Question[], Params]) => {
+            this.questions = questions;
 
             var numberOfAnswers: number = 0;
             if (params.hasOwnProperty('answers')) {
                 this.userAnswers = JSON.parse(params['answers']);
                 this.showIndex = this.userAnswers.length;
 
-                let transmitAnswers: Answer[] = [];
+                let transmitAnswers: UserAnswer[] = [];
                 this.userAnswers.forEach((answer, index) => {
                     if (this.questions[index] !== undefined) {
                         let id = this.questions[index].id;
@@ -49,30 +49,29 @@ export default class AbstractQuestionComponent {
         });
     }
 
-    getAnswerClasses(button: number, question: Question, conditionalClass: string): string[] {
-        var classes = ['btn', 'btn-xs'];
+    isInactive(button: Answer, question: Question) {
         let answer = this.userAnswers[this.getNumberOfQuestion(question)];
-        if (answer == button) {
-            classes.push(conditionalClass);
-        } else {
-            classes.push('btn-default');
-        }
-        return classes;
+        return answer !== button;
     }
 
-    classOfAnswer(answer: number): string[] {
-        let classes = [];
-        let possibleAnswers = ['no', 'maybe', 'yes'];
-        classes.push('answer-' + possibleAnswers[answer + 1]);
-        return classes;
+    classOfAnswer(answer: Answer): string[] {
+        switch (answer) {
+            case Answer.NO:
+                return ['answer-no'];
+            case Answer.MAYBE:
+                return ['answer-maybe'];
+            case Answer.YES:
+                return ['answer-yes'];
+        }
+        return [];
     }
 
     getNumberOfQuestion(question: Question): number {
         return this.questions.indexOf(question);
     }
 
-    answerQuestion(button: number, question: Question): void {
-        this.userAnswers[this.getNumberOfQuestion(question)] = button;
+    answerQuestion(answer: Answer, question: Question): void {
+        this.userAnswers[this.getNumberOfQuestion(question)] = answer;
 
         let url = '/question';
         if (this.userAnswers.length == this.questions.length) {

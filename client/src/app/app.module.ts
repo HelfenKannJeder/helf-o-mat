@@ -8,8 +8,9 @@ import {MapComponent} from "./map/map.component";
 import {routing, appRoutingProviders} from "./app.routing";
 import {ResultComponent} from "./result/result.component";
 import {QuestionOverviewComponent} from "./question/questionOverview.component";
-import { ListComponent } from './list/list.component';
+import {ListComponent} from "./list/list.component";
 import {OrganisationComponent} from "./organisation/organisation.component";
+import {AnswerImagePipe} from "./shared/answer-image.pipe";
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import {OrganisationComponent} from "./organisation/organisation.component";
         MapComponent,
         ResultComponent,
         ListComponent,
-        OrganisationComponent
+        OrganisationComponent,
+        AnswerImagePipe
     ],
     imports: [
         BrowserModule,
