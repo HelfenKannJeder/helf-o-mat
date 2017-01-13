@@ -13,6 +13,16 @@ public class Address {
     private String telephone;
     private String website;
 
+    Address(String street, String addressAppendix, String city, String zipcode, GeoPoint location, String telephone, String website) {
+        this.street = street;
+        this.addressAppendix = addressAppendix;
+        this.city = city;
+        this.zipcode = zipcode;
+        this.location = location;
+        this.telephone = telephone;
+        this.website = website;
+    }
+
     public String getStreet() {
         return street;
     }

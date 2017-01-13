@@ -1,11 +1,25 @@
 package de.helfenkannjeder.helfomat.thw.crawler;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Preconditions;
 import de.helfenkannjeder.helfomat.configuration.HelfomatConfiguration;
 import de.helfenkannjeder.helfomat.domain.Address;
+import de.helfenkannjeder.helfomat.domain.AddressBuilder;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
+import de.helfenkannjeder.helfomat.domain.OrganisationBuilder;
+import de.helfenkannjeder.helfomat.domain.OrganisationType;
 import de.helfenkannjeder.helfomat.domain.Question;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -17,17 +31,6 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Component
 @JobScope
@@ -95,8 +98,10 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 	}
 
 	private Organisation extractOrganisation(Document oeDetailsDocument) throws IOException {
-		Organisation organisation = new Organisation();
+		//TODO: use builder methods
+		Organisation organisation = new OrganisationBuilder().build();
 		organisation.setId(UUID.randomUUID().toString());
+		organisation.setType(OrganisationType.THW.toString());
 
         String organisationName = "THW " + oeDetailsDocument.select("div#main").select(".photogallery").select(".isFirstInSlot").text();
         LOGGER.info("Read organisation: " + organisationName);
@@ -142,7 +147,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
     }
 
     private boolean groupExistsWithPhrase(List<Group> groups, String phrase) {
-        return groups.stream().filter(group -> group.getName().contains(phrase)).findFirst().isPresent();
+        return groups.stream().anyMatch(group -> group.getName().contains(phrase));
     }
 
     private List<Group> extractGroups(Document oeDetailsDocument) {
@@ -162,7 +167,7 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 	}
 
 	private Address extractAddressFromDocument(Document oeDetailsDocument) throws IOException {
-		Address address = new Address();
+		Address address = new AddressBuilder().build();
 
 		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
 		Elements addressDiv = contactDataDiv.select(".adr");

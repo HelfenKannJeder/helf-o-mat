@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.helfenkannjeder.helfomat.domain.Address;
+import de.helfenkannjeder.helfomat.domain.AddressBuilder;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
+import de.helfenkannjeder.helfomat.domain.OrganisationBuilder;
 import de.helfenkannjeder.helfomat.domain.Question;
 import de.helfenkannjeder.helfomat.service.ListCache;
 import de.helfenkannjeder.helfomat.typo3.domain.TGroupOfGroupTemplate;
@@ -41,7 +43,8 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             return null;
         }
 
-        Organisation organisation = new Organisation();
+        //TODO: use builder methods
+        Organisation organisation = new OrganisationBuilder().build();
         organisation.setId(UUID.randomUUID().toString());
         organisation.setName(tOrganisation.getName());
         organisation.setType(tOrganisation.getOrganisationtype().getName());
@@ -59,7 +62,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         }
 
         organisation.setAddresses(tOrganisation.getAddresses().stream().map(tAddress -> {
-            Address address = new Address();
+            Address address = new AddressBuilder().build();
             address.setWebsite(tAddress.getWebsite());
             address.setTelephone(tAddress.getTelephone());
             address.setStreet(tAddress.getStreet());

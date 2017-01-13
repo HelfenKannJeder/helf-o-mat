@@ -4,6 +4,7 @@ import de.helfenkannjeder.helfomat.batch.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.batch.RenameAliasBatchlet;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.domain.Question;
+import de.helfenkannjeder.helfomat.filter.DuplicateOrganisationFilterProcessor;
 import de.helfenkannjeder.helfomat.service.ListCache;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.typo3.domain.TQuestion;
@@ -56,11 +57,13 @@ public class BatchConfiguration {
     @Qualifier("importOrganisationFromThw")
     public Step importOrganisationFromThw(StepBuilderFactory stepBuilderFactory,
                                           ItemReader<Organisation> organisationItemReader,
+                                          DuplicateOrganisationFilterProcessor duplicateOrganisationFilterProcessor,
                                           ItemWriter<Organisation> organisationItemWriter) {
         return stepBuilderFactory.get("importOrganisationFromThw")
 				.listener(new WaitChunkListener(60*1000))
                 .<Organisation, Organisation>chunk(20)
                 .reader(organisationItemReader)
+                .processor(duplicateOrganisationFilterProcessor)
                 .writer(organisationItemWriter)
                 .build();
     }

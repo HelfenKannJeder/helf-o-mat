@@ -1,9 +1,9 @@
 package de.helfenkannjeder.helfomat.domain;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-
-import java.util.List;
 
 /**
  * @author Valentin Zickner
@@ -23,6 +23,21 @@ public class Organisation {
     private List<Question> questions;
     private String mapPin;
     private List<Group> groups;
+
+    Organisation(String id, String name, String type, String description, String website, String logo, List<String> pictures, List<Address> addresses,
+            List<Question> questions, String mapPin, List<Group> groups) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.website = website;
+        this.logo = logo;
+        this.pictures = pictures;
+        this.addresses = addresses;
+        this.questions = questions;
+        this.mapPin = mapPin;
+        this.groups = groups;
+    }
 
     public String getId() {
         return id;
