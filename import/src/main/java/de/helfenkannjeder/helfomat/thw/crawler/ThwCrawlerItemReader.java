@@ -3,7 +3,6 @@ package de.helfenkannjeder.helfomat.thw.crawler;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Preconditions;
 import de.helfenkannjeder.helfomat.configuration.HelfomatConfiguration;
 import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.AddressBuilder;
@@ -31,6 +29,10 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static java.util.Collections.singletonList;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @Component
 @JobScope
@@ -98,28 +100,23 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 	}
 
 	private Organisation extractOrganisation(Document oeDetailsDocument) throws IOException {
-		//TODO: use builder methods
-		Organisation organisation = new OrganisationBuilder().build();
-		organisation.setId(UUID.randomUUID().toString());
-		organisation.setType(OrganisationType.THW.toString());
-
-        String organisationName = "THW " + oeDetailsDocument.select("div#main").select(".photogallery").select(".isFirstInSlot").text();
-        LOGGER.info("Read organisation: " + organisationName);
-        organisation.setName(Preconditions.checkNotNull(organisationName));
+		String organisationName = "THW " + oeDetailsDocument.select("div#main").select(".photogallery").select(".isFirstInSlot").text();
+		LOGGER.info("Read organisation: " + organisationName);
 
 		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
-		organisation.setWebsite(contactDataDiv.select(".url").select("a").attr("href"));
+		List<Group> groups = extractGroups(oeDetailsDocument);
 
-		organisation.setMapPin(this.thwCrawlerConfiguration.getMapPin());
-		organisation.setLogo(this.thwCrawlerConfiguration.getLogo());
-
-		Address address = extractAddressFromDocument(oeDetailsDocument);
-		organisation.setAddresses(Collections.singletonList(address));
-
-        List<Group> groups = extractGroups(oeDetailsDocument);
-        organisation.setGroups(groups);
-
-        organisation.setQuestions(extractQuestions(groups));
+		Organisation organisation = new OrganisationBuilder()
+				.setId(UUID.randomUUID().toString())
+				.setType(OrganisationType.THW.toString())
+				.setName(checkNotNull(organisationName))
+				.setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
+				.setMapPin(this.thwCrawlerConfiguration.getMapPin())
+				.setLogo(this.thwCrawlerConfiguration.getLogo())
+				.setAddresses(singletonList(extractAddressFromDocument(oeDetailsDocument)))
+				.setGroups(groups)
+				.setQuestions(extractQuestions(groups))
+				.build();
 
 		LOGGER.trace("New organisation: " + organisation);
 		return organisation;

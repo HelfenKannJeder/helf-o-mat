@@ -6,7 +6,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.AddressBuilder;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.domain.Group;
@@ -38,40 +37,34 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
 
     @Override
     public Organisation process(TOrganisation tOrganisation) throws Exception {
-        // We dont want to import organisations without a specified type
+        // We don't want to import organisations without a specified type
         if(tOrganisation.getOrganisationtype() == null) {
             return null;
         }
 
-        //TODO: use builder methods
-        Organisation organisation = new OrganisationBuilder().build();
-        organisation.setId(UUID.randomUUID().toString());
-        organisation.setName(tOrganisation.getName());
-        organisation.setType(tOrganisation.getOrganisationtype().getName());
-        organisation.setDescription(tOrganisation.getDescription());
-        organisation.setLogo(tOrganisation.getLogo());
-        organisation.setWebsite(tOrganisation.getWebsite());
+        OrganisationBuilder organisation = new OrganisationBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setName(tOrganisation.getName())
+                .setType(tOrganisation.getOrganisationtype().getName())
+                .setDescription(tOrganisation.getDescription())
+                .setLogo(tOrganisation.getLogo())
+                .setWebsite(tOrganisation.getWebsite())
+                .setMapPin(tOrganisation.getOrganisationtype().getPicture());
+
         String pictures = tOrganisation.getPictures();
-
-        if (tOrganisation.getOrganisationtype() != null) {
-            organisation.setMapPin(tOrganisation.getOrganisationtype().getPicture());
-        }
-
         if (pictures != null) {
             organisation.setPictures(Arrays.asList(pictures.split(",")));
         }
 
-        organisation.setAddresses(tOrganisation.getAddresses().stream().map(tAddress -> {
-            Address address = new AddressBuilder().build();
-            address.setWebsite(tAddress.getWebsite());
-            address.setTelephone(tAddress.getTelephone());
-            address.setStreet(tAddress.getStreet());
-            address.setAddressAppendix(tAddress.getAddressappendix());
-            address.setCity(tAddress.getCity());
-            address.setZipcode(tAddress.getZipcode());
-            address.setLocation(new GeoPoint(tAddress.getLatitude(), tAddress.getLongitude()));
-            return address;
-        }).collect(Collectors.toList()));
+        organisation.setAddresses(tOrganisation.getAddresses().stream().map(tAddress -> new AddressBuilder()
+                .setWebsite(tAddress.getWebsite())
+                .setTelephone(tAddress.getTelephone())
+                .setStreet(tAddress.getStreet())
+                .setAddressAppendix(tAddress.getAddressappendix())
+                .setCity(tAddress.getCity())
+                .setZipcode(tAddress.getZipcode())
+                .setLocation(new GeoPoint(tAddress.getLatitude(), tAddress.getLongitude()))
+                .build()).collect(Collectors.toList()));
 
         final List<Question> questionList = allQuestions.getAll().stream()
                 .map(tQuestion1 -> new Question(tQuestion1, Question.Answer.NO))
@@ -100,7 +93,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             return group;
         }).collect(Collectors.toList()));
 
-        return organisation;
+        return organisation.build();
     }
 
 }
