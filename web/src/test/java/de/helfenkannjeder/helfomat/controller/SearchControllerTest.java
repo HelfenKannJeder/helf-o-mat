@@ -7,6 +7,7 @@ import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateReque
 import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse;
 import org.elasticsearch.client.Client;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,7 @@ public class SearchControllerTest {
     }
 
     @Test
+    @Ignore
     public void searchQuestions_withNoMoreInforation_returnsListOfQuestions() throws Exception {
         // Arrange
 

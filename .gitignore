@@ -1,7 +1,6 @@
 *.iml
 .idea
 node_modules
-.mvn
 target
 web/data
 import/data
