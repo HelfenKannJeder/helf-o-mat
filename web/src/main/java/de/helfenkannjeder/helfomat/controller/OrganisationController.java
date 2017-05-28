@@ -3,16 +3,17 @@ package de.helfenkannjeder.helfomat.controller;
 import de.helfenkannjeder.helfomat.dto.OrganisationDetailDto;
 import de.helfenkannjeder.helfomat.service.OrganisationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Valentin Zickner
  */
 @RestController
-@RequestMapping("/organisation")
+@RequestMapping(path = "/organisation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrganisationController {
 
     private final OrganisationService organisationService;
@@ -22,7 +23,7 @@ public class OrganisationController {
         this.organisationService = organisationService;
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public OrganisationDetailDto getOrganisation(@PathVariable String id) {
         return OrganisationDetailDto.fromOrganisation(this.organisationService.getOrganisation(id));
     }
