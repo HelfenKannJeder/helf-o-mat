@@ -8,9 +8,11 @@ import de.helfenkannjeder.helfomat.dto.QuestionDto;
 import de.helfenkannjeder.helfomat.dto.SearchRequestDto;
 import de.helfenkannjeder.helfomat.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,8 +21,8 @@ import java.util.List;
  * @author Valentin Zickner
  */
 @RestController
+@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class SearchController {
-
     private final SearchService searchService;
 
     @Autowired
@@ -28,12 +30,12 @@ public class SearchController {
         this.searchService = searchService;
     }
 
-    @RequestMapping(path = "/questions")
+    @GetMapping("/questions")
     public List<QuestionDto> findQuestions() {
         return searchService.findQuestions();
     }
 
-    @RequestMapping(path = "/organisation/search", method = RequestMethod.POST)
+    @PostMapping("/organisation/search")
     public List<OrganisationDto> search(@RequestBody SearchRequestDto searchRequestDto) {
         return searchService.findOrganisation(
                         searchRequestDto.getAnswers(),
@@ -42,7 +44,7 @@ public class SearchController {
                 );
     }
 
-    @RequestMapping(path = "/organisation/boundingBox", method = RequestMethod.POST)
+    @PostMapping("/organisation/boundingBox")
     public List<ClusteredGeoPointDto> boundingBox(@RequestBody BoundingBoxRequestDto searchRequestDto) {
         return searchService.findClusteredGeoPoints(
                 GeoPointDto.toGeoPoint(searchRequestDto.getPosition()),
@@ -51,6 +53,4 @@ public class SearchController {
                 searchRequestDto.getZoom()
         );
     }
-
-
 }
