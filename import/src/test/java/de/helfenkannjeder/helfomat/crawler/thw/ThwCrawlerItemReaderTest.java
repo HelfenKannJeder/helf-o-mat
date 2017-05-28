@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.thw.crawler;
+package de.helfenkannjeder.helfomat.crawler.thw;
 
 import de.helfenkannjeder.helfomat.EmbeddedHttpServer;
 import de.helfenkannjeder.helfomat.configuration.HelfomatConfiguration;

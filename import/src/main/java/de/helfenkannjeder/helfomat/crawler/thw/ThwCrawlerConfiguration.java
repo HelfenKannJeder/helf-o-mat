@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.thw.crawler;
+package de.helfenkannjeder.helfomat.crawler.thw;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

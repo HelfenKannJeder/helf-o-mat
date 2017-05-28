@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.thw.crawler;
+package de.helfenkannjeder.helfomat.crawler.thw;
 
 import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.AddressBuilder;
