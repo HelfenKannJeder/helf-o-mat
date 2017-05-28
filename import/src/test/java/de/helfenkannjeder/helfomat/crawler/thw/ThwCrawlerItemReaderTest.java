@@ -2,8 +2,6 @@ package de.helfenkannjeder.helfomat.crawler.thw;
 
 import de.helfenkannjeder.helfomat.EmbeddedHttpServer;
 import de.helfenkannjeder.helfomat.configuration.HelfomatConfiguration;
-import de.helfenkannjeder.helfomat.crawler.thw.ThwCrawlerConfiguration;
-import de.helfenkannjeder.helfomat.crawler.thw.ThwCrawlerItemReader;
 import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
