@@ -11,7 +11,7 @@ export default class AbstractQuestionComponent {
     public organisations: EventEmitter<UserAnswer[]> = <EventEmitter<UserAnswer[]>>new EventEmitter();
 
     private showIndex: number = 0;
-    private questions: Question[] = [];
+    public questions: Question[] = [];
     private userAnswers: Answer[] = [];
     protected unansweredQuestions: number[] = [];
     protected router: Router;

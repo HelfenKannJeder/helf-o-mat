@@ -12,7 +12,7 @@ import {Answer} from "../shared/answer.model";
 })
 export class OrganisationComponent implements OnInit {
 
-    private organisation: Organisation;
+    public organisation: Organisation;
     private params: Params;
     private userAnswers: Answer[]; // Necessary in the template
 

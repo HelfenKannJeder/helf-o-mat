@@ -1,9 +1,8 @@
-import {Component, OnInit, Input, EventEmitter} from "@angular/core";
+import {Component, OnInit, Input, EventEmitter, Output} from "@angular/core";
 import Organisation from "../organisation/organisation.model";
 import Address from "../organisation/address.model";
 import {Observable} from "rxjs";
 import GeoPoint from "../organisation/geopoint.model";
-import {Output} from "@angular/core/src/metadata/directives";
 import BoundingBox from "../organisation/boundingbox.model";
 import ClusteredGeoPoint from "../organisation/clusteredGeoPoint.model";
 import Map = google.maps.Map;

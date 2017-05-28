@@ -1,7 +1,6 @@
-import {Component, OnInit, ChangeDetectorRef, Output, EventEmitter} from "@angular/core";
+import {Component, OnInit, ChangeDetectorRef, Output, EventEmitter, Input} from "@angular/core";
 import Organisation from "../organisation/organisation.model";
 import {Observable} from "rxjs";
-import {Input} from "@angular/core/src/metadata/directives";
 
 @Component({
     selector: 'helfomat-list',
@@ -14,7 +13,7 @@ export class ListComponent implements OnInit {
 
     @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
 
-    private currentOrganisations: Organisation[] = [];
+    public currentOrganisations: Organisation[] = [];
 
     constructor(private changeDetectorRef: ChangeDetectorRef) {
     }

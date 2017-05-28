@@ -43,8 +43,8 @@
                 </executions>
 
                 <configuration>
-                    <nodeVersion>v5.5.0</nodeVersion>
-                    <npmVersion>3.10.7</npmVersion>
+                    <nodeVersion>v7.10.0</nodeVersion>
+                    <npmVersion>4.2.0</npmVersion>
                     <installDirectory>target/build</installDirectory>
                 </configuration>
             </plugin>
