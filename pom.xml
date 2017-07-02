@@ -32,6 +32,7 @@
     <modules>
         <module>import</module>
         <module>web</module>
+        <module>client</module>
     </modules>
 
     <dependencyManagement>

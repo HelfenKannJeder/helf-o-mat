@@ -17,17 +17,17 @@ export class ResultComponent implements OnInit {
 
     // Inputs
     private _answers$: Subject<UserAnswer[]>;
-    private _position$: Subject<GeoPoint>;
-    private _boundingBox$: Subject<BoundingBox>;
-    private _zoom$: Subject<number>;
-    private _organisation$: Subject<Organisation>;
-    private position: Observable<GeoPoint>;
-    private distance = Observable.from([10]);
-    private zoom: Observable<number>;
+    public _position$: Subject<GeoPoint>;
+    public _boundingBox$: Subject<BoundingBox>;
+    public _zoom$: Subject<number>;
+    public _organisation$: Subject<Organisation>;
+    public position: Observable<GeoPoint>;
+    public distance = Observable.from([10]);
+    public zoom: Observable<number>;
 
     // Outputs
-    private organisations;
-    private clusteredOrganisations;
+    public organisations;
+    public clusteredOrganisations;
 
     constructor(private searchService: SearchService,
                 private router: Router,
