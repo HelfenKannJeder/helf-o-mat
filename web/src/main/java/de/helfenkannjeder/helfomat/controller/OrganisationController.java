@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Valentin Zickner
  */
 @RestController
-@RequestMapping(path = "/organisation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/organisation", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrganisationController {
 
     private final OrganisationService organisationService;
