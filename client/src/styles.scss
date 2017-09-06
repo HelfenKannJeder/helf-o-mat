@@ -1,1 +1,752 @@
-// Reset and print styles
+/* default styles for extension "tx_cssstyledcontent" */
+/* Headers */
+.csc-header-alignment-center { text-align: center; }
+.csc-header-alignment-right { text-align: right; }
+.csc-header-alignment-left { text-align: left; }
+
+div.csc-textpic-responsive, div.csc-textpic-responsive * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;  }
+
+/* Clear floats after csc-textpic and after csc-textpic-imagerow */
+div.csc-textpic, div.csc-textpic div.csc-textpic-imagerow, ul.csc-uploads li { overflow: hidden; }
+
+/* Set padding for tables */
+div.csc-textpic .csc-textpic-imagewrap table { border-collapse: collapse; border-spacing: 0; }
+div.csc-textpic .csc-textpic-imagewrap table tr td { padding: 0; vertical-align: top; }
+
+/* Settings for figure and figcaption (HTML5) */
+div.csc-textpic .csc-textpic-imagewrap figure, div.csc-textpic figure.csc-textpic-imagewrap { margin: 0; display: table; }
+
+/* Captions */
+figcaption.csc-textpic-caption { display: table-caption; }
+.csc-textpic-caption { text-align: left; caption-side: bottom; }
+div.csc-textpic-caption-c .csc-textpic-caption, .csc-textpic-imagewrap .csc-textpic-caption-c { text-align: center; }
+div.csc-textpic-caption-r .csc-textpic-caption, .csc-textpic-imagewrap .csc-textpic-caption-r { text-align: right; }
+div.csc-textpic-caption-l .csc-textpic-caption, .csc-textpic-imagewrap .csc-textpic-caption-l { text-align: left; }
+
+/* Float the columns */
+div.csc-textpic div.csc-textpic-imagecolumn { float: left; }
+
+/* Border just around the image */
+div.csc-textpic-border div.csc-textpic-imagewrap img {
+  border: 2px solid black;
+  padding: 0 0;
+}
+
+div.csc-textpic .csc-textpic-imagewrap img { border: none; display: block; }
+
+/* Space below each image (also in-between rows) */
+div.csc-textpic .csc-textpic-imagewrap .csc-textpic-image { margin-bottom: 10px; }
+div.csc-textpic .csc-textpic-imagewrap .csc-textpic-imagerow-last .csc-textpic-image { margin-bottom: 0; }
+
+/* colSpace around image columns, except for last column */
+div.csc-textpic-imagecolumn, td.csc-textpic-imagecolumn .csc-textpic-image { margin-right: 10px; }
+div.csc-textpic-imagecolumn.csc-textpic-lastcol, td.csc-textpic-imagecolumn.csc-textpic-lastcol .csc-textpic-image { margin-right: 0; }
+
+/* Add margin from image-block to text (in case of "Text & Images") */
+div.csc-textpic-intext-left .csc-textpic-imagewrap,
+div.csc-textpic-intext-left-nowrap .csc-textpic-imagewrap {
+  margin-right: 10px;
+}
+div.csc-textpic-intext-right .csc-textpic-imagewrap,
+div.csc-textpic-intext-right-nowrap .csc-textpic-imagewrap {
+  margin-left: 10px;
+}
+
+/* Positioning of images: */
+
+/* Center (above or below) */
+div.csc-textpic-center .csc-textpic-imagewrap, div.csc-textpic-center figure.csc-textpic-imagewrap { overflow: hidden; }
+div.csc-textpic-center .csc-textpic-center-outer { position: relative; float: right; right: 50%; }
+div.csc-textpic-center .csc-textpic-center-inner { position: relative; float: right; right: -50%; }
+
+/* Right (above or below) */
+div.csc-textpic-right .csc-textpic-imagewrap { float: right; }
+div.csc-textpic-right div.csc-textpic-text { clear: right; }
+
+/* Left (above or below) */
+div.csc-textpic-left .csc-textpic-imagewrap { float: left; }
+div.csc-textpic-left div.csc-textpic-text { clear: left; }
+
+/* Left (in text) */
+div.csc-textpic-intext-left .csc-textpic-imagewrap { float: left; }
+
+/* Right (in text) */
+div.csc-textpic-intext-right .csc-textpic-imagewrap { float: right; }
+
+/* Right (in text, no wrap around) */
+div.csc-textpic-intext-right-nowrap .csc-textpic-imagewrap { float: right; }
+
+/* Left (in text, no wrap around) */
+div.csc-textpic-intext-left-nowrap .csc-textpic-imagewrap { float: left; }
+
+div.csc-textpic div.csc-textpic-imagerow-last, div.csc-textpic div.csc-textpic-imagerow-none div.csc-textpic-last { margin-bottom: 0; }
+
+/* Browser fixes: */
+
+/* Fix for unordered and ordered list with image "In text, left" */
+.csc-textpic-intext-left ol, .csc-textpic-intext-left ul { padding-left: 40px; overflow: auto; }
+
+/* File Links */
+ul.csc-uploads { padding: 0; }
+ul.csc-uploads li { list-style: none outside none; margin: 1em 0; }
+ul.csc-uploads img { float: left; margin-right: 1em; vertical-align: top; }
+ul.csc-uploads span { display: block; }
+ul.csc-uploads span.csc-uploads-fileName { text-decoration: underline; }
+
+/* Table background colors: */
+
+table.contenttable-color-1 { background-color: #EDEBF1; }
+table.contenttable-color-2 { background-color: #F5FFAA; }
+table.contenttable-color-240 { background-color: black; }
+table.contenttable-color-241 { background-color: white; }
+table.contenttable-color-242 { background-color: #333333; }
+table.contenttable-color-243 { background-color: gray; }
+table.contenttable-color-244 { background-color: silver; }
+/* specific page styles for extension "tx_cssstyledcontent" */
+.csc-textpic-intext-right-nowrap .csc-textpic-text { margin-right: 72px; }
+.csc-textpic-intext-left-nowrap .csc-textpic-text { margin-left: 72px; }
+.csc-space-before-12 { margin-top: 12px !important; }
+.csc-space-before-24 { margin-top: 24px !important; }
+.csc-space-before-20 { margin-top: 20px !important; }
+/* default styles for extension "tx_qumessaging" */
+input.f3-form-error {
+  background-color:#FF9F9F;
+  border: 1px #FF0000 solid;
+}
+
+.tx-qu-messaging table {
+  border-collapse:separate;
+  border-spacing:10px;
+}
+
+.tx-qu-messaging table th {
+  font-weight:bold;
+}
+
+.tx-qu-messaging table td {
+  vertical-align:top;
+}
+/* default styles for extension "tx_quassociation" */
+input.f3-form-error {
+  background-color:#FF9F9F;
+  border: 1px #FF0000 solid;
+}
+
+.tx-qu-association table {
+  border-collapse:separate;
+  border-spacing:10px;
+}
+
+.tx-qu-association table th {
+  font-weight:bold;
+}
+
+.tx-qu-association table td {
+  vertical-align:top;
+}
+
+
+@font-face {
+  font-family: 'Hand Of Sean';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Hand Of Sean'), url('./assets/fonts/handsean.woff') format('woff');
+}
+body {
+  background-color: #eeeeee;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-family: Arial, sans-serif, Helvetica;
+  font-size: 12px;
+}
+body img {
+  border: 0;
+}
+a {
+  color: #182282;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+/* tooltips */
+span.show-tooltip-text {
+  display: none;
+  position: absolute;
+  font-size: 0.9em;
+  background: #3579db repeat-x;
+  padding: 6px 12px;
+  max-width: 450px;
+  font-weight: normal;
+  color: white;
+  text-align: left;
+}
+#body {
+  margin: auto;
+  width: 1100px;
+}
+#body #tabsLeft {
+  float: left;
+  transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  height: 50px;
+  padding-left: 185px;
+}
+#body #tabsLeft ul {
+  transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  -webkit-transform-origin: 50% 50%;
+  text-align: left;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+#body #tabsLeft ul li {
+  float: left;
+  height: 50px;
+  margin: 0 5px;
+  background-color: #535353;
+  color: #ffffff;
+  font-size: 16px;
+}
+#body #tabsLeft ul li.active {
+  background-color: #182282;
+}
+#body #tabsLeft ul li a {
+  display: block;
+  color: #ffffff;
+  text-decoration: none;
+  line-height: 50px;
+  padding: 0 20px;
+}
+#body #main {
+  float: left;
+  width: 1000px;
+  margin-left: 50px;
+  margin-top: -50px;
+  background-color: #ffffff;
+  box-shadow: 0 0 20px #535353;
+}
+#body #main #header {
+  background-image: url("./assets/images/logo.png");
+  width: 1000px;
+  height: 160px;
+  color: white;
+  text-align: left;
+}
+#body #main #header h1,
+#body #main #header h2 {
+  margin: 0;
+  padding: 30px;
+}
+#body #main #header h1 {
+  font-size: 28px;
+  padding-bottom: 0;
+  font-family: 'Hand Of Sean', Helvetica, Arial, sans-serif;
+}
+#body #main #header h2 {
+  padding-top: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+#body #main #header #headerlink {
+  float: right;
+}
+#body #main #leftContent {
+  float: left;
+  padding: 30px;
+}
+#body #main #leftContent .csc-header {
+  color: #3579db;
+}
+#body #main #leftContent #menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+#body #main #leftContent #menu ul li {
+  float: left;
+}
+#body #main #leftContent #menu ul li a {
+  display: block;
+  line-height: 30px;
+  margin-right: 10px;
+  padding: 0 22px;
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #9b9b9b;
+}
+#body #main #leftContent #menu ul li.active a {
+  background-color: #3579db;
+}
+#body #main #leftContent #textContent {
+  clear: both;
+  text-align: left;
+  width: 680px;
+  padding-top: 30px;
+  color: #535353;
+}
+#body #main #leftContent #textContent h1 {
+  margin: 0;
+  padding: 0;
+  color: #3579db;
+}
+#body #main #leftContent #textContent .supportButtonBack {
+  padding: 5px;
+  background-color: #b3adff;
+  border: 1px solid blue;
+  margin-right: 20px;
+}
+#body #main #leftContent #textContent .supportButtonMode {
+  padding: 5px;
+  background-color: #ffd9a2;
+  border: 1px solid orange;
+  margin-right: 5px;
+}
+#body #main #leftContent #textContent .supportButtonBackFloat {
+  float: left;
+  margin-right: 20px;
+}
+#body #main #leftContent #textContent .supportButtonDeny {
+  float: left;
+  padding: 5px;
+  background-color: #ffadad;
+  border: 1px solid red;
+}
+#body #main #leftContent #textContent .supportButtonAccept {
+  float: right;
+  padding: 5px;
+  background-color: #b1ffad;
+  border: 1px solid green;
+}
+#body #main #leftContent .tx-helfenkannjeder-helfomat-question-info {
+  height: 180px;
+}
+#body #main #leftContent .tx-helfenkannjeder-helfomat-question-buttons {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+#body #main #leftContent .tx-helfenkannjeder-helfomat-question-buttons li {
+  float: left;
+  margin-right: 20px;
+  text-align: center;
+  width: 50px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+#body #main #leftContent .tx-helfenkannjeder-helfomat-question-status #tx-helfenkannjeder-helfomat-question-status-bar {
+  background-color: #3579db;
+  height: 10px;
+  margin-bottom: 2px;
+}
+#body #main #leftContent .tx-helfenkannjeder-helfomat-question-status #tx-helfenkannjeder-helfomat-question-status-bar-current {
+  background-color: #182282;
+  height: 10px;
+}
+#body #main #leftContent .tx-helfenkannjeder-helfomat-question-status ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+#body #main #leftContent .tx-helfenkannjeder-helfomat-question-status ul li {
+  float: left;
+  padding: 5px 0;
+  text-align: center;
+  width: 100px;
+}
+#body #main #leftContent .tx-helfenkannjeder-helfomat-question-status ul li.tx-helfenkannjeder-helfomat-question-status-li-clickable {
+  cursor: pointer;
+}
+#body #main #leftContent .organisation_entry {
+  clear: both;
+  padding-bottom: 5px;
+}
+#body #main #leftContent .organisation_entry .helfen_kann_jeder_generator_organisation_resultbar_complete {
+  float: left;
+  width: 220px;
+  line-height: 16px;
+}
+#body #main #leftContent .organisation_entry .helfen_kann_jeder_generator_step3_organisations_name {
+  float: left;
+}
+#body #main #leftContent .organisation_entry .helfen_kann_jeder_generator_organisation_resultbar {
+  border: 1px solid #182282;
+  font-size: 8px;
+  height: 12px;
+  line-height: 12px;
+  margin-top: 0;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_icon {
+  float: left;
+  width: 140px;
+  height: 70px;
+  text-align: center;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_text,
+#body #main #leftContent .helfen_kann_jeder_employee_text {
+  float: left;
+  margin-right: 10px;
+  width: 474px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_text ul {
+  margin: 0;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_text h1 {
+  margin-bottom: 5px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_logo {
+  float: right;
+  padding-left: 10px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_text h2 a,
+#body #main #leftContent .helfen_kann_jeder_overview_detail_back_link {
+  text-decoration: none;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_detail_back_link {
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_text .helfen_kann_jeder_overview_website {
+  font-size: 12px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_text .helfen_kann_jeder_overview_website a,
+#body #main #leftContent .helfen_kann_jeder_overview_detail_website a {
+  text-decoration: none;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_distance {
+  font-size: 12px;
+  float: right;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_text .helfen_kann_jeder_overview_website a:HOVER,
+#body #main #leftContent .helfen_kann_jeder_overview_detail_website a:HOVER {
+  text-decoration: underline;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_complete {
+  padding: 10px 0;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_even {
+  background-color: #eeeeee;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_detail_images,
+#body #main #leftContent .helfen_kann_jeder_employee_detail_images {
+  float: right;
+  width: 140px;
+  margin-right: 10px;
+  text-align: center;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_detail_images img {
+  margin-bottom: 15px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_detail_contactperson_label {
+  float: left;
+  width: 140px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_detail_contactperson_content {
+  float: left;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_detail_contactperson_picture {
+  float: left;
+  padding-right: 10px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_detail_workingtime_content {
+  float: left;
+  width: 330px;
+}
+#body #main #leftContent .helfen_kann_jeder_overview_picture {
+  float: left;
+  padding-right: 10px;
+}
+#body #main #leftContent .labelForm label {
+  float: left;
+  width: 120px;
+}
+#body #main #leftContent .labelForm input,
+#body #main #leftContent .labelForm textarea,
+#body #main #leftContent .labelForm select {
+  width: 320px;
+  margin-bottom: 5px;
+  border: 1px solid #182282;
+}
+#body #main #leftContent .labelForm select.organisationWorkinghourSmall {
+  width: 50px;
+}
+#body #main #leftContent .labelForm input.f3-form-error,
+#body #main #leftContent .labelForm textarea.f3-form-error,
+#body #main #leftContent .labelForm select.f3-form-error {
+  border: 1px solid red;
+}
+#body #main #leftContent .labelForm input[type=checkbox],
+#body #main #leftContent .labelForm input[type=radio] {
+  width: auto;
+  border: 0;
+}
+#body #main #leftContent .labelForm textarea.textareaHuge {
+  width: 390px;
+  height: 150px;
+}
+#body #main #leftContent #helfen_kann_jeder_register .freeCaptcha {
+  float: right;
+  width: 244px;
+}
+#body #main #leftContent #helfen_kann_jeder_register .freeCaptcha .tx-srfreecap-cant-read {
+  display: block;
+}
+#body #main #leftContent #helfen_kann_jeder_register .submitStepBack input,
+#body #main #leftContent #helfen_kann_jeder_register .submitStepNext input {
+  border: 0;
+  background-color: #3579db;
+  color: #ffffff;
+}
+#body #main #leftContent #helfen_kann_jeder_register .submitStepBack input:HOVER,
+#body #main #leftContent #helfen_kann_jeder_register .submitStepNext input:HOVER {
+  background-color: #182282;
+}
+#body #main #leftContent #helfen_kann_jeder_register .submitStepBack {
+  float: left;
+}
+#body #main #leftContent #helfen_kann_jeder_register .submitStepNext {
+  float: right;
+}
+#body #main #leftContent #helfen_kann_jeder_register .submitEnd {
+  clear: both;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationAddressHeadline,
+#body #main #leftContent #helfen_kann_jeder_register .organisationEmployeeHeadline,
+#body #main #leftContent #helfen_kann_jeder_register .organisationWorkinghourHeadline,
+#body #main #leftContent #helfen_kann_jeder_register .organisationGroupTemplateContainer {
+  border: 1px solid #182282;
+  background-color: #3579db;
+  color: #ffffff;
+  line-height: 16px;
+  padding: 5px;
+  margin-top: 5px;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationAddressContainer,
+#body #main #leftContent #helfen_kann_jeder_register .organisationEmployeeContainer,
+#body #main #leftContent #helfen_kann_jeder_register .organisationWorkinghourContainer,
+#body #main #leftContent #helfen_kann_jeder_register .organisiationGroupContainer {
+  border: 1px solid #182282;
+  border-top: 0;
+  background-color: #ffffff;
+  padding: 5px;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationAddressContainer.organisiationGroupContainer,
+#body #main #leftContent #helfen_kann_jeder_register .organisationEmployeeContainer.organisiationGroupContainer,
+#body #main #leftContent #helfen_kann_jeder_register .organisationWorkinghourContainer.organisiationGroupContainer,
+#body #main #leftContent #helfen_kann_jeder_register .organisiationGroupContainer.organisiationGroupContainer {
+  margin-left: 20px;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationAddressContainerNew,
+#body #main #leftContent #helfen_kann_jeder_register .organisationEmployeeContrainerNew,
+#body #main #leftContent #helfen_kann_jeder_register .organisationWorkinghourContainerNew {
+  background-color: #ffffff;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationAddressHeadlineDefault,
+#body #main #leftContent #helfen_kann_jeder_register .organisationEmployeeHeadlineContactperson {
+  background-color: #006400;
+  color: #ffffff;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationAddressHeadlineError,
+#body #main #leftContent #helfen_kann_jeder_register .organisationEmployeeHeadlineError {
+  background-color: #ff0000;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationEmployeeContainer.labelForm textarea,
+#body #main #leftContent #helfen_kann_jeder_register .organisiationGroupContainer textarea {
+  width: 320px;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationGroupTemplateContainer .organisationGroupTemplateCheckbox {
+  float: left;
+  width: 35px;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationGroupTemplateContainer .organisationGroupTemplateDescriptor {
+  float: left;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationGroupTemplateContainer .organisationGroupTemplateDescriptor h2 {
+  font-size: 14px;
+  margin: 0;
+}
+#body #main #leftContent #helfen_kann_jeder_register .organisationGroupContactpersons {
+  float: left;
+}
+#body #main #leftContent #helfen_kann_jeder_register .borderChange,
+#body #main #leftContent #helfen_kann_jeder_register .borderChangeDrag {
+  width: 100px;
+  height: 100px;
+  float: left;
+  margin: 5px;
+  background: no-repeat center center;
+}
+#body #main #leftContent #helfen_kann_jeder_register .borderChange .organisation_picture_delete,
+#body #main #leftContent #helfen_kann_jeder_register .borderChangeDrag .organisation_picture_delete {
+  margin-left: 84px;
+  margin-top: 84px;
+  width: 16px;
+  height: 16px;
+}
+#body #main #leftContent .helfen_kann_jeder_register_progress_steps {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+#body #main #leftContent .helfen_kann_jeder_register_progress_steps li {
+  float: left;
+  width: 83px;
+  padding: 0 10px 0 20px;
+  background-color: #3579db;
+  color: white;
+  line-height: 25px;
+}
+#body #main #leftContent .helfen_kann_jeder_register_progress_steps li.helfen_kann_jeder_register_progress_finished {
+  background-color: #182282;
+}
+#body #main #leftContent .helfen_kann_jeder_register_progress_steps li a {
+  color: white;
+}
+#body #main #leftContent .helfen_kann_jeder_backer .backer {
+  float: left;
+  width: 220px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+#body #main #leftContent .helfen_kann_jeder_backer .backer img {
+  float: left;
+  margin-right: 10px;
+}
+#body #main #leftContent .helfen_kann_jeder_backer .backer_details {
+  margin-top: 30px;
+}
+#body #main #leftContent .helfen_kann_jeder_backer .backer_details .backer_image {
+  float: left;
+  width: 110px;
+}
+#body #main #leftContent .helfen_kann_jeder_backer .backer_details .backer_text {
+  float: left;
+  width: 540px;
+}
+#body #main #rightContent {
+  float: right;
+  margin-top: 20px;
+  width: 250px;
+}
+#body #main #rightContent div.csc-textpic-intext-left .csc-textpic-imagewrap,
+#body #main #rightContent div.csc-textpic-intext-left-nowrap .csc-textpic-imagewrap,
+#body #main #rightContent .csc-textpic-intext-left-nowrap .csc-textpic-text,
+#body #main #rightContent div.csc-textpic .csc-textpic-imagewrap .csc-textpic-image {
+  margin: 0;
+}
+#body #main #rightContent #borderMenu {
+  clear: both;
+  margin-top: 10px;
+  border-left: 1px solid #535353;
+  background-color: #eeeeee;
+  color: #535353;
+  text-align: left;
+  padding: 6px 8px;
+}
+#body #main #rightContent #borderMenu ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+#body #main #rightContent #borderMenu ul li {
+  padding: 0;
+  margin: 0 10px 0 0;
+  float: left;
+}
+#body #main #rightContent #borderMenu ul li a {
+  color: #535353;
+  text-decoration: none;
+}
+#body #main #rightContent #organisationAddressContainerMap {
+  height: 200px;
+}
+#body #main #rightContent div.csc-default {
+  clear: both;
+  padding-top: 10px;
+}
+#body #main #rightContent div.csc-default p.bodytext,
+#body #main #rightContent div.csc-default div.csc-header,
+#body #main #rightContent div.csc-default div.csc-textpicHeader,
+#body #main #rightContent div.csc-default div.hkj_location_plugin,
+#body #main #rightContent div.csc-default div.tx-felogin-pi1 {
+  border-left: 1px solid #535353;
+  background-color: #eeeeee;
+  color: #535353;
+  text-align: left;
+  padding: 6px 8px;
+  margin: 0;
+}
+#body #main #rightContent div.csc-default p.bodytext h1,
+#body #main #rightContent div.csc-default div.csc-header h1,
+#body #main #rightContent div.csc-default div.csc-textpicHeader h1,
+#body #main #rightContent div.csc-default div.hkj_location_plugin h1,
+#body #main #rightContent div.csc-default div.tx-felogin-pi1 h1,
+#body #main #rightContent div.csc-default p.bodytext h3,
+#body #main #rightContent div.csc-default div.csc-header h3,
+#body #main #rightContent div.csc-default div.csc-textpicHeader h3,
+#body #main #rightContent div.csc-default div.hkj_location_plugin h3,
+#body #main #rightContent div.csc-default div.tx-felogin-pi1 h3 {
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+#body #main #rightContent div.csc-default div.csc-textpic-intext-left-nowrap div.csc-textpic-imagewrap {
+  float: left;
+}
+#body #main #rightContent div.csc-default div.csc-textpic-intext-left-nowrap div.csc-textpic-text {
+  float: right;
+}
+#body #main #rightContent div.csc-default div.csc-textpic-intext-left-nowrap div.csc-textpic-text p.bodytext {
+  width: 171px;
+}
+#body #main #sponsors {
+  text-align: left;
+  padding: 3px 30px;
+  border-top: 1px solid #535353;
+}
+#body #main #sponsors .csc-default {
+  float: left;
+  margin-right: 25px;
+}
+#body .clear {
+  clear: both;
+}
+
+td.helfen_kann_jeder_matrix_col {
+  /* Something you can count on */
+  height: 140px;
+  white-space: nowrap;
+}
+
+td.helfen_kann_jeder_matrix_col > div {
+  transform:
+    /* Magic Numbers */
+    translate(25px, 51px)
+      /* 45 is really 360 - 45 */
+    rotate(315deg);
+  width: 30px;
+}
+td.helfen_kann_jeder_matrix_col > div > span {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
+}
