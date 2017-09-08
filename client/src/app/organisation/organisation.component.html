@@ -1,11 +1,14 @@
 <div style="clear: both"></div>
-<a (click)="back()">back to overview</a>
 
 <div class="col-md-12">
-    map
+    <helfomat-map
+        [position]="position"
+        [distance]="distance"
+        [zoom]="zoom"></helfomat-map>
 </div>
 
 <div class="col-md-12" *ngIf="organisation">
+    <a (click)="back()">back to overview</a>
     <h1>{{organisation.name}}</h1>
 
     <h2>Address</h2>

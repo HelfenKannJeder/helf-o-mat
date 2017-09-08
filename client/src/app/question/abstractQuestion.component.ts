@@ -30,7 +30,7 @@ export default class AbstractQuestionComponent {
         .subscribe(([questions, params]: [Question[], Params]) => {
             this.questions = questions;
 
-            var numberOfAnswers: number = 0;
+            let numberOfAnswers: number = 0;
             if (params.hasOwnProperty('answers')) {
                 this.userAnswers = JSON.parse(params['answers']);
                 this.showIndex = this.userAnswers.length;

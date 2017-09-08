@@ -3,6 +3,9 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 import {OrganisationService} from "./organisation.service";
 import Organisation from "./organisation.model";
 import {Answer} from "../shared/answer.model";
+import {UrlParamBuilder} from '../url-param.builder';
+import GeoPoint from './geopoint.model';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
     selector: 'organisation',
@@ -13,19 +16,26 @@ import {Answer} from "../shared/answer.model";
 export class OrganisationComponent implements OnInit {
 
     public organisation: Organisation;
-    private params: Params;
-    private userAnswers: Answer[]; // Necessary in the template
+    private userAnswers: Answer[];
+    private position: GeoPoint;
+    private distance: number;
+    private zoom: Observable<number>;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private organisationService: OrganisationService) {
         this.route.params.subscribe((params: Params) => {
-            this.params = params;
-
             if (params.hasOwnProperty('answers')) {
-                this.userAnswers = JSON.parse(params['answers']);
+                this.userAnswers = UrlParamBuilder.parseAnswers(params['answers']);
+            }
+            if (params.hasOwnProperty('position')) {
+                this.position = UrlParamBuilder.parseGeoPoint(params['position']);
+            }
+            if (params.hasOwnProperty('distance')) {
+                this.distance = UrlParamBuilder.parseInt(params['distance']);
             }
         });
+        this.zoom = Observable.from([12]);
         this.route.params
             .switchMap((params: Params) => this.organisationService.getOrganisation(params['organisation']))
             .subscribe((organisation: Organisation) => {
@@ -38,7 +48,9 @@ export class OrganisationComponent implements OnInit {
 
     back(): void {
         this.router.navigate(['/result', {
-            answers: this.params['answers']
+            answers: UrlParamBuilder.buildAnswers(this.userAnswers),
+            position: UrlParamBuilder.buildGeoPoint(this.position),
+            distance: this.distance
         }]);
     }
 
