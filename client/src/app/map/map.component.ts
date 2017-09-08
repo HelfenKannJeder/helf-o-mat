@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, EventEmitter, Output} from "@angular/core";
+import {Component, OnInit, Input, EventEmitter, Output, AfterViewInit} from '@angular/core';
 import Organisation from "../organisation/organisation.model";
 import Address from "../organisation/address.model";
 import {Observable} from "rxjs";
@@ -20,7 +20,7 @@ import SearchBox = google.maps.places.SearchBox;
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, AfterViewInit {
 
     @Input() organisations: Observable<Organisation[]>;
     @Input() position: Observable<GeoPoint>;
@@ -112,7 +112,7 @@ export class MapComponent implements OnInit {
                 if (organisation.addresses.length > 0 && organisation.mapPin !== undefined) {
                     const address: Address = organisation.addresses[0];
                     const icon = {
-                        url: "https://helfenkannjeder.de/uploads/pics/" + organisation.mapPin,
+                        url: "assets/images/" + organisation.mapPin,
                         size: new Size(32, 32),
                         origin: new Point(0, 0),
                         anchor: new Point(10, 32),
