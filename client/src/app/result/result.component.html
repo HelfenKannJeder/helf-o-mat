@@ -1,15 +1,16 @@
 <div style="clear: both"></div>
 <div class="col-md-12">
     <helfomat-map
-            [organisations]="organisations"
-            [clusteredOrganisations]="clusteredOrganisations"
-            [position]="position"
-            [distance]="distance"
-            [zoom]="zoom"
-            (updatePosition)="_position$.next($event)"
-            (updateBoundingBox)="_boundingBox$.next($event)"
-            (updateZoom)="_zoom$.next($event)"
-            (openOrganisation)="_organisation$.next($event)"></helfomat-map>
+        [organisations]="organisations"
+        [clusteredOrganisations]="clusteredOrganisations"
+        [position]="position"
+        [distance]="distance"
+        [center]="position"
+        [zoom]="zoom"
+        (updatePosition)="_position$.next($event)"
+        (updateBoundingBox)="_boundingBox$.next($event)"
+        (updateZoom)="_zoom$.next($event)"
+        (openOrganisation)="_organisation$.next($event)"></helfomat-map>
 </div>
 <div class="col-md-6">
     <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>

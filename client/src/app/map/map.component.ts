@@ -23,6 +23,7 @@ import SearchBox = google.maps.places.SearchBox;
 export class MapComponent implements OnInit, AfterViewInit {
 
     @Input() organisations?: Observable<Organisation[]>;
+    @Input() center: Observable<GeoPoint>;
     @Input() position: Observable<GeoPoint>;
     @Input() distance: Observable<number>;
     @Input() zoom: Observable<number>;
@@ -93,9 +94,12 @@ export class MapComponent implements OnInit, AfterViewInit {
             const mapsPosition = MapComponent.convertGeoPointToLatLng(newSearchRange[0]);
             if (this.map.getBounds() == undefined
                 || !this.map.getBounds().contains(mapsPosition)) {
-                this.map.setCenter(mapsPosition);
             }
             this.drawUserPosition(mapsPosition, newSearchRange[1]);
+        });
+
+        this.center.subscribe((center: GeoPoint) => {
+            this.map.setCenter(MapComponent.convertGeoPointToLatLng(center));
         });
 
         this.zoom.subscribe((zoom: number) => {
