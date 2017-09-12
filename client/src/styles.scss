@@ -1,1 +1,227 @@
-// Reset and print styles
+/* colors */
+$darkblue: #182282;
+$lightblue: #3579db;
+$white: #ffffff;
+$lightgray: #eeeeee;
+$gray: #9b9b9b;
+$darkgray: #535353;
+
+/* mixins */
+@mixin transform($p1) {
+  transform: $p1;
+  -ms-transform: $p1;
+  -moz-transform: $p1;
+  -o-transform: $p1;
+  -webkit-transform: $p1;
+}
+
+@mixin transform-origin($p1, $p2) {
+  transform-origin: $p1 $p2;
+  -ms-transform-origin: $p1 $p2;
+  -moz-transform-origin: $p1 $p2;
+  -o-transform-origin: $p1 $p2;
+  -webkit-transform-origin: $p1 $p2;
+}
+
+@font-face {
+  font-family: 'Hand Of Sean';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Hand Of Sean'), url('./assets/fonts/handsean.woff') format('woff');
+}
+
+body {
+  background-color: $lightgray;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-family: Arial, sans-serif, Helvetica;
+  font-size: 12px;
+
+  img {
+    border: 0;
+  }
+
+  a {
+    color: $darkblue;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+#body {
+  margin: auto;
+  width: 1100px;
+
+  #tabsLeft {
+    float: left;
+    @include transform(rotate(90deg));
+    @include transform-origin(0, 0);
+    height: 50px;
+    padding-left: 185px;
+
+    ul {
+      @include transform(rotate(180deg));
+      @include transform-origin(50%, 50%);
+      text-align: left;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        float: left;
+        height: 50px;
+        margin: 0 5px;
+        background-color: $darkgray;
+        color: $white;
+        font-size: 16px;
+
+        &.active {
+          background-color: $darkblue;
+        }
+
+        a {
+          display: block;
+          color: $white;
+          text-decoration: none;
+          line-height: 50px;
+          padding: 0 20px;
+        }
+      }
+    }
+  }
+
+  #main {
+    float: left;
+    width: 1000px;
+    margin-left: 50px;
+    margin-top: -50px;
+    background-color: $white;
+    box-shadow: 0 0 20px $darkgray;
+
+    #header {
+      background-image: url("./assets/images/logo.png");
+      width: 1000px;
+      height: 160px;
+      color: white;
+      text-align: left;
+
+      h1 {
+        margin: 0;
+        padding: 30px 30px 0;
+        font-size: 28px;
+        font-family: 'Hand Of Sean', Helvetica, Arial, sans-serif;
+      }
+
+      h2 {
+        margin: 0;
+        padding: 10px 30px 30px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      #headerlink {
+        float: right;
+      }
+    }
+
+    #leftContent {
+      float: left;
+      padding: 30px;
+
+      h1, h2, h3, h4, h5, h6 {
+        color: $lightblue;
+      }
+
+      #menu ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+
+        li {
+          float: left;
+
+          a {
+            display: block;
+            line-height: 30px;
+            margin-right: 10px;
+            padding: 0 22px;
+            color: $white;
+            text-decoration: none;
+            background-color: $gray;
+          }
+
+          &.active a {
+            background-color: $lightblue;
+          }
+        }
+      }
+
+      #textContent {
+        clear: both;
+        text-align: left;
+        width: 680px;
+        padding-top: 30px;
+        color: $darkgray;
+      }
+
+      #textContent h1 {
+        margin: 0;
+        padding: 0;
+        color: $lightblue;
+      }
+    }
+
+    #rightContent {
+      float: right;
+      margin-top: 20px;
+      width: 250px;
+
+      #borderMenu {
+        clear: both;
+        margin-top: 10px;
+        border-left: 1px solid $darkgray;
+        background-color: $lightgray;
+        color: $darkgray;
+        text-align: left;
+        padding: 6px 8px;
+
+        ul {
+          margin: 0;
+          padding: 0;
+          list-style-type: none;
+
+          li {
+            padding: 0;
+            margin: 0 10px 0 0;
+            float: left;
+
+            a {
+              color: $darkgray;
+              text-decoration: none;
+            }
+          }
+        }
+      }
+    }
+
+    #sponsors {
+      text-align: left;
+      padding: 3px 30px;
+      border-top: 1px solid $darkgray;
+
+      div {
+        float: left;
+        margin-right: 25px;
+      }
+    }
+  }
+
+  .clear {
+    clear: both;
+  }
+}

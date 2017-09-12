@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, AfterViewInit} from '@angular/core';
 import Organisation from '../organisation/organisation.model';
 import Address from '../organisation/address.model';
 import {Observable} from 'rxjs';
@@ -20,7 +20,7 @@ import MarkerClusterer from 'node-js-marker-clusterer';
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, AfterViewInit {
 
     @Input() organisations: Observable<Organisation[]>;
     @Input() position: Observable<GeoPoint>;
