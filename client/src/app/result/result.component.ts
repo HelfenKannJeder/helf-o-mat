@@ -5,9 +5,10 @@ import GeoPoint from '../organisation/geopoint.model';
 import UserAnswer from '../organisation/userAnswer.model';
 import BoundingBox from '../organisation/boundingbox.model';
 import Organisation from '../organisation/organisation.model';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
 import {Answer} from '../shared/answer.model';
+import {ObservableUtil} from '../shared/observable.util';
 
 @Component({
     selector: 'app-result',
@@ -45,15 +46,8 @@ export class ResultComponent implements OnInit {
 
         this.position = Observable.merge(
             Observable.from([new GeoPoint(49.009432, 8.403922)]),
-            this.route.params
-                .map((params: Params) => {
-                    if (params.hasOwnProperty('position')) {
-                        return UrlParamBuilder.parseGeoPoint(params['position']);
-                    }
-                    return null;
-                })
-                .filter(null)
-                .distinctUntilChanged(),
+            ObservableUtil.extractObjectMember(this.route.params, 'position')
+                .map(UrlParamBuilder.parseGeoPoint),
             this._position$.asObservable() // should not be necessary if position is written to URL
         )
             .debounceTime(100)
@@ -66,10 +60,8 @@ export class ResultComponent implements OnInit {
             .debounceTime(100)
             .distinctUntilChanged();
 
-        this.answers = this.route.params.map((params: Params) => {
-            return UrlParamBuilder.parseAnswers(params['answers']);
-        })
-            .distinctUntilChanged();
+        this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
+            .map(UrlParamBuilder.parseAnswers);
 
     }
 
@@ -82,7 +74,7 @@ export class ResultComponent implements OnInit {
             this._zoom$.asObservable()
         )
             .subscribe(([userAnswers, position, distance, boundingBox, zoom]: [UserAnswer[], GeoPoint, number, BoundingBox, number]) => {
-                this.router.navigate(['/organisation', {
+                this.router.navigate(['/result', {
                     answers: UrlParamBuilder.buildAnswersFromUserAnswer(userAnswers),
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance,

@@ -1,10 +1,10 @@
-import {Component, OnInit, Input, EventEmitter, Output, AfterViewInit} from '@angular/core';
-import Organisation from "../organisation/organisation.model";
-import Address from "../organisation/address.model";
-import {Observable} from "rxjs";
-import GeoPoint from "../organisation/geopoint.model";
-import BoundingBox from "../organisation/boundingbox.model";
-import ClusteredGeoPoint from "../organisation/clusteredGeoPoint.model";
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import Organisation from '../organisation/organisation.model';
+import Address from '../organisation/address.model';
+import {Observable} from 'rxjs';
+import GeoPoint from '../organisation/geopoint.model';
+import BoundingBox from '../organisation/boundingbox.model';
+import ClusteredGeoPoint from '../organisation/clusteredGeoPoint.model';
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
@@ -22,7 +22,7 @@ import SearchBox = google.maps.places.SearchBox;
 })
 export class MapComponent implements OnInit, AfterViewInit {
 
-    @Input() organisations: Observable<Organisation[]>;
+    @Input() organisations?: Observable<Organisation[]>;
     @Input() position: Observable<GeoPoint>;
     @Input() distance: Observable<number>;
     @Input() zoom: Observable<number>;
@@ -52,7 +52,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             rotateControl: false,
             fullscreenControl: true
         };
-        this.map = new Map(document.getElementById("googleMap"), mapProp);
+        this.map = new Map(document.getElementById('googleMap'), mapProp);
 
         // Create the search box and link it to the UI element.
         let searchText: HTMLInputElement = <HTMLInputElement>document.getElementById('pac-input');
@@ -102,67 +102,71 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.map.setZoom(zoom);
         });
 
-        this.organisations.subscribe((organisations) => {
-            this.markers.forEach((marker: Marker) => {
-                marker.setMap(null);
-            });
-            this.markers = [];
+        if (this.organisations !== undefined) {
+            this.organisations.subscribe((organisations) => {
+                this.markers.forEach((marker: Marker) => {
+                    marker.setMap(null);
+                });
+                this.markers = [];
 
-            organisations.forEach((organisation: Organisation) => {
-                if (organisation.addresses.length > 0 && organisation.mapPin !== undefined) {
-                    const address: Address = organisation.addresses[0];
-                    const icon = {
-                        url: "assets/images/" + organisation.mapPin,
-                        size: new Size(32, 32),
-                        origin: new Point(0, 0),
-                        anchor: new Point(10, 32),
-                        scaledSize: new Size(32, 32)
-                    };
+                organisations.forEach((organisation: Organisation) => {
+                    if (organisation.addresses.length > 0 && organisation.mapPin !== undefined) {
+                        const address: Address = organisation.addresses[0];
+                        const icon = {
+                            url: 'assets/images/' + organisation.mapPin,
+                            size: new Size(32, 32),
+                            origin: new Point(0, 0),
+                            anchor: new Point(10, 32),
+                            scaledSize: new Size(32, 32)
+                        };
 
-                    let marker = new Marker({
-                        position: MapComponent.convertGeoPointToLatLng(address.location),
-                        map: this.map,
-                        title: organisation.name,
-                        icon: icon,
-                        opacity: organisation.scoreNorm / 100
-                    });
-                    marker.addListener('click', () => {
-                        this.openOrganisation.emit(organisation);
-                    });
-                    this.markers.push(marker);
-                }
-            });
-        });
-
-        this.clusteredOrganisations.subscribe((clusteredOrganisations) => {
-            const icon = {
-                size: new Size(64, 64),
-                origin: new Point(0, 0),
-                anchor: new Point(32, 32),
-                scaledSize: new Size(64, 64)
-            };
-
-            let newMarkers = clusteredOrganisations.map((clusteredOrganisation: ClusteredGeoPoint) => {
-                let index = MapComponent.getClusteredIndexIconIndex(clusteredOrganisation.count, 5);
-
-                return new Marker({
-                    position: MapComponent.convertGeoPointToLatLng(clusteredOrganisation.geoPoint),
-                    map: null,
-                    label: clusteredOrganisation.count.toLocaleString(),
-                    icon: {
-                        url: 'assets/images/m' + index + '.png',
-                        size: icon.size,
-                        origin: icon.origin,
-                        anchor: icon.anchor,
-                        scaledSize: icon.scaledSize
+                        let marker = new Marker({
+                            position: MapComponent.convertGeoPointToLatLng(address.location),
+                            map: this.map,
+                            title: organisation.name,
+                            icon: icon,
+                            opacity: organisation.scoreNorm / 100
+                        });
+                        marker.addListener('click', () => {
+                            this.openOrganisation.emit(organisation);
+                        });
+                        this.markers.push(marker);
                     }
                 });
+            });
+        }
+
+        if (this.clusteredOrganisations !== undefined) {
+            this.clusteredOrganisations.subscribe((clusteredOrganisations) => {
+                const icon = {
+                    size: new Size(64, 64),
+                    origin: new Point(0, 0),
+                    anchor: new Point(32, 32),
+                    scaledSize: new Size(64, 64)
+                };
+
+                let newMarkers = clusteredOrganisations.map((clusteredOrganisation: ClusteredGeoPoint) => {
+                    let index = MapComponent.getClusteredIndexIconIndex(clusteredOrganisation.count, 5);
+
+                    return new Marker({
+                        position: MapComponent.convertGeoPointToLatLng(clusteredOrganisation.geoPoint),
+                        map: null,
+                        label: clusteredOrganisation.count.toLocaleString(),
+                        icon: {
+                            url: 'assets/images/m' + index + '.png',
+                            size: icon.size,
+                            origin: icon.origin,
+                            anchor: icon.anchor,
+                            scaledSize: icon.scaledSize
+                        }
+                    });
+
+                });
+
+                this.clusteredMarkers = this.replaceMarkers(this.clusteredMarkers, newMarkers);
 
             });
-
-            this.clusteredMarkers = this.replaceMarkers(this.clusteredMarkers, newMarkers);
-
-        });
+        }
     }
 
     private static getClusteredIndexIconIndex(count: number, numStyles: number) {
@@ -176,7 +180,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        google.maps.event.trigger(this.map, "resize");
+        google.maps.event.trigger(this.map, 'resize');
     }
 
     drawUserPosition(position: LatLng, distance: number) {
@@ -192,7 +196,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             draggable: true
         });
 
-        google.maps.event.addListener(this.positionMarker, "drag", (event) => {
+        google.maps.event.addListener(this.positionMarker, 'drag', (event) => {
             this.updatePosition.next(MapComponent.convertLatLngToGeoPoint(event.latLng));
         });
 

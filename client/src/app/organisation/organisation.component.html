@@ -2,13 +2,14 @@
 
 <div class="col-md-12">
     <helfomat-map
+        [organisations]="organisations"
         [position]="position"
         [distance]="distance"
         [zoom]="zoom"></helfomat-map>
 </div>
 
 <div class="col-md-12" *ngIf="organisation">
-    <a (click)="back()">back to overview</a>
+    <a (click)="_back$.next()">back to overview</a>
     <h1>{{organisation.name}}</h1>
 
     <h2>Address</h2>
