@@ -1,10 +1,9 @@
-import {Component, OnInit, Input, EventEmitter, Output, AfterViewInit} from '@angular/core';
-import Organisation from "../organisation/organisation.model";
-import Address from "../organisation/address.model";
-import {Observable} from "rxjs";
-import GeoPoint from "../organisation/geopoint.model";
-import BoundingBox from "../organisation/boundingbox.model";
-import ClusteredGeoPoint from "../organisation/clusteredGeoPoint.model";
+import {Component, EventEmitter, Input, OnInit, Output, AfterViewInit} from '@angular/core';
+import Organisation from '../organisation/organisation.model';
+import Address from '../organisation/address.model';
+import {Observable} from 'rxjs';
+import GeoPoint from '../organisation/geopoint.model';
+import BoundingBox from '../organisation/boundingbox.model';
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
@@ -14,6 +13,7 @@ import Point = google.maps.Point;
 import Size = google.maps.Size;
 import ControlPosition = google.maps.ControlPosition;
 import SearchBox = google.maps.places.SearchBox;
+import MarkerClusterer from 'node-js-marker-clusterer';
 
 @Component({
     selector: 'helfomat-map',
@@ -26,7 +26,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     @Input() position: Observable<GeoPoint>;
     @Input() distance: Observable<number>;
     @Input() zoom: Observable<number>;
-    @Input() clusteredOrganisations: Observable<ClusteredGeoPoint[]>;
+    @Input() clusteredOrganisations: Observable<GeoPoint[]>;
 
     @Output() updatePosition: EventEmitter<GeoPoint> = new EventEmitter<GeoPoint>();
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();
@@ -38,6 +38,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     private clusteredMarkers: Marker[] = [];
     private positionMarker: Marker;
     private positionCircle: Circle;
+    private markerClusterer: MarkerClusterer;
 
     constructor() {
     }
@@ -52,7 +53,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             rotateControl: false,
             fullscreenControl: true
         };
-        this.map = new Map(document.getElementById("googleMap"), mapProp);
+        this.map = new Map(document.getElementById('googleMap'), mapProp);
 
         // Create the search box and link it to the UI element.
         let searchText: HTMLInputElement = <HTMLInputElement>document.getElementById('pac-input');
@@ -112,7 +113,7 @@ export class MapComponent implements OnInit, AfterViewInit {
                 if (organisation.addresses.length > 0 && organisation.mapPin !== undefined) {
                     const address: Address = organisation.addresses[0];
                     const icon = {
-                        url: "assets/images/" + organisation.mapPin,
+                        url: `assets/images/pins/${organisation.mapPin}`,
                         size: new Size(32, 32),
                         origin: new Point(0, 0),
                         anchor: new Point(10, 32),
@@ -136,26 +137,17 @@ export class MapComponent implements OnInit, AfterViewInit {
 
         this.clusteredOrganisations.subscribe((clusteredOrganisations) => {
             const icon = {
-                size: new Size(64, 64),
+                url: 'assets/images/pins/gray.png',
+                size: new Size(32, 32),
                 origin: new Point(0, 0),
-                anchor: new Point(32, 32),
-                scaledSize: new Size(64, 64)
+                anchor: new Point(10, 32),
+                scaledSize: new Size(32, 32)
             };
 
-            let newMarkers = clusteredOrganisations.map((clusteredOrganisation: ClusteredGeoPoint) => {
-                let index = MapComponent.getClusteredIndexIconIndex(clusteredOrganisation.count, 5);
-
+            let newMarkers = clusteredOrganisations.map((geoPoint: GeoPoint) => {
                 return new Marker({
-                    position: MapComponent.convertGeoPointToLatLng(clusteredOrganisation.geoPoint),
-                    map: null,
-                    label: clusteredOrganisation.count.toLocaleString(),
-                    icon: {
-                        url: 'assets/images/m' + index + '.png',
-                        size: icon.size,
-                        origin: icon.origin,
-                        anchor: icon.anchor,
-                        scaledSize: icon.scaledSize
-                    }
+                    position: MapComponent.convertGeoPointToLatLng(geoPoint),
+                    icon
                 });
 
             });
@@ -163,20 +155,12 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.clusteredMarkers = this.replaceMarkers(this.clusteredMarkers, newMarkers);
 
         });
-    }
 
-    private static getClusteredIndexIconIndex(count: number, numStyles: number) {
-        let index = 0;
-        let dv: number = count;
-        while (dv >= 1) {
-            dv = dv / 10;
-            index++;
-        }
-        return Math.min(index, numStyles);
+        this.markerClusterer = new MarkerClusterer(this.map, [], {imagePath: 'assets/images/m'});
     }
 
     ngAfterViewInit() {
-        google.maps.event.trigger(this.map, "resize");
+        google.maps.event.trigger(this.map, 'resize');
     }
 
     drawUserPosition(position: LatLng, distance: number) {
@@ -192,7 +176,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             draggable: true
         });
 
-        google.maps.event.addListener(this.positionMarker, "drag", (event) => {
+        google.maps.event.addListener(this.positionMarker, 'drag', (event) => {
             this.updatePosition.next(MapComponent.convertLatLngToGeoPoint(event.latLng));
         });
 
@@ -216,12 +200,9 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
     private replaceMarkers(oldMarkers: Marker[], newMarkers: Marker[]): Marker[] {
-        oldMarkers.forEach((marker: Marker) => {
-            marker.setMap(null);
-        });
-        newMarkers.forEach((marker: Marker) => {
-            marker.setMap(this.map);
-        });
+        this.markerClusterer.removeMarkers(oldMarkers, false);
+        this.markerClusterer.addMarkers(newMarkers, false);
+        this.markerClusterer.repaint();
         return newMarkers;
     }
 }

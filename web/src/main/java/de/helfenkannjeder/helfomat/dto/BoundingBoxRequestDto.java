@@ -7,7 +7,6 @@ public class BoundingBoxRequestDto {
     private GeoPointDto position;
     private double distance;
     private BoundingBoxDto boundingBox;
-    private int zoom;
 
     public GeoPointDto getPosition() {
         return position;
@@ -31,13 +30,5 @@ public class BoundingBoxRequestDto {
 
     public void setBoundingBox(BoundingBoxDto boundingBoxDto) {
         this.boundingBox = boundingBoxDto;
-    }
-
-    public int getZoom() {
-        return zoom;
-    }
-
-    public void setZoom(int zoom) {
-        this.zoom = zoom;
     }
 }

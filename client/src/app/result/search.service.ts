@@ -1,26 +1,25 @@
-import {Injectable} from "@angular/core";
-import {Http, Response} from "@angular/http";
-import "rxjs/add/operator/map";
-import {Observable, Subject} from "rxjs";
-import Organisation from "../organisation/organisation.model";
-import UserAnswer from "../organisation/userAnswer.model";
-import GeoPoint from "../organisation/geopoint.model";
-import BoundingBox from "../organisation/boundingbox.model";
-import ClusteredGeoPoint from "../organisation/clusteredGeoPoint.model";
+import {Injectable} from '@angular/core';
+import {Http, Response} from '@angular/http';
+import 'rxjs/add/operator/map';
+import {Observable, Subject} from 'rxjs';
+import Organisation from '../organisation/organisation.model';
+import UserAnswer from '../organisation/userAnswer.model';
+import GeoPoint from '../organisation/geopoint.model';
+import BoundingBox from '../organisation/boundingbox.model';
 
 @Injectable()
 export class SearchService {
 
     private _organisations$: Subject<Organisation[]>;
-    private _clusteredOrganisations$: Subject<ClusteredGeoPoint[]>;
+    private _clusteredOrganisations$: Subject<GeoPoint[]>;
     private dataStore: {
         organisations: Organisation[],
-        clusteredOrganisations: ClusteredGeoPoint[]
+        clusteredOrganisations: GeoPoint[]
     };
 
     constructor(private http: Http) {
         this._organisations$ = <Subject<Organisation[]>>new Subject();
-        this._clusteredOrganisations$ = <Subject<ClusteredGeoPoint[]>>new Subject();
+        this._clusteredOrganisations$ = <Subject<GeoPoint[]>>new Subject();
         this.dataStore = {
             organisations: [],
             clusteredOrganisations: []
