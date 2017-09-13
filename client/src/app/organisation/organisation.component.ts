@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {OrganisationService} from './organisation.service';
 import Organisation from './organisation.model';
 import {Answer} from '../shared/answer.model';
@@ -18,8 +18,8 @@ import {Subject} from 'rxjs/Subject';
 export class OrganisationComponent implements OnInit {
 
     private _back$: Subject<void>;
-    public organisation: Organisation;
-    private userAnswers: Answer[];
+    public organisation: Observable<Organisation>;
+    private userAnswers: Observable<Answer[]>;
     private organisations: Observable<Array<Organisation>>;
     private position: Observable<GeoPoint>;
     private center: Observable<GeoPoint>;
@@ -32,21 +32,18 @@ export class OrganisationComponent implements OnInit {
                 private organisationService: OrganisationService) {
         this._back$ = <Subject<void>>new Subject();
 
-        this.route.params.subscribe((params: Params) => {
-            if (params.hasOwnProperty('answers')) {
-                this.userAnswers = UrlParamBuilder.parseAnswers(params['answers']);
-            }
-        });
-
+        this.userAnswers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
+            .map(UrlParamBuilder.parseAnswers);
         this.position = ObservableUtil.extractObjectMember(this.route.params, 'position')
             .map(UrlParamBuilder.parseGeoPoint);
         this.distance = ObservableUtil.extractObjectMember(this.route.params, 'distance')
             .map(UrlParamBuilder.parseInt);
         this.scoreNorm = ObservableUtil.extractObjectMember(this.route.params, 'scoreNorm')
             .map(UrlParamBuilder.parseInt);
-        this.organisations = ObservableUtil.extractObjectMember(this.route.params, 'organisation')
-            .switchMap((id: string) => this.organisationService.getOrganisation(id))
-            .map(organisation => [organisation]);
+        this.organisation = ObservableUtil.extractObjectMember(this.route.params, 'organisation')
+            .switchMap((id: string) => this.organisationService.getOrganisation(id));
+        this.organisations = this.organisation.map(organisation => [organisation]);
+
         this.center = Observable
             .combineLatest(
                 this.organisations,
@@ -66,20 +63,16 @@ export class OrganisationComponent implements OnInit {
                 let location = OrganisationComponent.getOrganisaitonLocation(position, organisations[0]);
                 return OrganisationComponent.calculateZoomLevel(location, position);
             });
-        this.route.params
-            .switchMap((params: Params) => this.organisationService.getOrganisation(params['organisation']))
-            .subscribe((organisation: Organisation) => {
-                this.organisation = organisation;
-            });
 
         Observable.combineLatest(
             this.position,
             this.distance,
+            this.userAnswers,
             this._back$.asObservable()
         )
-            .subscribe(([position, distance]: [GeoPoint, number, void]) => {
+            .subscribe(([position, distance, userAnswers]: [GeoPoint, number, Answer[], void]) => {
                 this.router.navigate(['/result', {
-                    answers: UrlParamBuilder.buildAnswers(this.userAnswers),
+                    answers: UrlParamBuilder.buildAnswers(userAnswers),
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance
                 }]);
