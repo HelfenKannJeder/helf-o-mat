@@ -50,7 +50,8 @@ export class OrganisationComponent implements OnInit {
                 this.position
             )
             .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                return GeoPoint.pointBetween(position, organisations[0].addresses[0].location);
+                let location = OrganisationComponent.getOrganisaitonLocation(position, organisations[0]);
+                return GeoPoint.pointBetween(position, location);
             });
 
         this.zoom = Observable
@@ -59,21 +60,8 @@ export class OrganisationComponent implements OnInit {
                 this.position
             )
             .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                let distanceInKm = GeoPoint.distanceInKm(position, organisations[0].addresses[0].location);
-                let mapHeight = 200;
-                let distanceInM = distanceInKm * 1000;
-                let metersPerPixel = (distanceInM / mapHeight);
-                let zoom = Math.floor(
-                    Math.log((156543.03392 * Math.cos(position.lat * Math.PI / 180)) / metersPerPixel) / Math.log(2)
-                );
-
-                if (zoom <= 2) {
-                    zoom = 2;
-                }
-                if (zoom >= 20) {
-                    zoom = 20;
-                }
-                return zoom - 1;
+                let location = OrganisationComponent.getOrganisaitonLocation(position, organisations[0]);
+                return OrganisationComponent.calculateZoomLevel(location, position);
             });
         this.route.params
             .switchMap((params: Params) => this.organisationService.getOrganisation(params['organisation']))
@@ -93,6 +81,37 @@ export class OrganisationComponent implements OnInit {
                     distance: distance
                 }]);
             })
+    }
+
+    private static calculateZoomLevel(position1: GeoPoint, position2: GeoPoint) {
+        let distanceInKm = GeoPoint.distanceInKm(position1, position2);
+        let mapHeight = 200;
+        let distanceInM = distanceInKm * 1000;
+        let metersPerPixel = (distanceInM / mapHeight);
+        let zoom = Math.floor(
+            Math.log((156543.03392 * Math.cos(position2.lat * Math.PI / 180)) / metersPerPixel) / Math.log(2)
+        );
+
+        if (zoom <= 2) {
+            zoom = 2;
+        }
+        if (zoom >= 20) {
+            zoom = 20;
+        }
+        return zoom - 1;
+    }
+
+    private static getOrganisaitonLocation(position: GeoPoint, organisation: Organisation): GeoPoint {
+        let distance = null;
+        let location = null;
+        for (let address of organisation.addresses) {
+            let potentialDistance = GeoPoint.distanceInKm(position, address.location);
+            if (distance === null || distance > potentialDistance) {
+                distance = potentialDistance;
+                location = address.location;
+            }
+        }
+        return location;
     }
 
     ngOnInit(): void {

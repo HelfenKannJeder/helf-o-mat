@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import Organisation from '../organisation/organisation.model';
-import Address from '../organisation/address.model';
 import {Observable} from 'rxjs';
 import GeoPoint from '../organisation/geopoint.model';
 import BoundingBox from '../organisation/boundingbox.model';
+import MarkerClusterer from 'node-js-marker-clusterer';
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
@@ -13,7 +13,6 @@ import Point = google.maps.Point;
 import Size = google.maps.Size;
 import ControlPosition = google.maps.ControlPosition;
 import SearchBox = google.maps.places.SearchBox;
-import MarkerClusterer from 'node-js-marker-clusterer';
 
 @Component({
     selector: 'helfomat-map',
@@ -116,26 +115,27 @@ export class MapComponent implements OnInit, AfterViewInit {
 
                 organisations.forEach((organisation: Organisation) => {
                     if (organisation.addresses.length > 0 && organisation.mapPin !== undefined) {
-                        const address: Address = organisation.addresses[0];
-                        const icon = {
-                            url: `assets/images/pins/${organisation.mapPin}`,
-                            size: new Size(32, 32),
-                            origin: new Point(0, 0),
-                            anchor: new Point(10, 32),
-                            scaledSize: new Size(32, 32)
-                        };
+                        for (let address of organisation.addresses) {
+                            const icon = {
+                                url: `assets/images/pins/${organisation.mapPin}`,
+                                size: new Size(32, 32),
+                                origin: new Point(0, 0),
+                                anchor: new Point(10, 32),
+                                scaledSize: new Size(32, 32)
+                            };
 
-                        let marker = new Marker({
-                            position: MapComponent.convertGeoPointToLatLng(address.location),
-                            map: this.map,
-                            title: organisation.name,
-                            icon: icon,
-                            opacity: organisation.scoreNorm / 100
-                        });
-                        marker.addListener('click', () => {
-                            this.openOrganisation.emit(organisation);
-                        });
-                        this.markers.push(marker);
+                            let marker = new Marker({
+                                position: MapComponent.convertGeoPointToLatLng(address.location),
+                                map: this.map,
+                                title: organisation.name,
+                                icon: icon,
+                                opacity: organisation.scoreNorm / 100
+                            });
+                            marker.addListener('click', () => {
+                                this.openOrganisation.emit(organisation);
+                            });
+                            this.markers.push(marker);
+                        }
                     }
                 });
             });
