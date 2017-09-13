@@ -1,16 +1,17 @@
-import {BrowserModule} from "@angular/platform-browser";
-import {NgModule} from "@angular/core";
-import {FormsModule} from "@angular/forms";
-import {HttpModule} from "@angular/http";
-import {AppComponent} from "./app.component";
-import {QuestionComponent} from "./question/question.component";
-import {MapComponent} from "./map/map.component";
-import {appRoutingProviders, routing} from "./app.routing";
-import {ResultComponent} from "./result/result.component";
-import {QuestionOverviewComponent} from "./question/questionOverview.component";
-import {ListComponent} from "./list/list.component";
-import {OrganisationComponent} from "./organisation/organisation.component";
-import {AnswerImagePipe} from "./shared/answer-image.pipe";
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {HttpModule} from '@angular/http';
+import {AppComponent} from './app.component';
+import {QuestionComponent} from './question/question.component';
+import {MapComponent} from './map/map.component';
+import {appRoutingProviders, routing} from './app.routing';
+import {ResultComponent} from './result/result.component';
+import {QuestionOverviewComponent} from './question/questionOverview.component';
+import {ListComponent} from './list/list.component';
+import {OrganisationComponent} from './organisation/organisation.component';
+import {AnswerImagePipe} from './shared/answer-image.pipe';
+import {OrganisationScoreModule} from './_internal/components/organisation-score.module';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import {AnswerImagePipe} from "./shared/answer-image.pipe";
         BrowserModule,
         FormsModule,
         HttpModule,
-        routing
+        routing,
+        OrganisationScoreModule
     ],
     providers: [
         appRoutingProviders

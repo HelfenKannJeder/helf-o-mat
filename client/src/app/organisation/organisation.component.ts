@@ -25,6 +25,7 @@ export class OrganisationComponent implements OnInit {
     private center: Observable<GeoPoint>;
     private distance: Observable<number>;
     private zoom: Observable<number>;
+    private scoreNorm: Observable<number>;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -40,6 +41,8 @@ export class OrganisationComponent implements OnInit {
         this.position = ObservableUtil.extractObjectMember(this.route.params, 'position')
             .map(UrlParamBuilder.parseGeoPoint);
         this.distance = ObservableUtil.extractObjectMember(this.route.params, 'distance')
+            .map(UrlParamBuilder.parseInt);
+        this.scoreNorm = ObservableUtil.extractObjectMember(this.route.params, 'scoreNorm')
             .map(UrlParamBuilder.parseInt);
         this.organisations = ObservableUtil.extractObjectMember(this.route.params, 'organisation')
             .switchMap((id: string) => this.organisationService.getOrganisation(id))

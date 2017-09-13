@@ -111,7 +111,8 @@ export class ResultComponent implements OnInit {
                     organisation: organisation.id,
                     answers: UrlParamBuilder.buildAnswers(answers),
                     position: UrlParamBuilder.buildGeoPoint(position),
-                    distance: distance
+                    distance: distance,
+                    scoreNorm: organisation.scoreNorm
                 }]);
             });
     }
