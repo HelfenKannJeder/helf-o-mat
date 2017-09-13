@@ -1,7 +1,6 @@
 package de.helfenkannjeder.helfomat.controller;
 
 import de.helfenkannjeder.helfomat.dto.BoundingBoxRequestDto;
-import de.helfenkannjeder.helfomat.dto.ClusteredGeoPointDto;
 import de.helfenkannjeder.helfomat.dto.GeoPointDto;
 import de.helfenkannjeder.helfomat.dto.OrganisationDto;
 import de.helfenkannjeder.helfomat.dto.QuestionDto;
@@ -45,12 +44,11 @@ public class SearchController {
     }
 
     @PostMapping("/organisation/boundingBox")
-    public List<ClusteredGeoPointDto> boundingBox(@RequestBody BoundingBoxRequestDto searchRequestDto) {
+    public List<GeoPointDto> boundingBox(@RequestBody BoundingBoxRequestDto searchRequestDto) {
         return searchService.findClusteredGeoPoints(
                 GeoPointDto.toGeoPoint(searchRequestDto.getPosition()),
                 searchRequestDto.getDistance(),
-                searchRequestDto.getBoundingBox(),
-                searchRequestDto.getZoom()
+                searchRequestDto.getBoundingBox()
         );
     }
 }

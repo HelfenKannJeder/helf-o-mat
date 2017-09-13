@@ -5124,6 +5124,11 @@
         }
       }
     },
+    "node-js-marker-clusterer": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/node-js-marker-clusterer/-/node-js-marker-clusterer-1.0.0.tgz",
+      "integrity": "sha1-0Joelj68X2wWLs6FEOnmgLugl6k="
+    },
     "node-libs-browser": {
       "version": "2.0.0",
       "resolved": "https://registry.npmjs.org/node-libs-browser/-/node-libs-browser-2.0.0.tgz",

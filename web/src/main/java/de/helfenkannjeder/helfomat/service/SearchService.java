@@ -94,9 +94,9 @@ public class SearchService {
         return extractOrganisations(searchResponse);
     }
 
-    public List<ClusteredGeoPointDto> findClusteredGeoPoints(GeoPoint position,
-                                                             double distance,
-                                                             BoundingBoxDto boundingBoxDto, int zoom) {
+    public List<GeoPointDto> findClusteredGeoPoints(GeoPoint position,
+                                                    double distance,
+                                                    BoundingBoxDto boundingBoxDto) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         boolQueryBuilder.filter(nestedQuery("addresses",
                 boolQuery()
@@ -109,20 +109,15 @@ public class SearchService {
                 .prepareSearch(index)
                 .setTypes(type)
                 .setQuery(boolQueryBuilder)
-                .setSize(0) // Hide results, only aggregation relevant
-                .addAggregation(
-                        AggregationBuilders
-                                .nested("addresses")
-                                .path("addresses")
-                                .subAggregation(AggregationBuilders
-                                        .geohashGrid("grouped_organizations")
-                                        .field("addresses.location")
-                                        .precision(zoom / 2)
-                                        .size(DEFAULT_MAX_RESULT_SIZE)
-                                )
-                )
+                .setSize(DEFAULT_MAX_RESULT_SIZE) // Hide results, only aggregation relevant
                 .get();
-        return extractClusteredOrganisations(searchResponse);
+        return extractOrganisations(searchResponse)
+            .stream()
+            .map(OrganisationDto::getAddresses)
+            .filter(addresses -> !addresses.isEmpty())
+            .map(addresses -> addresses.get(0))
+            .map(AddressDto::getLocation)
+            .collect(Collectors.toList());
     }
 
     private QueryBuilder buildQuestionQuery(QuestionAnswerDto questionAnswerDto) {
