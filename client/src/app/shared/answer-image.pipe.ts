@@ -1,5 +1,6 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import {Answer} from "./answer.model";
+import {Pipe, PipeTransform} from '@angular/core';
+import {Answer} from './answer.model';
+
 /*
  * Raise the value exponentially
  * Takes an answer and returns the path to the image
