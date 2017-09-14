@@ -17,15 +17,15 @@ import {Subject} from 'rxjs/Subject';
 })
 export class OrganisationComponent implements OnInit {
 
-    private _back$: Subject<void>;
+    public _back$: Subject<void>;
     public organisation: Observable<Organisation>;
-    private userAnswers: Observable<Answer[]>;
-    private organisations: Observable<Array<Organisation>>;
-    private position: Observable<GeoPoint>;
-    private center: Observable<GeoPoint>;
-    private distance: Observable<number>;
-    private zoom: Observable<number>;
-    private scoreNorm: Observable<number>;
+    public userAnswers: Observable<Answer[]>;
+    public organisations: Observable<Array<Organisation>>;
+    public position: Observable<GeoPoint>;
+    public center: Observable<GeoPoint>;
+    public distance: Observable<number>;
+    public zoom: Observable<number>;
+    public scoreNorm: Observable<number>;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,

@@ -7,6 +7,6 @@ import {Component, Input} from '@angular/core';
 export class OrganisationScoreComponent {
 
     @Input()
-    private scoreNorm: number;
+    public scoreNorm: number;
 
 }
