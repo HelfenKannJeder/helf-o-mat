@@ -3,34 +3,23 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {AppComponent} from './app.component';
-import {QuestionComponent} from './question/question.component';
-import {MapComponent} from './map/map.component';
 import {appRoutingProviders, routing} from './app.routing';
-import {ResultComponent} from './result/result.component';
-import {QuestionOverviewComponent} from './question/questionOverview.component';
-import {ListComponent} from './list/list.component';
-import {OrganisationComponent} from './organisation/organisation.component';
-import {AnswerImagePipe} from './shared/answer-image.pipe';
-import {OrganisationScoreModule} from './_internal/components/organisation-score.module';
-
+import {OrganisationModule} from './organisation/organisation.module';
+import {ResultModule} from './result/result.module';
+import {QuestionModule} from './question/question.module';
 
 @NgModule({
     declarations: [
-        AppComponent,
-        QuestionComponent,
-        QuestionOverviewComponent,
-        MapComponent,
-        ResultComponent,
-        ListComponent,
-        OrganisationComponent,
-        AnswerImagePipe
+        AppComponent
     ],
     imports: [
+        QuestionModule,
+        ResultModule,
+        OrganisationModule,
         BrowserModule,
         FormsModule,
         HttpModule,
         routing,
-        OrganisationScoreModule
     ],
     providers: [
         appRoutingProviders
