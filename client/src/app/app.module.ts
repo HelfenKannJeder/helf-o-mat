@@ -8,7 +8,6 @@ import {OrganisationModule} from './organisation/organisation.module';
 import {ResultModule} from './result/result.module';
 import {QuestionModule} from './question/question.module';
 
-
 @NgModule({
     declarations: [
         AppComponent
@@ -20,7 +19,7 @@ import {QuestionModule} from './question/question.module';
         BrowserModule,
         FormsModule,
         HttpModule,
-        routing
+        routing,
     ],
     providers: [
         appRoutingProviders

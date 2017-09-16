@@ -1,9 +1,9 @@
-import {Component, EventEmitter, Input, OnInit, Output, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import Organisation from '../organisation/organisation.model';
-import Address from '../organisation/address.model';
 import {Observable} from 'rxjs';
 import GeoPoint from '../organisation/geopoint.model';
 import BoundingBox from '../organisation/boundingbox.model';
+import MarkerClusterer from 'node-js-marker-clusterer';
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
@@ -13,7 +13,6 @@ import Point = google.maps.Point;
 import Size = google.maps.Size;
 import ControlPosition = google.maps.ControlPosition;
 import SearchBox = google.maps.places.SearchBox;
-import MarkerClusterer from 'node-js-marker-clusterer';
 
 @Component({
     selector: 'helfomat-map',
@@ -22,7 +21,8 @@ import MarkerClusterer from 'node-js-marker-clusterer';
 })
 export class MapComponent implements OnInit, AfterViewInit {
 
-    @Input() organisations: Observable<Organisation[]>;
+    @Input() organisations?: Observable<Organisation[]>;
+    @Input() center: Observable<GeoPoint>;
     @Input() position: Observable<GeoPoint>;
     @Input() distance: Observable<number>;
     @Input() zoom: Observable<number>;
@@ -94,67 +94,75 @@ export class MapComponent implements OnInit, AfterViewInit {
             const mapsPosition = MapComponent.convertGeoPointToLatLng(newSearchRange[0]);
             if (this.map.getBounds() == undefined
                 || !this.map.getBounds().contains(mapsPosition)) {
-                this.map.setCenter(mapsPosition);
             }
             this.drawUserPosition(mapsPosition, newSearchRange[1]);
+        });
+
+        this.center.subscribe((center: GeoPoint) => {
+            this.map.setCenter(MapComponent.convertGeoPointToLatLng(center));
         });
 
         this.zoom.subscribe((zoom: number) => {
             this.map.setZoom(zoom);
         });
 
-        this.organisations.subscribe((organisations) => {
-            this.markers.forEach((marker: Marker) => {
-                marker.setMap(null);
+        if (this.organisations !== undefined) {
+            this.organisations.subscribe((organisations) => {
+                this.markers.forEach((marker: Marker) => {
+                    marker.setMap(null);
+                });
+                this.markers = [];
+
+                organisations.forEach((organisation: Organisation) => {
+                    if (organisation.addresses.length > 0 && organisation.mapPin !== undefined) {
+                        for (let address of organisation.addresses) {
+                            const icon = {
+                                url: `assets/images/pins/${organisation.mapPin}`,
+                                size: new Size(32, 32),
+                                origin: new Point(0, 0),
+                                anchor: new Point(10, 32),
+                                scaledSize: new Size(32, 32)
+                            };
+
+                            let marker = new Marker({
+                                position: MapComponent.convertGeoPointToLatLng(address.location),
+                                map: this.map,
+                                title: organisation.name,
+                                icon: icon,
+                                opacity: organisation.scoreNorm / 100
+                            });
+                            marker.addListener('click', () => {
+                                this.openOrganisation.emit(organisation);
+                            });
+                            this.markers.push(marker);
+                        }
+                    }
+                });
             });
-            this.markers = [];
+        }
 
-            organisations.forEach((organisation: Organisation) => {
-                if (organisation.addresses.length > 0 && organisation.mapPin !== undefined) {
-                    const address: Address = organisation.addresses[0];
-                    const icon = {
-                        url: `assets/images/pins/${organisation.mapPin}`,
-                        size: new Size(32, 32),
-                        origin: new Point(0, 0),
-                        anchor: new Point(10, 32),
-                        scaledSize: new Size(32, 32)
-                    };
+        if (this.clusteredOrganisations !== undefined) {
+            this.clusteredOrganisations.subscribe((clusteredOrganisations) => {
+                const icon = {
+                    url: 'assets/images/pins/gray.png',
+                    size: new Size(32, 32),
+                    origin: new Point(0, 0),
+                    anchor: new Point(10, 32),
+                    scaledSize: new Size(32, 32)
+                };
 
-                    let marker = new Marker({
-                        position: MapComponent.convertGeoPointToLatLng(address.location),
-                        map: this.map,
-                        title: organisation.name,
-                        icon: icon,
-                        opacity: organisation.scoreNorm / 100
+                let newMarkers = clusteredOrganisations.map((geoPoint: GeoPoint) => {
+                    return new Marker({
+                        position: MapComponent.convertGeoPointToLatLng(geoPoint),
+                        icon
                     });
-                    marker.addListener('click', () => {
-                        this.openOrganisation.emit(organisation);
-                    });
-                    this.markers.push(marker);
-                }
-            });
-        });
 
-        this.clusteredOrganisations.subscribe((clusteredOrganisations) => {
-            const icon = {
-                url: 'assets/images/pins/gray.png',
-                size: new Size(32, 32),
-                origin: new Point(0, 0),
-                anchor: new Point(10, 32),
-                scaledSize: new Size(32, 32)
-            };
-
-            let newMarkers = clusteredOrganisations.map((geoPoint: GeoPoint) => {
-                return new Marker({
-                    position: MapComponent.convertGeoPointToLatLng(geoPoint),
-                    icon
                 });
 
+                this.clusteredMarkers = this.replaceMarkers(this.clusteredMarkers, newMarkers);
+
             });
-
-            this.clusteredMarkers = this.replaceMarkers(this.clusteredMarkers, newMarkers);
-
-        });
+        }
 
         this.markerClusterer = new MarkerClusterer(this.map, [], {imagePath: 'assets/images/m'});
     }

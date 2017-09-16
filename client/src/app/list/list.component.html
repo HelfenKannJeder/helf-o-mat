@@ -7,16 +7,7 @@
                      [attr.alt]="organisation.name">
             </div>
             <div class="media-body">
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped"
-                         role="progressbar"
-                         [attr.aria-valuenow]="organisation.scoreNorm"
-                         aria-valuemin="0"
-                         aria-valuemax="100"
-                         [style.width.%]="organisation.scoreNorm">
-                        <span class="sr-only">{{organisation.scoreNorm}}% Complete</span>
-                    </div>
-                </div>
+                <organisation-score [scoreNorm]="organisation.scoreNorm"></organisation-score>
                 <a [attr.href]="organisation.website">{{organisation.website}}</a>
             </div>
         </div>

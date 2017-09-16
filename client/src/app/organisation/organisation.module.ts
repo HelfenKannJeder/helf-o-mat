@@ -3,12 +3,14 @@ import {OrganisationComponent} from './organisation.component';
 import {MapModule} from '../map/map.module';
 import {AnswerImageModule} from '../shared/answer-image.module';
 import {BrowserModule} from '@angular/platform-browser';
+import {OrganisationScoreModule} from '../_internal/components/organisation-score.module';
 
 @NgModule({
     imports: [
         MapModule,
         AnswerImageModule,
-        BrowserModule
+        BrowserModule,
+        OrganisationScoreModule
     ],
     declarations: [
         OrganisationComponent
