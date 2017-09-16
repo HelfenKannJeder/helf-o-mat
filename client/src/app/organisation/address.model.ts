@@ -1,6 +1,6 @@
-import GeoPoint from "./geopoint.model";
+import {GeoPoint} from './geopoint.model';
 
-export default class Address {
+export class Address {
     public street: string;
     public addressAppendix: string;
     public city: string;

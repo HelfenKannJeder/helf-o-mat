@@ -1,6 +1,6 @@
 import {Answer} from './shared/answer.model';
-import GeoPoint from './organisation/geopoint.model';
-import UserAnswer from './organisation/userAnswer.model';
+import {GeoPoint} from './organisation/geopoint.model';
+import {UserAnswer} from './organisation/userAnswer.model';
 
 export class UrlParamBuilder {
 

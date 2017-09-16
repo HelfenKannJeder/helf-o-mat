@@ -1,7 +1,7 @@
-import {Component, OnInit, Output, EventEmitter} from "@angular/core";
-import AbstractQuestionComponent from "./abstractQuestion.component";
-import {HelfomatService} from "./helfomat.service";
-import {Router, ActivatedRoute} from "@angular/router";
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {AbstractQuestionComponent} from './abstractQuestion.component';
+import {HelfomatService} from './helfomat.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
     selector: 'app-question-overview',

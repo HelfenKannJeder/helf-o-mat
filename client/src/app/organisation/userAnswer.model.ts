@@ -1,6 +1,6 @@
-import {Answer} from "../shared/answer.model";
+import {Answer} from '../shared/answer.model';
 
-export default class UserAnswer {
+export class UserAnswer {
     public id: string;
     public answer: Answer;
 }
