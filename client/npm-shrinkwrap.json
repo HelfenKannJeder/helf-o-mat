@@ -34,6 +34,14 @@
         "rxjs": "5.4.3"
       }
     },
+    "@angular/animations": {
+      "version": "4.4.1",
+      "resolved": "https://registry.npmjs.org/@angular/animations/-/animations-4.4.1.tgz",
+      "integrity": "sha1-V42JUaJz7pWTarf2zZM/8BnOD/4=",
+      "requires": {
+        "tslib": "1.7.1"
+      }
+    },
     "@angular/cli": {
       "version": "1.4.2",
       "resolved": "https://registry.npmjs.org/@angular/cli/-/cli-1.4.2.tgz",
