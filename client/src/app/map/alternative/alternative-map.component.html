@@ -1,0 +1,10 @@
+<div style="background-color: lightgray">
+    <h3>Map Mock</h3>
+    <ul>
+        <li>Organisations {{(organisations | async)?.length}}</li>
+        <li>Clusted Organisations: {{(clusteredOrganisations | async)?.length}}</li>
+        <li>Position: {{(position | async)?.lat}} {{(position | async)?.lon}}</li>
+        <li>Distance: {{distance | async}}</li>
+        <li>Zoom: {{zoom | async}}</li>
+    </ul>
+</div>
