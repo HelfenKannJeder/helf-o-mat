@@ -7,6 +7,9 @@ import {appRoutingProviders, routing} from './app.routing';
 import {OrganisationModule} from './organisation/organisation.module';
 import {ResultModule} from './result/result.module';
 import {QuestionModule} from './question/question.module';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 @NgModule({
     declarations: [
@@ -19,7 +22,17 @@ import {QuestionModule} from './question/question.module';
         BrowserModule,
         FormsModule,
         HttpModule,
+        HttpClientModule,
         routing,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: function createTranslateLoader(http: HttpClient) {
+                    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+                },
+                deps: [HttpClient]
+            }
+        })
     ],
     providers: [
         appRoutingProviders

@@ -7,15 +7,15 @@
     <p>
         <a class="btn btn-lg" role="button" (click)="answerQuestion('YES', question);">
             <img src="{{ 'YES' | answerImage}}"/><br/>
-            Ja
+            {{ 'question.yes' | translate }}
         </a>
         <a class="btn btn-lg" role="button" (click)="answerQuestion('MAYBE', question);">
             <img src="{{ 'MAYBE' | answerImage}}"/><br/>
-            Egal
+            {{ 'question.maybe' | translate }}
         </a>
         <a class="btn btn-lg" role="button" (click)="answerQuestion('NO', question);">
             <img src="{{ 'NO' | answerImage}}"/><br/>
-            Nein
+            {{ 'question.no' | translate }}
         </a>
     </p>
     <p style="text-align: center">
