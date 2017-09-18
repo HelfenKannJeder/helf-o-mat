@@ -1,4 +1,4 @@
-export default class GeoPoint {
+export class GeoPoint {
     public lat: number;
     public lon: number;
 

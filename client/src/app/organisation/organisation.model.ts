@@ -1,8 +1,8 @@
-import Address from "./address.model";
-import Group from "./group.model";
-import AnsweredQuestion from "./answeredQuestion.model";
+import {Address} from './address.model';
+import {Group} from './group.model';
+import {AnsweredQuestion} from './answeredQuestion.model';
 
-export default class Organisation {
+export class Organisation {
     public id: string;
     public name: string;
     public description: string;
