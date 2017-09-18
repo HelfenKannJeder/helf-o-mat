@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {SearchService} from './search.service';
 import {Observable, Subject} from 'rxjs';
-import GeoPoint from '../organisation/geopoint.model';
-import UserAnswer from '../organisation/userAnswer.model';
-import BoundingBox from '../organisation/boundingbox.model';
-import Organisation from '../organisation/organisation.model';
+import {GeoPoint} from '../organisation/geopoint.model';
+import {UserAnswer} from '../organisation/userAnswer.model';
+import {BoundingBox} from '../organisation/boundingbox.model';
+import {Organisation} from '../organisation/organisation.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
 import {Answer} from '../shared/answer.model';

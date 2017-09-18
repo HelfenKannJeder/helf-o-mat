@@ -1,12 +1,12 @@
-import {HelfomatService} from "./helfomat.service";
-import {Router, ActivatedRoute, Params} from "@angular/router";
-import {Question} from "./question.model";
-import {EventEmitter} from "@angular/core";
-import UserAnswer from "../organisation/userAnswer.model";
-import {Observable} from "rxjs";
-import {Answer} from "../shared/answer.model";
+import {HelfomatService} from './helfomat.service';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {Question} from './question.model';
+import {EventEmitter} from '@angular/core';
+import {UserAnswer} from '../organisation/userAnswer.model';
+import {Observable} from 'rxjs';
+import {Answer} from '../shared/answer.model';
 
-export default class AbstractQuestionComponent {
+export class AbstractQuestionComponent {
 
     public organisations: EventEmitter<UserAnswer[]> = <EventEmitter<UserAnswer[]>>new EventEmitter();
 

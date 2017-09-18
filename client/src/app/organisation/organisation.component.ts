@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {OrganisationService} from './organisation.service';
-import Organisation from './organisation.model';
+import {Organisation} from './organisation.model';
 import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
-import GeoPoint from './geopoint.model';
+import {GeoPoint} from './geopoint.model';
 import {Observable} from 'rxjs/Observable';
 import {ObservableUtil} from '../shared/observable.util';
 import {Subject} from 'rxjs/Subject';

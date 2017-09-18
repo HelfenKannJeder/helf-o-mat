@@ -1,6 +1,6 @@
-import GeoPoint from "./geopoint.model";
+import {GeoPoint} from './geopoint.model';
 
-export default class BoundingBox {
+export class BoundingBox {
     public northEast: GeoPoint;
     public southWest: GeoPoint;
 
