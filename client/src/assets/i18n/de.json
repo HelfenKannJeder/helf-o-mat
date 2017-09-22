@@ -1,0 +1,58 @@
+{
+  "list": {
+  },
+  "map": {
+    "address": "Adresse..."
+  },
+  "organisation": {
+    "dataLoading": "Die Daten werde geladen, bitte gedulde dich einen Moment.",
+    "facts": {
+      "title": "Fakten",
+      "helfomatResult": {
+        "title": "Helf-O-Mat Ergebnis",
+        "compare": "Vergleichen",
+        "back": "Zurück zum Ergebnis"
+      },
+      "distance": {
+        "title": "Entfernung",
+        "car": "mit dem Auto",
+        "train": "mit dem Zug",
+        "bike": "mit dem Rad",
+        "walk": "zu Fuß"
+      }
+    },
+    "address": {
+      "title": "Adresse",
+      "titlePlural": "Adressen",
+      "telephone": "Telefon"
+    },
+    "contact": {
+      "title": "Ansprechpartner"
+    },
+    "description": {
+      "title": "Beschreibung"
+    },
+    "appointments": {
+      "title": "Termine"
+    },
+    "group": {
+      "title": "Einheiten"
+    },
+    "persons": {
+      "title": "Wir sind dabei, weil..."
+    },
+    "questionsAndAnswers": {
+      "title": "Fragen und Antworten",
+      "question": "Frage",
+      "organisation": "Org.",
+      "you": "Du"
+    }
+  },
+  "question": {
+    "yes": "Ja",
+    "maybe": "Egal",
+    "no": "Nein"
+  },
+  "result": {
+  }
+}

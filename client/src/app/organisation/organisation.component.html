@@ -13,21 +13,43 @@
     <div class="col-md-4" style="float: right">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Facts
+                {{'organisation.facts.title' | translate}}
             </div>
             <table class="table">
                 <tbody>
                 <tr>
+                    <th colspan="2">{{'organisation.facts.helfomatResult.title' | translate}}</th>
+                </tr>
+                <tr>
                     <td colspan="2">
                         <organisation-score [scoreNorm]="scoreNorm | async"></organisation-score>
+                        <div class="btn-group" role="group" aria-label="...">
+                            <button class="btn btn-default">
+                                {{'organisation.facts.helfomatResult.compare' | translate}}
+                            </button>
+                            <button class="btn btn-default" (click)="_back$.next()">
+                                {{'organisation.facts.helfomatResult.back' | translate}}
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td>Entfernung Auto</td>
+                    <th colspan="2">{{'organisation.facts.distance.title' | translate}}</th>
+                </tr>
+                <tr>
+                    <td>{{'organisation.facts.distance.car' | translate}}</td>
                     <td>7 km, 0:13h</td>
                 </tr>
                 <tr>
-                    <td>Entfernung ÖPNV</td>
+                    <td>{{'organisation.facts.distance.train' | translate}}</td>
+                    <td>10 km, 0:40h</td>
+                </tr>
+                <tr>
+                    <td>{{'organisation.facts.distance.bike' | translate}}</td>
+                    <td>10 km, 0:40h</td>
+                </tr>
+                <tr>
+                    <td>{{'organisation.facts.distance.walk' | translate}}</td>
                     <td>10 km, 0:40h</td>
                 </tr>
                 </tbody>
@@ -35,39 +57,44 @@
         </div>
     </div>
 
-    <button (click)="_back$.next()">back to overview</button>
     <h1>{{organisation.name}}</h1>
 
-    <h2>Address</h2>
-    <p *ngFor="let address of organisation.addresses">
-        {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
-        Telephone: {{address.telephone}}
-    </p>
+    <div class="organisatin-addresses">
+        <h2>{{organisation.addresses.length | i18nPlural: {
+            '=1': 'organisation.address.title',
+            'other':'organisation.address.titlePlural'
+            } | translate}}</h2>
+        <ul>
+            <li *ngFor="let address of organisation.addresses">
+                {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
+                <span
+                    *ngIf="address.telephone">{{'organisation.address.telephone' | translate}}: {{address.telephone}}</span>
+            </li>
+        </ul>
+    </div>
 
-    <h2>Contact</h2>
+    <h2>{{'organisation.contact.title' | translate}}</h2>
 
-    <h2>Description</h2>
+    <h2>{{'organisation.description.title' | translate}}</h2>
     <p>{{organisation.description}}</p>
 
-    <h2>Events</h2>
+    <h2>{{'organisation.appointments.title' | translate}}</h2>
 
-    <h2>Groups</h2>
+    <h2>{{'organisation.group.title' | translate}}</h2>
     <div *ngFor="let group of organisation.groups">
         <h3>{{group.name}}</h3>
         {{group.description}}
     </div>
 
-    <h2>Persons</h2>
+    <h2>{{'organisation.persons.title' | translate}}</h2>
 
-    <h2>Questions</h2>
+    <h2>{{'organisation.questionsAndAnswers.title' | translate}}</h2>
     <div class="panel panel-default" *ngIf="userAnswers | async; let userAnswers; else loading">
-        <!-- Default panel contents -->
-        <div class="panel-heading">Questions</div>
         <table class="table">
             <tr>
-                <th>Question</th>
-                <th>Organisation</th>
-                <th>You</th>
+                <th>{{'organisation.questionsAndAnswers.question' | translate}}</th>
+                <th>{{'organisation.questionsAndAnswers.organisation' | translate}}</th>
+                <th>{{'organisation.questionsAndAnswers.you' | translate}}</th>
             </tr>
             <tr *ngFor="let question of organisation.questions;  let i = index;">
                 <td>{{question.question}}</td>
@@ -79,4 +106,4 @@
 
 </div>
 
-<ng-template #loading>Loading Organisation Data...</ng-template>
+<ng-template #loading>{{'organisation.dataLoading' | translate}}</ng-template>
