@@ -1,4 +1,4 @@
-export default class AnsweredQuestion {
+export class AnsweredQuestion {
     public question: string;
     public answer: string;
     public description: string;
