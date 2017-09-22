@@ -101,13 +101,13 @@ body {
     margin-top: -50px;
     background-color: $white;
     box-shadow: 0 0 20px $darkgray;
+    text-align: left;
 
     #header {
       background-image: url("./assets/images/logo.png");
       width: 1000px;
       height: 160px;
       color: white;
-      text-align: left;
 
       h1 {
         margin: 0;
@@ -129,7 +129,6 @@ body {
     }
 
     #sponsors {
-      text-align: left;
       padding: 3px 30px;
       border-top: 1px solid $darkgray;
 
