@@ -1,4 +1,4 @@
-<div class="col-md-12 clearfix">
+<div class="panel">
     <helfomat-map
         [organisations]="organisations"
         [clusteredOrganisations]="clusteredOrganisations"
@@ -11,6 +11,7 @@
         (updateZoom)="_zoom$.next($event)"
         (openOrganisation)="_organisation$.next($event)"></helfomat-map>
 </div>
+
 <div class="slide">
     <div class="slide-holder" [@slide]="visibleComponent">
         <div class="col-xs-6">

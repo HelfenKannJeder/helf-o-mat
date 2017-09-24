@@ -1,13 +1,15 @@
-<ul class="list-group">
-    <li class="list-group-item" *ngFor="let question of questions">
+<div class="row">
+    <ul class="list-group">
+        <li class="list-group-item" *ngFor="let question of questions">
         <span class="badge">
             <a role="button" (click)="answerQuestion('YES', question);"><img
-                    src="{{ 'YES' | answerImage:isInactive('YES', question)}}" class="thumb"/></a>
+                src="{{ 'YES' | answerImage:isInactive('YES', question)}}" class="thumb"/></a>
             <a role="button" (click)="answerQuestion('MAYBE', question);"><img
-                    src="{{ 'MAYBE' | answerImage:isInactive('MAYBE', question)}}" class="thumb"/></a>
+                src="{{ 'MAYBE' | answerImage:isInactive('MAYBE', question)}}" class="thumb"/></a>
             <a role="button" (click)="answerQuestion('NO', question);"><img
-                    src="{{ 'NO' | answerImage:isInactive('NO', question)}}" class="thumb"/></a>
+                src="{{ 'NO' | answerImage:isInactive('NO', question)}}" class="thumb"/></a>
         </span>
-        {{question.question}}
-    </li>
-</ul>
+            {{question.question}}
+        </li>
+    </ul>
+</div>

@@ -143,3 +143,32 @@ body {
     clear: both;
   }
 }
+
+.form-control {
+  border: 1px solid $lightgray;
+  border-radius: 0;
+}
+
+.panel {
+  border-radius: 0;
+}
+
+.panel-default {
+  border: none;
+}
+
+.panel-default > .panel-heading {
+  color: $darkgray;
+  background-color: $lightgray;
+  border-color: $darkblue;
+  font-weight: bold;
+}
+
+.progress {
+  background-color: $lightgray;
+  border-radius: 0;
+}
+
+.progress-bar {
+  background-color: $darkblue;
+}
