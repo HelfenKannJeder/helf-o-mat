@@ -61,15 +61,6 @@ export class MapComponent implements OnInit, AfterViewInit {
     constructor(private element: ElementRef) {
     }
 
-    public toggleMapSize(): void {
-        let center = this.map.getCenter();
-        this.mapSize = this.mapSize === 'normal' ? 'fullscreen' : 'normal';
-        setTimeout(() => {
-            google.maps.event.trigger(this.map, 'resize');
-            this.map.setCenter(center);
-        }, MapComponent.MAP_RESIZE_DURATION);
-    }
-
     ngOnInit() {
 
     }
@@ -101,6 +92,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.drawClusteredOrganisations();
         }
 
+        this.configureMapResizeButton();
         google.maps.event.trigger(this.map, 'resize');
     }
 
@@ -262,6 +254,33 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     canChoosePosition(): boolean {
         return this.allowUpdatePosition;
+    }
+
+    private configureMapResizeButton() {
+        let controlButton = document.createElement('span');
+        controlButton.className = 'glyphicon glyphicon-chevron-down';
+        controlButton.style.fontSize = '24px';
+        controlButton.style.marginBottom = '22px';
+        controlButton.style.cursor = 'pointer';
+        controlButton.addEventListener('click', () => {
+            let center = this.map.getCenter();
+            if (this.mapSize === 'normal') {
+                this.mapSize = 'fullscreen';
+                controlButton.className = 'glyphicon glyphicon-chevron-up';
+            } else {
+                this.mapSize = 'normal';
+                controlButton.className = 'glyphicon glyphicon-chevron-down';
+            }
+            setTimeout(() => {
+                google.maps.event.trigger(this.map, 'resize');
+                this.map.setCenter(center);
+            }, MapComponent.MAP_RESIZE_DURATION);
+        });
+
+        let centerControlDiv: any = document.createElement('div');
+        centerControlDiv.appendChild(controlButton);
+        centerControlDiv.index = 1;
+        this.map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
     }
 
     private static convertGeoPointToLatLng(location: GeoPoint): LatLng {
