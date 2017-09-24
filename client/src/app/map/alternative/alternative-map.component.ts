@@ -11,10 +11,12 @@ import {Observable} from 'rxjs/Observable';
 export class AlternativeMapComponent {
 
     @Input() organisations: Observable<Organisation[]>;
+    @Input() center: Observable<GeoPoint>;
     @Input() position: Observable<GeoPoint>;
     @Input() distance: Observable<number>;
     @Input() zoom: Observable<number>;
     @Input() clusteredOrganisations: Observable<GeoPoint[]>;
+    @Input() allowUpdatePosition: boolean = true;
 
     @Output() updatePosition: EventEmitter<GeoPoint> = new EventEmitter<GeoPoint>();
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();

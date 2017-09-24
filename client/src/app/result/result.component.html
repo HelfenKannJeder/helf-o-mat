@@ -1,4 +1,4 @@
-<div class="col-md-12">
+<div class="panel">
     <helfomat-map
         [organisations]="organisations"
         [clusteredOrganisations]="clusteredOrganisations"
@@ -11,11 +11,24 @@
         (updateZoom)="_zoom$.next($event)"
         (openOrganisation)="_organisation$.next($event)"></helfomat-map>
 </div>
-<div class="col-md-6">
-    <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
-</div>
-<div class="col-md-6">
-    <helfomat-list
-            [organisations]="organisations"
-            (openOrganisation)="_organisation$.next($event)"></helfomat-list>
+
+<div class="slide">
+    <div class="slide-holder" [@slide]="visibleComponent">
+        <div class="col-xs-6">
+            <div class="hidden-lg clearfix">
+                <button class="btn btn-default pull-right" (click)="visibleComponent = 'list'">
+                    {{'result.mobile.swipe.list' | translate}}
+                </button>
+            </div>
+            <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
+        </div>
+        <div class="col-xs-6">
+            <button class="btn btn-default hidden-lg" (click)="visibleComponent = 'question'">
+                {{'result.mobile.swipe.questions' | translate}}
+            </button>
+            <helfomat-list
+                [organisations]="organisations"
+                (openOrganisation)="_organisation$.next($event)"></helfomat-list>
+        </div>
+    </div>
 </div>

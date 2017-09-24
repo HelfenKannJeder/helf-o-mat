@@ -1,2 +1,6 @@
-<input id="pac-input" class="form-control" type="text" placeholder="{{ 'map.address' | translate }}">
-<div id="googleMap"></div>
+<input
+    *ngIf="canChoosePosition()"
+    class="addressInput form-control"
+    type="text"
+    placeholder="{{ 'map.address' | translate }}"/>
+<div class="googleMap" [@resizeMap]="mapSize"></div>

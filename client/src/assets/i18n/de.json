@@ -54,5 +54,11 @@
     "no": "Nein"
   },
   "result": {
+    "mobile": {
+      "swipe": {
+        "questions": "Zu den Fragen",
+        "list": "Zu den Ergebnissen"
+      }
+    }
   }
 }
