@@ -1,16 +1,56 @@
-<div style="clear: both"></div>
+<div *ngIf="organisation | async; let organisation; else loading">
+    <img src="assets/temp/Radlader_2124_5x2.jpg" width="100%"/>
 
-<div class="col-md-12">
-    <helfomat-map
-        [organisations]="organisations"
-        [position]="position"
-        [distance]="distance"
-        [center]="center"
-        [zoom]="zoom"></helfomat-map>
-</div>
+    <div class="col-md-8">
+        <h1>{{organisation.name}}</h1>
 
-<div class="col-md-12" *ngIf="organisation | async; let organisation; else loading">
-    <div class="col-md-4" style="float: right">
+        <p>{{organisation.description}}</p>
+
+        <h2>{{'organisation.appointments.title' | translate}}</h2>
+
+        <h2>{{'organisation.group.title' | translate}}</h2>
+        <div *ngFor="let group of organisation.groups">
+            <h3>{{group.name}}</h3>
+            {{group.description}}
+        </div>
+
+        <h2>{{'organisation.persons.title' | translate}}</h2>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{organisation.addresses.length | i18nPlural: {
+                '=1': 'organisation.address.title',
+                'other':'organisation.address.titlePlural'
+                } | translate}}
+            </div>
+            <helfomat-map
+                [organisations]="organisations"
+                [position]="position"
+                [distance]="distance"
+                [center]="center"
+                [zoom]="zoom"
+                [allowUpdatePosition]="false"></helfomat-map>
+            <div class="panel-body">
+                <ul>
+                    <li *ngFor="let address of organisation.addresses">
+                        {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
+                        <span
+                            *ngIf="address.telephone">{{'organisation.address.telephone' | translate}}: {{address.telephone}}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{'organisation.contact.title' | translate}}
+            </div>
+            <div class="panel-body">
+
+            </div>
+        </div>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 {{'organisation.facts.title' | translate}}
@@ -57,51 +97,22 @@
         </div>
     </div>
 
-    <h1>{{organisation.name}}</h1>
-
-    <div class="organisatin-addresses">
-        <h2>{{organisation.addresses.length | i18nPlural: {
-            '=1': 'organisation.address.title',
-            'other':'organisation.address.titlePlural'
-            } | translate}}</h2>
-        <ul>
-            <li *ngFor="let address of organisation.addresses">
-                {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
-                <span
-                    *ngIf="address.telephone">{{'organisation.address.telephone' | translate}}: {{address.telephone}}</span>
-            </li>
-        </ul>
-    </div>
-
-    <h2>{{'organisation.contact.title' | translate}}</h2>
-
-    <h2>{{'organisation.description.title' | translate}}</h2>
-    <p>{{organisation.description}}</p>
-
-    <h2>{{'organisation.appointments.title' | translate}}</h2>
-
-    <h2>{{'organisation.group.title' | translate}}</h2>
-    <div *ngFor="let group of organisation.groups">
-        <h3>{{group.name}}</h3>
-        {{group.description}}
-    </div>
-
-    <h2>{{'organisation.persons.title' | translate}}</h2>
-
-    <h2>{{'organisation.questionsAndAnswers.title' | translate}}</h2>
-    <div class="panel panel-default" *ngIf="userAnswers | async; let userAnswers; else loading">
-        <table class="table">
-            <tr>
-                <th>{{'organisation.questionsAndAnswers.question' | translate}}</th>
-                <th>{{'organisation.questionsAndAnswers.organisation' | translate}}</th>
-                <th>{{'organisation.questionsAndAnswers.you' | translate}}</th>
-            </tr>
-            <tr *ngFor="let question of organisation.questions;  let i = index;">
-                <td>{{question.question}}</td>
-                <td><img src="{{question.answer | answerImage}}" class="thumb"/></td>
-                <td><img src="{{userAnswers[i] | answerImage}}" class="thumb"/></td>
-            </tr>
-        </table>
+    <div class="col-md-6">
+        <h2>{{'organisation.questionsAndAnswers.title' | translate}}</h2>
+        <div class="panel panel-default" *ngIf="userAnswers | async; let userAnswers; else loading">
+            <table class="table">
+                <tr>
+                    <th>{{'organisation.questionsAndAnswers.question' | translate}}</th>
+                    <th>{{'organisation.questionsAndAnswers.organisation' | translate}}</th>
+                    <th>{{'organisation.questionsAndAnswers.you' | translate}}</th>
+                </tr>
+                <tr *ngFor="let question of organisation.questions;  let i = index;">
+                    <td>{{question.question}}</td>
+                    <td><img src="{{question.answer | answerImage}}" class="thumb"/></td>
+                    <td><img src="{{userAnswers[i] | answerImage}}" class="thumb"/></td>
+                </tr>
+            </table>
+        </div>
     </div>
 
 </div>

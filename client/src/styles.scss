@@ -101,13 +101,13 @@ body {
     margin-top: -50px;
     background-color: $white;
     box-shadow: 0 0 20px $darkgray;
+    text-align: left;
 
     #header {
       background-image: url("./assets/images/logo.png");
       width: 1000px;
       height: 160px;
       color: white;
-      text-align: left;
 
       h1 {
         margin: 0;
@@ -128,89 +128,7 @@ body {
       }
     }
 
-    #leftContent {
-      float: left;
-      padding: 30px;
-
-      h1, h2, h3, h4, h5, h6 {
-        color: $lightblue;
-      }
-
-      #menu ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        font-size: 16px;
-
-        li {
-          float: left;
-
-          a {
-            display: block;
-            line-height: 30px;
-            margin-right: 10px;
-            padding: 0 22px;
-            color: $white;
-            text-decoration: none;
-            background-color: $gray;
-          }
-
-          &.active a {
-            background-color: $lightblue;
-          }
-        }
-      }
-
-      #textContent {
-        clear: both;
-        text-align: left;
-        width: 680px;
-        padding-top: 30px;
-        color: $darkgray;
-      }
-
-      #textContent h1 {
-        margin: 0;
-        padding: 0;
-        color: $lightblue;
-      }
-    }
-
-    #rightContent {
-      float: right;
-      margin-top: 20px;
-      width: 250px;
-
-      #borderMenu {
-        clear: both;
-        margin-top: 10px;
-        border-left: 1px solid $darkgray;
-        background-color: $lightgray;
-        color: $darkgray;
-        text-align: left;
-        padding: 6px 8px;
-
-        ul {
-          margin: 0;
-          padding: 0;
-          list-style-type: none;
-
-          li {
-            padding: 0;
-            margin: 0 10px 0 0;
-            float: left;
-
-            a {
-              color: $darkgray;
-              text-decoration: none;
-            }
-          }
-        }
-      }
-    }
-
     #sponsors {
-      text-align: left;
       padding: 3px 30px;
       border-top: 1px solid $darkgray;
 
@@ -224,4 +142,33 @@ body {
   .clear {
     clear: both;
   }
+}
+
+.form-control {
+  border: 1px solid $lightgray;
+  border-radius: 0;
+}
+
+.panel {
+  border-radius: 0;
+}
+
+.panel-default {
+  border: none;
+}
+
+.panel-default > .panel-heading {
+  color: $darkgray;
+  background-color: $lightgray;
+  border-color: $darkblue;
+  font-weight: bold;
+}
+
+.progress {
+  background-color: $lightgray;
+  border-radius: 0;
+}
+
+.progress-bar {
+  background-color: $darkblue;
 }
