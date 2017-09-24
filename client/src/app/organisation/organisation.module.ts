@@ -4,12 +4,12 @@ import {AnswerImageModule} from '../shared/answer-image.module';
 import {BrowserModule} from '@angular/platform-browser';
 import {OrganisationScoreModule} from '../_internal/components/organisation-score.module';
 import {TranslateModule} from '@ngx-translate/core';
-import {AlternativeMapModule} from '../map/alternative/alternative-map.module';
+import {MapModule} from '../map/map.module';
 
 @NgModule({
     imports: [
         TranslateModule,
-        AlternativeMapModule,
+        MapModule,
         AnswerImageModule,
         BrowserModule,
         OrganisationScoreModule
