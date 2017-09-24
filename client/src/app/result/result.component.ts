@@ -9,12 +9,25 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
 import {Answer} from '../shared/answer.model';
 import {ObservableUtil} from '../shared/observable.util';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
     selector: 'app-result',
     templateUrl: './result.component.html',
-    styleUrls: ['./result.component.scss'],
-    providers: [SearchService]
+    styleUrls: ['./result.component.less'],
+    providers: [SearchService],
+    animations: [
+        trigger('slide', [
+            state('question', style({
+                transform: 'translate3d(0, 0, 0)'
+            })),
+            state('list', style({
+                transform: 'translate3d(-50%, 0, 0)'
+            })),
+            transition('list => question', animate('400ms ease-in-out')),
+            transition('question => list', animate('400ms ease-in-out'))
+        ])
+    ]
 })
 export class ResultComponent implements OnInit {
 
@@ -32,6 +45,8 @@ export class ResultComponent implements OnInit {
     // Outputs
     public organisations;
     public clusteredOrganisations;
+
+    public visibleComponent = 'list';
 
     constructor(private searchService: SearchService,
                 private router: Router,
