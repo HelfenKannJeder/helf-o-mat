@@ -3,4 +3,7 @@
     class="addressInput form-control"
     type="text"
     placeholder="{{ 'map.address' | translate }}"/>
-<div class="googleMap"></div>
+<div class="googleMap" [@resizeMap]="mapSize"></div>
+<div class="map-resize-button">
+    <button (click)="toggleMapSize()">{{mapSize}}</button>
+</div>

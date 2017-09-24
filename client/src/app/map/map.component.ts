@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {GeoPoint} from '../organisation/geopoint.model';
 import {BoundingBox} from '../organisation/boundingbox.model';
 import MarkerClusterer from 'node-js-marker-clusterer';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
@@ -17,9 +18,23 @@ import SearchBox = google.maps.places.SearchBox;
 @Component({
     selector: 'helfomat-map',
     templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss']
+    styleUrls: ['./map.component.scss'],
+    animations: [
+        trigger('resizeMap', [
+            state('normal', style({
+                height: '300px'
+            })),
+            state('fullscreen', style({
+                height: 'calc(100vh - 160px)'
+            })),
+            transition('fullscreen => normal', animate(MapComponent.MAP_RESIZE_DURATION + 'ms ease-in-out')),
+            transition('normal => fullscreen', animate(MapComponent.MAP_RESIZE_DURATION + 'ms ease-in-out'))
+        ])
+    ]
 })
 export class MapComponent implements OnInit, AfterViewInit {
+
+    public static readonly MAP_RESIZE_DURATION = 400;
 
     @Input() organisations?: Observable<Organisation[]>;
     @Input() center: Observable<GeoPoint>;
@@ -41,7 +56,18 @@ export class MapComponent implements OnInit, AfterViewInit {
     private positionCircle: Circle;
     private markerClusterer: MarkerClusterer;
 
+    public mapSize = 'normal';
+
     constructor(private element: ElementRef) {
+    }
+
+    public toggleMapSize(): void {
+        let center = this.map.getCenter();
+        this.mapSize = this.mapSize === 'normal' ? 'fullscreen' : 'normal';
+        setTimeout(() => {
+            google.maps.event.trigger(this.map, 'resize');
+            this.map.setCenter(center);
+        }, MapComponent.MAP_RESIZE_DURATION);
     }
 
     ngOnInit() {
@@ -56,7 +82,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             scaleControl: true,
             streetViewControl: false,
             rotateControl: false,
-            fullscreenControl: true
+            fullscreenControl: false
         });
 
         this.configureViewPortChange();
