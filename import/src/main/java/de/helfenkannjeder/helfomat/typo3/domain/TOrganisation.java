@@ -38,8 +38,17 @@ public class TOrganisation {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
+    @Where(clause = "deleted=0")
+    private List<TEmployee> employees;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organisation")
     @Where(clause="deleted=0")
     private List<TGroup> groups;
+
+    private boolean deleted;
+
+    private boolean hidden;
 
     public String getUid() {
         return uid;
@@ -83,5 +92,9 @@ public class TOrganisation {
 
     public void setOrganisationtype(TOrganisationType organisationtype) {
         this.organisationtype = organisationtype;
+    }
+
+    public List<TEmployee> getEmployees() {
+        return employees;
     }
 }

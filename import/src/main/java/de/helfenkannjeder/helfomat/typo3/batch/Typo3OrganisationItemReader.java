@@ -33,7 +33,7 @@ public class Typo3OrganisationItemReader extends AbstractPagingItemReader<TOrgan
             this.results.clear();
         }
 
-        this.typo3OrganisationRepository.findAll(new PageRequest(getPage(), getPageSize())).forEach(this.results::add);
+        this.results.addAll(this.typo3OrganisationRepository.findAvailable(new PageRequest(getPage(), getPageSize())));
     }
 
     @Override

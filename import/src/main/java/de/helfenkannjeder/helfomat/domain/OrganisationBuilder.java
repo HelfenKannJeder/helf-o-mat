@@ -9,6 +9,7 @@ public class OrganisationBuilder {
     private String description;
     private String website;
     private String logo;
+    private List<ContactPerson> contactPersons;
     private List<String> pictures;
     private List<Address> addresses;
     private List<Question> questions;
@@ -50,6 +51,11 @@ public class OrganisationBuilder {
         return this;
     }
 
+    public OrganisationBuilder setContactPersons(List<ContactPerson> contactPersons) {
+        this.contactPersons = contactPersons;
+        return this;
+    }
+
     public OrganisationBuilder setAddresses(List<Address> addresses) {
         this.addresses = addresses;
         return this;
@@ -71,6 +77,6 @@ public class OrganisationBuilder {
     }
 
     public Organisation build() {
-        return new Organisation(id, name, type, description, website, logo, pictures, addresses, questions, mapPin, groups);
+        return new Organisation(id, name, type, description, website, logo, pictures, contactPersons, addresses, questions, mapPin, groups);
     }
 }
