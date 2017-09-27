@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.dto.AddressDto;
 import de.helfenkannjeder.helfomat.dto.AnswerDto;
 import de.helfenkannjeder.helfomat.dto.BoundingBoxDto;
 import de.helfenkannjeder.helfomat.dto.ClusteredGeoPointDto;
+import de.helfenkannjeder.helfomat.dto.ContactPersonDto;
 import de.helfenkannjeder.helfomat.dto.GeoPointDto;
 import de.helfenkannjeder.helfomat.dto.OrganisationDto;
 import de.helfenkannjeder.helfomat.dto.QuestionAnswerDto;
@@ -75,22 +76,22 @@ public class SearchService {
         boolQueryBuilder.filter(nestedQuery("addresses", filterDistance(position, distance)));
 
         SortBuilder sortBuilder =
-                SortBuilders
-                        .geoDistanceSort("addresses.location")
-                        .setNestedPath("addresses")
-                        .point(position.getLat(), position.getLon())
-                        .unit(DistanceUnit.KILOMETERS)
-                        .order(SortOrder.DESC);
+            SortBuilders
+                .geoDistanceSort("addresses.location")
+                .setNestedPath("addresses")
+                .point(position.getLat(), position.getLon())
+                .unit(DistanceUnit.KILOMETERS)
+                .order(SortOrder.DESC);
 
         SearchResponse searchResponse = client
-                .prepareSearch(index)
-                .setTypes(type)
-                .setQuery(boolQueryBuilder)
-                .setSize(DEFAULT_MAX_RESULT_SIZE)
-                .addSort(SortBuilders.scoreSort())
-                .addSort(sortBuilder)
-                .execute()
-                .actionGet();
+            .prepareSearch(index)
+            .setTypes(type)
+            .setQuery(boolQueryBuilder)
+            .setSize(DEFAULT_MAX_RESULT_SIZE)
+            .addSort(SortBuilders.scoreSort())
+            .addSort(sortBuilder)
+            .execute()
+            .actionGet();
         return extractOrganisations(searchResponse);
     }
 
@@ -99,18 +100,18 @@ public class SearchService {
                                                     BoundingBoxDto boundingBoxDto) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         boolQueryBuilder.filter(nestedQuery("addresses",
-                boolQuery()
-                        .must(filterBox(boundingBoxDto))
-                        .mustNot(filterDistance(position, distance))
-                )
+            boolQuery()
+                .must(filterBox(boundingBoxDto))
+                .mustNot(filterDistance(position, distance))
+            )
         );
 
         SearchResponse searchResponse = client
-                .prepareSearch(index)
-                .setTypes(type)
-                .setQuery(boolQueryBuilder)
-                .setSize(DEFAULT_MAX_RESULT_SIZE) // Hide results, only aggregation relevant
-                .get();
+            .prepareSearch(index)
+            .setTypes(type)
+            .setQuery(boolQueryBuilder)
+            .setSize(DEFAULT_MAX_RESULT_SIZE) // Hide results, only aggregation relevant
+            .get();
         return extractOrganisations(searchResponse)
             .stream()
             .map(OrganisationDto::getAddresses)
@@ -122,9 +123,9 @@ public class SearchService {
 
     private QueryBuilder buildQuestionQuery(QuestionAnswerDto questionAnswerDto) {
         BoolQueryBuilder questionQuery = boolQuery()
-                .minimumNumberShouldMatch(1)
-                .must(termQuery("questions.uid", questionAnswerDto.getId()))
-                .should(termQuery("questions.answer", questionAnswerDto.getAnswer().toString()).boost(2.0f));
+            .minimumNumberShouldMatch(1)
+            .must(termQuery("questions.uid", questionAnswerDto.getId()))
+            .should(termQuery("questions.answer", questionAnswerDto.getAnswer().toString()).boost(2.0f));
 
         for (AnswerDto neighbour : questionAnswerDto.getAnswer().getNeighbours()) {
             questionQuery.should(termQuery("questions.answer", neighbour.toString()).boost(1.0f));
@@ -138,29 +139,29 @@ public class SearchService {
         GeoPointDto bottomLeft = boundingBoxDto.getSouthWest();
 
         return geoBoundingBoxQuery("addresses.location")
-                .topRight(topRight.getLat(), topRight.getLon())
-                .bottomLeft(bottomLeft.getLat(), bottomLeft.getLon());
+            .topRight(topRight.getLat(), topRight.getLon())
+            .bottomLeft(bottomLeft.getLat(), bottomLeft.getLon());
     }
 
     private GeoDistanceQueryBuilder filterDistance(GeoPoint position, double distance) {
         return geoDistanceQuery("addresses.location")
-                .lat(position.getLat())
-                .lon(position.getLon())
-                .distance(distance, DistanceUnit.KILOMETERS);
+            .lat(position.getLat())
+            .lon(position.getLon())
+            .distance(distance, DistanceUnit.KILOMETERS);
     }
 
     private List<ClusteredGeoPointDto> extractClusteredOrganisations(SearchResponse searchResponse) {
         return searchResponse
-                .getAggregations().<InternalNested>get("addresses")
-                .getAggregations().<GeoHashGrid>get("grouped_organizations")
-                .getBuckets().stream()
-                .map(bucket -> new ClusteredGeoPointDto(
-                        GeoPointDto.fromGeoPoint(
-                                GeoPoint.fromGeoPoint((org.elasticsearch.common.geo.GeoPoint) bucket.getKey())
-                        ),
-                        bucket.getDocCount()
-                ))
-                .collect(Collectors.toList());
+            .getAggregations().<InternalNested>get("addresses")
+            .getAggregations().<GeoHashGrid>get("grouped_organizations")
+            .getBuckets().stream()
+            .map(bucket -> new ClusteredGeoPointDto(
+                GeoPointDto.fromGeoPoint(
+                    GeoPoint.fromGeoPoint((org.elasticsearch.common.geo.GeoPoint) bucket.getKey())
+                ),
+                bucket.getDocCount()
+            ))
+            .collect(Collectors.toList());
     }
 
     private List<OrganisationDto> extractOrganisations(SearchResponse searchResponse) {
@@ -181,80 +182,91 @@ public class SearchService {
     @SuppressWarnings("unchecked")
     private OrganisationDto extractOrganisation(Map<String, Object> source) {
         List<Map<String, Object>> addresses = (List<Map<String, Object>>) source.get("addresses");
+        List<Map<String, Object>> contactPersons = (List<Map<String, Object>>) source.get("contactPersons");
         return new OrganisationDto(
-                (String) source.get("id"),
-                (String) source.get("name"),
-                (String) source.get("description"),
-                (String) source.get("website"),
-                (String) source.get("mapPin"),
-                addresses.stream().map(this::extractAddress).collect(Collectors.toList()),
-                (String) source.get("logo")
+            (String) source.get("id"),
+            (String) source.get("name"),
+            (String) source.get("description"),
+            (String) source.get("website"),
+            (String) source.get("mapPin"),
+            addresses.stream().map(this::extractAddress).collect(Collectors.toList()),
+            contactPersons.stream().map(this::extractContactPerson).collect(Collectors.toList()),
+            (String) source.get("logo")
         );
+    }
+
+    private ContactPersonDto extractContactPerson(Map<String, Object> contactPerson) {
+        return new ContactPersonDto.Builder()
+            .setFirstname((String) contactPerson.get("firstname"))
+            .setLastname((String) contactPerson.get("lastname"))
+            .setRank((String) contactPerson.get("rank"))
+            .setTelephone((String) contactPerson.get("telephone"))
+            .build();
     }
 
     @SuppressWarnings("unchecked")
     private AddressDto extractAddress(Map<String, Object> address) {
         return new AddressDto(
-                (String) address.get("street"),
-                (String) address.get("addressAppendix"),
-                (String) address.get("city"),
-                (String) address.get("zipcode"),
-                GeoPointDto.fromGeoPoint(extractGeoPoint((Map<String, Object>) address.get("location"))),
-                (String) address.get("telephone"),
-                (String) address.get("website")
+            (String) address.get("street"),
+            (String) address.get("addressAppendix"),
+            (String) address.get("city"),
+            (String) address.get("zipcode"),
+            GeoPointDto.fromGeoPoint(extractGeoPoint((Map<String, Object>) address.get("location"))),
+            (String) address.get("telephone"),
+            (String) address.get("website")
         );
     }
 
     private GeoPoint extractGeoPoint(Map<String, Object> geoPoint) {
         return new GeoPoint(
-                (double) geoPoint.get("lat"),
-                (double) geoPoint.get("lon")
+            (double) geoPoint.get("lat"),
+            (double) geoPoint.get("lon")
         );
     }
 
     private SearchResponse executeQuery(QueryBuilder queryBuilder, SortBuilder sortBuilder) {
         return client
-                .prepareSearch(index)
-                .setTypes(type)
-                .setQuery(queryBuilder)
-                .setSize(DEFAULT_MAX_RESULT_SIZE)
-                .addSort(SortBuilders.scoreSort())
-                .addSort(sortBuilder)
-                .execute()
-                .actionGet();
+            .prepareSearch(index)
+            .setTypes(type)
+            .setQuery(queryBuilder)
+            .setSize(DEFAULT_MAX_RESULT_SIZE)
+            .addSort(SortBuilders.scoreSort())
+            .addSort(sortBuilder)
+            .execute()
+            .actionGet();
     }
 
     public List<QuestionDto> findQuestions() {
         Nested nested = client.prepareSearch(index)
-                .addAggregation(AggregationBuilders
-                        .nested("questions")
-                        .path("questions")
+            .addAggregation(AggregationBuilders
+                .nested("questions")
+                .path("questions")
+                .subAggregation(
+                    AggregationBuilders.terms("question")
+                        .field("questions.question")
+                        .size(DEFAULT_MAX_RESULT_SIZE)
                         .subAggregation(
-                                AggregationBuilders.terms("question")
-                                        .field("questions.question")
-                                        .size(DEFAULT_MAX_RESULT_SIZE)
-                                        .subAggregation(
-                                                AggregationBuilders.terms("id")
-                                                        .field("questions.uid")
-                                                        .size(1)
-                                        )
-                                        .subAggregation(
-                                                AggregationBuilders.terms("description")
-                                                        .field("questions.description")
-                                                        .size(1)
-                                        )
-                                        .subAggregation(
-                                                AggregationBuilders.terms("position")
-                                                        .field("questions.position")
-                                                        .size(1)
-                                        )
+                            AggregationBuilders.terms("id")
+                                .field("questions.uid")
+                                .size(1)
                         )
-                ).get().getAggregations().get("questions");
+                        .subAggregation(
+                            AggregationBuilders.terms("description")
+                                .field("questions.description")
+                                .size(1)
+                        )
+                        .subAggregation(
+                            AggregationBuilders.terms("position")
+                                .field("questions.position")
+                                .size(1)
+                        )
+                )
+            ).get().getAggregations().get("questions");
         StringTerms questions = nested.getAggregations().get("question");
         return questions.getBuckets().stream()
-                .map(this::bucketToQuestion)
-                .sorted(this::sortQuestions)
-                .collect(Collectors.toList());
+            .map(this::bucketToQuestion)
+            .sorted(this::sortQuestions)
+            .collect(Collectors.toList());
 
     }
 
@@ -283,10 +295,10 @@ public class SearchService {
                                                           String aggregationName,
                                                           Function<Terms.Bucket, R> bucketConversion) {
         return bucket.getAggregations().<T>get(aggregationName)
-                .getBuckets()
-                .stream()
-                .map(bucketConversion)
-                .findFirst();
+            .getBuckets()
+            .stream()
+            .map(bucketConversion)
+            .findFirst();
     }
 
 }

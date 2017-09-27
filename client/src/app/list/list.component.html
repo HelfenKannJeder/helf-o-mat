@@ -7,8 +7,19 @@
                      [attr.alt]="organisation.name">
             </div>
             <div class="media-body">
-                <organisation-score [scoreNorm]="organisation.scoreNorm"></organisation-score>
-                <a [attr.href]="organisation.website">{{organisation.website}}</a>
+                <p>
+                    <organisation-score [scoreNorm]="organisation.scoreNorm"></organisation-score>
+                </p>
+                <p>
+                    <span *ngFor="let contactPerson of organisation.contactPersons">
+                        <strong>{{contactPerson.firstname}} {{contactPerson.lastname}}</strong>
+                        <span *ngIf="contactPerson.rank">({{contactPerson.rank}})</span>
+                        <br/>
+                    </span>
+                </p>
+                <p>
+                    <a [attr.href]="organisation.website">{{organisation.website}}</a>
+                </p>
             </div>
         </div>
     </div>
