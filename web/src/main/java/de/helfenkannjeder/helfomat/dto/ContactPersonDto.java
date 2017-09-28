@@ -1,5 +1,7 @@
 package de.helfenkannjeder.helfomat.dto;
 
+import de.helfenkannjeder.helfomat.domain.ContactPerson;
+
 /**
  * @author Valentin Zickner
  */
@@ -46,6 +48,15 @@ public class ContactPersonDto {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public static ContactPersonDto fromContactPerson(ContactPerson contactPerson) {
+        return new ContactPersonDto.Builder()
+            .setFirstname(contactPerson.getFirstname())
+            .setLastname(contactPerson.getLastname())
+            .setRank(contactPerson.getRank())
+            .setTelephone(contactPerson.getTelephone())
+            .build();
     }
 
     public static class Builder {
