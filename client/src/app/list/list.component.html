@@ -1,6 +1,6 @@
 <div class="panel panel-default" *ngFor="let organisation of currentOrganisations">
-    <div class="panel-heading" (click)="openOrganisation.emit(organisation)">{{organisation.name}}</div>
-    <div class="panel-body" (click)="openOrganisation.emit(organisation)">
+    <div class="panel-heading pointer" (click)="openOrganisation.emit(organisation)">{{organisation.name}}</div>
+    <div class="panel-body pointer" (click)="openOrganisation.emit(organisation)">
         <div class="media">
             <div class="media-left media-top media-logo">
                 <img class="media-object" [attr.src]="getImagePath(organisation.logo)"

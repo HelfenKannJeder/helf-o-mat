@@ -1,5 +1,7 @@
 <div *ngIf="organisation | async; let organisation; else loading">
-    <img src="assets/temp/Radlader_2124_5x2.jpg" width="100%"/>
+    <div class="custom-content">
+        <img src="assets/temp/Radlader_2124_5x2.jpg" width="100%"/>
+    </div>
 
     <div class="col-md-8">
         <h1>{{organisation.name}}</h1>
