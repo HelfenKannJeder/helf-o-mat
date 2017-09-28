@@ -1,9 +1,9 @@
 package de.helfenkannjeder.helfomat.domain;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+
+import java.util.List;
 
 /**
  * @author Valentin Zickner
@@ -19,13 +19,24 @@ public class Organisation {
     private String website;
     private String logo;
     private List<String> pictures;
+    private List<ContactPerson> contactPersons;
     private List<Address> addresses;
     private List<Question> questions;
     private String mapPin;
     private List<Group> groups;
 
-    Organisation(String id, String name, String type, String description, String website, String logo, List<String> pictures, List<Address> addresses,
-            List<Question> questions, String mapPin, List<Group> groups) {
+    Organisation(String id,
+                 String name,
+                 String type,
+                 String description,
+                 String website,
+                 String logo,
+                 List<String> pictures,
+                 List<ContactPerson> contactPersons,
+                 List<Address> addresses,
+                 List<Question> questions,
+                 String mapPin,
+                 List<Group> groups) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -33,6 +44,7 @@ public class Organisation {
         this.website = website;
         this.logo = logo;
         this.pictures = pictures;
+        this.contactPersons = contactPersons;
         this.addresses = addresses;
         this.questions = questions;
         this.mapPin = mapPin;
@@ -133,5 +145,13 @@ public class Organisation {
 
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    public List<ContactPerson> getContactPersons() {
+        return contactPersons;
+    }
+
+    public void setContactPersons(List<ContactPerson> contactPersons) {
+        this.contactPersons = contactPersons;
     }
 }
