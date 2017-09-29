@@ -1,5 +1,7 @@
 <div *ngIf="organisation | async; let organisation; else loading">
-    <img src="assets/temp/Radlader_2124_5x2.jpg" width="100%"/>
+    <div class="custom-content">
+        <img src="assets/temp/Radlader_2124_5x2.jpg" width="100%"/>
+    </div>
 
     <div class="col-md-8">
         <h1>{{organisation.name}}</h1>
@@ -47,7 +49,13 @@
                 {{'organisation.contact.title' | translate}}
             </div>
             <div class="panel-body">
-
+                <div *ngFor="let contactPerson of organisation.contactPersons" class="row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <h4>{{contactPerson.firstname}} {{contactPerson.lastname}}</h4>
+                        <p *ngIf="contactPerson.rank">({{contactPerson.rank}})<br/></p>
+                    </div>
+                </div>
             </div>
         </div>
 

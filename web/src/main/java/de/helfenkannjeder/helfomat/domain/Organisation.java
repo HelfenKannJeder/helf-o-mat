@@ -18,6 +18,7 @@ public class Organisation {
     private String website;
     private String logo;
     private List<String> pictures;
+    private List<ContactPerson> contactPersons;
     private List<Address> addresses;
     private List<Question> questions;
     private String mapPin;
@@ -71,14 +72,6 @@ public class Organisation {
         this.pictures = pictures;
     }
 
-    @Override
-    public String toString() {
-        return "Organisation{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
     public List<Address> getAddresses() {
         return addresses;
     }
@@ -109,5 +102,21 @@ public class Organisation {
 
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    public List<ContactPerson> getContactPersons() {
+        return contactPersons;
+    }
+
+    public void setContactPersons(List<ContactPerson> contactPersons) {
+        this.contactPersons = contactPersons;
+    }
+
+    @Override
+    public String toString() {
+        return "Organisation{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            '}';
     }
 }
