@@ -43,8 +43,8 @@ export class ResultComponent implements OnInit {
     public zoom: Observable<number>;
 
     // Outputs
-    public organisations;
-    public clusteredOrganisations;
+    public organisations: Observable<Organisation[]>;
+    public clusteredOrganisations: Observable<GeoPoint[]>;
 
     public visibleComponent = 'list';
 
