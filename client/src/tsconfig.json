@@ -13,6 +13,7 @@
     "typeRoots": [
       "../node_modules/@types",
       "../typings"
-    ]
+    ],
+    "noImplicitAny": true
   }
 }

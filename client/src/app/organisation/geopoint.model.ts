@@ -26,7 +26,7 @@ export class GeoPoint {
         return R_earth * c;
     }
 
-    private static deg2rad(deg) {
+    private static deg2rad(deg: number) {
         return deg * (Math.PI / 180)
     }
 }

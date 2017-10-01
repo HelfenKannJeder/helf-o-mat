@@ -236,7 +236,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         });
 
         if (this.canChoosePosition()) {
-            google.maps.event.addListener(this.positionMarker, 'drag', (event) => {
+            google.maps.event.addListener(this.positionMarker, 'drag', (event: { latLng: LatLng }) => {
                 this.updatePosition.next(MapComponent.convertLatLngToGeoPoint(event.latLng));
             });
         }
