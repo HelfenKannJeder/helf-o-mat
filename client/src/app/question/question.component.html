@@ -5,20 +5,20 @@
             <p class="description">{{question.description}}</p>
         </div>
         <p class="clearfix">
-            <a class="btn btn-lg" role="button" (click)="answerQuestion('YES', question);">
+            <a class="btn btn-lg btn-yes" role="button" (click)="answerQuestion('YES', question);">
                 <img src="{{ 'YES' | answerImage}}"/><br/>
                 {{ 'question.yes' | translate }}
             </a>
-            <a class="btn btn-lg" role="button" (click)="answerQuestion('MAYBE', question);">
+            <a class="btn btn-lg btn-maybe" role="button" (click)="answerQuestion('MAYBE', question);">
                 <img src="{{ 'MAYBE' | answerImage}}"/><br/>
                 {{ 'question.maybe' | translate }}
             </a>
-            <a class="btn btn-lg" role="button" (click)="answerQuestion('NO', question);">
+            <a class="btn btn-lg btn-no" role="button" (click)="answerQuestion('NO', question);">
                 <img src="{{ 'NO' | answerImage}}"/><br/>
                 {{ 'question.no' | translate }}
             </a>
         </p>
-        <p class="text-center">
+        <p class="text-center question-progress">
         <span *ngFor="let answer of userAnswers" class="glyphicon glyphicon-stop answer"
               [ngClass]="classOfAnswer(answer)" aria-hidden="true"></span>
             <span *ngFor="let number of unansweredQuestions" class="glyphicon glyphicon-stop answer answer-missing"
