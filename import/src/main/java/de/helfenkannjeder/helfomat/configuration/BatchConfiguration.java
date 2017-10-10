@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.configuration;
 
 import de.helfenkannjeder.helfomat.batch.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.batch.RenameAliasBatchlet;
+import de.helfenkannjeder.helfomat.batch.RenamePictureSymlinkBatchlet;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.processor.AnswerQuestionsProcessor;
 import de.helfenkannjeder.helfomat.processor.DuplicateOrganisationFilterProcessor;
@@ -37,14 +38,14 @@ public class BatchConfiguration {
                                           ItemProcessor<TOrganisation, Organisation> organisationProcessor,
                                           ItemWriter<Organisation> organisationItemWriter) {
         return stepBuilderFactory.get("importOrganisationFromJpa")
-                .<TOrganisation, Organisation>chunk(100)
-                .reader(organisationItemReader)
-                .processor(tOrganisation -> {
-                    Organisation organisation = organisationProcessor.process(tOrganisation);
-                    return this.answerQuestionsProcessor.process(organisation);
-                })
-                .writer(organisationItemWriter)
-                .build();
+            .<TOrganisation, Organisation>chunk(100)
+            .reader(organisationItemReader)
+            .processor(tOrganisation -> {
+                Organisation organisation = organisationProcessor.process(tOrganisation);
+                return this.answerQuestionsProcessor.process(organisation);
+            })
+            .writer(organisationItemWriter)
+            .build();
     }
 
     @Bean
@@ -54,44 +55,55 @@ public class BatchConfiguration {
                                           DuplicateOrganisationFilterProcessor duplicateOrganisationFilterProcessor,
                                           ItemWriter<Organisation> organisationItemWriter) {
         return stepBuilderFactory.get("importOrganisationFromThw")
-                .listener(new WaitChunkListener(60 * 1000))
-                .<Organisation, Organisation>chunk(20)
-                .reader(organisationItemReader)
-                .processor(organisation -> {
-                    organisation = duplicateOrganisationFilterProcessor.process(organisation);
-                    return this.answerQuestionsProcessor.process(organisation);
-                })
-                .writer(organisationItemWriter)
-                .build();
+            .listener(new WaitChunkListener(60 * 1000))
+            .<Organisation, Organisation>chunk(20)
+            .reader(organisationItemReader)
+            .processor(organisation -> {
+                organisation = duplicateOrganisationFilterProcessor.process(organisation);
+                return this.answerQuestionsProcessor.process(organisation);
+            })
+            .writer(organisationItemWriter)
+            .build();
     }
 
     @Bean
     public Step createIndexStep(StepBuilderFactory stepBuilderFactory,
                                 CreateIndexBatchlet createIndexBatchlet) {
         return stepBuilderFactory.get("createIndexStep")
-                .tasklet(new BatchletAdapter(createIndexBatchlet))
-                .build();
+            .tasklet(new BatchletAdapter(createIndexBatchlet))
+            .build();
     }
 
     @Bean
     public Step renameAliasStep(StepBuilderFactory stepBuilderFactory,
                                 RenameAliasBatchlet renameAliasBatchlet) {
         return stepBuilderFactory.get("renameAliasStep")
-                .tasklet(new BatchletAdapter(renameAliasBatchlet))
-                .build();
+            .tasklet(new BatchletAdapter(renameAliasBatchlet))
+            .build();
     }
+
+    @Bean
+    public Step renamePictureSymlinkStep(StepBuilderFactory stepBuilderFactory,
+                                         RenamePictureSymlinkBatchlet renamePictureSymlinkBatchlet) {
+        return stepBuilderFactory.get("renamePictureSymlinkStep")
+            .tasklet(new BatchletAdapter(renamePictureSymlinkBatchlet))
+            .build();
+    }
+
 
     @Bean
     public Job importDataJob(JobBuilderFactory jobBuilderFactory,
                              Step createIndexStep,
                              @Qualifier("importOrganisationFromJpa") Step importOrganisationFromJpa,
                              @Qualifier("importOrganisationFromThw") Step importOrganisationFromThw,
-                             Step renameAliasStep) {
+                             Step renameAliasStep,
+                             Step renamePictureSymlinkStep) {
         return jobBuilderFactory.get("importDataJob")
-                .start(createIndexStep)
-                .next(importOrganisationFromJpa)
-                .next(importOrganisationFromThw)
-                .next(renameAliasStep)
-                .build();
+            .start(createIndexStep)
+            .next(importOrganisationFromJpa)
+            .next(importOrganisationFromThw)
+            .next(renameAliasStep)
+            .next(renamePictureSymlinkStep)
+            .build();
     }
 }

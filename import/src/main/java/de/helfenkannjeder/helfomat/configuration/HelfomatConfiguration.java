@@ -13,7 +13,12 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "helfomat")
 public class HelfomatConfiguration {
-    List<QuestionMapping> questions = new ArrayList<>();
+
+    private static final String DEFAULT_PICTURE_FOLDER = "pictures";
+
+    private List<QuestionMapping> questions = new ArrayList<>();
+
+    private String pictureFolder = DEFAULT_PICTURE_FOLDER;
 
     public List<QuestionMapping> getQuestions() {
         return questions;
@@ -21,6 +26,14 @@ public class HelfomatConfiguration {
 
     public void setQuestions(List<QuestionMapping> questions) {
         this.questions = questions;
+    }
+
+    public String getPictureFolder() {
+        return pictureFolder;
+    }
+
+    public void setPictureFolder(String pictureFolder) {
+        this.pictureFolder = pictureFolder;
     }
 
     public static class QuestionMapping {

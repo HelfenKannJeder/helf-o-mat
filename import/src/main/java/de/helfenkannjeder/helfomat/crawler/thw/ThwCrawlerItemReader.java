@@ -7,6 +7,10 @@ import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.domain.OrganisationBuilder;
 import de.helfenkannjeder.helfomat.domain.OrganisationType;
+import de.helfenkannjeder.helfomat.domain.PictureId;
+import de.helfenkannjeder.helfomat.picture.DownloadFailedException;
+import de.helfenkannjeder.helfomat.picture.PictureService;
+import de.helfenkannjeder.helfomat.service.IndexManager;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,6 +42,8 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
     private static final Logger LOGGER = Logger.getLogger(ThwCrawlerItemReader.class);
 
     private final ThwCrawlerConfiguration thwCrawlerConfiguration;
+    private final PictureService pictureService;
+    private final IndexManager indexManager;
 
     private Iterator<Element> iterator;
 
@@ -47,9 +53,11 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
     private static final Pattern LONGITUDE_PATTERN = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)");
 
 	@Autowired
-    public ThwCrawlerItemReader(ThwCrawlerConfiguration thwCrawlerConfiguration) {
+    public ThwCrawlerItemReader(ThwCrawlerConfiguration thwCrawlerConfiguration, PictureService pictureService, IndexManager indexManager) {
         this.thwCrawlerConfiguration = thwCrawlerConfiguration;
-	}
+        this.pictureService = pictureService;
+        this.indexManager = indexManager;
+    }
 
 	@Override
 	public Organisation read() throws Exception {
@@ -106,18 +114,27 @@ public class ThwCrawlerItemReader implements ItemReader<Organisation> {
 				.setName(checkNotNull(organisationName))
 				.setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
 				.setMapPin(this.thwCrawlerConfiguration.getMapPin())
-				.setLogo(this.thwCrawlerConfiguration.getLogo())
-				.setAddresses(singletonList(extractAddressFromDocument(oeDetailsDocument)))
-				.setGroups(groups)
+            .setLogo(toPicture(this.thwCrawlerConfiguration.getLogo()))
+            .setAddresses(singletonList(extractAddressFromDocument(oeDetailsDocument)))
+            .setGroups(groups)
 				.build();
 
 		LOGGER.trace("New organisation: " + organisation);
 		return organisation;
 	}
 
-	private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
-		List<Group> groups = new ArrayList<>();
-		Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
+    private PictureId toPicture(String picture) throws IOException {
+        try {
+            return this.pictureService.savePicture(picture, this.indexManager.getCurrentIndex(), new PictureId());
+        } catch (DownloadFailedException e) {
+            LOGGER.warn("Failed to download picture", e);
+            return null;
+        }
+    }
+
+    private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
+        List<Group> groups = new ArrayList<>();
+        Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
 		for (Element groupElement : groupElements) {
 			Group group = new Group();
 			group.setName(getGroupName(groupElement));

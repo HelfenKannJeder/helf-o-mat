@@ -7,10 +7,16 @@ import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.domain.OrganisationBuilder;
 import de.helfenkannjeder.helfomat.domain.OrganisationType;
+import de.helfenkannjeder.helfomat.domain.PictureId;
+import de.helfenkannjeder.helfomat.picture.DownloadFailedException;
+import de.helfenkannjeder.helfomat.picture.PictureService;
+import de.helfenkannjeder.helfomat.service.IndexManager;
 import de.helfenkannjeder.helfomat.typo3.UrlUnifier;
 import de.helfenkannjeder.helfomat.typo3.domain.TEmployee;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.typo3.domain.TOrganisationType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
@@ -18,6 +24,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,6 +39,16 @@ import static de.helfenkannjeder.helfomat.domain.OrganisationType.Sonstige;
 @JobScope
 public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, Organisation> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationProcessor.class);
+
+    private final PictureService pictureService;
+    private final IndexManager indexManager;
+
+    public Typo3OrganisationProcessor(PictureService pictureService, IndexManager indexManager) {
+        this.pictureService = pictureService;
+        this.indexManager = indexManager;
+    }
+
     @Override
     public Organisation process(TOrganisation tOrganisation) throws Exception {
         if (organisationIsNoCandidateToImport(tOrganisation)) {
@@ -43,10 +60,10 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setName(tOrganisation.getName())
             .setType(tOrganisation.getOrganisationtype().getName())
             .setDescription(tOrganisation.getDescription())
-            .setLogo(tOrganisation.getLogo())
+            .setLogo(toPicture(tOrganisation.getLogo()))
             .setWebsite(UrlUnifier.unifyOrganisationWebsiteUrl(tOrganisation.getWebsite()))
             .setMapPin(unifyOrganisationPins(tOrganisation.getOrganisationtype().getPicture()))
-            .setPictures(extractPictures(tOrganisation.getPictures()))
+            .setPictures(toPictures(extractPictures(tOrganisation.getPictures())))
             .setContactPersons(extractContactPersons(tOrganisation.getEmployees()))
             .setAddresses(
                 tOrganisation.getAddresses().stream().map(tAddress -> new AddressBuilder()
@@ -68,6 +85,30 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
                 }).collect(Collectors.toList())
             )
             .build();
+    }
+
+    private List<PictureId> toPictures(List<String> pictures) {
+        return pictures
+            .stream()
+            .map(this::toPicture)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    }
+
+    private PictureId toPicture(String picture) {
+        if (picture == null || picture.equals("")) {
+            return null;
+        }
+        try {
+            return this.pictureService.savePicture(
+                "https://helfenkannjeder.de/uploads/pics/" + picture,
+                this.indexManager.getCurrentIndex(),
+                new PictureId()
+            );
+        } catch (DownloadFailedException e) {
+            LOGGER.warn("Failed to donwload picture", e);
+            return null;
+        }
     }
 
     private static List<ContactPerson> extractContactPersons(List<TEmployee> employees) {
