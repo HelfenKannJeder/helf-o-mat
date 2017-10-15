@@ -144,3 +144,11 @@ helfomat:
     - phrase: "Ortung Typ A"
       answer: "YES"
     position: 18
+  picture-sizes:
+  - name: icon
+    width: 84
+  - name: teaser
+    width: 1000
+    height: 300
+  - name: medium
+    width: 300
