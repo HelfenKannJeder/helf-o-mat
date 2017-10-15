@@ -9,7 +9,7 @@
     "test": "./node_modules/.bin/ng test",
     "pree2e": "webdriver-manager update",
     "e2e": "protractor",
-    "postinstall": "./node_modules/.bin/ng build -prod --output-path=target/classes/public"
+    "postinstall": "./node_modules/.bin/ng build -prod --output-path=target/client"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +36,7 @@
     "@angular/compiler-cli": "4.4.1",
     "@types/google-maps": "3.2.0",
     "@types/jasmine": "2.6.0",
+    "@types/jasminewd2": "2.0.3",
     "codelyzer": "3.2.0",
     "jasmine-core": "2.8.0",
     "jasmine-spec-reporter": "4.2.1",

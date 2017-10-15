@@ -31,8 +31,7 @@ for that. To avoid that, you have two different options:
 
 ## Deployment
 
-The deployment can be done by running the Spring services as normal applications. For the
-frontend there is currently also a Spring application, but it will be removed soon.
+The deployment can be done by running the Spring services as normal applications.
 You need to setup a reverse proxy for the api.
 
 ## Development
