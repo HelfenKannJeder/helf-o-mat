@@ -41,7 +41,7 @@ public class ResizeImageService {
 
     private static BufferedImage scaleImage(BufferedImage image, int width, int height) {
         Image tempImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         image.getGraphics().drawImage(tempImage, 0, 0, null);
         return image;
     }

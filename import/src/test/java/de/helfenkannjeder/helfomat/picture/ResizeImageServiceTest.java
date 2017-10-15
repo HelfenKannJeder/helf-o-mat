@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ResizeImageServiceTest {
 
     private Resource inputImage = new ClassPathResource("de/helfenkannjeder/picture/test.png");
+    private Resource transparentImage = new ClassPathResource("de/helfenkannjeder/picture/transparent.png");
 
     private ResizeImageService resizeImageService;
 
@@ -72,6 +73,18 @@ public class ResizeImageServiceTest {
         assertImageSize(result, 100, 50);
         assertThat(getColor(result, 0, 0)).isEqualTo(new Color(29, 29, 29));
         assertThat(getColor(result, 99, 49)).isEqualTo(new Color(223, 223, 223));
+        assertThat(getAlpha(result, 0, 0)).isEqualTo(255);
+    }
+
+    @Test
+    public void resize_withTransparentImage_expectScaledTransparentImage() throws Exception {
+        // Act
+        Path result = makeResizeFixPointTest(this.transparentImage, 10, 10);
+
+        // Assert
+        assertImageSize(result, 10, 10);
+        assertThat(getAlpha(result, 0, 0)).isEqualTo(0);
+        assertThat(getAlpha(result, 9, 9)).isEqualTo(0);
     }
 
     @Test
@@ -105,7 +118,13 @@ public class ResizeImageServiceTest {
     private Color getColor(Path result, int x, int y) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(result.toFile());
         return new Color(bufferedImage.getRGB(x, y));
+    }
 
+    private int getAlpha(Path result, int x, int y) throws IOException {
+        BufferedImage bufferedImage = ImageIO.read(result.toFile());
+        int[] resultAlpha = new int[1];
+        bufferedImage.getAlphaRaster().getPixel(x, y, resultAlpha);
+        return resultAlpha[0];
     }
 
     private static File createTempFile() throws IOException {
