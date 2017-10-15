@@ -28,9 +28,15 @@ public class PictureController {
         this.pictureService = pictureService;
     }
 
-    @GetMapping("/picture/{pictureId}")
-    public ResponseEntity<InputStreamResource> downloadPicture(@PathVariable("pictureId") PictureId pictureId) throws IOException {
-        Path picture = pictureService.getPicture(pictureId);
+    @GetMapping("/picture/{pictureId}/{size}")
+    public ResponseEntity<InputStreamResource> downloadPicture(@PathVariable PictureId pictureId, @PathVariable String size) throws IOException {
+        Path picture;
+        if (size == null) {
+            picture = pictureService.getPicture(pictureId);
+        } else {
+            picture = pictureService.getPicture(pictureId, size);
+        }
+
         if (!Files.exists(picture)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

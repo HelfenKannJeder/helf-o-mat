@@ -26,7 +26,7 @@ export class ListComponent implements OnInit {
     }
 
     getImagePath(image: string): string {
-        return 'api/picture/' + image;
+        return `api/picture/${image}/icon`;
     }
 
 }
