@@ -22,6 +22,7 @@
         <springfox-swagger2.version>2.6.1</springfox-swagger2.version>
         <jsoup.version>1.9.2</jsoup.version>
         <jna.version>4.1.0</jna.version>
+        <google-maps-services.version>0.2.2</google-maps-services.version>
     </properties>
 
     <distributionManagement>
