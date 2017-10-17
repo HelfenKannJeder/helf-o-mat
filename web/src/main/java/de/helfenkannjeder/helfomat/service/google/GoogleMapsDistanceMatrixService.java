@@ -1,6 +1,8 @@
 package de.helfenkannjeder.helfomat.service.google;
 
+import com.google.common.base.Objects;
 import com.google.maps.GeoApiContext;
+import com.google.maps.errors.ApiException;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixElement;
 import com.google.maps.model.DistanceMatrixElementStatus;
@@ -10,19 +12,17 @@ import com.google.maps.model.Unit;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.dto.TravelDistanceDto;
 import de.helfenkannjeder.helfomat.dto.TravelModeDto;
-import de.helfenkannjeder.helfomat.service.TravelDistanceService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
-public class DistanceMatrixServiceImpl implements DistanceMatrixService {
+import java.io.IOException;
 
-    private static final Logger LOGGER = Logger.getLogger(TravelDistanceService.class);
+@Component
+public class GoogleMapsDistanceMatrixService implements DistanceMatrixService {
 
     private final GeoApiContext geoApiContext;
 
-    public DistanceMatrixServiceImpl(@Value("${googlemaps.apiKey}")String mapsApiKey) {
+    public GoogleMapsDistanceMatrixService(@Value("${googlemaps.apiKey}") String mapsApiKey) {
         this.geoApiContext = new GeoApiContext.Builder()
             .apiKey(mapsApiKey)
             .build();
@@ -39,21 +39,20 @@ public class DistanceMatrixServiceImpl implements DistanceMatrixService {
                 .await();
 
             return mapApiResult(apiResult, travelMode);
-        } catch (Exception e) {
-            LOGGER.error("Travel distance can not be retrieved.", e);
-            throw new RuntimeException(e);
+        } catch (ApiException | InterruptedException | IOException e) {
+            throw new TravelDistanceNotRetrievedException(e);
         }
     }
 
     private TravelDistanceDto mapApiResult(DistanceMatrix apiResult, TravelModeDto travelMode) {
         if (apiResult.rows.length != 1 || apiResult.rows[0].elements.length != 1) {
-            throw new RuntimeException("Invalid distance matrix result");
+            throw new TravelDistanceNotRetrievedException("Invalid distance matrix result");
         }
         DistanceMatrixElement resultElement = apiResult.rows[0].elements[0];
 
         //TODO: map location not found to bad request?
 
-        if (resultElement.status.equals(DistanceMatrixElementStatus.OK)) {
+        if (Objects.equal(resultElement.status, DistanceMatrixElementStatus.OK)) {
             TravelDistanceDto travelDistance = new TravelDistanceDto();
             travelDistance.setTravelMode(travelMode);
             travelDistance.setDistanceInMeters(resultElement.distance.inMeters);
@@ -78,7 +77,7 @@ public class DistanceMatrixServiceImpl implements DistanceMatrixService {
                 return TravelMode.TRANSIT;
         }
 
-        throw new RuntimeException("Invalid travel mode");
+        throw new InvalidTravelModeException(internalTravelMode.name());
     }
 
     private LatLng geoPointToLatLng(GeoPoint geoPoint) {

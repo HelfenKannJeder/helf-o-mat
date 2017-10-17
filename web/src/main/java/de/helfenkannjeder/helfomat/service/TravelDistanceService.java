@@ -8,10 +8,11 @@ import de.helfenkannjeder.helfomat.service.google.DistanceMatrixService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class TravelDistanceService {
@@ -24,19 +25,17 @@ public class TravelDistanceService {
     }
 
     public List<TravelDistanceDto> requestTravelDistances(Organisation organisation, GeoPoint origin) {
-        //TODO: default address selection
-        GeoPoint destination = organisation.getAddresses().get(0).getLocation();
-        List<TravelDistanceDto> travelOptions = new ArrayList<>();
-
-        for (TravelModeDto travelMode : TravelModeDto.values()) {
-            TravelDistanceDto maybeTravelOption = distanceMatrixService.getTravelDistanceFor(travelMode, origin, destination);
-            if (maybeTravelOption != null) {
-                travelOptions.add(maybeTravelOption);
-            }
-        }
-
-        return travelOptions.stream()
+        GeoPoint destination = determineAddress(organisation);
+        return Stream.of(TravelModeDto.values())
+            .map(travelMode -> distanceMatrixService.getTravelDistanceFor(travelMode, origin, destination))
+            .filter(Objects::nonNull)
             .sorted(Comparator.comparingLong(TravelDistanceDto::getTimeInSeconds))
             .collect(Collectors.toList());
     }
+
+    private GeoPoint determineAddress(Organisation organisation) {
+        //TODO: default address selection
+        return organisation.getAddresses().get(0).getLocation();
+    }
+
 }
