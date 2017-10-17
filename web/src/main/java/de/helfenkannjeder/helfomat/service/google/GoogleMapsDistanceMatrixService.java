@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.service.google;
 
 import com.google.common.base.Objects;
+import com.google.maps.DistanceMatrixApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DistanceMatrix;
@@ -31,7 +32,7 @@ public class GoogleMapsDistanceMatrixService implements DistanceMatrixService {
     @Override
     public TravelDistanceDto getTravelDistanceFor(TravelModeDto travelMode, GeoPoint origin, GeoPoint destination) {
         try {
-            DistanceMatrix apiResult = com.google.maps.DistanceMatrixApi.newRequest(geoApiContext)
+            DistanceMatrix apiResult = DistanceMatrixApi.newRequest(geoApiContext)
                 .destinations(geoPointToLatLng(destination))
                 .origins(geoPointToLatLng(origin))
                 .mode(mapToGoogleTravelMode(travelMode))
