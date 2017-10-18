@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.service.google;
 
+import de.helfenkannjeder.helfomat.ProfileRegistry;
 import de.helfenkannjeder.helfomat.domain.GeoPoint;
 import de.helfenkannjeder.helfomat.dto.TravelDistanceDto;
 import de.helfenkannjeder.helfomat.dto.TravelModeDto;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Random;
 
 @Component
-@Profile("mock-google-maps")
+@Profile(ProfileRegistry.MOCK_GOOGLE_MAPS)
 @Primary
 public class MockDistranceMatrixService implements DistanceMatrixService {
 
