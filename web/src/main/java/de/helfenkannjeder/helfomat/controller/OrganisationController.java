@@ -38,9 +38,9 @@ public class OrganisationController {
     }
 
     @GetMapping("/{id}/travelDistances")
-    public List<TravelDistanceDto> getTravelDistances(@PathVariable String id, @RequestParam("lat") Double lat, @RequestParam("lng") Double lng) {
+    public List<TravelDistanceDto> getTravelDistances(@PathVariable String id, @RequestParam("lat") Double lat, @RequestParam("lon") Double lon) {
         Organisation organisation = organisationService.getOrganisation(id);
-        GeoPoint origin = new GeoPoint(lat, lng);
+        GeoPoint origin = new GeoPoint(lat, lon);
         return travelDistanceService.requestTravelDistances(organisation, origin);
     }
 }

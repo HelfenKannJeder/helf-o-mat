@@ -81,24 +81,18 @@
                         </div>
                     </td>
                 </tr>
+                </tbody>
+                <tbody *ngIf="travelDistances | async; let travelDistances">
                 <tr>
                     <th colspan="2">{{'organisation.facts.distance.title' | translate}}</th>
                 </tr>
-                <tr>
-                    <td>{{'organisation.facts.distance.car' | translate}}</td>
-                    <td>7 km, 0:13h</td>
-                </tr>
-                <tr>
-                    <td>{{'organisation.facts.distance.train' | translate}}</td>
-                    <td>10 km, 0:40h</td>
-                </tr>
-                <tr>
-                    <td>{{'organisation.facts.distance.bike' | translate}}</td>
-                    <td>10 km, 0:40h</td>
-                </tr>
-                <tr>
-                    <td>{{'organisation.facts.distance.walk' | translate}}</td>
-                    <td>10 km, 0:40h</td>
+                <tr *ngFor="let travelDistance of travelDistances">
+                    <td>{{'organisation.facts.distance.' + travelDistance.travelMode | translate}}</td>
+                    <td>
+                        <distance [meter]="travelDistance.distanceInMeters"></distance>
+                        ,
+                        <time [seconds]="travelDistance.timeInSeconds"></time>
+                    </td>
                 </tr>
                 </tbody>
             </table>

@@ -21,8 +21,8 @@ public class MockDistranceMatrixService implements DistanceMatrixService {
     public TravelDistanceDto getTravelDistanceFor(TravelModeDto travelMode, GeoPoint origin, GeoPoint destination) {
         TravelDistanceDto travelDistanceDto = new TravelDistanceDto();
         travelDistanceDto.setTravelMode(travelMode);
-        travelDistanceDto.setDistanceInMeters(Math.abs(RANDOM.nextLong() % 50000) + 300);
-        travelDistanceDto.setTimeInSeconds(Math.abs(RANDOM.nextLong() % 50000) + 300);
+        travelDistanceDto.setDistanceInMeters(Math.abs(RANDOM.nextLong() % 5000) + 1);
+        travelDistanceDto.setTimeInSeconds(Math.abs(RANDOM.nextLong() % 5000) + 1);
         return travelDistanceDto;
     }
 
