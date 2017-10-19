@@ -15,13 +15,16 @@
       },
       "distance": {
         "title": "Entfernung",
+        "meansOfTransport": "Verkehrsmittel",
+        "distance": "Entfernung",
+        "duration": "Zeit",
         "DRIVING": "mit dem Auto",
-        "TRANSIT": "mit dem Zug",
+        "TRANSIT": "mit dem ÖPNV",
         "CYCLING": "mit dem Rad",
         "WALKING": "zu Fuß",
         "kilometer": "{{ kilometers }}km",
         "meter": "{{ meters }}m",
-        "time": "{{ minutes }}:{{ seconds }}h"
+        "time": "{{ hours }}:{{ minutes }}h"
       }
     },
     "address": {

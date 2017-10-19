@@ -14,20 +14,21 @@ export class TimeComponent {
     }
 
     public format(): string {
-        let seconds = this.seconds % 60;
-        let minutes = Math.floor(this.seconds / 60);
+        let minutesComplete = Math.round(this.seconds / 60);
+        let hours = Math.floor(minutesComplete / 60);
+        let minutes = minutesComplete % 60;
 
         return this.translateService.instant('organisation.facts.distance.time', {
-            minutes,
-            seconds: TimeComponent.twoDigest(seconds)
+            hours,
+            minutes: TimeComponent.twoDigest(minutes)
         });
     }
 
-    private static twoDigest(seconds: number): string {
-        if (seconds < 10) {
-            return '0' + seconds;
+    private static twoDigest(number: number): string {
+        if (number < 10) {
+            return '0' + number;
         }
-        return '' + seconds;
+        return '' + number;
     }
 
 }
