@@ -5,6 +5,8 @@ import {BrowserModule} from '@angular/platform-browser';
 import {OrganisationScoreModule} from '../_internal/components/organisation-score.module';
 import {TranslateModule} from '@ngx-translate/core';
 import {MapModule} from '../map/map.module';
+import {DistanceComponent} from './unit/distance.component';
+import {TimeComponent} from './unit/time.component';
 
 @NgModule({
     imports: [
@@ -15,7 +17,9 @@ import {MapModule} from '../map/map.module';
         OrganisationScoreModule
     ],
     declarations: [
-        OrganisationComponent
+        OrganisationComponent,
+        DistanceComponent,
+        TimeComponent
     ],
     exports: [
         OrganisationComponent
