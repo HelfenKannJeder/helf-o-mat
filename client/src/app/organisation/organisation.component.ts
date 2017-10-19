@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {OrganisationService} from './organisation.service';
+import {OrganisationService, TravelDistance} from './organisation.service';
 import {Organisation} from './organisation.model';
 import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
@@ -26,6 +26,7 @@ export class OrganisationComponent implements OnInit {
     public distance: Observable<number>;
     public zoom: Observable<number>;
     public scoreNorm: Observable<number>;
+    public travelDistances: Observable<Array<TravelDistance>>;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -76,7 +77,13 @@ export class OrganisationComponent implements OnInit {
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance
                 }]);
-            })
+            });
+
+        this.travelDistances = Observable.combineLatest(
+            this.organisation,
+            this.position
+        )
+            .flatMap(([organisation, position]: [Organisation, GeoPoint]) => this.organisationService.getTravelDistances(organisation.id, position));
     }
 
     private static calculateZoomLevel(position1: GeoPoint, position2: GeoPoint) {

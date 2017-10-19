@@ -61,44 +61,37 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                {{'organisation.facts.title' | translate}}
+                {{'organisation.facts.helfomatResult.title' | translate}}
+            </div>
+            <organisation-score [scoreNorm]="scoreNorm | async"></organisation-score>
+            <div class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-default">
+                    {{'organisation.facts.helfomatResult.compare' | translate}}
+                </button>
+                <button class="btn btn-default" (click)="_back$.next()">
+                    {{'organisation.facts.helfomatResult.back' | translate}}
+                </button>
+            </div>
+        </div>
+        <div class="panel panel-default" *ngIf="travelDistances | async; let travelDistances">
+            <div class="panel-heading">
+                {{'organisation.facts.distance.title' | translate}}
             </div>
             <table class="table">
                 <tbody>
                 <tr>
-                    <th colspan="2">{{'organisation.facts.helfomatResult.title' | translate}}</th>
+                    <th>{{'organisation.facts.distance.meansOfTransport' | translate}}</th>
+                    <th>{{'organisation.facts.distance.distance' | translate}}</th>
+                    <th>{{'organisation.facts.distance.duration' | translate}}</th>
                 </tr>
-                <tr>
-                    <td colspan="2">
-                        <organisation-score [scoreNorm]="scoreNorm | async"></organisation-score>
-                        <div class="btn-group" role="group" aria-label="...">
-                            <button class="btn btn-default">
-                                {{'organisation.facts.helfomatResult.compare' | translate}}
-                            </button>
-                            <button class="btn btn-default" (click)="_back$.next()">
-                                {{'organisation.facts.helfomatResult.back' | translate}}
-                            </button>
-                        </div>
+                <tr *ngFor="let travelDistance of travelDistances">
+                    <td>{{'organisation.facts.distance.' + travelDistance.travelMode | translate}}</td>
+                    <td>
+                        <distance [meter]="travelDistance.distanceInMeters"></distance>
                     </td>
-                </tr>
-                <tr>
-                    <th colspan="2">{{'organisation.facts.distance.title' | translate}}</th>
-                </tr>
-                <tr>
-                    <td>{{'organisation.facts.distance.car' | translate}}</td>
-                    <td>7 km, 0:13h</td>
-                </tr>
-                <tr>
-                    <td>{{'organisation.facts.distance.train' | translate}}</td>
-                    <td>10 km, 0:40h</td>
-                </tr>
-                <tr>
-                    <td>{{'organisation.facts.distance.bike' | translate}}</td>
-                    <td>10 km, 0:40h</td>
-                </tr>
-                <tr>
-                    <td>{{'organisation.facts.distance.walk' | translate}}</td>
-                    <td>10 km, 0:40h</td>
+                    <td>
+                        <time [seconds]="travelDistance.timeInSeconds"></time>
+                    </td>
                 </tr>
                 </tbody>
             </table>

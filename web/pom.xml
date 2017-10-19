@@ -27,7 +27,7 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>4.1.0</version>
+            <version>${jna.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -46,6 +46,11 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox-swagger2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.maps</groupId>
+            <artifactId>google-maps-services</artifactId>
+            <version>${google-maps-services.version}</version>
         </dependency>
 
         <dependency>

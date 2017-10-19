@@ -1,3 +1,11 @@
+spring:
+  profiles:
+    active: mock-google-maps
+  data:
+    elasticsearch:
+      cluster-name: application
+      cluster-nodes: localhost:9300
+
 server:
   context-path: /api
 
@@ -6,11 +14,8 @@ elasticsearch:
   type:
     organisation: organisation
 
-spring:
-  data:
-    elasticsearch:
-      cluster-name: application
-      cluster-nodes: localhost:9300
+googlemaps:
+  apiKey: ReplaceMe
 
 helfomat:
   pictureFolder: pictures/
