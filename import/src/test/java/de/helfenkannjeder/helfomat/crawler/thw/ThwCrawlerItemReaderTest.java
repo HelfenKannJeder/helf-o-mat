@@ -6,12 +6,16 @@ import de.helfenkannjeder.helfomat.domain.Address;
 import de.helfenkannjeder.helfomat.domain.Group;
 import de.helfenkannjeder.helfomat.domain.Organisation;
 import de.helfenkannjeder.helfomat.domain.Question;
+import de.helfenkannjeder.helfomat.picture.PictureService;
+import de.helfenkannjeder.helfomat.service.IndexManager;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -31,6 +35,12 @@ public class ThwCrawlerItemReaderTest {
 
     @Autowired
     private HelfomatConfiguration helfomatConfiguration;
+
+    @MockBean
+    private PictureService pictureService;
+
+    @MockBean
+    private IndexManager indexManager;
 
     @BeforeClass
     public static void setUpServer() throws Exception {
@@ -53,6 +63,11 @@ public class ThwCrawlerItemReaderTest {
         EmbeddedHttpServer.setContent(MAPVIEW_URL, "oeId=2000041", "de/thw/map/thw-ov-backnang.html");
     }
 
+    @AfterClass
+    public static void tearDownServer() throws Exception {
+        EmbeddedHttpServer.stop();
+    }
+
     @Before
     public void setUp() throws Exception {
         ThwCrawlerConfiguration thwCrawlerConfiguration = new ThwCrawlerConfiguration();
@@ -60,7 +75,7 @@ public class ThwCrawlerItemReaderTest {
         thwCrawlerConfiguration.setFollowDomainNames(false);
         thwCrawlerConfiguration.setResultsPerPage(2);
         thwCrawlerConfiguration.setHttpRequestTimeout(3000);
-        thwCrawlerItemReader = new ThwCrawlerItemReader(thwCrawlerConfiguration);
+        thwCrawlerItemReader = new ThwCrawlerItemReader(thwCrawlerConfiguration, pictureService, indexManager);
     }
 
     private static String getOrganisationUrl(final String letter, final String name) {
@@ -69,12 +84,12 @@ public class ThwCrawlerItemReaderTest {
 
     private static String getOverviewParameter(final String letter, final int page) {
         return "oe_plzort=PLZ+oder+Ort&" +
-                "sorting=cityasc&" +
-                "resultsPerPage=2&" +
-                "oe_typ=ortsverbaende&" +
-                "oe_umkreis=25&" +
-                "letter=" + letter + "&" +
-                "page=" + page;
+            "sorting=cityasc&" +
+            "resultsPerPage=2&" +
+            "oe_typ=ortsverbaende&" +
+            "oe_umkreis=25&" +
+            "letter=" + letter + "&" +
+            "page=" + page;
     }
 
     @Test

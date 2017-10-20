@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -182,7 +183,7 @@ public class SearchService {
     @SuppressWarnings("unchecked")
     private OrganisationDto extractOrganisation(Map<String, Object> source) {
         List<Map<String, Object>> addresses = (List<Map<String, Object>>) source.get("addresses");
-        List<Map<String, Object>> contactPersons = (List<Map<String, Object>>) source.get("contactPersons");
+        List<ContactPersonDto> contactPersonDtos = extractContactPersons(source);
         return new OrganisationDto(
             (String) source.get("id"),
             (String) source.get("name"),
@@ -190,9 +191,27 @@ public class SearchService {
             (String) source.get("website"),
             (String) source.get("mapPin"),
             addresses.stream().map(this::extractAddress).collect(Collectors.toList()),
-            contactPersons.stream().map(this::extractContactPerson).collect(Collectors.toList()),
-            (String) source.get("logo")
+            contactPersonDtos,
+            extractLogoId(source)
         );
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<ContactPersonDto> extractContactPersons(Map<String, Object> source) {
+        List<Map<String, Object>> contactPersons = (List<Map<String, Object>>) source.get("contactPersons");
+        if (contactPersons == null) {
+            return Collections.emptyList();
+        }
+        return contactPersons.stream().map(this::extractContactPerson).collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    private String extractLogoId(Map<String, Object> source) {
+        Map<String, Object> logo = (Map<String, Object>) source.get("logo");
+        if (logo == null) {
+            return null;
+        }
+        return (String) logo.get("value");
     }
 
     private ContactPersonDto extractContactPerson(Map<String, Object> contactPerson) {

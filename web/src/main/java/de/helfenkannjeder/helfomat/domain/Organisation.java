@@ -16,8 +16,8 @@ public class Organisation {
     private String name;
     private String description;
     private String website;
-    private String logo;
-    private List<String> pictures;
+    private PictureId logo;
+    private List<PictureId> pictures;
     private List<ContactPerson> contactPersons;
     private List<Address> addresses;
     private List<Question> questions;
@@ -56,19 +56,19 @@ public class Organisation {
         this.website = website;
     }
 
-    public String getLogo() {
+    public PictureId getLogo() {
         return logo;
     }
 
-    public void setLogo(String logo) {
+    public void setLogo(PictureId logo) {
         this.logo = logo;
     }
 
-    public List<String> getPictures() {
+    public List<PictureId> getPictures() {
         return pictures;
     }
 
-    public void setPictures(List<String> pictures) {
+    public void setPictures(List<PictureId> pictures) {
         this.pictures = pictures;
     }
 

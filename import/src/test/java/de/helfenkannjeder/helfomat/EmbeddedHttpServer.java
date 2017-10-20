@@ -25,6 +25,11 @@ public class EmbeddedHttpServer {
 		server.start();
 	}
 
+    public static void stop() throws IOException {
+        server.stop(0);
+        server = null;
+    }
+
 	public static void setContent(String url, String parameters, String resource) {
         ClassPathResource classPathResource = new ClassPathResource(resource);
         if (!RESOURCES.containsKey(url)) {

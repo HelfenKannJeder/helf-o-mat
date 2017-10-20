@@ -1,10 +1,10 @@
 package de.helfenkannjeder.helfomat.service;
 
-import java.util.Date;
-
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 @JobScope
@@ -17,6 +17,10 @@ public class IndexManager {
             @Value("${elasticsearch.index}") String index) {
         this.index = index;
         this.date = date;
+    }
+
+    public String getAlias() {
+        return index;
     }
 
     public String getCurrentIndex() {

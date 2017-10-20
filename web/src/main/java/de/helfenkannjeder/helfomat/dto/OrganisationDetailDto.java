@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.dto;
 
 import de.helfenkannjeder.helfomat.domain.Organisation;
+import de.helfenkannjeder.helfomat.domain.PictureId;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,16 +15,16 @@ public class OrganisationDetailDto {
     private String name;
     private String description;
     private String website;
-    private String logo;
-    private List<String> pictures;
+    private PictureId logo;
+    private List<PictureId> pictures;
     private List<ContactPersonDto> contactPersons;
     private List<AddressDto> addresses;
     private List<AnsweredQuestionDto> questions;
     private String mapPin;
     private List<GroupDto> groups;
 
-    public OrganisationDetailDto(String id, String name, String description, String website, String logo,
-                                 List<String> pictures, List<ContactPersonDto> contactPersons, List<AddressDto> addresses,
+    public OrganisationDetailDto(String id, String name, String description, String website, PictureId logo,
+                                 List<PictureId> pictures, List<ContactPersonDto> contactPersons, List<AddressDto> addresses,
                                  List<AnsweredQuestionDto> questions,
                                  String mapPin, List<GroupDto> groups) {
         this.id = id;
@@ -55,11 +56,11 @@ public class OrganisationDetailDto {
         return website;
     }
 
-    public String getLogo() {
+    public PictureId getLogo() {
         return logo;
     }
 
-    public List<String> getPictures() {
+    public List<PictureId> getPictures() {
         return pictures;
     }
 

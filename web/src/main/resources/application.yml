@@ -16,3 +16,6 @@ elasticsearch:
 
 googlemaps:
   apiKey: ReplaceMe
+
+helfomat:
+  pictureFolder: pictures/

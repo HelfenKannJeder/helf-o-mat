@@ -8,9 +8,10 @@ public class OrganisationBuilder {
     private String type;
     private String description;
     private String website;
-    private String logo;
+    private PictureId logo;
     private List<ContactPerson> contactPersons;
-    private List<String> pictures;
+    private PictureId teaserImage;
+    private List<PictureId> pictures;
     private List<Address> addresses;
     private List<Question> questions;
     private String mapPin;
@@ -41,12 +42,17 @@ public class OrganisationBuilder {
         return this;
     }
 
-    public OrganisationBuilder setLogo(String logo) {
+    public OrganisationBuilder setLogo(PictureId logo) {
         this.logo = logo;
         return this;
     }
 
-    public OrganisationBuilder setPictures(List<String> pictures) {
+    public OrganisationBuilder setTeaserImage(PictureId teaserImage) {
+        this.teaserImage = teaserImage;
+        return this;
+    }
+
+    public OrganisationBuilder setPictures(List<PictureId> pictures) {
         this.pictures = pictures;
         return this;
     }
@@ -77,6 +83,7 @@ public class OrganisationBuilder {
     }
 
     public Organisation build() {
-        return new Organisation(id, name, type, description, website, logo, pictures, contactPersons, addresses, questions, mapPin, groups);
+        return new Organisation(id, name, type, description, website, logo, teaserImage, pictures, contactPersons, addresses, questions, mapPin,
+            groups);
     }
 }

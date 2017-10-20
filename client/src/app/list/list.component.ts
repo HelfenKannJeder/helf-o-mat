@@ -26,8 +26,7 @@ export class ListComponent implements OnInit {
     }
 
     getImagePath(image: string): string {
-        // TODO: Should be replaced by local stored images
-        return "https://helfenkannjeder.de/uploads/pics/" + image;
+        return `api/picture/${image}/icon`;
     }
 
 }

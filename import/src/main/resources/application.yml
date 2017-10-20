@@ -34,10 +34,11 @@ crawler:
     domain: http://thw.de/
     resultsPerPage: 10
     httpRequestTimeout: 60000
-    logo: THW-Logo_BReg.png
+    logo: https://www.helfenkannjeder.de/uploads/pics/THW-Logo_BReg.png
     mapPin: blue-pushpin.png
 
 helfomat:
+  pictureFolder: pictures/
   questions:
   - uid: 17
     question: "Möchtest Du gerne Einsatzfahrzeuge - ggf. auch mit Blaulicht und Martinshorn - fahren?"
@@ -143,3 +144,11 @@ helfomat:
     - phrase: "Ortung Typ A"
       answer: "YES"
     position: 18
+  picture-sizes:
+  - name: icon
+    width: 84
+  - name: teaser
+    width: 1000
+    height: 300
+  - name: medium
+    width: 300
