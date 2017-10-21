@@ -50,7 +50,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
     @Override
     public Organisation process(TOrganisation tOrganisation) {
         if (organisationIsNoCandidateToImport(tOrganisation)) {
-            LOGGER.info("Ignore TYPO3 organi sation '" + tOrganisation.getName() + "'");
+            LOGGER.info("Ignore TYPO3 organisation '" + tOrganisation.getName() + "'");
             return null;
         }
 
