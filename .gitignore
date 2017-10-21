@@ -5,3 +5,4 @@ target
 web/data
 import/data
 pictures
+data/elasticsearch

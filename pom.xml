@@ -36,6 +36,12 @@
         <module>import</module>
         <module>web</module>
         <module>client</module>
+        <module>helfomat-core</module>
+        <module>helfomat-api</module>
+        <module>helfomat-infrastructure-batch</module>
+        <module>helfomat-infrastructure-typo3</module>
+        <module>helfomat-infrastructure-thwde</module>
+        <module>helfomat-web</module>
     </modules>
 
     <dependencyManagement>
@@ -46,6 +52,31 @@
                 <version>Brixton.SR5</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-batch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-thwde</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-typo3</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
