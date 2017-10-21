@@ -152,3 +152,10 @@ helfomat:
     height: 300
   - name: medium
     width: 300
+
+
+logging:
+  file: ${logging.path:${LOG_TEMP:${java.io.tmpdir:/tmp}}}/helfenkannjeder-helfomat.log
+
+  level:
+    de.helfenkannjeder: DEBUG

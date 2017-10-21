@@ -39,7 +39,9 @@ public class ElasticsearchItemWriter implements ItemWriter<Organisation> {
 
     @Override
     public void write(List<? extends Organisation> items) throws Exception {
-        items.forEach(LOGGER::debug);
+        items.forEach(organisation -> {
+            LOGGER.debug("Write organisation '" + organisation.getName() + "'");
+        });
 
         List<IndexQuery> indexQueries = items.stream()
                 .map(item -> new IndexQueryBuilder()

@@ -52,12 +52,12 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
 
     private Iterator<Element> iterator;
 
-	private char currentLetter = 'A';
-	private int currentPage = 1;
+    private char currentLetter = 'A';
+    private int currentPage = 1;
     private static final Pattern LATITUDE_PATTERN = Pattern.compile("lat = parseFloat\\((\\d+\\.\\d+)\\)");
     private static final Pattern LONGITUDE_PATTERN = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)");
 
-	@Autowired
+    @Autowired
     public ThwCrawlerOrganisationReader(ThwCrawlerConfiguration thwCrawlerConfiguration, PictureRepository pictureRepository, IndexManager
         indexManager) {
         this.thwCrawlerConfiguration = thwCrawlerConfiguration;
@@ -68,66 +68,68 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     @Override
     public Organisation read() throws Exception {
         if (iterator == null || !iterator.hasNext()) {
-			requestOverviewPage(currentLetter, currentPage++);
-			if (!iterator.hasNext() && currentLetter <= 'Z') {
-				currentLetter++;
-				currentPage = 1;
-				LOGGER.debug("Next letter: " + currentLetter);
-				requestOverviewPage(currentLetter, currentPage++);
-			}
-		}
+            requestOverviewPage(currentLetter, currentPage++);
+            if (!iterator.hasNext() && currentLetter <= 'Z') {
+                currentLetter++;
+                currentPage = 1;
+                LOGGER.debug("Next letter: " + currentLetter);
+                requestOverviewPage(currentLetter, currentPage++);
+            }
+        }
 
-		if (!iterator.hasNext()) {
-			return null;
-		}
+        if (!iterator.hasNext()) {
+            return null;
+        }
 
-		return readNextOrganisationItem();
-	}
+        Organisation organisation = readNextOrganisationItem();
+        LOGGER.debug("Got organisation '" + organisation.getName() + "' from thw.de website.");
+        return organisation;
+    }
 
-	private Organisation readNextOrganisationItem() throws IOException {
-			Element oeLink = iterator.next();
-			String url = this.thwCrawlerConfiguration.getDomain() + oeLink.attr("href");
-			Document oeDetailsDocument = Jsoup.connect(url).timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout()).get();
-			return extractOrganisation(oeDetailsDocument);
-	}
+    private Organisation readNextOrganisationItem() throws IOException {
+        Element oeLink = iterator.next();
+        String url = this.thwCrawlerConfiguration.getDomain() + oeLink.attr("href");
+        Document oeDetailsDocument = Jsoup.connect(url).timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout()).get();
+        return extractOrganisation(oeDetailsDocument);
+    }
 
-	private void requestOverviewPage(char letter, int page) throws IOException {
-		Document document = Jsoup.connect(this.thwCrawlerConfiguration.getDomain() + "DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html")
-				.timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout())
-				.data("oe_plzort", "PLZ+oder+Ort")
-				.data("sorting", "cityasc")
-				.data("resultsPerPage", String.valueOf(this.thwCrawlerConfiguration.getResultsPerPage()))
-				.data("oe_typ", "ortsverbaende")
-				.data("oe_umkreis", "25") // ignored
-				.data("letter", String.valueOf(letter))
-				.data("page", String.valueOf(page))
-				.get();
-		LOGGER.debug("requested document: " + document.location());
-		Elements oeLinks = document.select("[href*=SharedDocs/Organisationseinheiten/DE/Ortsverbaende]");
-		iterator = oeLinks.iterator();
-	}
+    private void requestOverviewPage(char letter, int page) throws IOException {
+        Document document = Jsoup.connect(this.thwCrawlerConfiguration.getDomain() + "DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html")
+            .timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout())
+            .data("oe_plzort", "PLZ+oder+Ort")
+            .data("sorting", "cityasc")
+            .data("resultsPerPage", String.valueOf(this.thwCrawlerConfiguration.getResultsPerPage()))
+            .data("oe_typ", "ortsverbaende")
+            .data("oe_umkreis", "25") // ignored
+            .data("letter", String.valueOf(letter))
+            .data("page", String.valueOf(page))
+            .get();
+        LOGGER.debug("requested document: " + document.location());
+        Elements oeLinks = document.select("[href*=SharedDocs/Organisationseinheiten/DE/Ortsverbaende]");
+        iterator = oeLinks.iterator();
+    }
 
-	private Organisation extractOrganisation(Document oeDetailsDocument) throws IOException {
-		String organisationName = "THW " + oeDetailsDocument.select("div#main").select(".photogallery").select(".isFirstInSlot").text();
-		LOGGER.info("Read organisation: " + organisationName);
+    private Organisation extractOrganisation(Document oeDetailsDocument) throws IOException {
+        String organisationName = "THW " + oeDetailsDocument.select("div#main").select(".photogallery").select(".isFirstInSlot").text();
+        LOGGER.info("Read organisation: " + organisationName);
 
-		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
-		List<Group> groups = extractDistinctGroups(oeDetailsDocument);
+        Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
+        List<Group> groups = extractDistinctGroups(oeDetailsDocument);
 
-		Organisation organisation = new Organisation.Builder()
-				.setId(UUID.randomUUID().toString())
-				.setType(OrganisationType.THW.toString())
-				.setName(checkNotNull(organisationName))
-				.setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
-				.setMapPin(this.thwCrawlerConfiguration.getMapPin())
+        Organisation organisation = new Organisation.Builder()
+            .setId(UUID.randomUUID().toString())
+            .setType(OrganisationType.THW.toString())
+            .setName(checkNotNull(organisationName))
+            .setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
+            .setMapPin(this.thwCrawlerConfiguration.getMapPin())
             .setLogo(toPicture(this.thwCrawlerConfiguration.getLogo()))
             .setAddresses(singletonList(extractAddressFromDocument(oeDetailsDocument)))
             .setGroups(groups)
-				.build();
+            .build();
 
-		LOGGER.trace("New organisation: " + organisation);
-		return organisation;
-	}
+        LOGGER.trace("New organisation: " + organisation);
+        return organisation;
+    }
 
     private PictureId toPicture(String picture) throws IOException {
         try {
@@ -141,16 +143,16 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
         List<Group> groups = new ArrayList<>();
         Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
-		for (Element groupElement : groupElements) {
-			Group group = new Group();
-			group.setName(getGroupName(groupElement));
-			groups.add(group);
-		}
-		return groups
-				.stream()
-				.distinct()
-				.collect(Collectors.toList());
-	}
+        for (Element groupElement : groupElements) {
+            Group group = new Group();
+            group.setName(getGroupName(groupElement));
+            groups.add(group);
+        }
+        return groups
+            .stream()
+            .distinct()
+            .collect(Collectors.toList());
+    }
 
     private String getGroupName(Element headlineElement) {
         Elements linkElement = headlineElement.select("a");
@@ -164,37 +166,37 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     private Address extractAddressFromDocument(Document oeDetailsDocument) throws IOException {
         Address address = new Address.Builder().build();
 
-		Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
-		Elements addressDiv = contactDataDiv.select(".adr");
-		address.setZipcode(addressDiv.select(".postal-code").text());
-		address.setCity(addressDiv.select(".locality").text());
-		address.setStreet(addressDiv.select(".street-address").text());
+        Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
+        Elements addressDiv = contactDataDiv.select(".adr");
+        address.setZipcode(addressDiv.select(".postal-code").text());
+        address.setCity(addressDiv.select(".locality").text());
+        address.setStreet(addressDiv.select(".street-address").text());
 
-		address.setLocation(extractLocationFromDocument(oeDetailsDocument));
+        address.setLocation(extractLocationFromDocument(oeDetailsDocument));
 
-		return address;
-	}
+        return address;
+    }
 
-	private GeoPoint extractLocationFromDocument(Document oeDetailsDocument) throws IOException {
-		String mapLink = oeDetailsDocument.select("a#servicemaplink").attr("href");
+    private GeoPoint extractLocationFromDocument(Document oeDetailsDocument) throws IOException {
+        String mapLink = oeDetailsDocument.select("a#servicemaplink").attr("href");
 
-		if (!this.thwCrawlerConfiguration.isFollowDomainNames()) {
+        if (!this.thwCrawlerConfiguration.isFollowDomainNames()) {
             URL url = new URL(mapLink);
             URL domain = new URL(this.thwCrawlerConfiguration.getDomain());
             URL resultUrl = new URL(domain.getProtocol(), domain.getHost(), domain.getPort(), url.getFile());
             mapLink = resultUrl.toExternalForm();
         }
 
-		Document document = Jsoup.connect(mapLink)
-				.timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout())
-				.get();
+        Document document = Jsoup.connect(mapLink)
+            .timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout())
+            .get();
         LOGGER.debug("Requested document: " + document.location());
         String javascriptContent = document.select("script[type=text/javascript]:not(script[src])").html();
 
         double latitude = extractCoordinateFromJavascript(javascriptContent, LATITUDE_PATTERN);
         double longitude = extractCoordinateFromJavascript(javascriptContent, LONGITUDE_PATTERN);
         return new GeoPoint(latitude, longitude);
-	}
+    }
 
     private double extractCoordinateFromJavascript(String javascriptContent, Pattern pattern) {
         Matcher matcher = pattern.matcher(javascriptContent);
