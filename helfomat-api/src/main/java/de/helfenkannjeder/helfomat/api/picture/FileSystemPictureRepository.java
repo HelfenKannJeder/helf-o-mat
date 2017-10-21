@@ -1,10 +1,11 @@
 package de.helfenkannjeder.helfomat.api.picture;
 
-import de.helfekannjeder.helfomat.core.organisation.PictureId;
-import de.helfekannjeder.helfomat.core.picture.DownloadFailedException;
-import de.helfekannjeder.helfomat.core.picture.DownloadService;
-import de.helfekannjeder.helfomat.core.picture.PictureRepository;
+import com.google.common.base.Preconditions;
 import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
+import de.helfenkannjeder.helfomat.core.organisation.PictureId;
+import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
+import de.helfenkannjeder.helfomat.core.picture.DownloadService;
+import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 
 /**
  * @author Valentin Zickner
@@ -54,6 +56,15 @@ public class FileSystemPictureRepository implements PictureRepository {
             LOG.error("Failed to write image to filesystem", exception);
             throw new DownloadFailedException(exception);
         }
+    }
+
+    public Path getPicture(PictureId pictureId) throws IOException {
+        return Paths.get(this.helfomatConfiguration.getPictureFolder(), "helfomat", pictureId.getValue());
+    }
+
+    public Path getPicture(PictureId pictureId, String size) {
+        Preconditions.checkArgument(Pattern.compile("^[a-z\\-]+$").matcher(size).matches());
+        return Paths.get(this.helfomatConfiguration.getPictureFolder(), "helfomat", size, pictureId.getValue());
     }
 
     private Path createPath(String... folder) throws IOException {

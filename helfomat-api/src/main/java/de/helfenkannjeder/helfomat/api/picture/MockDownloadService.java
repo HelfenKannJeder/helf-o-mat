@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.api.picture;
 
-import de.helfekannjeder.helfomat.core.ProfileRegistry;
-import de.helfekannjeder.helfomat.core.picture.DownloadService;
+import de.helfenkannjeder.helfomat.core.ProfileRegistry;
+import de.helfenkannjeder.helfomat.core.picture.DownloadService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;

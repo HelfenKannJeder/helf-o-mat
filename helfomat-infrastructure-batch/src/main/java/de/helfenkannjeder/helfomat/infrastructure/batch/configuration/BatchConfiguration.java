@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.configuration;
 
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
-import de.helfekannjeder.helfomat.core.organisation.OrganisationReader;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenameAliasBatchlet;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenamePictureSymlinkBatchlet;

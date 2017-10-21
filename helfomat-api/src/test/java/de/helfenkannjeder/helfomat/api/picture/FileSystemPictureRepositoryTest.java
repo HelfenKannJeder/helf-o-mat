@@ -1,10 +1,10 @@
 package de.helfenkannjeder.helfomat.api.picture;
 
-import de.helfekannjeder.helfomat.core.organisation.PictureId;
-import de.helfekannjeder.helfomat.core.picture.DownloadFailedException;
-import de.helfekannjeder.helfomat.core.picture.DownloadService;
-import de.helfekannjeder.helfomat.core.picture.PictureRepository;
 import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
+import de.helfenkannjeder.helfomat.core.organisation.PictureId;
+import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
+import de.helfenkannjeder.helfomat.core.picture.DownloadService;
+import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -147,6 +147,27 @@ public class FileSystemPictureRepositoryTest {
             .isNotNull();
         verify(this.resizeImageService).resize(output, outputScaled, width, height);
         Files.delete(output);
+    }
+
+
+    @Test
+    public void getPicture_withValidName_returnsNotNull() throws Exception {
+        // Act
+        Path picture = this.fileSystemPictureRepository.getPicture(new PictureId(), "test-size");
+
+        // Assert
+        assertThat(picture).isNotNull();
+    }
+
+    @Test
+    public void getPicture_withInvalidName_throwsIllegalArgumentException() throws Exception {
+        // Act
+        ThrowableAssert.ThrowingCallable runnable = () -> this.fileSystemPictureRepository.getPicture(new PictureId(), "../test");
+
+        // Assert
+        assertThatThrownBy(runnable)
+            .isNotNull()
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

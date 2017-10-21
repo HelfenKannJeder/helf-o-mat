@@ -33,14 +33,13 @@
     </distributionManagement>
 
     <modules>
-        <module>import</module>
-        <module>web</module>
         <module>client</module>
         <module>helfomat-core</module>
         <module>helfomat-api</module>
         <module>helfomat-infrastructure-batch</module>
         <module>helfomat-infrastructure-typo3</module>
         <module>helfomat-infrastructure-thwde</module>
+        <module>helfomat-infrastructure-google-maps</module>
         <module>helfomat-web</module>
     </modules>
 
@@ -78,6 +77,11 @@
                 <artifactId>helfomat-infrastructure-typo3</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-google-maps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -95,22 +99,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <executable>true</executable>
-                </configuration>
-            </plugin>
-        </plugins>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh-external</artifactId>
-                <version>1.0-beta-6</version>
-            </extension>
-        </extensions>
     </build>
 
 </project>

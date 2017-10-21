@@ -1,8 +1,8 @@
 package de.helfenkannjeder.helfomat.api.organisation;
 
-import de.helfekannjeder.helfomat.core.organisation.GeoPoint;
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
-import de.helfekannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.DistanceUnit;
@@ -18,13 +18,17 @@ import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 
 @Component
 public class ElasticsearchOrganisationRepository implements OrganisationRepository {
-    private Client client;
-    private String type;
+
+    private final Client client;
+    private final ElasticsearchCrudOrganisationRepository elasticsearchCrudOrganisationRepository;
+    private final String type;
 
     @Autowired
     public ElasticsearchOrganisationRepository(Client client,
+                                               ElasticsearchCrudOrganisationRepository elasticsearchCrudOrganisationRepository,
                                                @Value("${elasticsearch.type.organisation}") String type) {
         this.client = client;
+        this.elasticsearchCrudOrganisationRepository = elasticsearchCrudOrganisationRepository;
         this.type = type;
     }
 
@@ -46,4 +50,10 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
         return searchResponse.getHits().totalHits() > 0;
     }
+
+    @Override
+    public Organisation findOne(String id) {
+        return this.elasticsearchCrudOrganisationRepository.findOne(id);
+    }
+
 }

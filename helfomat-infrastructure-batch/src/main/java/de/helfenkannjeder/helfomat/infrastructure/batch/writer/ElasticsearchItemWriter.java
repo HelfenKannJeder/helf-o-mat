@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.writer;
 
-import de.helfekannjeder.helfomat.core.IndexManager;
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.IndexManager;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import org.apache.log4j.Logger;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemWriter;
@@ -39,9 +39,7 @@ public class ElasticsearchItemWriter implements ItemWriter<Organisation> {
 
     @Override
     public void write(List<? extends Organisation> items) throws Exception {
-        items.forEach(organisation -> {
-            LOGGER.debug("Write organisation '" + organisation.getName() + "'");
-        });
+        items.forEach(organisation -> LOGGER.debug("Write organisation '" + organisation.getName() + "'"));
 
         List<IndexQuery> indexQueries = items.stream()
                 .map(item -> new IndexQueryBuilder()

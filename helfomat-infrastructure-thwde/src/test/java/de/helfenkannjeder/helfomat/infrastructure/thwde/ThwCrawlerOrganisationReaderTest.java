@@ -1,11 +1,11 @@
 package de.helfenkannjeder.helfomat.infrastructure.thwde;
 
-import de.helfekannjeder.helfomat.core.IndexManager;
-import de.helfekannjeder.helfomat.core.organisation.Address;
-import de.helfekannjeder.helfomat.core.organisation.GeoPoint;
-import de.helfekannjeder.helfomat.core.organisation.Group;
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
-import de.helfekannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.core.IndexManager;
+import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
+import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.Group;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import org.assertj.core.data.Offset;
 import org.junit.AfterClass;
 import org.junit.Before;

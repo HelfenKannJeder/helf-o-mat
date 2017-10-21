@@ -1,16 +1,16 @@
 package de.helfenkannjeder.helfomat.infrastructure.thwde;
 
-import de.helfekannjeder.helfomat.core.IndexManager;
-import de.helfekannjeder.helfomat.core.ProfileRegistry;
-import de.helfekannjeder.helfomat.core.organisation.Address;
-import de.helfekannjeder.helfomat.core.organisation.GeoPoint;
-import de.helfekannjeder.helfomat.core.organisation.Group;
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
-import de.helfekannjeder.helfomat.core.organisation.OrganisationReader;
-import de.helfekannjeder.helfomat.core.organisation.OrganisationType;
-import de.helfekannjeder.helfomat.core.organisation.PictureId;
-import de.helfekannjeder.helfomat.core.picture.DownloadFailedException;
-import de.helfekannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.core.IndexManager;
+import de.helfenkannjeder.helfomat.core.ProfileRegistry;
+import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
+import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.Group;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
+import de.helfenkannjeder.helfomat.core.organisation.PictureId;
+import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
+import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

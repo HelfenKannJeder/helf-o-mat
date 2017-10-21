@@ -1,8 +1,8 @@
 package de.helfenkannjeder.helfomat.infrastructure.typo3;
 
-import de.helfekannjeder.helfomat.core.IndexManager;
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
-import de.helfekannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.core.IndexManager;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisationType;
 import org.junit.Before;

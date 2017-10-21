@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.typo3;
 
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.typo3;
 
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
-import de.helfekannjeder.helfomat.core.organisation.OrganisationReader;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

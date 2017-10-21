@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.batchlet;
 
-import de.helfekannjeder.helfomat.core.IndexManager;
+import de.helfenkannjeder.helfomat.core.IndexManager;
 import org.elasticsearch.rest.action.admin.indices.alias.delete.AliasesNotFoundException;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Autowired;

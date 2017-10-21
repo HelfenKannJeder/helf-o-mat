@@ -1,8 +1,8 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
 
-import de.helfekannjeder.helfomat.core.IndexManager;
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
-import de.helfekannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.IndexManager;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

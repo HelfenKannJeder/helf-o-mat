@@ -1,15 +1,15 @@
 package de.helfenkannjeder.helfomat.infrastructure.typo3;
 
-import de.helfekannjeder.helfomat.core.IndexManager;
-import de.helfekannjeder.helfomat.core.organisation.Address;
-import de.helfekannjeder.helfomat.core.organisation.ContactPerson;
-import de.helfekannjeder.helfomat.core.organisation.GeoPoint;
-import de.helfekannjeder.helfomat.core.organisation.Group;
-import de.helfekannjeder.helfomat.core.organisation.Organisation;
-import de.helfekannjeder.helfomat.core.organisation.OrganisationType;
-import de.helfekannjeder.helfomat.core.organisation.PictureId;
-import de.helfekannjeder.helfomat.core.picture.DownloadFailedException;
-import de.helfekannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.core.IndexManager;
+import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
+import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
+import de.helfenkannjeder.helfomat.core.organisation.Group;
+import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
+import de.helfenkannjeder.helfomat.core.organisation.PictureId;
+import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
+import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TEmployee;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisationType;
@@ -26,9 +26,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static de.helfekannjeder.helfomat.core.organisation.OrganisationType.Aktivbuero;
-import static de.helfekannjeder.helfomat.core.organisation.OrganisationType.Helfenkannjeder;
-import static de.helfekannjeder.helfomat.core.organisation.OrganisationType.Sonstige;
+import static de.helfenkannjeder.helfomat.core.organisation.OrganisationType.Aktivbuero;
+import static de.helfenkannjeder.helfomat.core.organisation.OrganisationType.Helfenkannjeder;
+import static de.helfenkannjeder.helfomat.core.organisation.OrganisationType.Sonstige;
 
 /**
  * @author Valentin Zickner

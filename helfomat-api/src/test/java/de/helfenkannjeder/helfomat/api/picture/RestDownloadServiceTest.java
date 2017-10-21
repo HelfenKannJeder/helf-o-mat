@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.api.picture;
 
 import de.helfenkannjeder.helfomat.api.EmbeddedHttpServer;
+import de.helfenkannjeder.helfomat.api.geopoint.DistanceMatrixApplicationService;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -23,6 +25,9 @@ public class RestDownloadServiceTest {
 
     @Autowired
     private RestDownloadService downloadService;
+
+    @MockBean
+    private DistanceMatrixApplicationService distanceMatrixApplicationService;
 
     @BeforeClass
     public static void setUpServer() throws Exception {

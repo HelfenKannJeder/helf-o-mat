@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.api;
 
-import de.helfekannjeder.helfomat.core.organisation.Question;
+import de.helfenkannjeder.helfomat.core.organisation.Question;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
