@@ -11,4 +11,6 @@ public class ProfileRegistry {
 
     public static final String DISABLE_THWDE_IMPORT = "disable-thwde-import";
 
+    public static final String DISABLE_TYPO3_IMPORT = "disable-typo3-import";
+
 }
