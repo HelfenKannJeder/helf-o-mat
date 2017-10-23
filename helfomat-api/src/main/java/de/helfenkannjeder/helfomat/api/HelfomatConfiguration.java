@@ -22,6 +22,8 @@ public class HelfomatConfiguration {
 
     private List<PictureSize> pictureSizes = new ArrayList<>();
 
+    private List<User> adminUsers = new ArrayList<>();
+
     public List<QuestionMapping> getQuestions() {
         return questions;
     }
@@ -44,6 +46,14 @@ public class HelfomatConfiguration {
 
     public void setPictureSizes(List<PictureSize> pictureSizes) {
         this.pictureSizes = pictureSizes;
+    }
+
+    public List<User> getAdminUsers() {
+        return adminUsers;
+    }
+
+    public void setAdminUsers(List<User> adminUsers) {
+        this.adminUsers = adminUsers;
     }
 
     public static class QuestionMapping {
@@ -146,6 +156,36 @@ public class HelfomatConfiguration {
 
         public void setHeight(Integer height) {
             this.height = height;
+        }
+    }
+
+    public static class User {
+        private String username;
+        private String password;
+        private boolean printPassword;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public boolean isPrintPassword() {
+            return printPassword;
+        }
+
+        public void setPrintPassword(boolean printPassword) {
+            this.printPassword = printPassword;
         }
     }
 

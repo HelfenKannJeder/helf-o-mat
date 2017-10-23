@@ -44,7 +44,7 @@ googlemaps:
   apiKey: ReplaceMe
 
 helfomat:
-  pictureFolder: pictures/
+  picture-folder: pictures/
   questions:
   - uid: 17
     question: "Möchtest Du gerne Einsatzfahrzeuge - ggf. auch mit Blaulicht und Martinshorn - fahren?"
@@ -158,7 +158,10 @@ helfomat:
     height: 300
   - name: medium
     width: 300
-
+  admin-users:
+  - username: admin
+    password: ${random.value}
+    print-password: true
 
 logging:
   file: ${logging.path:${LOG_TEMP:${java.io.tmpdir:/tmp}}}/helfenkannjeder-helfomat.log
