@@ -82,6 +82,11 @@
                 <artifactId>helfomat-infrastructure-google-maps</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

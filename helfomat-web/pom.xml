@@ -34,6 +34,10 @@
             <artifactId>helfomat-infrastructure-google-maps</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.helfenkannjeder.helfomat</groupId>
+            <artifactId>client</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-batch</artifactId>
         </dependency>
@@ -63,6 +67,7 @@
     </dependencies>
 
     <build>
+        <finalName>helfomat</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -70,6 +75,13 @@
                 <configuration>
                     <executable>true</executable>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

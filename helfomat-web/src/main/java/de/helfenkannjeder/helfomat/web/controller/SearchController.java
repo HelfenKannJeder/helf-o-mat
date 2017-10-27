@@ -20,7 +20,7 @@ import java.util.List;
  * @author Valentin Zickner
  */
 @RestController
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SearchController {
     private final SearchService searchService;
 

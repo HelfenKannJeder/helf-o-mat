@@ -20,7 +20,7 @@ import java.util.List;
  * @author Valentin Zickner
  */
 @RestController
-@RequestMapping(path = "/organisation", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/organisation", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrganisationController {
 
     private final OrganisationApplicationService organisationApplicationService;
