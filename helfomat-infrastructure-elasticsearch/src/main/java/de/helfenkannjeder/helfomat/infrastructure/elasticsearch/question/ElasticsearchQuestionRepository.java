@@ -1,14 +1,14 @@
-package de.helfenkannjeder.helfomat.api.question;
+package de.helfenkannjeder.helfomat.infrastructure.elasticsearch.question;
 
 import de.helfenkannjeder.helfomat.core.question.Question;
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
+import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.nested.Nested;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,17 +24,18 @@ public class ElasticsearchQuestionRepository implements QuestionRepository {
 
     private static final int DEFAULT_MAX_RESULT_SIZE = 10000;
     private Client client;
-    private String index;
+    private ElasticsearchConfiguration elasticsearchConfiguration;
 
     @Autowired
     public ElasticsearchQuestionRepository(Client client,
-                                           @Value("${elasticsearch.index}") String index) {
+                                           ElasticsearchConfiguration elasticsearchConfiguration) {
         this.client = client;
-        this.index = index;
+        this.elasticsearchConfiguration = elasticsearchConfiguration;
     }
 
     public List<Question> findQuestions() {
-        Nested nested = client.prepareSearch(index)
+        Nested nested = client.prepareSearch(this.elasticsearchConfiguration.getIndex())
+            .setTypes(this.elasticsearchConfiguration.getType().getOrganisation())
             .addAggregation(AggregationBuilders
                 .nested("questions")
                 .path("questions")

@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.api.organisation;
+package de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organisation;
 
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
@@ -8,6 +8,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Answer;
+import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.DistanceUnit;
@@ -15,12 +16,16 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoBoundingBoxQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.rest.action.admin.indices.alias.delete.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.AliasQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -43,18 +48,17 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
     private final Client client;
     private final ElasticsearchCrudOrganisationRepository elasticsearchCrudOrganisationRepository;
-    private final String index;
-    private final String type;
+    private final ElasticsearchConfiguration elasticsearchConfiguration;
+    private final ElasticsearchTemplate elasticsearchTemplate;
 
     @Autowired
     public ElasticsearchOrganisationRepository(Client client,
                                                ElasticsearchCrudOrganisationRepository elasticsearchCrudOrganisationRepository,
-                                               @Value("${elasticsearch.index}") String index,
-                                               @Value("${elasticsearch.type.organisation}") String type) {
+                                               ElasticsearchConfiguration elasticsearchConfiguration, ElasticsearchTemplate elasticsearchTemplate) {
         this.client = client;
         this.elasticsearchCrudOrganisationRepository = elasticsearchCrudOrganisationRepository;
-        this.index = index;
-        this.type = type;
+        this.elasticsearchConfiguration = elasticsearchConfiguration;
+        this.elasticsearchTemplate = elasticsearchTemplate;
     }
 
     public boolean existsOrganisationWithSameTypeInDistance(String index, Organisation organisation, Long distanceInMeters) {
@@ -66,7 +70,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
         SearchResponse searchResponse = client
             .prepareSearch(index)
-            .setTypes(type)
+            .setTypes(elasticsearchConfiguration.getType().getOrganisation())
             .setQuery(boolQuery()
                 .must(matchQuery("type", organisation.getType()))
                 .must(nestedQuery("addresses", geoDistanceQuery)))
@@ -101,8 +105,8 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
                 .order(SortOrder.DESC);
 
         SearchResponse searchResponse = client
-            .prepareSearch(index)
-            .setTypes(type)
+            .prepareSearch(this.elasticsearchConfiguration.getIndex())
+            .setTypes(this.elasticsearchConfiguration.getType().getOrganisation())
             .setQuery(boolQueryBuilder)
             .setSize(DEFAULT_MAX_RESULT_SIZE)
             .addSort(SortBuilders.scoreSort())
@@ -125,8 +129,8 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         );
 
         SearchResponse searchResponse = client
-            .prepareSearch(index)
-            .setTypes(type)
+            .prepareSearch(this.elasticsearchConfiguration.getIndex())
+            .setTypes(this.elasticsearchConfiguration.getType().getOrganisation())
             .setQuery(boolQueryBuilder)
             .setSize(DEFAULT_MAX_RESULT_SIZE) // Hide results, only aggregation relevant
             .get();
@@ -138,6 +142,44 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .map(addresses -> addresses.get(0))
             .map(Address::getLocation)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public void save(String index, List<? extends Organisation> items) {
+        List<IndexQuery> indexQueries = items.stream()
+            .map(item -> new IndexQueryBuilder()
+                .withId(String.valueOf(item.getId()))
+                .withObject(item))
+            .map(builder -> builder.withType(this.elasticsearchConfiguration.getType().getOrganisation()))
+            .map(builder -> builder.withIndexName(index))
+            .map(IndexQueryBuilder::build)
+            .collect(Collectors.toList());
+
+        this.elasticsearchTemplate.bulkIndex(indexQueries);
+    }
+
+    @Override
+    public void createIndex(String index, String mapping) {
+        this.elasticsearchTemplate.createIndex(index);
+        this.elasticsearchTemplate.putMapping(index, this.elasticsearchConfiguration.getType().getOrganisation(), mapping);
+    }
+
+    @Override
+    public void updateAlias(String index) {
+        String alias = this.elasticsearchConfiguration.getIndex();
+        try {
+            AliasQuery removeAliasQuery = new AliasQuery();
+            removeAliasQuery.setAliasName(alias);
+            removeAliasQuery.setIndexName(alias + "-*");
+            elasticsearchTemplate.removeAlias(removeAliasQuery);
+        } catch (AliasesNotFoundException exception) {
+            // Ignore
+        }
+
+        AliasQuery aliasQuery = new AliasQuery();
+        aliasQuery.setAliasName(alias);
+        aliasQuery.setIndexName(index);
+        elasticsearchTemplate.addAlias(aliasQuery);
     }
 
     private QueryBuilder buildQuestionQuery(Map.Entry<String, Answer> questionAnswerDto) {

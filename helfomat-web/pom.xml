@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
+            <artifactId>helfomat-infrastructure-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.helfenkannjeder.helfomat</groupId>
             <artifactId>helfomat-infrastructure-thwde</artifactId>
         </dependency>
         <dependency>

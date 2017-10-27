@@ -1,31 +1,7 @@
 spring:
-  jpa:
-    database: h2
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-
-  datasource:
-    url: "jdbc:h2:mem:"
-
-  data:
-    elasticsearch:
-      cluster-name: application
-      cluster-nodes: localhost:9300
-
-  elasticsearch:
-    jest:
-      uris: http://localhost:9200
-      read-timeout: 10000
-
   batch:
     job:
       enabled: false
-
-elasticsearch:
-  index: helfomat
-  type:
-    organisation: organisation
 
 crawler:
   thw:

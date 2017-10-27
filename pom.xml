@@ -40,6 +40,7 @@
         <module>helfomat-infrastructure-typo3</module>
         <module>helfomat-infrastructure-thwde</module>
         <module>helfomat-infrastructure-google-maps</module>
+        <module>helfomat-infrastructure-elasticsearch</module>
         <module>helfomat-web</module>
     </modules>
 
@@ -80,6 +81,11 @@
             <dependency>
                 <groupId>de.helfenkannjeder.helfomat</groupId>
                 <artifactId>helfomat-infrastructure-google-maps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-elasticsearch</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

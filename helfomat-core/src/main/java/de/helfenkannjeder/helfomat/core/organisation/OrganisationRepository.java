@@ -23,4 +23,10 @@ public interface OrganisationRepository {
 
     List<GeoPoint> findClusteredGeoPoints(GeoPoint position, double distance, BoundingBox boundingBox);
 
+    void save(String index, List<? extends Organisation> organisations);
+
+    void createIndex(String index, String mapping);
+
+    void updateAlias(String index);
+
 }

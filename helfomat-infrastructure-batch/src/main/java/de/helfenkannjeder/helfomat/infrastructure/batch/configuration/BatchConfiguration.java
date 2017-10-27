@@ -37,8 +37,8 @@ public class BatchConfiguration {
     @Qualifier("importSteps")
     public List<Step> importOrganisationFromThw(StepBuilderFactory stepBuilderFactory,
                                                 List<OrganisationReader> organisationReaders,
-                                          DuplicateOrganisationFilterProcessor duplicateOrganisationFilterProcessor,
-                                          ItemWriter<Organisation> organisationItemWriter) {
+                                                DuplicateOrganisationFilterProcessor duplicateOrganisationFilterProcessor,
+                                                ItemWriter<Organisation> organisationItemWriter) {
         return organisationReaders.stream()
             .map(organisationReader ->
                 stepBuilderFactory.get("import" + organisationReader.getClass().getSimpleName())
