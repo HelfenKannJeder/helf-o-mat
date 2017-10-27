@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.core.organisation;
 
+import de.helfenkannjeder.helfomat.core.question.Question;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -25,6 +26,9 @@ public class Organisation {
     private List<Question> questions;
     private String mapPin;
     private List<Group> groups;
+
+    Organisation() {
+    }
 
     Organisation(String id,
                  String name,

@@ -3,7 +3,7 @@ package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
 import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
-import de.helfenkannjeder.helfomat.core.organisation.Question;
+import de.helfenkannjeder.helfomat.core.question.Question;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 

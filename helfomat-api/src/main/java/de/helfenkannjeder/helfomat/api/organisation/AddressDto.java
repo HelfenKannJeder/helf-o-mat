@@ -1,5 +1,6 @@
-package de.helfenkannjeder.helfomat.api.search;
+package de.helfenkannjeder.helfomat.api.organisation;
 
+import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
 
 /**
@@ -10,14 +11,14 @@ public class AddressDto {
     private String addressAppendix;
     private String city;
     private String zipcode;
-    private GeoPointDto location;
+    private GeoPoint location;
     private String telephone;
     private String website;
 
     public AddressDto() {
     }
 
-    public AddressDto(String street, String addressAppendix, String city, String zipcode, GeoPointDto location, String
+    public AddressDto(String street, String addressAppendix, String city, String zipcode, GeoPoint location, String
             telephone, String website) {
         this.street = street;
         this.addressAppendix = addressAppendix;
@@ -44,7 +45,7 @@ public class AddressDto {
         return zipcode;
     }
 
-    public GeoPointDto getLocation() {
+    public GeoPoint getLocation() {
         return location;
     }
 
@@ -56,13 +57,13 @@ public class AddressDto {
         return website;
     }
 
-    static AddressDto fromAddress(Address address) {
+    public static AddressDto fromAddress(Address address) {
         return new AddressDto(
                 address.getStreet(),
                 address.getAddressAppendix(),
                 address.getCity(),
                 address.getZipcode(),
-                GeoPointDto.fromGeoPoint(address.getLocation()),
+                address.getLocation(),
                 address.getTelephone(),
                 address.getWebsite()
         );

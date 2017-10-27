@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
  * @author Valentin Zickner
  */
 @Component
-@ConfigurationProperties
+@ConfigurationProperties("googlemaps")
 public class GoogleMapsConfiguration {
 
     private String apiKey;

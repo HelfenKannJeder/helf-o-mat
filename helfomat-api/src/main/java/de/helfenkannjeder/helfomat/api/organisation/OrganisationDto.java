@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.api.search;
+package de.helfenkannjeder.helfomat.api.organisation;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class OrganisationDto {
     }
 
     public OrganisationDto(String id, String name, String description, String website, String mapPin, List<AddressDto> addresses, List
-        <ContactPersonDto> contactPersons, String logo) {
+        <ContactPersonDto> contactPersons, String logo, float scoreNorm) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -29,6 +29,7 @@ public class OrganisationDto {
         this.addresses = addresses;
         this.contactPersons = contactPersons;
         this.logo = logo;
+        this.scoreNorm = scoreNorm;
     }
 
     public String getId() {

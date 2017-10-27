@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.api;
 
-import de.helfenkannjeder.helfomat.core.organisation.Question;
+import de.helfenkannjeder.helfomat.core.question.Answer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +61,7 @@ public class HelfomatConfiguration {
 
         private String question;
 
-        private Question.Answer defaultAnswer;
+        private Answer defaultAnswer;
 
         private List<GroupMapping> groups = new ArrayList<>();
 
@@ -75,11 +75,11 @@ public class HelfomatConfiguration {
             this.uid = uid;
         }
 
-        public Question.Answer getDefaultAnswer() {
+        public Answer getDefaultAnswer() {
             return defaultAnswer;
         }
 
-        public void setDefaultAnswer(Question.Answer defaultAnswer) {
+        public void setDefaultAnswer(Answer defaultAnswer) {
             this.defaultAnswer = defaultAnswer;
         }
 
@@ -109,7 +109,7 @@ public class HelfomatConfiguration {
 
         public static class GroupMapping {
             private String phrase;
-            private Question.Answer answer;
+            private Answer answer;
 
             public String getPhrase() {
                 return phrase;
@@ -119,11 +119,11 @@ public class HelfomatConfiguration {
                 this.phrase = phrase;
             }
 
-            public Question.Answer getAnswer() {
+            public Answer getAnswer() {
                 return answer;
             }
 
-            public void setAnswer(Question.Answer answer) {
+            public void setAnswer(Answer answer) {
                 this.answer = answer;
             }
         }

@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.api.search;
+package de.helfenkannjeder.helfomat.api.organisation;
 
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 

@@ -1,8 +1,14 @@
-package de.helfenkannjeder.helfomat.api.search;
+package de.helfenkannjeder.helfomat.api.organisation;
 
+import de.helfenkannjeder.helfomat.api.question.AnsweredQuestionDto;
+import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
+import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.PictureId;
+import de.helfenkannjeder.helfomat.core.question.Question;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,12 +104,47 @@ public class OrganisationDetailDto {
             organisation.getDescription(),
             organisation.getWebsite(),
             organisation.getLogo(),
-            organisation.getPictures(),
-            organisation.getContactPersons().stream().map(ContactPersonDto::fromContactPerson).collect(Collectors.toList()),
-            organisation.getAddresses().stream().map(AddressDto::fromAddress).collect(Collectors.toList()),
-            organisation.getQuestions().stream().map(AnsweredQuestionDto::fromQuestion).collect(Collectors.toList()),
+            toPictures(organisation.getPictures()),
+            toContactPersons(organisation.getContactPersons()),
+            toAddresses(organisation.getAddresses()),
+            toQuestions(organisation.getQuestions()),
             organisation.getMapPin(),
-            organisation.getGroups().stream().map(GroupDto::fromGroup).collect(Collectors.toList())
+            toGroups(organisation.getGroups())
         );
+    }
+
+    private static List<PictureId> toPictures(List<PictureId> pictures) {
+        if (pictures == null) {
+            return Collections.emptyList();
+        }
+        return pictures;
+    }
+
+    private static List<ContactPersonDto> toContactPersons(List<ContactPerson> contactPersons) {
+        if (contactPersons == null) {
+            return Collections.emptyList();
+        }
+        return contactPersons.stream().map(ContactPersonDto::fromContactPerson).collect(Collectors.toList());
+    }
+
+    private static List<AddressDto> toAddresses(List<Address> addresses) {
+        if (addresses == null) {
+            return Collections.emptyList();
+        }
+        return addresses.stream().map(AddressDto::fromAddress).collect(Collectors.toList());
+    }
+
+    private static List<AnsweredQuestionDto> toQuestions(List<Question> questions) {
+        if (questions == null) {
+            return Collections.emptyList();
+        }
+        return questions.stream().map(AnsweredQuestionDto::fromQuestion).collect(Collectors.toList());
+    }
+
+    private static List<GroupDto> toGroups(List<Group> groups) {
+        if (groups == null) {
+            return Collections.emptyList();
+        }
+        return groups.stream().map(GroupDto::fromGroup).collect(Collectors.toList());
     }
 }

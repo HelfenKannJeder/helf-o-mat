@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.core.organisation;
+package de.helfenkannjeder.helfomat.core.question;
 
 /**
  * @author Valentin Zickner
@@ -18,6 +18,13 @@ public class Question {
         this.question = question;
         this.position = position;
         this.answer = answer;
+    }
+
+    public Question(long uid, String question, String description, int position) {
+        this.uid = uid;
+        this.question = question;
+        this.description = description;
+        this.position = position;
     }
 
     public Question(Question question, Answer answer) {
@@ -68,7 +75,4 @@ public class Question {
         this.position = position;
     }
 
-    public enum Answer {
-        YES, MAYBE, NO
-    }
 }

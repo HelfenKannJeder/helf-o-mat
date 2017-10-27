@@ -1,17 +1,19 @@
-package de.helfenkannjeder.helfomat.api.search;
+package de.helfenkannjeder.helfomat.api.question;
+
+import de.helfenkannjeder.helfomat.core.question.Answer;
 
 /**
  * @author Valentin Zickner
  */
 public class QuestionAnswerDto {
     private String id;
-    private AnswerDto answer;
+    private Answer answer;
 
     public String getId() {
         return id;
     }
 
-    public AnswerDto getAnswer() {
+    public Answer getAnswer() {
         return answer;
     }
 }

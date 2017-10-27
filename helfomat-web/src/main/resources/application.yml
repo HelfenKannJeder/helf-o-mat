@@ -38,7 +38,7 @@ crawler:
     mapPin: blue-pushpin.png
 
 googlemaps:
-  apiKey: ReplaceMe
+  api-key: ReplaceMe
 
 helfomat:
   picture-folder: pictures/

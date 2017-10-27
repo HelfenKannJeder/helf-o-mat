@@ -1,5 +1,5 @@
 <div *ngIf="organisation | async; let organisation; else loading">
-    <div class="custom-content">
+    <div class="custom-content" *ngIf="organisation.pictures.length > 0">
         <img src="api/picture/{{organisation.pictures[0].value}}/teaser" width="100%"/>
     </div>
 

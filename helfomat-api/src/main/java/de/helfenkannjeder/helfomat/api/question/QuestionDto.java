@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.api.search;
+package de.helfenkannjeder.helfomat.api.question;
 
 /**
  * @author Valentin Zickner
@@ -12,7 +12,7 @@ public class QuestionDto {
     public QuestionDto() {
     }
 
-    QuestionDto(String question, String description, int position) {
+    public QuestionDto(String question, String description, int position) {
         this.question = question;
         this.description = description;
         this.position = position;

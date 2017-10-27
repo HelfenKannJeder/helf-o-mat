@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.api.search;
+package de.helfenkannjeder.helfomat.core.question;
 
 /**
  * @author Valentin Zickner
