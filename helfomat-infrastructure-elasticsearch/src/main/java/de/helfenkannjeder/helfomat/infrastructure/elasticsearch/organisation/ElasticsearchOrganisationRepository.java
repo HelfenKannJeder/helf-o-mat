@@ -62,7 +62,11 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     public boolean existsOrganisationWithSameTypeInDistance(String index, Organisation organisation, Long distanceInMeters) {
-        GeoPoint locationToCheck = organisation.getAddresses().get(0).getLocation();
+        List<Address> addresses = organisation.getAddresses();
+        if (addresses.size() == 0) {
+            return false;
+        }
+        GeoPoint locationToCheck = addresses.get(0).getLocation();
 
         GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("addresses.location")
             .point(locationToCheck.getLat(), locationToCheck.getLon())
