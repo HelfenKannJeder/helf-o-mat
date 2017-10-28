@@ -37,8 +37,8 @@ You need to setup a reverse proxy for the api.
 ## Development
 
 For development you can start `helfomat-web` like normal applications. For the frontend
-project `client` you can execute `npm run start` to have it in development mode. The API
-is automatically redirected to the backend.
+project `helfomat-web-ui` you can execute `npm run start` to have it in development mode.
+The API is automatically redirected to the backend.
 
 For offline usage add the parameter `--spring.profiles.active=offline`, then the backend
 will automatically mock all application which are require network.

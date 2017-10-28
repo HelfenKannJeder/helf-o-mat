@@ -1,9 +1,9 @@
 /* tslint:disable:no-unused-variable */
 
-import {TestBed, inject, tick} from '@angular/core/testing';
+import {inject, TestBed} from '@angular/core/testing';
 import {HelfomatService} from './helfomat.service';
 import {MockBackend, MockConnection} from '@angular/http/testing';
-import {Response, ResponseOptions, Http, ConnectionBackend, BaseRequestOptions, RequestOptions} from '@angular/http';
+import {BaseRequestOptions, ConnectionBackend, Http, RequestOptions, Response, ResponseOptions} from '@angular/http';
 
 describe('Component: Question', () => {
 

@@ -33,7 +33,6 @@
     </distributionManagement>
 
     <modules>
-        <module>client</module>
         <module>helfomat-core</module>
         <module>helfomat-api</module>
         <module>helfomat-infrastructure-batch</module>
@@ -42,6 +41,7 @@
         <module>helfomat-infrastructure-google-maps</module>
         <module>helfomat-infrastructure-elasticsearch</module>
         <module>helfomat-web</module>
+        <module>helfomat-web-ui</module>
     </modules>
 
     <dependencyManagement>
@@ -90,7 +90,7 @@
             </dependency>
             <dependency>
                 <groupId>de.helfenkannjeder.helfomat</groupId>
-                <artifactId>client</artifactId>
+                <artifactId>helfomat-web-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
