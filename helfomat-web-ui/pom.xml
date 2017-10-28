@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>client</artifactId>
+    <artifactId>helfomat-web-ui</artifactId>
     <packaging>jar</packaging>
 
     <build>
