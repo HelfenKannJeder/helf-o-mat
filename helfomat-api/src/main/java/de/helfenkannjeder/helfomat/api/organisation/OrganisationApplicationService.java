@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,12 +74,19 @@ public class OrganisationApplicationService {
                     organisation.getMapPin(),
                     addresses,
                     contactPersons,
-                    organisation.getLogo().getValue(),
+                    pictureIdToString(organisation, organisation.getLogo()),
                     data.getValue()
 
                 );
             })
             .collect(Collectors.toList());
+    }
+
+    private String pictureIdToString(Organisation organisation, PictureId pictureId) {
+        if (pictureId == null) {
+            return null;
+        }
+        return organisation.getLogo().getValue();
     }
 
     public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,
