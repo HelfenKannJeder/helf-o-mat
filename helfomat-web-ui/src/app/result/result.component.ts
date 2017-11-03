@@ -93,9 +93,11 @@ export class ResultComponent implements OnInit {
                     answers: UrlParamBuilder.buildAnswersFromUserAnswer(userAnswers),
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance,
-                    boundingBox: boundingBox,
+                    boundingBox: UrlParamBuilder.buildBoundingBox(boundingBox),
                     zoom: zoom
-                }]);
+                }], {
+                    replaceUrl: true
+                });
             });
 
         Observable.combineLatest(

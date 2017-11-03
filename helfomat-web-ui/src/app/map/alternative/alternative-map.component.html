@@ -1,10 +1,12 @@
 <div style="background-color: lightgray">
     <h3>Map Mock</h3>
+    <ng-content></ng-content>
     <ul>
         <li>Organisations {{(organisations | async)?.length}}</li>
         <li>Clusted Organisations: {{(clusteredOrganisations | async)?.length}}</li>
         <li>Position: {{(position | async)?.lat}} {{(position | async)?.lon}}</li>
         <li>Distance: {{distance | async}}</li>
         <li>Zoom: {{zoom | async}}</li>
+        <li><button type="button" (click)="doUpdatePosition()">Send Location</button></li>
     </ul>
 </div>

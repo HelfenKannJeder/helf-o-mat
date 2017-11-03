@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Organisation} from '../organisation/organisation.model';
 import {Observable} from 'rxjs';
 import {GeoPoint} from '../organisation/geopoint.model';
@@ -24,6 +24,9 @@ import SearchBox = google.maps.places.SearchBox;
             state('normal', style({
                 height: '300px'
             })),
+            state('large', style({
+                height: '600px'
+            })),
             state('fullscreen', style({
                 height: 'calc(100vh - 160px)'
             })),
@@ -32,7 +35,7 @@ import SearchBox = google.maps.places.SearchBox;
         ])
     ]
 })
-export class MapComponent implements OnInit, AfterViewInit {
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public static readonly MAP_RESIZE_DURATION = 400;
 
@@ -43,6 +46,9 @@ export class MapComponent implements OnInit, AfterViewInit {
     @Input() zoom: Observable<number>;
     @Input() clusteredOrganisations: Observable<GeoPoint[]>;
     @Input() allowUpdatePosition: boolean = true;
+    @Input() mapSize = 'normal';
+    @Input() showMapResizeButton: boolean = true;
+    @Input() showDefaultAddressBar: boolean = true;
 
     @Output() updatePosition: EventEmitter<GeoPoint> = new EventEmitter<GeoPoint>();
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();
@@ -56,13 +62,18 @@ export class MapComponent implements OnInit, AfterViewInit {
     private positionCircle: Circle;
     private markerClusterer: MarkerClusterer;
 
-    public mapSize = 'normal';
 
     constructor(private element: ElementRef) {
     }
 
     ngOnInit() {
 
+    }
+
+    ngOnDestroy() {
+        if (this.map != null) {
+            this.map.unbindAll();
+        }
     }
 
     ngAfterViewInit() {
@@ -92,7 +103,9 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.drawClusteredOrganisations();
         }
 
-        this.configureMapResizeButton();
+        if (this.showMapResizeButton) {
+            this.configureMapResizeButton();
+        }
         google.maps.event.trigger(this.map, 'resize');
     }
 
@@ -109,12 +122,18 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.updateBoundingBox.emit(new BoundingBox(northEast, southWest));
         });
 
-        this.map.addListener('zoom_changed', () => {
-            this.updateZoom.emit(this.map.getZoom());
-        });
+        if (this.updateZoom != null) {
+            this.map.addListener('zoom_changed', () => {
+                this.updateZoom.emit(this.map.getZoom());
+            });
+        }
     }
 
     private configureDrawUserPosition() {
+        if (this.position == null || this.distance == null) {
+            return;
+        }
+
         Observable.combineLatest(
             this.position,
             this.distance
@@ -125,9 +144,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
     private configureSearchBox() {
+        let searchContainer: HTMLElement = this.element.nativeElement.getElementsByClassName('addressSearchContainer')[0];
         let searchText: HTMLInputElement = this.element.nativeElement.getElementsByClassName('addressInput')[0];
         let searchBox = new SearchBox(searchText);
-        this.map.controls[ControlPosition.TOP_LEFT].push(searchText);
+        this.map.controls[ControlPosition.TOP_LEFT].push(searchContainer);
 
         searchBox.addListener('places_changed', () => {
             let places = searchBox.getPlaces();
@@ -258,7 +278,11 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     private configureMapResizeButton() {
         let controlButton = document.createElement('span');
-        controlButton.className = 'glyphicon glyphicon-chevron-down';
+        if (this.mapSize === 'fullscreen') {
+            controlButton.className = 'glyphicon glyphicon-chevron-up';
+        } else {
+            controlButton.className = 'glyphicon glyphicon-chevron-down';
+        }
         controlButton.style.fontSize = '24px';
         controlButton.style.marginBottom = '22px';
         controlButton.style.cursor = 'pointer';
