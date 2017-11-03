@@ -24,9 +24,9 @@ For the basic setup you need some TYPO3 databases. Unfortunately, we are current
 for testing data which is similar to the production data, so we haven't published a script
 for that. To avoid that, you have two different options:
 
-- Disable in the BatchConfiguration.java the `importOrganisationFromJpa` step. Then you
-  only need a database connection and not the content. Disadvantage: You have currently only
-  THW organisations in your repository.
+- Remove the dependency to the `helfomat-infrastructure-typo3` module from the `helfomat-web`
+  module. Afterwards you only need a database connection and not the content.
+  Disadvantage: You have currently only THW organisations in your repository.
 - Ask [valentinz](mailto:valentin.zickner(at)helfenkannjeder(dot)de) for an database export
 
 ## Deployment
@@ -36,9 +36,12 @@ You need to setup a reverse proxy for the api.
 
 ## Development
 
-For development you can start `web` and `import` like normal applications. For the frontend
-project `client` you can execute `npm run start` to have it in development mode. The API
-is automatically redirected to the backend. 
+For development you can start `helfomat-web` like normal applications. For the frontend
+project `helfomat-web-ui` you can execute `npm run start` to have it in development mode.
+The API is automatically redirected to the backend.
+
+For offline usage add the parameter `--spring.profiles.active=offline`, then the backend
+will automatically mock all application which are require network.
 
 ## License
 

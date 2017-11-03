@@ -33,9 +33,15 @@
     </distributionManagement>
 
     <modules>
-        <module>import</module>
-        <module>web</module>
-        <module>client</module>
+        <module>helfomat-core</module>
+        <module>helfomat-api</module>
+        <module>helfomat-infrastructure-batch</module>
+        <module>helfomat-infrastructure-typo3</module>
+        <module>helfomat-infrastructure-thwde</module>
+        <module>helfomat-infrastructure-google-maps</module>
+        <module>helfomat-infrastructure-elasticsearch</module>
+        <module>helfomat-web</module>
+        <module>helfomat-web-ui</module>
     </modules>
 
     <dependencyManagement>
@@ -46,6 +52,46 @@
                 <version>Brixton.SR5</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-batch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-thwde</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-typo3</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-google-maps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-elasticsearch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-web-ui</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -64,22 +110,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <executable>true</executable>
-                </configuration>
-            </plugin>
-        </plugins>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh-external</artifactId>
-                <version>1.0-beta-6</version>
-            </extension>
-        </extensions>
     </build>
 
 </project>

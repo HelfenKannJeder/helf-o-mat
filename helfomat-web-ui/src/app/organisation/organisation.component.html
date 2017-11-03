@@ -1,0 +1,121 @@
+<div *ngIf="organisation | async; let organisation; else loading">
+    <div class="custom-content" *ngIf="organisation.pictures.length > 0">
+        <img src="api/picture/{{organisation.pictures[0].value}}/teaser" width="100%"/>
+    </div>
+
+    <div class="col-md-8">
+        <h1>{{organisation.name}}</h1>
+
+        <p>{{organisation.description}}</p>
+
+        <h2>{{'organisation.appointments.title' | translate}}</h2>
+
+        <h2>{{'organisation.group.title' | translate}}</h2>
+        <div *ngFor="let group of organisation.groups">
+            <h3>{{group.name}}</h3>
+            {{group.description}}
+        </div>
+
+        <h2>{{'organisation.persons.title' | translate}}</h2>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{organisation.addresses.length | i18nPlural: {
+                '=1': 'organisation.address.title',
+                'other':'organisation.address.titlePlural'
+                } | translate}}
+            </div>
+            <helfomat-map
+                [organisations]="organisations"
+                [position]="position"
+                [distance]="distance"
+                [center]="center"
+                [zoom]="zoom"
+                [allowUpdatePosition]="false"></helfomat-map>
+            <div class="panel-body">
+                <ul>
+                    <li *ngFor="let address of organisation.addresses">
+                        {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
+                        <span
+                            *ngIf="address.telephone">{{'organisation.address.telephone' | translate}}: {{address.telephone}}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{'organisation.contact.title' | translate}}
+            </div>
+            <div class="panel-body">
+                <div *ngFor="let contactPerson of organisation.contactPersons" class="row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <h4>{{contactPerson.firstname}} {{contactPerson.lastname}}</h4>
+                        <p *ngIf="contactPerson.rank">({{contactPerson.rank}})<br/></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{'organisation.facts.helfomatResult.title' | translate}}
+            </div>
+            <organisation-score [scoreNorm]="scoreNorm | async"></organisation-score>
+            <div class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-default">
+                    {{'organisation.facts.helfomatResult.compare' | translate}}
+                </button>
+                <button class="btn btn-default" (click)="_back$.next()">
+                    {{'organisation.facts.helfomatResult.back' | translate}}
+                </button>
+            </div>
+        </div>
+        <div class="panel panel-default" *ngIf="travelDistances | async; let travelDistances">
+            <div class="panel-heading">
+                {{'organisation.facts.distance.title' | translate}}
+            </div>
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>{{'organisation.facts.distance.meansOfTransport' | translate}}</th>
+                    <th>{{'organisation.facts.distance.distance' | translate}}</th>
+                    <th>{{'organisation.facts.distance.duration' | translate}}</th>
+                </tr>
+                <tr *ngFor="let travelDistance of travelDistances">
+                    <td>{{'organisation.facts.distance.' + travelDistance.travelMode | translate}}</td>
+                    <td>
+                        <distance [meter]="travelDistance.distanceInMeters"></distance>
+                    </td>
+                    <td>
+                        <time [seconds]="travelDistance.timeInSeconds"></time>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <h2>{{'organisation.questionsAndAnswers.title' | translate}}</h2>
+        <div class="panel panel-default" *ngIf="userAnswers | async; let userAnswers; else loading">
+            <table class="table">
+                <tr>
+                    <th>{{'organisation.questionsAndAnswers.question' | translate}}</th>
+                    <th>{{'organisation.questionsAndAnswers.organisation' | translate}}</th>
+                    <th>{{'organisation.questionsAndAnswers.you' | translate}}</th>
+                </tr>
+                <tr *ngFor="let question of organisation.questions;  let i = index;">
+                    <td>{{question.question}}</td>
+                    <td><img src="{{question.answer | answerImage}}" class="thumb"/></td>
+                    <td><img src="{{userAnswers[i] | answerImage}}" class="thumb"/></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #loading>{{'organisation.dataLoading' | translate}}</ng-template>
