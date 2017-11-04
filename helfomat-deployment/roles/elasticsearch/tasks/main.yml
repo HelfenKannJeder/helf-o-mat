@@ -1,0 +1,29 @@
+- name: ensure apt https module is available
+  apt:
+    name: apt-transport-https
+    state: latest
+- name: ensure elasticsearch repository key is downloaded
+  register: elasticsearchkey
+  get_url:
+    url: https://packages.elastic.co/GPG-KEY-elasticsearch
+    dest: /root/elasticsearch.pgp
+- name: ensure elasticsearch repository is available
+  apt_repository:
+    filename: elasticsearch
+    repo: "deb https://packages.elastic.co/elasticsearch/2.x/debian stable main"
+- name: ensure elasticsearch repository key is added
+  when: elasticsearchkey.changed
+  shell: apt-key add /root/elasticsearch.pgp
+- name: install elasticsearch with apt-get
+  apt:
+    name: elasticsearch
+    state: present
+    update_cache: yes
+- name: set cluster name to application
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    state: present
+    regexp: '^cluster.name'
+    line: 'cluster.name: application'
+
+  notify: restart elasticsearch

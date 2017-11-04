@@ -1,0 +1,7 @@
+- hosts: helfomat
+  roles:
+  - java
+  - elasticsearch
+  - user
+  - helfomat
+  - apache
