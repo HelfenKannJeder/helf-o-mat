@@ -9,7 +9,7 @@ import de.helfenkannjeder.helfomat.core.question.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,21 +34,24 @@ public class OrganisationApplicationService {
     public List<OrganisationDto> findOrganisation(List<QuestionAnswerDto> questionAnswerDtos,
                                                   GeoPoint position,
                                                   double distance) {
-        if (position == null) {
-            // TODO: return organisation without address: Those are the general organisations which
-            // are not specialized and should be used here. Unfortunately, there is currently no way
-            // to identify those organisations.
-            return Collections.emptyList();
-        }
-
-
         Map<String, Answer> questionAnswerMap = questionAnswerDtos.stream()
             .collect(Collectors.toMap(QuestionAnswerDto::getId, QuestionAnswerDto::getAnswer));
-        return this.organisationRepository.findOrganisation(
-            questionAnswerMap,
-            position,
-            distance
-        )
+        LinkedHashMap<Organisation, Float> organisations;
+        if (position == null) {
+            organisations = this.organisationRepository.findGlobalOrganisations(questionAnswerMap);
+        } else {
+            organisations = this.organisationRepository.findOrganisations(
+                questionAnswerMap,
+                position,
+                distance
+            );
+        }
+
+        return toOrganisationDtos(organisations);
+    }
+
+    private List<OrganisationDto> toOrganisationDtos(LinkedHashMap<Organisation, Float> organisations) {
+        return organisations
             .entrySet()
             .stream()
             .map(data -> OrganisationAssembler.toOrganisationDto(data.getKey(), data.getValue()))
