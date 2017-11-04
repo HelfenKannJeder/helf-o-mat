@@ -5,11 +5,11 @@ import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,6 +34,14 @@ public class OrganisationApplicationService {
     public List<OrganisationDto> findOrganisation(List<QuestionAnswerDto> questionAnswerDtos,
                                                   GeoPoint position,
                                                   double distance) {
+        if (position == null) {
+            // TODO: return organisation without address: Those are the general organisations which
+            // are not specialized and should be used here. Unfortunately, there is currently no way
+            // to identify those organisations.
+            return Collections.emptyList();
+        }
+
+
         Map<String, Answer> questionAnswerMap = questionAnswerDtos.stream()
             .collect(Collectors.toMap(QuestionAnswerDto::getId, QuestionAnswerDto::getAnswer));
         return this.organisationRepository.findOrganisation(
@@ -43,50 +51,8 @@ public class OrganisationApplicationService {
         )
             .entrySet()
             .stream()
-            .map((data) -> {
-                Organisation organisation = data.getKey();
-                List<AddressDto> addresses = organisation.getAddresses()
-                    .stream()
-                    .map((address) -> new AddressDto(
-                        address.getStreet(),
-                        address.getAddressAppendix(),
-                        address.getCity(),
-                        address.getZipcode(),
-                        address.getLocation(),
-                        address.getTelephone(),
-                        address.getWebsite()
-                    ))
-                    .collect(Collectors.toList());
-                List<ContactPersonDto> contactPersons = organisation.getContactPersons()
-                    .stream()
-                    .map((contactPerson) -> new ContactPersonDto(
-                        contactPerson.getFirstname(),
-                        contactPerson.getLastname(),
-                        contactPerson.getRank(),
-                        contactPerson.getTelephone()
-                    ))
-                    .collect(Collectors.toList());
-                return new OrganisationDto(
-                    organisation.getId(),
-                    organisation.getName(),
-                    organisation.getDescription(),
-                    organisation.getWebsite(),
-                    organisation.getMapPin(),
-                    addresses,
-                    contactPersons,
-                    pictureIdToString(organisation, organisation.getLogo()),
-                    data.getValue()
-
-                );
-            })
+            .map(data -> OrganisationAssembler.toOrganisationDto(data.getKey(), data.getValue()))
             .collect(Collectors.toList());
-    }
-
-    private String pictureIdToString(Organisation organisation, PictureId pictureId) {
-        if (pictureId == null) {
-            return null;
-        }
-        return organisation.getLogo().getValue();
     }
 
     public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,

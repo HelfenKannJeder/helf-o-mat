@@ -137,9 +137,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         Observable.combineLatest(
             this.position,
             this.distance
-        ).subscribe((newSearchRange: [GeoPoint, number]) => {
-            const mapsPosition = MapComponent.convertGeoPointToLatLng(newSearchRange[0]);
-            this.drawUserPosition(mapsPosition, newSearchRange[1]);
+        ).subscribe(([position, distance]: [GeoPoint, number]) => {
+            if (position == null) {
+                return;
+            }
+            const mapsPosition = MapComponent.convertGeoPointToLatLng(position);
+            this.drawUserPosition(mapsPosition, distance);
         });
     }
 

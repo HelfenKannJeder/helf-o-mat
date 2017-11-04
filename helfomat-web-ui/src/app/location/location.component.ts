@@ -4,6 +4,7 @@ import {GeoPoint} from '../organisation/geopoint.model';
 import {UrlParamBuilder} from '../url-param.builder';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
+import {environment} from '../../environments/environment';
 
 @Component({
     selector: 'location',
@@ -14,17 +15,14 @@ import {Subject} from 'rxjs/Subject';
 })
 export class LocationComponent implements OnInit {
 
-    private static MIDDLE_OF_GERMANY = new GeoPoint(51.163375, 10.447683);
-    private static COMPLETE_GERMANY_ZOOM_LEVEL = 6;
-
     public position: Observable<GeoPoint>;
     public zoom: Observable<number>;
     public _position$: Subject<GeoPoint>;
 
     constructor(private router: Router,
                 private route: ActivatedRoute) {
-        this.position = Observable.of(LocationComponent.MIDDLE_OF_GERMANY);
-        this.zoom = Observable.of(LocationComponent.COMPLETE_GERMANY_ZOOM_LEVEL);
+        this.position = Observable.of(environment.defaults.mapCenter);
+        this.zoom = Observable.of(environment.defaults.zoomLevel.withoutPosition);
         this._position$ = new Subject();
     }
 

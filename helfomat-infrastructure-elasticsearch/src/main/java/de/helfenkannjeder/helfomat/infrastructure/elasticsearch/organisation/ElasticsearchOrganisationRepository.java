@@ -125,12 +125,16 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
                                                  double distance,
                                                  BoundingBox boundingBox) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
-        boolQueryBuilder.filter(nestedQuery("addresses",
-            boolQuery()
-                .must(filterBox(boundingBox))
-                .mustNot(filterDistance(position, distance))
-            )
-        );
+        BoolQueryBuilder positionQuery = boolQuery()
+            .must(filterBox(boundingBox));
+
+        GeoDistanceQueryBuilder distanceFilterToPosition = filterDistance(position, distance);
+        if (distanceFilterToPosition != null) {
+            positionQuery
+                .mustNot(distanceFilterToPosition);
+        }
+
+        boolQueryBuilder.filter(nestedQuery("addresses", positionQuery));
 
         SearchResponse searchResponse = client
             .prepareSearch(this.elasticsearchConfiguration.getIndex())
@@ -209,6 +213,9 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     private GeoDistanceQueryBuilder filterDistance(GeoPoint position, double distance) {
+        if (position == null) {
+            return null;
+        }
         return geoDistanceQuery("addresses.location")
             .lat(position.getLat())
             .lon(position.getLon())
