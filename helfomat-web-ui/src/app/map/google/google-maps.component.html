@@ -1,0 +1,6 @@
+<input
+    *ngIf="canChoosePosition()"
+    class="addressInput form-control"
+    type="text"
+    placeholder="{{ 'map.address' | translate }}"/>
+<div class="googleMap" [@resizeMap]="mapSize"></div>
