@@ -62,13 +62,13 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     public boolean existsOrganisationWithSameTypeInDistance(String index, Organisation organisation, Long distanceInMeters) {
-        List<Address> addresses = organisation.getAddresses();
-        if (addresses.size() == 0) {
+        Address address = organisation.getDefaultAddress();
+        if (address == null) {
             return false;
         }
-        GeoPoint locationToCheck = addresses.get(0).getLocation();
+        GeoPoint locationToCheck = address.getLocation();
 
-        GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("addresses.location")
+        GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("defaultAddress.location")
             .point(locationToCheck.getLat(), locationToCheck.getLon())
             .distance(distanceInMeters, DistanceUnit.METERS);
 
@@ -77,7 +77,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .setTypes(elasticsearchConfiguration.getType().getOrganisation())
             .setQuery(boolQuery()
                 .must(matchQuery("type", organisation.getType()))
-                .must(nestedQuery("addresses", geoDistanceQuery)))
+                .must(geoDistanceQuery))
             .execute()
             .actionGet();
 
@@ -98,12 +98,11 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             boolQueryBuilder.should(buildQuestionQuery(questionAnswerDto));
         }
 
-        boolQueryBuilder.filter(nestedQuery("addresses", filterDistance(position, distance)));
+        boolQueryBuilder.filter(filterDistance(position, distance));
 
         SortBuilder sortBuilder =
             SortBuilders
-                .geoDistanceSort("addresses.location")
-                .setNestedPath("addresses")
+                .geoDistanceSort("defaultAddress.location")
                 .point(position.getLat(), position.getLon())
                 .unit(DistanceUnit.KILOMETERS)
                 .order(SortOrder.DESC);
@@ -124,13 +123,11 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,
                                                  double distance,
                                                  BoundingBox boundingBox) {
-        BoolQueryBuilder boolQueryBuilder = boolQuery();
-        boolQueryBuilder.filter(nestedQuery("addresses",
-            boolQuery()
+        BoolQueryBuilder boolQueryBuilder = boolQuery()
+            .filter(boolQuery()
                 .must(filterBox(boundingBox))
                 .mustNot(filterDistance(position, distance))
-            )
-        );
+            );
 
         SearchResponse searchResponse = client
             .prepareSearch(this.elasticsearchConfiguration.getIndex())
@@ -141,9 +138,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         return extractOrganisations(searchResponse)
             .keySet()
             .stream()
-            .map(Organisation::getAddresses)
-            .filter(addresses -> !addresses.isEmpty())
-            .map(addresses -> addresses.get(0))
+            .map(Organisation::getDefaultAddress)
             .map(Address::getLocation)
             .collect(Collectors.toList());
     }
@@ -203,13 +198,13 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         GeoPoint topRight = boundingBoxDto.getNorthEast();
         GeoPoint bottomLeft = boundingBoxDto.getSouthWest();
 
-        return geoBoundingBoxQuery("addresses.location")
+        return geoBoundingBoxQuery("defaultAddress.location")
             .topRight(topRight.getLat(), topRight.getLon())
             .bottomLeft(bottomLeft.getLat(), bottomLeft.getLon());
     }
 
     private GeoDistanceQueryBuilder filterDistance(GeoPoint position, double distance) {
-        return geoDistanceQuery("addresses.location")
+        return geoDistanceQuery("defaultAddress.location")
             .lat(position.getLat())
             .lon(position.getLon())
             .distance(distance, DistanceUnit.KILOMETERS);

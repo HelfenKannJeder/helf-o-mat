@@ -20,6 +20,7 @@ public class Organisation {
     private String website;
     private PictureId logo;
     private PictureId teaserImage;
+    private Address defaultAddress;
     private List<PictureId> pictures;
     private List<ContactPerson> contactPersons;
     private List<Address> addresses;
@@ -37,7 +38,7 @@ public class Organisation {
                  String website,
                  PictureId logo,
                  PictureId teaserImage,
-                 List<PictureId> pictures,
+                 Address defaultAddress, List<PictureId> pictures,
                  List<ContactPerson> contactPersons,
                  List<Address> addresses,
                  List<Question> questions,
@@ -50,6 +51,7 @@ public class Organisation {
         this.website = website;
         this.logo = logo;
         this.teaserImage = teaserImage;
+        this.defaultAddress = defaultAddress;
         this.pictures = pictures;
         this.contactPersons = contactPersons;
         this.addresses = addresses;
@@ -170,6 +172,10 @@ public class Organisation {
             '}';
     }
 
+    public Address getDefaultAddress() {
+        return defaultAddress;
+    }
+
     public static class Builder {
         private String id;
         private String name;
@@ -179,6 +185,7 @@ public class Organisation {
         private PictureId logo;
         private List<ContactPerson> contactPersons;
         private PictureId teaserImage;
+        private Address defaultAddress;
         private List<PictureId> pictures;
         private List<Address> addresses;
         private List<Question> questions;
@@ -220,6 +227,11 @@ public class Organisation {
             return this;
         }
 
+        public Builder setDefaultAddress(Address defaultAddress) {
+            this.defaultAddress = defaultAddress;
+            return this;
+        }
+
         public Builder setPictures(List<PictureId> pictures) {
             this.pictures = pictures;
             return this;
@@ -251,7 +263,7 @@ public class Organisation {
         }
 
         public Organisation build() {
-            return new Organisation(id, name, type, description, website, logo, teaserImage, pictures, contactPersons, addresses, questions, mapPin,
+            return new Organisation(id, name, type, description, website, logo, teaserImage, defaultAddress, pictures, contactPersons, addresses, questions, mapPin,
                 groups);
         }
     }
