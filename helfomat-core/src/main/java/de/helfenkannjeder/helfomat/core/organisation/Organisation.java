@@ -64,76 +64,36 @@ public class Organisation {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getWebsite() {
         return website;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
     public PictureId getLogo() {
         return logo;
-    }
-
-    public void setLogo(PictureId logo) {
-        this.logo = logo;
     }
 
     public List<PictureId> getPictures() {
         return pictures;
     }
 
-    public void setPictures(List<PictureId> pictures) {
-        this.pictures = pictures;
-    }
-
     public List<Address> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
-
     public List<Question> getQuestions() {
         return questions;
-    }
-
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-    }
-
-    public void setMapPin(String mapPin) {
-        this.mapPin = mapPin;
     }
 
     public String getMapPin() {
@@ -144,24 +104,12 @@ public class Organisation {
         return groups;
     }
 
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
-
     public List<ContactPerson> getContactPersons() {
         return contactPersons;
     }
 
-    public void setContactPersons(List<ContactPerson> contactPersons) {
-        this.contactPersons = contactPersons;
-    }
-
     public PictureId getTeaserImage() {
         return teaserImage;
-    }
-
-    public void setTeaserImage(PictureId teaserImage) {
-        this.teaserImage = teaserImage;
     }
 
     @Override
@@ -191,6 +139,26 @@ public class Organisation {
         private List<Question> questions;
         private String mapPin;
         private List<Group> groups;
+
+        public Builder() {
+        }
+
+        public Builder(Organisation organisation) {
+            this.id = organisation.getId();
+            this.name = organisation.getName();
+            this.type = organisation.getType();
+            this.description = organisation.getDescription();
+            this.website = organisation.getWebsite();
+            this.logo = organisation.getLogo();
+            this.contactPersons = organisation.getContactPersons();
+            this.teaserImage = organisation.getTeaserImage();
+            this.defaultAddress = organisation.getDefaultAddress();
+            this.pictures = organisation.getPictures();
+            this.addresses = organisation.getAddresses();
+            this.questions = organisation.getQuestions();
+            this.mapPin = organisation.getMapPin();
+            this.groups = organisation.getGroups();
+        }
 
         public Builder setId(String id) {
             this.id = id;
@@ -263,7 +231,20 @@ public class Organisation {
         }
 
         public Organisation build() {
-            return new Organisation(id, name, type, description, website, logo, teaserImage, defaultAddress, pictures, contactPersons, addresses, questions, mapPin,
+            return new Organisation(
+                id,
+                name,
+                type,
+                description,
+                website,
+                logo,
+                teaserImage,
+                defaultAddress,
+                pictures,
+                contactPersons,
+                addresses,
+                questions,
+                mapPin,
                 groups);
         }
     }
