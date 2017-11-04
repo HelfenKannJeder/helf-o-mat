@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
@@ -139,6 +140,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .keySet()
             .stream()
             .map(Organisation::getDefaultAddress)
+            .filter(Objects::nonNull)
             .map(Address::getLocation)
             .collect(Collectors.toList());
     }
@@ -235,6 +237,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .setDescription((String) source.get("description"))
             .setWebsite((String) source.get("website"))
             .setMapPin((String) source.get("mapPin"))
+            .setDefaultAddress(this.extractAddress((Map<String, Object>) source.get("defaultAddress")))
             .setAddresses(addresses.stream().map(this::extractAddress).collect(Collectors.toList()))
             .setContactPersons(contactPersonDtos)
             .setLogo(extractLogoId(source))
