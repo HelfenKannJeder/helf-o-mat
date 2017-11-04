@@ -1,11 +1,13 @@
 import {NgModule} from '@angular/core';
+import {AlternativeMapModule} from './alternative/alternative-map.module';
+import {GoogleMapsModule} from './google/google-maps.module';
 import {MapComponent} from './map.component';
-import {TranslateModule} from '@ngx-translate/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 @NgModule({
     imports: [
-        TranslateModule,
+        AlternativeMapModule,
+        GoogleMapsModule,
         BrowserModule
     ],
     declarations: [

@@ -1,6 +1,28 @@
-<input
-    *ngIf="canChoosePosition()"
-    class="addressInput form-control"
-    type="text"
-    placeholder="{{ 'map.address' | translate }}"/>
-<div class="googleMap" [@resizeMap]="mapSize"></div>
+<helfomat-google-maps
+    *ngIf="!offlineMode"
+    [organisations]="organisations"
+    [center]="center"
+    [position]="position"
+    [distance]="distance"
+    [zoom]="zoom"
+    [clusteredOrganisations]="clusteredOrganisations"
+    [allowUpdatePosition]="allowUpdatePosition"
+    (updatePosition)="updatePosition.next($event)"
+    (updateBoundingBox)="updateBoundingBox.next($event)"
+    (updateZoom)="updateZoom.next($event)"
+    (openOrganisation)="openOrganisation.next($event)"
+></helfomat-google-maps>
+<helfomat-alternative-map
+    *ngIf="offlineMode"
+    [organisations]="organisations"
+    [center]="center"
+    [position]="position"
+    [distance]="distance"
+    [zoom]="zoom"
+    [clusteredOrganisations]="clusteredOrganisations"
+    [allowUpdatePosition]="allowUpdatePosition"
+    (updatePosition)="updatePosition.next($event)"
+    (updateBoundingBox)="updateBoundingBox.next($event)"
+    (updateZoom)="updateZoom.next($event)"
+    (openOrganisation)="openOrganisation.next($event)"
+></helfomat-alternative-map>
