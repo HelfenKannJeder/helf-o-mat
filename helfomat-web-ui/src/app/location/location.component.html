@@ -4,8 +4,8 @@
               [showMapResizeButton]="false"
               [showDefaultAddressBar]="false"
               (updatePosition)="_position$.next($event)">
-    <div class="addressSearchContainer col-md-4">
-        <div class="row">
+    <div class="addressSearchContainer row">
+        <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     {{ 'location.headline' | translate }}
