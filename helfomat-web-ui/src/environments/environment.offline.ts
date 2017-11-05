@@ -1,8 +1,8 @@
 import {GeoPoint} from '../app/organisation/geopoint.model';
 
 export const environment = {
-    offline: false,
-    production: true,
+    offline: true,
+    production: false,
     defaults: {
         mapCenter: new GeoPoint(51.163375, 10.447683),
         zoomLevel: {

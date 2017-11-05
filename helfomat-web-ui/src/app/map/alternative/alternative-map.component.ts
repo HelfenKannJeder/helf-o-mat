@@ -5,7 +5,7 @@ import {GeoPoint} from '../../organisation/geopoint.model';
 import {Observable} from 'rxjs/Observable';
 
 @Component({
-    selector: 'helfomat-map',
+    selector: 'helfomat-alternative-map',
     templateUrl: './alternative-map.component.html'
 })
 export class AlternativeMapComponent {
