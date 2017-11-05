@@ -5,11 +5,11 @@ import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,57 +36,26 @@ public class OrganisationApplicationService {
                                                   double distance) {
         Map<String, Answer> questionAnswerMap = questionAnswerDtos.stream()
             .collect(Collectors.toMap(QuestionAnswerDto::getId, QuestionAnswerDto::getAnswer));
-        return this.organisationRepository.findOrganisation(
-            questionAnswerMap,
-            position,
-            distance
-        )
-            .entrySet()
-            .stream()
-            .map((data) -> {
-                Organisation organisation = data.getKey();
-                List<AddressDto> addresses = organisation.getAddresses()
-                    .stream()
-                    .map((address) -> new AddressDto(
-                        address.getStreet(),
-                        address.getAddressAppendix(),
-                        address.getCity(),
-                        address.getZipcode(),
-                        address.getLocation(),
-                        address.getTelephone(),
-                        address.getWebsite()
-                    ))
-                    .collect(Collectors.toList());
-                List<ContactPersonDto> contactPersons = organisation.getContactPersons()
-                    .stream()
-                    .map((contactPerson) -> new ContactPersonDto(
-                        contactPerson.getFirstname(),
-                        contactPerson.getLastname(),
-                        contactPerson.getRank(),
-                        contactPerson.getTelephone()
-                    ))
-                    .collect(Collectors.toList());
-                return new OrganisationDto(
-                    organisation.getId(),
-                    organisation.getName(),
-                    organisation.getDescription(),
-                    organisation.getWebsite(),
-                    organisation.getMapPin(),
-                    addresses,
-                    contactPersons,
-                    pictureIdToString(organisation, organisation.getLogo()),
-                    data.getValue()
+        LinkedHashMap<Organisation, Float> organisations;
+        if (position == null) {
+            organisations = this.organisationRepository.findGlobalOrganisations(questionAnswerMap);
+        } else {
+            organisations = this.organisationRepository.findOrganisations(
+                questionAnswerMap,
+                position,
+                distance
+            );
+        }
 
-                );
-            })
-            .collect(Collectors.toList());
+        return toOrganisationDtos(organisations);
     }
 
-    private String pictureIdToString(Organisation organisation, PictureId pictureId) {
-        if (pictureId == null) {
-            return null;
-        }
-        return organisation.getLogo().getValue();
+    private List<OrganisationDto> toOrganisationDtos(LinkedHashMap<Organisation, Float> organisations) {
+        return organisations
+            .entrySet()
+            .stream()
+            .map(data -> OrganisationAssembler.toOrganisationDto(data.getKey(), data.getValue()))
+            .collect(Collectors.toList());
     }
 
     public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,

@@ -1,6 +1,7 @@
+<ng-content></ng-content>
 <input
-    *ngIf="canChoosePosition()"
-    class="addressInput form-control"
+    *ngIf="canChoosePosition() && showDefaultAddressBar"
+    class="addressInput addressSearchContainer form-control"
     type="text"
     placeholder="{{ 'map.address' | translate }}"/>
 <div class="googleMap" [@resizeMap]="mapSize"></div>
