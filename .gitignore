@@ -6,3 +6,4 @@ web/data
 import/data
 pictures
 data/elasticsearch
+helfomat-api/data/elasticsearch

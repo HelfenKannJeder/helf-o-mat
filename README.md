@@ -34,6 +34,17 @@ for that. To avoid that, you have two different options:
 The deployment can be done by running the Spring services as normal applications.
 You need to setup a reverse proxy for the api.
 
+For automated deployment you can use the ansible project inside `helfomat-deployment`.
+For the execution you can call the ansible playbook inside `local.yml`.
+There are by default two inventories files, one for production and the other for development.
+A sample to execute the development:
+
+```ansible-playbook -i inventories/development/hosts.yml local.yml```
+
+For the execution of the production you must encrypt the vault values:
+
+```ansible-playbook -i inventories/production/hosts.yml --vault-id @prompt local.yml```
+
 ## Development
 
 For development you can start `helfomat-web` like normal applications. For the frontend
