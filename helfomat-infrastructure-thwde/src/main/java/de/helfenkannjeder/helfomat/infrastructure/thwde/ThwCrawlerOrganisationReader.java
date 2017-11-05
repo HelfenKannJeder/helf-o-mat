@@ -116,6 +116,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
         Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
         List<Group> groups = extractDistinctGroups(oeDetailsDocument);
 
+        Address address = extractAddressFromDocument(oeDetailsDocument);
         Organisation organisation = new Organisation.Builder()
             .setId(UUID.randomUUID().toString())
             .setType(OrganisationType.THW.toString())
@@ -123,7 +124,8 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
             .setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
             .setMapPin(this.thwCrawlerConfiguration.getMapPin())
             .setLogo(toPicture(this.thwCrawlerConfiguration.getLogo()))
-            .setAddresses(singletonList(extractAddressFromDocument(oeDetailsDocument)))
+            .setAddresses(singletonList(address))
+            .setDefaultAddress(address)
             .setGroups(groups)
             .build();
 

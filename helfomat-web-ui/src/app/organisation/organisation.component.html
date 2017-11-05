@@ -19,7 +19,7 @@
         <h2>{{'organisation.persons.title' | translate}}</h2>
     </div>
     <div class="col-md-4">
-        <div class="panel panel-default">
+        <div class="panel panel-default" *ngIf="organisation.addresses > 0">
             <div class="panel-heading">
                 {{organisation.addresses.length | i18nPlural: {
                 '=1': 'organisation.address.title',
@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <div class="panel panel-default">
+        <div class="panel panel-default" *ngIf="organisation.contactPersons.length > 1">
             <div class="panel-heading">
                 {{'organisation.contact.title' | translate}}
             </div>

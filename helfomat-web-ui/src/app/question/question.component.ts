@@ -16,4 +16,11 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
         super();
     }
 
+    getNavigateUrl(allQuestionsAnswered: boolean): string {
+        if (allQuestionsAnswered) {
+            return '/location';
+        } else {
+            return '/question';
+        }
+    }
 }

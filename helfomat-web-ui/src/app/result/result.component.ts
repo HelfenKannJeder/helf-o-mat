@@ -10,6 +10,7 @@ import {UrlParamBuilder} from '../url-param.builder';
 import {Answer} from '../shared/answer.model';
 import {ObservableUtil} from '../shared/observable.util';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {environment} from '../../environments/environment';
 
 @Component({
     selector: 'app-result',
@@ -39,6 +40,7 @@ export class ResultComponent implements OnInit {
     public _organisation$: Subject<Organisation>;
     public answers: Observable<Answer[]>;
     public position: Observable<GeoPoint>;
+    public center: Observable<GeoPoint>;
     public distance = Observable.from([10]);
     public zoom: Observable<number>;
 
@@ -59,17 +61,33 @@ export class ResultComponent implements OnInit {
         this.organisations = searchService.organisations$;
         this.clusteredOrganisations = searchService.clusteredOrganisations$;
 
-        this.position = Observable.merge(
-            Observable.from([new GeoPoint(49.009432, 8.403922)]),
+        let position = Observable.merge(
             ObservableUtil.extractObjectMember(this.route.params, 'position')
                 .map(UrlParamBuilder.parseGeoPoint),
             this._position$.asObservable() // should not be necessary if position is written to URL
-        )
+        );
+
+        this.position = position
+            .debounceTime(100)
+            .distinctUntilChanged();
+
+        this.center = position
+            .map((position) => {
+                if (position == null) {
+                    return environment.defaults.mapCenter;
+                }
+                return position;
+            })
             .debounceTime(100)
             .distinctUntilChanged();
 
         this.zoom = Observable.concat(
-            Observable.from([12]),
+            Observable.merge(
+                Observable.of(environment.defaults.zoomLevel.withPosition),
+                position
+                    .filter(position => position == null)
+                    .map(position => environment.defaults.zoomLevel.withoutPosition)
+            ),
             this._zoom$.asObservable()
         )
             .debounceTime(100)
@@ -93,9 +111,11 @@ export class ResultComponent implements OnInit {
                     answers: UrlParamBuilder.buildAnswersFromUserAnswer(userAnswers),
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance,
-                    boundingBox: boundingBox,
+                    boundingBox: UrlParamBuilder.buildBoundingBox(boundingBox),
                     zoom: zoom
-                }]);
+                }], {
+                    replaceUrl: true
+                });
             });
 
         Observable.combineLatest(
