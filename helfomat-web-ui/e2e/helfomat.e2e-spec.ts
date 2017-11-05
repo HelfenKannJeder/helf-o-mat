@@ -1,14 +1,17 @@
 import {QuestionPage} from './question.po';
 import {ResultPage} from './result.po';
+import {LocationPage} from './location.po';
 
 let NUMBER_OF_HELFOMAT_QUESTIONS = 18;
 
 describe('Helf-O-Mat', function () {
     let questionPage: QuestionPage;
+    let locationPage: LocationPage;
     let resultPage: ResultPage;
 
     beforeEach(() => {
         questionPage = new QuestionPage();
+        locationPage = new LocationPage();
         resultPage = new ResultPage();
     });
 
@@ -35,11 +38,10 @@ describe('Helf-O-Mat', function () {
         expect(questionPage.currentUrl()).toMatch(new RegExp('/question.*'));
     });
 
-    it('should redirect to overview page after answering all questions', () => {
+    it('should redirect to location page after answering all questions', () => {
         questionPage.navigateTo();
         questionPage.answerQuestions(NUMBER_OF_HELFOMAT_QUESTIONS);
-        expect(questionPage.currentUrl()).toMatch(new RegExp('/result.*'));
-        expect(resultPage.hasMap()).toEqual(true);
-        expect(resultPage.hasResultList()).toEqual(true);
+        expect(questionPage.currentUrl()).toMatch(new RegExp('/location.*'));
+        expect(locationPage.hasMap()).toEqual(true);
     });
 });

@@ -48,20 +48,20 @@ export class OrganisationComponent implements OnInit {
         this.center = Observable
             .combineLatest(
                 this.organisations,
-                this.position
+                this.position.filter(position => position != null)
             )
             .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                let location = OrganisationComponent.getOrganisaitonLocation(position, organisations[0]);
+                let location = OrganisationComponent.getOrganisationLocation(position, organisations[0]);
                 return GeoPoint.pointBetween(position, location);
             });
 
         this.zoom = Observable
             .combineLatest(
                 this.organisations,
-                this.position
+                this.position.filter(position => position != null)
             )
             .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                let location = OrganisationComponent.getOrganisaitonLocation(position, organisations[0]);
+                let location = OrganisationComponent.getOrganisationLocation(position, organisations[0]);
                 return OrganisationComponent.calculateZoomLevel(location, position);
             });
 
@@ -81,7 +81,7 @@ export class OrganisationComponent implements OnInit {
 
         this.travelDistances = Observable.combineLatest(
             this.organisation,
-            this.position
+            this.position.filter(position => position != null)
         )
             .flatMap(([organisation, position]: [Organisation, GeoPoint]) => this.organisationService.getTravelDistances(organisation.id, position));
     }
@@ -104,7 +104,7 @@ export class OrganisationComponent implements OnInit {
         return zoom - 1;
     }
 
-    private static getOrganisaitonLocation(position: GeoPoint, organisation: Organisation): GeoPoint {
+    private static getOrganisationLocation(position: GeoPoint, organisation: Organisation): GeoPoint {
         let distance = null;
         let location = null;
         for (let address of organisation.addresses) {

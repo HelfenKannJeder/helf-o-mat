@@ -19,4 +19,8 @@ export class QuestionOverviewComponent extends AbstractQuestionComponent impleme
         super();
     }
 
+    getNavigateUrl(allQuestionsAnswered: boolean): string {
+        return '/result';
+    }
+
 }

@@ -9,6 +9,7 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Answer;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.DistanceUnit;
@@ -18,7 +19,7 @@ import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.alias.delete.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.GeoDistanceSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,11 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.existsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.geoBoundingBoxQuery;
 import static org.elasticsearch.index.query.QueryBuilders.geoDistanceQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
@@ -62,13 +65,13 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     public boolean existsOrganisationWithSameTypeInDistance(String index, Organisation organisation, Long distanceInMeters) {
-        List<Address> addresses = organisation.getAddresses();
-        if (addresses.size() == 0) {
+        Address address = organisation.getDefaultAddress();
+        if (address == null) {
             return false;
         }
-        GeoPoint locationToCheck = addresses.get(0).getLocation();
+        GeoPoint locationToCheck = address.getLocation();
 
-        GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("addresses.location")
+        GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("defaultAddress.location")
             .point(locationToCheck.getLat(), locationToCheck.getLon())
             .distance(distanceInMeters, DistanceUnit.METERS);
 
@@ -77,7 +80,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .setTypes(elasticsearchConfiguration.getType().getOrganisation())
             .setQuery(boolQuery()
                 .must(matchQuery("type", organisation.getType()))
-                .must(nestedQuery("addresses", geoDistanceQuery)))
+                .must(geoDistanceQuery))
             .execute()
             .actionGet();
 
@@ -90,34 +93,54 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
-    public LinkedHashMap<Organisation, Float> findOrganisation(Map<String, Answer> questionAnswers,
-                                                               GeoPoint position,
-                                                               double distance) {
+    public LinkedHashMap<Organisation, Float> findOrganisations(Map<String, Answer> questionAnswers,
+                                                                GeoPoint position,
+                                                                double distance) {
+        return findOrganisationsWithQuestionsAndFilterAndSort(
+            questionAnswers,
+            filterDistance(position, distance),
+            SortBuilders
+                .geoDistanceSort("defaultAddress.location")
+                .point(position.getLat(), position.getLon())
+                .unit(DistanceUnit.KILOMETERS)
+                .order(SortOrder.DESC)
+        );
+    }
+
+    @Override
+    public LinkedHashMap<Organisation, Float> findGlobalOrganisations(Map<String, Answer> questionAnswers) {
+        return findOrganisationsWithQuestionsAndFilterAndSort(
+            questionAnswers,
+            boolQuery()
+                .mustNot(existsQuery("defaultAddress")),
+            null
+        );
+    }
+
+    private LinkedHashMap<Organisation, Float> findOrganisationsWithQuestionsAndFilterAndSort(Map<String, Answer> questionAnswers,
+                                                                                              QueryBuilder filter,
+                                                                                              GeoDistanceSortBuilder sortBuilder) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         for (Map.Entry<String, Answer> questionAnswerDto : questionAnswers.entrySet()) {
             boolQueryBuilder.should(buildQuestionQuery(questionAnswerDto));
         }
 
-        boolQueryBuilder.filter(nestedQuery("addresses", filterDistance(position, distance)));
+        boolQueryBuilder.filter(filter);
 
-        SortBuilder sortBuilder =
-            SortBuilders
-                .geoDistanceSort("addresses.location")
-                .setNestedPath("addresses")
-                .point(position.getLat(), position.getLon())
-                .unit(DistanceUnit.KILOMETERS)
-                .order(SortOrder.DESC);
-
-        SearchResponse searchResponse = client
+        SearchRequestBuilder searchRequestBuilder = client
             .prepareSearch(this.elasticsearchConfiguration.getIndex())
             .setTypes(this.elasticsearchConfiguration.getType().getOrganisation())
             .setQuery(boolQueryBuilder)
             .setSize(DEFAULT_MAX_RESULT_SIZE)
-            .addSort(SortBuilders.scoreSort())
-            .addSort(sortBuilder)
-            .execute()
-            .actionGet();
-        return extractOrganisations(searchResponse);
+            .addSort(SortBuilders.scoreSort());
+
+        if (sortBuilder != null) {
+            searchRequestBuilder.addSort(sortBuilder);
+        }
+        return extractOrganisations(
+            searchRequestBuilder
+                .execute()
+                .actionGet());
     }
 
     @Override
@@ -125,12 +148,16 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
                                                  double distance,
                                                  BoundingBox boundingBox) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
-        boolQueryBuilder.filter(nestedQuery("addresses",
-            boolQuery()
-                .must(filterBox(boundingBox))
-                .mustNot(filterDistance(position, distance))
-            )
-        );
+        BoolQueryBuilder positionQuery = boolQuery()
+            .must(filterBox(boundingBox));
+
+        GeoDistanceQueryBuilder distanceFilterToPosition = filterDistance(position, distance);
+        if (distanceFilterToPosition != null) {
+            positionQuery
+                .mustNot(distanceFilterToPosition);
+        }
+
+        boolQueryBuilder.filter(positionQuery);
 
         SearchResponse searchResponse = client
             .prepareSearch(this.elasticsearchConfiguration.getIndex())
@@ -141,9 +168,8 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         return extractOrganisations(searchResponse)
             .keySet()
             .stream()
-            .map(Organisation::getAddresses)
-            .filter(addresses -> !addresses.isEmpty())
-            .map(addresses -> addresses.get(0))
+            .map(Organisation::getDefaultAddress)
+            .filter(Objects::nonNull)
             .map(Address::getLocation)
             .collect(Collectors.toList());
     }
@@ -203,13 +229,16 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         GeoPoint topRight = boundingBoxDto.getNorthEast();
         GeoPoint bottomLeft = boundingBoxDto.getSouthWest();
 
-        return geoBoundingBoxQuery("addresses.location")
+        return geoBoundingBoxQuery("defaultAddress.location")
             .topRight(topRight.getLat(), topRight.getLon())
             .bottomLeft(bottomLeft.getLat(), bottomLeft.getLon());
     }
 
     private GeoDistanceQueryBuilder filterDistance(GeoPoint position, double distance) {
-        return geoDistanceQuery("addresses.location")
+        if (position == null) {
+            return null;
+        }
+        return geoDistanceQuery("defaultAddress.location")
             .lat(position.getLat())
             .lon(position.getLon())
             .distance(distance, DistanceUnit.KILOMETERS);
@@ -240,6 +269,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .setDescription((String) source.get("description"))
             .setWebsite((String) source.get("website"))
             .setMapPin((String) source.get("mapPin"))
+            .setDefaultAddress(this.extractAddress((Map<String, Object>) source.get("defaultAddress")))
             .setAddresses(addresses.stream().map(this::extractAddress).collect(Collectors.toList()))
             .setContactPersons(contactPersonDtos)
             .setLogo(extractLogoId(source))
@@ -275,6 +305,10 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
     @SuppressWarnings("unchecked")
     private Address extractAddress(Map<String, Object> address) {
+        if (address == null) {
+            return null;
+        }
+
         return new Address.Builder()
             .setStreet((String) address.get("street"))
             .setAddressAppendix((String) address.get("addressAppendix"))

@@ -4,6 +4,13 @@
   "map": {
     "address": "Adresse..."
   },
+  "location": {
+    "headline": "Adresse",
+    "contentStart": "Um die Ergebnisse auf Hilfsorganisationen in deiner Nähe einschränken zu können brauchen wir deine Adresse:",
+    "contentEnd1": "Möchtest du aus welchen Gründen auch immer deine Adresse nicht angeben, kannst du auch so ",
+    "contentEnd2Link": "fortfahren",
+    "contentEnd3": ". In diesem Fall werden wir Hilfsorganisationen in ganz Deutschland betrachten."
+  },
   "organisation": {
     "dataLoading": "Die Daten werde geladen, bitte gedulde dich einen Moment.",
     "facts": {

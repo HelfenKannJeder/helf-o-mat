@@ -26,6 +26,31 @@
         }
       }
     },
+    "defaultAddress": {
+      "properties": {
+        "addressAppendix": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "location": {
+          "type": "geo_point"
+        },
+        "street": {
+          "type": "string"
+        },
+        "telephone": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        },
+        "zipcode": {
+          "type": "string"
+        }
+      }
+    },
     "description": {
       "type": "string"
     },

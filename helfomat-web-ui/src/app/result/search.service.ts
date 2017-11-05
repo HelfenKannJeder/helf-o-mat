@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import 'rxjs/add/operator/map';
-import {Observable, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import {Organisation} from '../organisation/organisation.model';
 import {UserAnswer} from '../organisation/userAnswer.model';
 import {GeoPoint} from '../organisation/geopoint.model';
@@ -24,10 +24,6 @@ export class SearchService {
             organisations: [],
             clusteredOrganisations: []
         };
-    }
-
-    searchOrganisations(): Observable<Array<Organisation>> {
-        return this.http.post('api/search', {}).map((r: Response) => r.json());
     }
 
     get organisations$() {
