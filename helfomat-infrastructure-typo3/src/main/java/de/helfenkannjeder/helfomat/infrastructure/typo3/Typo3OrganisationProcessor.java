@@ -10,6 +10,7 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
 import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TAddress;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TEmployee;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisationType;
@@ -64,17 +65,8 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setMapPin(unifyOrganisationPins(tOrganisation.getOrganisationtype().getPicture()))
             .setPictures(toPictures(extractPictures(tOrganisation.getPictures())))
             .setContactPersons(extractContactPersons(tOrganisation.getEmployees()))
-            .setAddresses(
-                tOrganisation.getAddresses().stream().map(tAddress -> new Address.Builder()
-                    .setWebsite(UrlUnifier.unifyOrganisationWebsiteUrl(tAddress.getWebsite()))
-                    .setTelephone(tAddress.getTelephone())
-                    .setStreet(tAddress.getStreet())
-                    .setAddressAppendix(tAddress.getAddressappendix())
-                    .setCity(tAddress.getCity())
-                    .setZipcode(tAddress.getZipcode())
-                    .setLocation(new GeoPoint(tAddress.getLatitude(), tAddress.getLongitude()))
-                    .build()).collect(Collectors.toList())
-            )
+            .setAddresses(tOrganisation.getAddresses().stream().map(Typo3OrganisationProcessor::toAddress).collect(Collectors.toList()))
+            .setDefaultAddress(toAddress(tOrganisation.getDefaultaddress()))
             .setGroups(
                 tOrganisation.getGroups().stream().map(tGroup -> {
                     Group group = new Group();
@@ -83,6 +75,21 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
                     return group;
                 }).collect(Collectors.toList())
             )
+            .build();
+    }
+
+    private static Address toAddress(TAddress tAddress) {
+        if (tAddress == null) {
+            return null;
+        }
+        return new Address.Builder()
+            .setWebsite(UrlUnifier.unifyOrganisationWebsiteUrl(tAddress.getWebsite()))
+            .setTelephone(tAddress.getTelephone())
+            .setStreet(tAddress.getStreet())
+            .setAddressAppendix(tAddress.getAddressappendix())
+            .setCity(tAddress.getCity())
+            .setZipcode(tAddress.getZipcode())
+            .setLocation(new GeoPoint(tAddress.getLatitude(), tAddress.getLongitude()))
             .build();
     }
 

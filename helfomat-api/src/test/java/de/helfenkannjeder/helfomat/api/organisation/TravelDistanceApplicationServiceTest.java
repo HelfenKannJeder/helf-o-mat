@@ -8,7 +8,6 @@ import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,8 +62,9 @@ public class TravelDistanceApplicationServiceTest {
     private List<TravelDistanceDto> testSearch() {
         Address address = new Address.Builder().build();
         address.setLocation(new GeoPoint(49.0388109, 8.3433651));
-        Organisation organisation = new Organisation.Builder().build();
-        organisation.setAddresses(Collections.singletonList(address));
+        Organisation organisation = new Organisation.Builder()
+            .setDefaultAddress(address)
+            .build();
 
         return travelDistanceApplicationService.requestTravelDistances(organisation, new GeoPoint(48.9808278, 8.4907565));
     }

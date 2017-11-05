@@ -34,8 +34,7 @@ public class TravelDistanceApplicationService {
     }
 
     private GeoPoint determineAddress(Organisation organisation) {
-        //TODO: default address selection
-        return organisation.getAddresses().get(0).getLocation();
+        return organisation.getDefaultAddress().getLocation();
     }
 
 }
