@@ -109,6 +109,16 @@ public class ResizeImageServiceTest {
         assertThat(getColor(result, 99, 99)).isEqualTo(Color.WHITE);
     }
 
+    @Test
+    public void resize_withCorruptedImage_expectNotToFail() throws Exception {
+        // Act
+        Resource corruptedInputImage = new ClassPathResource("de/helfenkannjeder/picture/test-asb-scale-problem.jpg");
+        Path result = makeResizeFixPointTest(corruptedInputImage, 84, null);
+
+        // Assert
+        assertImageSize(result, 84, 50);
+    }
+
     private static void assertImageSize(Path result, int expectedWidth, int expectedHeight) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(result.toFile());
         assertThat(bufferedImage.getWidth()).isEqualTo(expectedWidth);

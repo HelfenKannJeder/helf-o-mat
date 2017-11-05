@@ -1,6 +1,7 @@
 import {Answer} from './shared/answer.model';
 import {GeoPoint} from './organisation/geopoint.model';
 import {UserAnswer} from './organisation/userAnswer.model';
+import {BoundingBox} from './organisation/boundingbox.model';
 
 export class UrlParamBuilder {
 
@@ -27,6 +28,10 @@ export class UrlParamBuilder {
 
     public static parseGeoPoint(geoPoint: string): GeoPoint {
         return JSON.parse(geoPoint);
+    }
+
+    public static buildBoundingBox(boundingBox: BoundingBox) : string {
+        return JSON.stringify(boundingBox);
     }
 
     public static parseInt(shouldBeInteger: string): number {

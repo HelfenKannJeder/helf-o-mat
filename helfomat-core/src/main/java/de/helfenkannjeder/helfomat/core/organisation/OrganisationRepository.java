@@ -17,9 +17,11 @@ public interface OrganisationRepository {
 
     Organisation findOne(String id);
 
-    LinkedHashMap<Organisation, Float> findOrganisation(Map<String, Answer> questionAnswers,
-                                                        GeoPoint position,
-                                                        double distance);
+    LinkedHashMap<Organisation, Float> findOrganisations(Map<String, Answer> questionAnswers,
+                                                         GeoPoint position,
+                                                         double distance);
+
+    LinkedHashMap<Organisation, Float> findGlobalOrganisations(Map<String, Answer> questionAnswers);
 
     List<GeoPoint> findClusteredGeoPoints(GeoPoint position, double distance, BoundingBox boundingBox);
 

@@ -28,8 +28,9 @@ public class AnswerQuestionsProcessor implements ItemProcessor<Organisation, Org
             return null;
         }
 
-        organisation.setQuestions(extractQuestions(organisation.getGroups()));
-        return organisation;
+        return new Organisation.Builder(organisation)
+            .setQuestions(extractQuestions(organisation.getGroups()))
+            .build();
     }
 
     private List<Question> extractQuestions(List<Group> groups) {

@@ -7,11 +7,14 @@
     [zoom]="zoom"
     [clusteredOrganisations]="clusteredOrganisations"
     [allowUpdatePosition]="allowUpdatePosition"
+    [mapSize]="mapSize"
+    [showMapResizeButton]="showMapResizeButton"
+    [showDefaultAddressBar]="showDefaultAddressBar"
     (updatePosition)="updatePosition.next($event)"
     (updateBoundingBox)="updateBoundingBox.next($event)"
     (updateZoom)="updateZoom.next($event)"
     (openOrganisation)="openOrganisation.next($event)"
-></helfomat-google-maps>
+><ng-content></ng-content></helfomat-google-maps>
 <helfomat-alternative-map
     *ngIf="offlineMode"
     [organisations]="organisations"
@@ -21,8 +24,14 @@
     [zoom]="zoom"
     [clusteredOrganisations]="clusteredOrganisations"
     [allowUpdatePosition]="allowUpdatePosition"
+    [mapSize]="mapSize"
+    [showMapResizeButton]="showMapResizeButton"
+    [showDefaultAddressBar]="showDefaultAddressBar"
     (updatePosition)="updatePosition.next($event)"
     (updateBoundingBox)="updateBoundingBox.next($event)"
     (updateZoom)="updateZoom.next($event)"
     (openOrganisation)="openOrganisation.next($event)"
-></helfomat-alternative-map>
+><!--
+You cannot use ng-content twice, so it is skipped here.
+Maybe it will get fixed in the future: https://github.com/angular/angular/issues/9173
+--></helfomat-alternative-map>

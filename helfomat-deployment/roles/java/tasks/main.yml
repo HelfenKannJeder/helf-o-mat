@@ -1,0 +1,28 @@
+- block:
+  - name: install certificates for java
+    apt:
+      name: ca-certificates-java
+      state: latest
+  - name: ensure java repository key is available
+    apt_key:
+      keyserver: hkp://keyserver.ubuntu.com:80
+      id: EEA14886
+  - name: ensure java repository is available
+    apt_repository:
+      filename: java
+      repo: "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main"
+  - name: ensure java8 is installed
+    apt:
+      name: oracle-java8-installer
+      state: latest
+      update_cache: yes
+  rescue:
+  - name: agree oracle license v1.1
+    shell: "echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections"
+  - name: view oracle license v1.1
+    shell: "echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections"
+  - name: ensure java8 is installed
+    apt:
+      name: oracle-java8-installer
+      state: latest
+      update_cache: yes

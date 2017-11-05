@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 
 /**
@@ -35,6 +36,12 @@ public class TOrganisation {
     @JoinColumn(name = "organisation")
     @Where(clause="deleted=0")
     private List<TAddress> addresses;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "defaultaddress")
+    @Where(clause="deleted=0")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private TAddress defaultaddress;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
@@ -76,6 +83,10 @@ public class TOrganisation {
 
     public List<TAddress> getAddresses() {
         return addresses;
+    }
+
+    public TAddress getDefaultaddress() {
+        return defaultaddress;
     }
 
     public List<TGroup> getGroups() {
