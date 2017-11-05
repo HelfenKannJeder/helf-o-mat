@@ -1,5 +1,7 @@
 package de.helfenkannjeder.helfomat.api.picture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -14,7 +16,10 @@ import java.nio.file.Path;
 @Service
 public class ResizeImageService {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(ResizeImageService.class);
+
     public void resize(Path input, Path output, final Integer expectedWidth, final Integer expectedHeight) throws IOException {
+        LOGGER.debug("Scale '" + input + "' to size " + expectedWidth + "x" + expectedHeight + " with new name '" + output + "' ");
         BufferedImage image = ImageIO.read(input.toFile());
 
         int width = image.getWidth();

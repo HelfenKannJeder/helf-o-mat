@@ -23,6 +23,7 @@
         <jsoup.version>1.9.2</jsoup.version>
         <jna.version>4.1.0</jna.version>
         <google-maps-services.version>0.2.2</google-maps-services.version>
+        <imageio.version>3.2.1</imageio.version>
     </properties>
 
     <distributionManagement>
@@ -92,6 +93,11 @@
                 <groupId>de.helfenkannjeder.helfomat</groupId>
                 <artifactId>helfomat-web-ui</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio-jpeg</artifactId>
+                <version>${imageio.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
