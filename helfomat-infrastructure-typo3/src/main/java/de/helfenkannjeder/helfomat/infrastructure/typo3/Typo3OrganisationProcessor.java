@@ -54,7 +54,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         return new Organisation.Builder()
             .setId(UUID.randomUUID().toString())
             .setName(tOrganisation.getName())
-            .setType(OrganisationType.findByName(tOrganisation.getOrganisationtype().getName()))
+            .setOrganisationType(OrganisationType.findByName(tOrganisation.getOrganisationtype().getName()))
             .setDescription(tOrganisation.getDescription())
             .setLogo(toPicture(tOrganisation.getLogo()))
             .setWebsite(UrlUnifier.unifyOrganisationWebsiteUrl(tOrganisation.getWebsite()))

@@ -35,7 +35,7 @@ public class DuplicateOrganisationFilterProcessorTest {
     public void anExistingOrganisationIsNotReturned() throws Exception {
         Organisation candidateOrganisation = new Organisation.Builder()
             .setId("1")
-            .setType(OrganisationType.THW)
+            .setOrganisationType(OrganisationType.THW)
             .build();
         String indexName = "my-index-name";
         when(indexManager.getCurrentIndex()).thenReturn(indexName);

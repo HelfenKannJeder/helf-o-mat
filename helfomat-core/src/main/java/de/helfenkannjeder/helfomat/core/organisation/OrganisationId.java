@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.core.picture;
+package de.helfenkannjeder.helfomat.core.organisation;
 
 import com.google.common.base.Preconditions;
 
@@ -9,18 +9,18 @@ import java.util.regex.Pattern;
 /**
  * @author Valentin Zickner
  */
-public class PictureId {
+public class OrganisationId {
 
     private static Pattern VALID_UUID = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$");
 
     private String value;
 
-    public PictureId() {
+    public OrganisationId() {
         this(UUID.randomUUID().toString());
     }
 
-    public PictureId(String value) {
-        Preconditions.checkArgument(VALID_UUID.matcher(value).matches(), "Invalid PictureId provided");
+    public OrganisationId(String value) {
+        Preconditions.checkArgument(VALID_UUID.matcher(value).matches(), "Invalid OrganisationId provided");
         this.value = value;
     }
 
@@ -32,8 +32,8 @@ public class PictureId {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PictureId pictureId = (PictureId) o;
-        return Objects.equals(value, pictureId.value);
+        OrganisationId that = (OrganisationId) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class PictureId {
 
     @Override
     public String toString() {
-        return "PictureId{" +
+        return "OrganisationId{" +
             "value='" + value + '\'' +
             '}';
     }

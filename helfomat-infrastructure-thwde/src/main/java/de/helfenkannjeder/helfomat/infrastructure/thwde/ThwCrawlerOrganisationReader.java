@@ -119,7 +119,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
         Address address = extractAddressFromDocument(oeDetailsDocument);
         Organisation organisation = new Organisation.Builder()
             .setId(UUID.randomUUID().toString())
-            .setType(OrganisationType.THW)
+            .setOrganisationType(OrganisationType.THW)
             .setName(checkNotNull(organisationName))
             .setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
             .setMapPin(this.thwCrawlerConfiguration.getMapPin())

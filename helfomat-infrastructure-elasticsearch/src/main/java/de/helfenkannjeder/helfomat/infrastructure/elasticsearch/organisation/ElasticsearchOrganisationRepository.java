@@ -40,7 +40,6 @@ import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.existsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.geoBoundingBoxQuery;
 import static org.elasticsearch.index.query.QueryBuilders.geoDistanceQuery;
-import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
@@ -78,9 +77,11 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         SearchResponse searchResponse = client
             .prepareSearch(index)
             .setTypes(elasticsearchConfiguration.getType().getOrganisation())
-            .setQuery(boolQuery()
-                .must(matchQuery("type", organisation.getType()))
-                .must(geoDistanceQuery))
+            .setQuery(
+                boolQuery()
+                    .must(termQuery("organisationType", organisation.getOrganisationType().name()))
+                    .must(geoDistanceQuery)
+            )
             .execute()
             .actionGet();
 
@@ -192,6 +193,11 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     public void createIndex(String index, String mapping) {
         this.elasticsearchTemplate.createIndex(index);
         this.elasticsearchTemplate.putMapping(index, this.elasticsearchConfiguration.getType().getOrganisation(), mapping);
+    }
+
+    @Override
+    public void deleteIndex(String index) {
+        this.elasticsearchTemplate.deleteIndex(index);
     }
 
     @Override
