@@ -43,8 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .password(user.getPassword())
                 .roles("USER", "ADMIN");
             if (user.isPrintPassword()) {
-                LOGGER.warn("Please authenticate with the following credentials against the admin " +
-                    "endpoints: [username='" + user.getUsername() + "', password='" + user.getPassword() + "'");
+                LOGGER.warn("Please authenticate with the following credentials against the admin endpoints: " + user);
             }
         }
 

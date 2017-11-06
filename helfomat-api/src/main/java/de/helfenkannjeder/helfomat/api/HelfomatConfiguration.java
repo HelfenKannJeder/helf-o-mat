@@ -187,6 +187,14 @@ public class HelfomatConfiguration {
         public void setPrintPassword(boolean printPassword) {
             this.printPassword = printPassword;
         }
+
+        @Override
+        public String toString() {
+            return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+        }
     }
 
 }

@@ -66,6 +66,10 @@
     "pictures": {
       "type": "string"
     },
+    "organisationType": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
     "questions": {
       "type": "nested",
       "properties": {

@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.core.organisation;
 
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Question;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -15,7 +16,7 @@ public class Organisation {
     @Id
     private String id;
     private String name;
-    private String type;
+    private OrganisationType organisationType;
     private String description;
     private String website;
     private PictureId logo;
@@ -33,7 +34,7 @@ public class Organisation {
 
     Organisation(String id,
                  String name,
-                 String type,
+                 OrganisationType organisationType,
                  String description,
                  String website,
                  PictureId logo,
@@ -46,7 +47,7 @@ public class Organisation {
                  List<Group> groups) {
         this.id = id;
         this.name = name;
-        this.type = type;
+        this.organisationType = organisationType;
         this.description = description;
         this.website = website;
         this.logo = logo;
@@ -68,8 +69,8 @@ public class Organisation {
         return name;
     }
 
-    public String getType() {
-        return type;
+    public OrganisationType getOrganisationType() {
+        return organisationType;
     }
 
     public String getDescription() {
@@ -127,7 +128,7 @@ public class Organisation {
     public static class Builder {
         private String id;
         private String name;
-        private String type;
+        private OrganisationType organisationType;
         private String description;
         private String website;
         private PictureId logo;
@@ -146,7 +147,7 @@ public class Organisation {
         public Builder(Organisation organisation) {
             this.id = organisation.getId();
             this.name = organisation.getName();
-            this.type = organisation.getType();
+            this.organisationType = organisation.getOrganisationType();
             this.description = organisation.getDescription();
             this.website = organisation.getWebsite();
             this.logo = organisation.getLogo();
@@ -170,8 +171,8 @@ public class Organisation {
             return this;
         }
 
-        public Builder setType(String type) {
-            this.type = type;
+        public Builder setOrganisationType(OrganisationType organisationType) {
+            this.organisationType = organisationType;
             return this;
         }
 
@@ -234,7 +235,7 @@ public class Organisation {
             return new Organisation(
                 id,
                 name,
-                type,
+                organisationType,
                 description,
                 website,
                 logo,

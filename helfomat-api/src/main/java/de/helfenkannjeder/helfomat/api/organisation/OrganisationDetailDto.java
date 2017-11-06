@@ -5,7 +5,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Question;
 
 import java.util.Collections;

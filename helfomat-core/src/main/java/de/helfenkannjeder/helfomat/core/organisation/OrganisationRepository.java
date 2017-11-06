@@ -29,6 +29,8 @@ public interface OrganisationRepository {
 
     void createIndex(String index, String mapping);
 
+    void deleteIndex(String index);
+
     void updateAlias(String index);
 
 }

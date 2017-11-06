@@ -1,7 +1,5 @@
 package de.helfenkannjeder.helfomat.core.picture;
 
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
-
 import java.io.IOException;
 import java.nio.file.Path;
 

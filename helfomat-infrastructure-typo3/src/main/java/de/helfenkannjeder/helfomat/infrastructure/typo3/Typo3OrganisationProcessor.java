@@ -7,8 +7,8 @@ import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TAddress;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TEmployee;
@@ -26,10 +26,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static de.helfenkannjeder.helfomat.core.organisation.OrganisationType.Aktivbuero;
-import static de.helfenkannjeder.helfomat.core.organisation.OrganisationType.Helfenkannjeder;
-import static de.helfenkannjeder.helfomat.core.organisation.OrganisationType.Sonstige;
 
 /**
  * @author Valentin Zickner
@@ -58,7 +54,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         return new Organisation.Builder()
             .setId(UUID.randomUUID().toString())
             .setName(tOrganisation.getName())
-            .setType(tOrganisation.getOrganisationtype().getName())
+            .setOrganisationType(OrganisationType.findByName(tOrganisation.getOrganisationtype().getName()))
             .setDescription(tOrganisation.getDescription())
             .setLogo(toPicture(tOrganisation.getLogo()))
             .setWebsite(UrlUnifier.unifyOrganisationWebsiteUrl(tOrganisation.getWebsite()))
@@ -112,7 +108,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
                 new PictureId()
             );
         } catch (DownloadFailedException e) {
-            LOGGER.warn("Failed to donwload picture", e);
+            LOGGER.warn("Failed to download picture", e);
             return null;
         }
     }
@@ -139,18 +135,13 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
     }
 
     private boolean organisationIsNoCandidateToImport(TOrganisation tOrganisation) {
-        // We don't want to import organisations without a specified type
-        if (tOrganisation.getOrganisationtype() == null) {
-            return true;
-        }
-
-        List<OrganisationType> irrelevantOrganisationTypes = Arrays.asList(Aktivbuero, Sonstige, Helfenkannjeder);
         TOrganisationType organisationType = tOrganisation.getOrganisationtype();
-        if (irrelevantOrganisationTypes.stream().map(OrganisationType::toString).anyMatch(item -> organisationType.getName().equals(item))) {
-            return true;
-        }
+        return organisationType == null || isIrrelevantOrganisationType(organisationType);
+    }
 
-        return false;
+    private boolean isIrrelevantOrganisationType(TOrganisationType organisationType) {
+        List<String> irrelevantOrganisationTypes = Arrays.asList("Aktivbüro", "Sonstige", "HelfenKannJeder");
+        return irrelevantOrganisationTypes.contains(organisationType.getName());
     }
 
     private List<String> extractPictures(String picturesString) {

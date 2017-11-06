@@ -3,6 +3,7 @@ package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
 import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,7 @@ public class DuplicateOrganisationFilterProcessorTest {
     public void anExistingOrganisationIsNotReturned() throws Exception {
         Organisation candidateOrganisation = new Organisation.Builder()
             .setId("1")
-            .setType("anyType")
+            .setOrganisationType(OrganisationType.THW)
             .build();
         String indexName = "my-index-name";
         when(indexManager.getCurrentIndex()).thenReturn(indexName);
