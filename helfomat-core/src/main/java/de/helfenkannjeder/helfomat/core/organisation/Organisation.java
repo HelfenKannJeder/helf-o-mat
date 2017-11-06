@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.core.organisation;
 
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Question;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -15,7 +16,7 @@ public class Organisation {
     @Id
     private String id;
     private String name;
-    private String type;
+    private OrganisationType type;
     private String description;
     private String website;
     private PictureId logo;
@@ -33,7 +34,7 @@ public class Organisation {
 
     Organisation(String id,
                  String name,
-                 String type,
+                 OrganisationType type,
                  String description,
                  String website,
                  PictureId logo,
@@ -68,7 +69,7 @@ public class Organisation {
         return name;
     }
 
-    public String getType() {
+    public OrganisationType getType() {
         return type;
     }
 
@@ -127,7 +128,7 @@ public class Organisation {
     public static class Builder {
         private String id;
         private String name;
-        private String type;
+        private OrganisationType type;
         private String description;
         private String website;
         private PictureId logo;
@@ -170,7 +171,7 @@ public class Organisation {
             return this;
         }
 
-        public Builder setType(String type) {
+        public Builder setType(OrganisationType type) {
             this.type = type;
             return this;
         }

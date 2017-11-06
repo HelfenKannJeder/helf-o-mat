@@ -40,9 +40,9 @@ public class Typo3OrganisationProcessorTest {
     @Test
     public void organisationsOfTypeAktivbueroAreIgnored() throws Exception {
         TOrganisation tOrganisation = new TOrganisation();
-        TOrganisationType organisationtype = new TOrganisationType();
-        organisationtype.setName("Aktivbüro");
-        tOrganisation.setOrganisationtype(organisationtype);
+        TOrganisationType tOrganisationType = new TOrganisationType();
+        tOrganisationType.setName("Aktivbüro");
+        tOrganisation.setOrganisationtype(tOrganisationType);
         Organisation processedOrganisation = typo3OrganisationProcessor.process(tOrganisation);
 
         assertThat(processedOrganisation).isNull();

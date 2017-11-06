@@ -8,8 +8,8 @@ import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -119,7 +119,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
         Address address = extractAddressFromDocument(oeDetailsDocument);
         Organisation organisation = new Organisation.Builder()
             .setId(UUID.randomUUID().toString())
-            .setType(OrganisationType.THW.toString())
+            .setType(OrganisationType.THW)
             .setName(checkNotNull(organisationName))
             .setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
             .setMapPin(this.thwCrawlerConfiguration.getMapPin())

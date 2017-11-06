@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.web.controller;
 
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;

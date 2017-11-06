@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.core.organisation;
+package de.helfenkannjeder.helfomat.core.picture;
 
 import com.google.common.base.Preconditions;
 

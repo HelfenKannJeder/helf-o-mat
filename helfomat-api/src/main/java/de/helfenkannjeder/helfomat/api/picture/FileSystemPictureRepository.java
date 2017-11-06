@@ -2,9 +2,9 @@ package de.helfenkannjeder.helfomat.api.picture;
 
 import com.google.common.base.Preconditions;
 import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.DownloadService;
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

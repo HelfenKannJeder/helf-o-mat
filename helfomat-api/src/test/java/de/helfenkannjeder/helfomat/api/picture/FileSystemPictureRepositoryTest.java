@@ -1,9 +1,9 @@
 package de.helfenkannjeder.helfomat.api.picture;
 
 import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.DownloadService;
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.Before;

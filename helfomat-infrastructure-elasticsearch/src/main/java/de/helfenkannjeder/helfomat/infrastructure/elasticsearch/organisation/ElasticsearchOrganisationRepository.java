@@ -6,7 +6,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
-import de.helfenkannjeder.helfomat.core.organisation.PictureId;
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Answer;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
 import org.elasticsearch.action.search.SearchRequestBuilder;
