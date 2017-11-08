@@ -3,6 +3,7 @@ package de.helfenkannjeder.helfomat.api.organisation;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 
 import java.util.List;
@@ -13,7 +14,8 @@ import java.util.stream.Collectors;
  */
 class OrganisationAssembler {
 
-    static OrganisationDto toOrganisationDto(Organisation organisation, Float scoreNorm) {
+    static OrganisationDto toOrganisationDto(ScoredOrganisation scoredOrganisation) {
+        Organisation organisation = scoredOrganisation.getOrganisation();
         return new OrganisationDto(
             organisation.getId(),
             organisation.getName(),
@@ -23,8 +25,7 @@ class OrganisationAssembler {
             toAddressDtos(organisation),
             toContactPersonDtos(organisation),
             pictureIdToString(organisation, organisation.getLogo()),
-            scoreNorm
-
+            scoredOrganisation.getScore()
         );
     }
 

@@ -3,34 +3,28 @@ package de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organisation;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
-import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
-import de.helfenkannjeder.helfomat.core.picture.PictureId;
+import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
 import de.helfenkannjeder.helfomat.core.question.Answer;
+import de.helfenkannjeder.helfomat.core.question.Question;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoBoundingBoxQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.alias.delete.AliasesNotFoundException;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.GeoDistanceSortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.AliasQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,6 +34,7 @@ import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.existsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.geoBoundingBoxQuery;
 import static org.elasticsearch.index.query.QueryBuilders.geoDistanceQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
@@ -48,16 +43,13 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
     private static final int DEFAULT_MAX_RESULT_SIZE = 10000;
 
-    private final Client client;
     private final ElasticsearchCrudOrganisationRepository elasticsearchCrudOrganisationRepository;
     private final ElasticsearchConfiguration elasticsearchConfiguration;
     private final ElasticsearchTemplate elasticsearchTemplate;
 
     @Autowired
-    public ElasticsearchOrganisationRepository(Client client,
-                                               ElasticsearchCrudOrganisationRepository elasticsearchCrudOrganisationRepository,
+    public ElasticsearchOrganisationRepository(ElasticsearchCrudOrganisationRepository elasticsearchCrudOrganisationRepository,
                                                ElasticsearchConfiguration elasticsearchConfiguration, ElasticsearchTemplate elasticsearchTemplate) {
-        this.client = client;
         this.elasticsearchCrudOrganisationRepository = elasticsearchCrudOrganisationRepository;
         this.elasticsearchConfiguration = elasticsearchConfiguration;
         this.elasticsearchTemplate = elasticsearchTemplate;
@@ -74,18 +66,13 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .point(locationToCheck.getLat(), locationToCheck.getLon())
             .distance(distanceInMeters, DistanceUnit.METERS);
 
-        SearchResponse searchResponse = client
-            .prepareSearch(index)
-            .setTypes(elasticsearchConfiguration.getType().getOrganisation())
-            .setQuery(
-                boolQuery()
-                    .must(termQuery("organisationType", organisation.getOrganisationType().name()))
-                    .must(geoDistanceQuery)
-            )
-            .execute()
-            .actionGet();
-
-        return searchResponse.getHits().totalHits() > 0;
+        BoolQueryBuilder organisationListQuery = boolQuery()
+            .must(termQuery("organisationType", organisation.getOrganisationType().name()))
+            .must(geoDistanceQuery);
+        NativeSearchQuery query = new NativeSearchQuery(organisationListQuery);
+        query.addIndices(index);
+        query.addTypes(elasticsearchConfiguration.getType().getOrganisation());
+        return this.elasticsearchTemplate.count(query) > 0;
     }
 
     @Override
@@ -94,33 +81,26 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
-    public LinkedHashMap<Organisation, Float> findOrganisations(Map<String, Answer> questionAnswers,
-                                                                GeoPoint position,
-                                                                double distance) {
+    public List<ScoredOrganisation> findOrganisations(Map<String, Answer> questionAnswers,
+                                                      GeoPoint position,
+                                                      double distance) {
         return findOrganisationsWithQuestionsAndFilterAndSort(
             questionAnswers,
-            filterDistance(position, distance),
-            SortBuilders
-                .geoDistanceSort("defaultAddress.location")
-                .point(position.getLat(), position.getLon())
-                .unit(DistanceUnit.KILOMETERS)
-                .order(SortOrder.DESC)
+            filterDistance(position, distance)
         );
     }
 
     @Override
-    public LinkedHashMap<Organisation, Float> findGlobalOrganisations(Map<String, Answer> questionAnswers) {
+    public List<ScoredOrganisation> findGlobalOrganisations(Map<String, Answer> questionAnswers) {
         return findOrganisationsWithQuestionsAndFilterAndSort(
             questionAnswers,
             boolQuery()
-                .mustNot(existsQuery("defaultAddress")),
-            null
+                .mustNot(existsQuery("defaultAddress"))
         );
     }
 
-    private LinkedHashMap<Organisation, Float> findOrganisationsWithQuestionsAndFilterAndSort(Map<String, Answer> questionAnswers,
-                                                                                              QueryBuilder filter,
-                                                                                              GeoDistanceSortBuilder sortBuilder) {
+    private List<ScoredOrganisation> findOrganisationsWithQuestionsAndFilterAndSort(Map<String, Answer> questionAnswers,
+                                                                                    QueryBuilder filter) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         for (Map.Entry<String, Answer> questionAnswerDto : questionAnswers.entrySet()) {
             boolQueryBuilder.should(buildQuestionQuery(questionAnswerDto));
@@ -128,20 +108,16 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
         boolQueryBuilder.filter(filter);
 
-        SearchRequestBuilder searchRequestBuilder = client
-            .prepareSearch(this.elasticsearchConfiguration.getIndex())
-            .setTypes(this.elasticsearchConfiguration.getType().getOrganisation())
-            .setQuery(boolQueryBuilder)
-            .setSize(DEFAULT_MAX_RESULT_SIZE)
-            .addSort(SortBuilders.scoreSort());
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQuery(boolQueryBuilder);
+        nativeSearchQuery.addIndices(elasticsearchConfiguration.getIndex());
+        nativeSearchQuery.addTypes(elasticsearchConfiguration.getType().getOrganisation());
+        nativeSearchQuery.setPageable(new PageRequest(0, DEFAULT_MAX_RESULT_SIZE));
+        List<Organisation> organisations = this.elasticsearchTemplate.queryForList(nativeSearchQuery, Organisation.class);
 
-        if (sortBuilder != null) {
-            searchRequestBuilder.addSort(sortBuilder);
-        }
         return extractOrganisations(
-            searchRequestBuilder
-                .execute()
-                .actionGet());
+            questionAnswers,
+            organisations
+        );
     }
 
     @Override
@@ -160,15 +136,15 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
         boolQueryBuilder.filter(positionQuery);
 
-        SearchResponse searchResponse = client
-            .prepareSearch(this.elasticsearchConfiguration.getIndex())
-            .setTypes(this.elasticsearchConfiguration.getType().getOrganisation())
-            .setQuery(boolQueryBuilder)
-            .setSize(DEFAULT_MAX_RESULT_SIZE) // Hide results, only aggregation relevant
-            .get();
-        return extractOrganisations(searchResponse)
-            .keySet()
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQuery(boolQueryBuilder, matchAllQuery());
+        nativeSearchQuery.addIndices(elasticsearchConfiguration.getIndex());
+        nativeSearchQuery.addTypes(elasticsearchConfiguration.getType().getOrganisation());
+        nativeSearchQuery.setPageable(new PageRequest(0, DEFAULT_MAX_RESULT_SIZE));
+        List<Organisation> organisations = this.elasticsearchTemplate.queryForList(nativeSearchQuery, Organisation.class);
+
+        return extractOrganisations(Collections.emptyMap(), organisations)
             .stream()
+            .map(ScoredOrganisation::getOrganisation)
             .map(Organisation::getDefaultAddress)
             .filter(Objects::nonNull)
             .map(Address::getLocation)
@@ -250,87 +226,34 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .distance(distance, DistanceUnit.KILOMETERS);
     }
 
-    private LinkedHashMap<Organisation, Float> extractOrganisations(SearchResponse searchResponse) {
-        LinkedHashMap<Organisation, Float> organisations = new LinkedHashMap<>();
-        Float maxScore = null;
-        for (SearchHit hit : searchResponse.getHits().getHits()) {
-            if (maxScore == null) {
-                maxScore = hit.getScore();
-            }
-
-            Organisation organisation = extractOrganisation(hit.getSource());
-            float score = (hit.getScore() * 100) / maxScore;
-            organisations.put(organisation, score);
-        }
-        return organisations;
+    private List<ScoredOrganisation> extractOrganisations(Map<String, Answer> questionAnswerList, List<Organisation> resultOrganisations) {
+        return resultOrganisations
+            .stream()
+            .map(organisation -> new ScoredOrganisation(
+                organisation,
+                calculateScore(organisation.getQuestions(), questionAnswerList)
+            ))
+            .sorted((o1, o2) -> o1.getScore() < o2.getScore() ? 1 : -1)
+            .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("unchecked")
-    private Organisation extractOrganisation(Map<String, Object> source) {
-        List<Map<String, Object>> addresses = (List<Map<String, Object>>) source.get("addresses");
-        List<ContactPerson> contactPersonDtos = extractContactPersons(source);
-        return new Organisation.Builder()
-            .setId((String) source.get("id"))
-            .setName((String) source.get("name"))
-            .setDescription((String) source.get("description"))
-            .setWebsite((String) source.get("website"))
-            .setMapPin((String) source.get("mapPin"))
-            .setDefaultAddress(this.extractAddress((Map<String, Object>) source.get("defaultAddress")))
-            .setAddresses(addresses.stream().map(this::extractAddress).collect(Collectors.toList()))
-            .setContactPersons(contactPersonDtos)
-            .setLogo(extractLogoId(source))
-            .build();
-    }
+    private float calculateScore(List<Question> organisationQuestions, Map<String, Answer> questionAnswerList) {
+        return organisationQuestions
+            .stream()
+            .map((question) -> {
+                String questionId = String.valueOf(question.getUid());
+                Answer organisationAnswer = question.getAnswer();
+                Answer userAnswer = questionAnswerList.get(questionId);
 
-    @SuppressWarnings("unchecked")
-    private List<ContactPerson> extractContactPersons(Map<String, Object> source) {
-        List<Map<String, Object>> contactPersons = (List<Map<String, Object>>) source.get("contactPersons");
-        if (contactPersons == null) {
-            return Collections.emptyList();
-        }
-        return contactPersons.stream().map(this::extractContactPerson).collect(Collectors.toList());
-    }
-
-    @SuppressWarnings("unchecked")
-    private PictureId extractLogoId(Map<String, Object> source) {
-        Map<String, Object> logo = (Map<String, Object>) source.get("logo");
-        if (logo == null) {
-            return null;
-        }
-        return new PictureId((String) logo.get("value"));
-    }
-
-    private ContactPerson extractContactPerson(Map<String, Object> contactPerson) {
-        return new ContactPerson.Builder()
-            .setFirstname((String) contactPerson.get("firstname"))
-            .setLastname((String) contactPerson.get("lastname"))
-            .setRank((String) contactPerson.get("rank"))
-            .setTelephone((String) contactPerson.get("telephone"))
-            .build();
-    }
-
-    @SuppressWarnings("unchecked")
-    private Address extractAddress(Map<String, Object> address) {
-        if (address == null) {
-            return null;
-        }
-
-        return new Address.Builder()
-            .setStreet((String) address.get("street"))
-            .setAddressAppendix((String) address.get("addressAppendix"))
-            .setCity((String) address.get("city"))
-            .setZipcode((String) address.get("zipcode"))
-            .setLocation(extractGeoPoint((Map<String, Object>) address.get("location")))
-            .setTelephone((String) address.get("telephone"))
-            .setWebsite((String) address.get("website"))
-            .build();
-    }
-
-    private GeoPoint extractGeoPoint(Map<String, Object> geoPoint) {
-        return new GeoPoint(
-            (double) geoPoint.get("lat"),
-            (double) geoPoint.get("lon")
-        );
+                if (Objects.equals(organisationAnswer, userAnswer)) {
+                    return 100;
+                } else if (organisationAnswer.getNeighbours().contains(userAnswer)) {
+                    return 50;
+                }
+                return 0;
+            })
+            .collect(Collectors.averagingDouble(value -> value))
+            .floatValue();
     }
 
 }
