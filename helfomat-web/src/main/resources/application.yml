@@ -48,7 +48,6 @@ helfomat:
     defaultAnswer: "NO"
     groups:
     - organisationType: "FF"
-      phrase: "Abteilung allgemein"
       answer: "YES"
     - phrase: "Schnelleinsatzgruppe" # ASB / DRK
       answer: "YES"
@@ -61,6 +60,8 @@ helfomat:
       answer: "NO"
     - organisationType: "BRH"
       phrase: "Staffel"
+      answer: "MAYBE"
+    - phrase: "Ortsverein allgemein"
       answer: "MAYBE"
     position: 1
 
@@ -82,7 +83,6 @@ helfomat:
     defaultAnswer: "NO"
     groups:
     - organisationType: "FF"
-      phrase: "Abteilung allgemein"
       answer: "YES"
     position: 3
 
@@ -91,7 +91,6 @@ helfomat:
     defaultAnswer: "NO"
     groups:
     - organisationType: "FF"
-      phrase: "Abteilung allgemein"
       answer: "YES"
     - phrase: "Rettungsdienst" # ASB / DRK
       answer: "MAYBE"
@@ -104,7 +103,6 @@ helfomat:
     defaultAnswer: "MAYBE"
     groups:
     - organisationType: "FF"
-      phrase: "Abteilung allgemein"
       answer: "YES"
     - phrase: "Schnelleinsatzgruppe" # ASB / DRK
       answer: "YES"
@@ -144,7 +142,6 @@ helfomat:
     defaultAnswer: "NO"
     groups:
     - organisationType: "FF"
-      phrase: "Abteilung allgemein"
       answer: "MAYBE"
     - phrase: "Bergungsgruppe" # THW
       answer: "YES"
@@ -185,7 +182,6 @@ helfomat:
     defaultAnswer: "NO"
     groups:
     - organisationType: "FF"
-      phrase: "Abteilung allgemein"
       answer: "MAYBE"
     - organisationType: "BW"
       phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
@@ -216,7 +212,6 @@ helfomat:
     - phrase: "Technik und Sicherheit" # ASB / DRK
       answer: "MAYBE"
     - organisationType: "FF"
-      phrase: "Abteilung allgemein"
       answer: "MAYBE"
     position: 13
 
