@@ -28,6 +28,7 @@ public class Organisation {
     private List<Question> questions;
     private String mapPin;
     private List<Group> groups;
+    private List<Event> events;
 
     Organisation() {
     }
@@ -44,7 +45,7 @@ public class Organisation {
                  List<Address> addresses,
                  List<Question> questions,
                  String mapPin,
-                 List<Group> groups) {
+                 List<Group> groups, List<Event> events) {
         this.id = id;
         this.name = name;
         this.organisationType = organisationType;
@@ -59,6 +60,7 @@ public class Organisation {
         this.questions = questions;
         this.mapPin = mapPin;
         this.groups = groups;
+        this.events = events;
     }
 
     public String getId() {
@@ -113,6 +115,10 @@ public class Organisation {
         return teaserImage;
     }
 
+    public List<Event> getEvents() {
+        return events;
+    }
+
     @Override
     public String toString() {
         return "Organisation{" +
@@ -140,6 +146,7 @@ public class Organisation {
         private List<Question> questions;
         private String mapPin;
         private List<Group> groups;
+        private List<Event> events;
 
         public Builder() {
         }
@@ -159,6 +166,7 @@ public class Organisation {
             this.questions = organisation.getQuestions();
             this.mapPin = organisation.getMapPin();
             this.groups = organisation.getGroups();
+            this.events = organisation.getEvents();
         }
 
         public Builder setId(String id) {
@@ -231,6 +239,11 @@ public class Organisation {
             return this;
         }
 
+        public Builder setEvents(List<Event> events) {
+            this.events = events;
+            return this;
+        }
+
         public Organisation build() {
             return new Organisation(
                 id,
@@ -246,7 +259,9 @@ public class Organisation {
                 addresses,
                 questions,
                 mapPin,
-                groups);
+                groups,
+                events
+            );
         }
     }
 }

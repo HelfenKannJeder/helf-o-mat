@@ -4,6 +4,7 @@ import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
+import de.helfenkannjeder.helfomat.core.organisation.Event;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
@@ -12,13 +13,17 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TAddress;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TEmployee;
+import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TGroup;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisationType;
+import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TWorkingHour;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -62,13 +67,29 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setAddresses(tOrganisation.getAddresses().stream().map(Typo3OrganisationProcessor::toAddress).collect(Collectors.toList()))
             .setDefaultAddress(toAddress(tOrganisation.getDefaultaddress()))
             .setGroups(
-                tOrganisation.getGroups().stream().map(tGroup -> {
-                    Group group = new Group();
-                    group.setName(tGroup.getName());
-                    group.setDescription(tGroup.getDescription());
-                    return group;
-                }).collect(Collectors.toList())
+                tOrganisation.getGroups().stream().map(this::toGroup).collect(Collectors.toList())
             )
+            .setEvents(tOrganisation.getWorkinghours().stream().map(this::toEvent).collect(Collectors.toList()))
+            .build();
+    }
+
+    private Group toGroup(TGroup tGroup) {
+        Group group = new Group();
+        group.setName(tGroup.getName());
+        group.setDescription(tGroup.getDescription());
+        return group;
+    }
+
+    private Event toEvent(TWorkingHour tWorkingHour) {
+        return new Event.Builder()
+            .setDay(DayOfWeek.of(tWorkingHour.getDay()))
+            .setStart(LocalTime.of(tWorkingHour.getStarttimehour(), tWorkingHour.getStarttimeminute()))
+            .setEnd(LocalTime.of(tWorkingHour.getStoptimehour(), tWorkingHour.getStoptimeminute()))
+            .setNote(tWorkingHour.getAddition())
+            .setGroups(tWorkingHour.getGroups()
+                .stream()
+                .map(this::toGroup)
+                .collect(Collectors.toList()))
             .build();
     }
 

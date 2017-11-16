@@ -2,6 +2,8 @@ package de.helfenkannjeder.helfomat.infrastructure.typo3;
 
 import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
+import de.helfenkannjeder.helfomat.core.organisation.Event;
+import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
@@ -12,7 +14,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +42,7 @@ public class Typo3OrganisationReaderIntegrationTest {
 
         // Assert
         assertThat(organisation).isNotNull();
-        assertThat(organisation.getDescription()).startsWith("Wir sind die Hilfsorganisation des Bundes und unterstützen die für die Gefahrenabwehr zuständigen Stellen");
+        assertThat(organisation.getDescription()).startsWith("Wir sind die Hilfsorganisation des Bundes und unterstützen die für die Gefahrenabwehr");
         assertThat(organisation.getWebsite()).isEqualTo("http://www.thw-karlsruhe.de");
 
         Address defaultAddress = organisation.getDefaultAddress();
@@ -61,6 +66,25 @@ public class Typo3OrganisationReaderIntegrationTest {
         assertThat(contactPerson.getRank()).isEqualTo("Beauftragter für Öffentlichkeitsarbeit");
         assertThat(contactPerson.getTelephone()).isEmpty();
         assertThat(contactPerson.getMail()).isEqualTo("no-spam@helfenkannjeder.de");
+
+        List<Event> events = organisation.getEvents();
+        assertThat(events)
+            .isNotNull()
+            .hasSize(3);
+
+        Event event = events.get(0);
+        assertThat(event.getDay()).isEqualTo(DayOfWeek.TUESDAY);
+        assertThat(event.getStart()).isEqualTo(LocalTime.of(19, 30));
+        assertThat(event.getEnd()).isEqualTo(LocalTime.of(22, 30));
+        assertThat(event.getNote()).isEqualTo("unregelmäßig (Dienstplan siehe Homepage)");
+        assertThat(event.getGroups()
+            .stream()
+            .map(Group::getName)
+            .collect(Collectors.toList())
+        )
+            .hasSize(6)
+            .contains("1. Bergungsgruppe", "Zugtrupp", "OV-Stab")
+            .doesNotContain("Bambini-/Mini-Jugendgruppe");
     }
 
     @Test
