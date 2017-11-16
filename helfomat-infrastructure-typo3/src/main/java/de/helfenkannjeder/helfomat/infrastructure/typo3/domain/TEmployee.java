@@ -23,9 +23,8 @@ public class TEmployee {
     private String street;
     private String city;
     private String mobilephone;
-    private String teaser;
     private String headline;
-    private boolean iscontact;
+    private int iscontact;
     private String telephone;
 
     public long getUid() {
@@ -72,16 +71,12 @@ public class TEmployee {
         return mobilephone;
     }
 
-    public String getTeaser() {
-        return teaser;
-    }
-
     public String getHeadline() {
         return headline;
     }
 
     public boolean isIscontact() {
-        return iscontact;
+        return iscontact == 1;
     }
 
     public String getTelephone() {

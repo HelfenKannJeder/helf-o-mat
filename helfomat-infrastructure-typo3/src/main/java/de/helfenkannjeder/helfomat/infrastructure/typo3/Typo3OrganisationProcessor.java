@@ -16,7 +16,6 @@ import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
  * @author Valentin Zickner
  */
 @Component
-@JobScope
 public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, Organisation> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationProcessor.class);
