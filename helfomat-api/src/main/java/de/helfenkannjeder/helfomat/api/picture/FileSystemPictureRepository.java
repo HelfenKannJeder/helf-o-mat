@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
@@ -52,7 +53,7 @@ public class FileSystemPictureRepository implements PictureRepository {
             }
 
             return pictureId;
-        } catch (IOException | RestClientException exception) {
+        } catch (IOException | InvalidPathException | RestClientException exception) {
             LOG.error("Failed to write image to filesystem url='" + url + "' picture='" + pictureId + "'", exception);
             throw new DownloadFailedException(exception);
         }
