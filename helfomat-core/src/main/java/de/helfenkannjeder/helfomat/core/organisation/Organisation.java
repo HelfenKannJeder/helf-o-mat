@@ -29,6 +29,7 @@ public class Organisation {
     private String mapPin;
     private List<Group> groups;
     private List<Event> events;
+    private List<Volunteer> volunteers;
 
     Organisation() {
     }
@@ -40,12 +41,15 @@ public class Organisation {
                  String website,
                  PictureId logo,
                  PictureId teaserImage,
-                 Address defaultAddress, List<PictureId> pictures,
+                 Address defaultAddress,
+                 List<PictureId> pictures,
                  List<ContactPerson> contactPersons,
                  List<Address> addresses,
                  List<Question> questions,
                  String mapPin,
-                 List<Group> groups, List<Event> events) {
+                 List<Group> groups,
+                 List<Event> events,
+                 List<Volunteer> volunteers) {
         this.id = id;
         this.name = name;
         this.organisationType = organisationType;
@@ -61,6 +65,7 @@ public class Organisation {
         this.mapPin = mapPin;
         this.groups = groups;
         this.events = events;
+        this.volunteers = volunteers;
     }
 
     public String getId() {
@@ -119,6 +124,10 @@ public class Organisation {
         return events;
     }
 
+    public List<Volunteer> getVolunteers() {
+        return volunteers;
+    }
+
     @Override
     public String toString() {
         return "Organisation{" +
@@ -147,6 +156,7 @@ public class Organisation {
         private String mapPin;
         private List<Group> groups;
         private List<Event> events;
+        private List<Volunteer> volunteers;
 
         public Builder() {
         }
@@ -167,6 +177,7 @@ public class Organisation {
             this.mapPin = organisation.getMapPin();
             this.groups = organisation.getGroups();
             this.events = organisation.getEvents();
+            this.volunteers = organisation.getVolunteers();
         }
 
         public Builder setId(String id) {
@@ -244,6 +255,11 @@ public class Organisation {
             return this;
         }
 
+        public Builder setVolunteers(List<Volunteer> volunteers) {
+            this.volunteers = volunteers;
+            return this;
+        }
+
         public Organisation build() {
             return new Organisation(
                 id,
@@ -260,7 +276,8 @@ public class Organisation {
                 questions,
                 mapPin,
                 groups,
-                events
+                events,
+                volunteers
             );
         }
     }

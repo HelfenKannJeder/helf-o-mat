@@ -47,6 +47,7 @@ public class TOrganisation {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
     @Where(clause = "deleted=0")
+    @OrderBy(clause = "prename")
     private List<TEmployee> employees;
 
     @OneToMany(fetch = FetchType.LAZY)

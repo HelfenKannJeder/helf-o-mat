@@ -8,6 +8,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Event;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
+import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
@@ -70,6 +71,16 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
                 tOrganisation.getGroups().stream().map(Typo3OrganisationProcessor::toGroup).collect(Collectors.toList())
             )
             .setEvents(tOrganisation.getWorkinghours().stream().map(Typo3OrganisationProcessor::toEvent).collect(Collectors.toList()))
+            .setVolunteers(tOrganisation.getEmployees().stream().filter(employee -> !employee.getMotivation().isEmpty()).map(this::toVolunteer).collect(Collectors.toList()))
+            .build();
+    }
+
+    private Volunteer toVolunteer(TEmployee tEmployee) {
+        return new Volunteer.Builder()
+            .setFirstname(tEmployee.getPrename())
+            .setLastname(tEmployee.getSurname())
+            .setMotivation(tEmployee.getMotivation())
+            .setPicture(toPicture(tEmployee.getPictures()))
             .build();
     }
 

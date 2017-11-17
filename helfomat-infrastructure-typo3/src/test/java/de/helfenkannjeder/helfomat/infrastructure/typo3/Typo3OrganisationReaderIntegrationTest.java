@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Event;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -116,6 +117,27 @@ public class Typo3OrganisationReaderIntegrationTest {
         assertThat(groupContactPerson).isNotNull();
         assertThat(groupContactPerson.getFirstname()).isEqualTo("Christian");
         assertThat(groupContactPerson.getLastname()).isEqualTo("Müller8");
+
+        assertThat(organisation.getVolunteers()).isNotNull();
+        assertThat(organisation.getVolunteers()
+            .stream()
+            .map(Volunteer::getFirstname)
+            .collect(Collectors.toList()))
+            .hasSize(7)
+            .containsExactly(
+                "Carolin",
+                "David",
+                "Ilona",
+                "Lisa",
+                "Steffen",
+                "Thilo",
+                "Timo"
+            );
+        Volunteer volunteer = organisation.getVolunteers().get(1);
+        assertThat(volunteer).isNotNull();
+        assertThat(volunteer.getFirstname()).isEqualTo("David");
+        assertThat(volunteer.getLastname()).isEqualTo("Müller1");
+        assertThat(volunteer.getMotivation()).startsWith("Viele Menschen, die mein Leben bereichern, hätte ich ohne das THW nie ");
     }
 
     @Test
