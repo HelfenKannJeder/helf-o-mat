@@ -5,11 +5,11 @@ import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
 import de.helfenkannjeder.helfomat.core.question.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ public class OrganisationApplicationService {
                                                   double distance) {
         Map<String, Answer> questionAnswerMap = questionAnswerDtos.stream()
             .collect(Collectors.toMap(QuestionAnswerDto::getId, QuestionAnswerDto::getAnswer));
-        LinkedHashMap<Organisation, Float> organisations;
+        List<ScoredOrganisation> organisations;
         if (position == null) {
             organisations = this.organisationRepository.findGlobalOrganisations(questionAnswerMap);
         } else {
@@ -46,15 +46,13 @@ public class OrganisationApplicationService {
                 distance
             );
         }
-
         return toOrganisationDtos(organisations);
     }
 
-    private List<OrganisationDto> toOrganisationDtos(LinkedHashMap<Organisation, Float> organisations) {
+    private List<OrganisationDto> toOrganisationDtos(List<ScoredOrganisation> organisations) {
         return organisations
-            .entrySet()
             .stream()
-            .map(data -> OrganisationAssembler.toOrganisationDto(data.getKey(), data.getValue()))
+            .map(OrganisationAssembler::toOrganisationDto)
             .collect(Collectors.toList());
     }
 

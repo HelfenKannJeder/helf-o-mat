@@ -56,4 +56,4 @@ will automatically mock all application which are require network.
 
 ## License
 
-tbd
+GNU GENERAL PUBLIC LICENSE Version 3

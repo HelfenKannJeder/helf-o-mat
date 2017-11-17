@@ -4,7 +4,6 @@ import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.question.Answer;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,11 +16,11 @@ public interface OrganisationRepository {
 
     Organisation findOne(String id);
 
-    LinkedHashMap<Organisation, Float> findOrganisations(Map<String, Answer> questionAnswers,
-                                                         GeoPoint position,
-                                                         double distance);
+    List<ScoredOrganisation> findOrganisations(Map<String, Answer> questionAnswers,
+                                               GeoPoint position,
+                                               double distance);
 
-    LinkedHashMap<Organisation, Float> findGlobalOrganisations(Map<String, Answer> questionAnswers);
+    List<ScoredOrganisation> findGlobalOrganisations(Map<String, Answer> questionAnswers);
 
     List<GeoPoint> findClusteredGeoPoints(GeoPoint position, double distance, BoundingBox boundingBox);
 
