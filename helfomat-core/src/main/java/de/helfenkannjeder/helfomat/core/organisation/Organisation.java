@@ -28,7 +28,7 @@ public class Organisation {
     private List<Question> questions;
     private String mapPin;
     private List<Group> groups;
-    private List<Event> events;
+    private List<AttendanceTime> attendanceTimes;
     private List<Volunteer> volunteers;
 
     Organisation() {
@@ -48,7 +48,7 @@ public class Organisation {
                  List<Question> questions,
                  String mapPin,
                  List<Group> groups,
-                 List<Event> events,
+                 List<AttendanceTime> attendanceTimes,
                  List<Volunteer> volunteers) {
         this.id = id;
         this.name = name;
@@ -64,7 +64,7 @@ public class Organisation {
         this.questions = questions;
         this.mapPin = mapPin;
         this.groups = groups;
-        this.events = events;
+        this.attendanceTimes = attendanceTimes;
         this.volunteers = volunteers;
     }
 
@@ -120,8 +120,8 @@ public class Organisation {
         return teaserImage;
     }
 
-    public List<Event> getEvents() {
-        return events;
+    public List<AttendanceTime> getAttendanceTimes() {
+        return attendanceTimes;
     }
 
     public List<Volunteer> getVolunteers() {
@@ -155,7 +155,7 @@ public class Organisation {
         private List<Question> questions;
         private String mapPin;
         private List<Group> groups;
-        private List<Event> events;
+        private List<AttendanceTime> attendanceTimes;
         private List<Volunteer> volunteers;
 
         public Builder() {
@@ -176,7 +176,7 @@ public class Organisation {
             this.questions = organisation.getQuestions();
             this.mapPin = organisation.getMapPin();
             this.groups = organisation.getGroups();
-            this.events = organisation.getEvents();
+            this.attendanceTimes = organisation.getAttendanceTimes();
             this.volunteers = organisation.getVolunteers();
         }
 
@@ -250,8 +250,8 @@ public class Organisation {
             return this;
         }
 
-        public Builder setEvents(List<Event> events) {
-            this.events = events;
+        public Builder setAttendanceTimes(List<AttendanceTime> attendanceTimes) {
+            this.attendanceTimes = attendanceTimes;
             return this;
         }
 
@@ -276,7 +276,7 @@ public class Organisation {
                 questions,
                 mapPin,
                 groups,
-                events,
+                attendanceTimes,
                 volunteers
             );
         }

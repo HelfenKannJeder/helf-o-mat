@@ -1,8 +1,8 @@
 package de.helfenkannjeder.helfomat.infrastructure.typo3;
 
 import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.AttendanceTime;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
-import de.helfenkannjeder.helfomat.core.organisation.Event;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
@@ -68,17 +68,17 @@ public class Typo3OrganisationReaderIntegrationTest {
         assertThat(contactPerson.getTelephone()).isEmpty();
         assertThat(contactPerson.getMail()).isEqualTo("no-spam@helfenkannjeder.de");
 
-        List<Event> events = organisation.getEvents();
-        assertThat(events)
+        List<AttendanceTime> attendanceTimes = organisation.getAttendanceTimes();
+        assertThat(attendanceTimes)
             .isNotNull()
             .hasSize(3);
 
-        Event event = events.get(0);
-        assertThat(event.getDay()).isEqualTo(DayOfWeek.TUESDAY);
-        assertThat(event.getStart()).isEqualTo(LocalTime.of(19, 30));
-        assertThat(event.getEnd()).isEqualTo(LocalTime.of(22, 30));
-        assertThat(event.getNote()).isEqualTo("unregelmäßig (Dienstplan siehe Homepage)");
-        assertThat(event.getGroups()
+        AttendanceTime attendanceTime = attendanceTimes.get(0);
+        assertThat(attendanceTime.getDay()).isEqualTo(DayOfWeek.TUESDAY);
+        assertThat(attendanceTime.getStart()).isEqualTo(LocalTime.of(19, 30));
+        assertThat(attendanceTime.getEnd()).isEqualTo(LocalTime.of(22, 30));
+        assertThat(attendanceTime.getNote()).isEqualTo("unregelmäßig (Dienstplan siehe Homepage)");
+        assertThat(attendanceTime.getGroups()
             .stream()
             .map(Group::getName)
             .collect(Collectors.toList())

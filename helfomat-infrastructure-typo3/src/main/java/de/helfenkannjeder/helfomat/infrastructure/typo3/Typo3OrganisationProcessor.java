@@ -3,8 +3,8 @@ package de.helfenkannjeder.helfomat.infrastructure.typo3;
 import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.AttendanceTime;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
-import de.helfenkannjeder.helfomat.core.organisation.Event;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
@@ -70,7 +70,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setGroups(
                 tOrganisation.getGroups().stream().map(Typo3OrganisationProcessor::toGroup).collect(Collectors.toList())
             )
-            .setEvents(tOrganisation.getWorkinghours().stream().map(Typo3OrganisationProcessor::toEvent).collect(Collectors.toList()))
+            .setAttendanceTimes(tOrganisation.getWorkinghours().stream().map(Typo3OrganisationProcessor::toEvent).collect(Collectors.toList()))
             .setVolunteers(tOrganisation.getEmployees().stream().filter(employee -> !employee.getMotivation().isEmpty()).map(this::toVolunteer).collect(Collectors.toList()))
             .build();
     }
@@ -98,8 +98,8 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .build();
     }
 
-    private static Event toEvent(TWorkingHour tWorkingHour) {
-        return new Event.Builder()
+    private static AttendanceTime toEvent(TWorkingHour tWorkingHour) {
+        return new AttendanceTime.Builder()
             .setDay(DayOfWeek.of(tWorkingHour.getDay()))
             .setStart(LocalTime.of(tWorkingHour.getStarttimehour(), tWorkingHour.getStarttimeminute()))
             .setEnd(LocalTime.of(tWorkingHour.getStoptimehour(), tWorkingHour.getStoptimeminute()))

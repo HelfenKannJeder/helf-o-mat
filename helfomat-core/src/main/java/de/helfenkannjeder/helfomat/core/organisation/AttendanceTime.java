@@ -7,17 +7,17 @@ import java.util.List;
 /**
  * @author Valentin Zickner
  */
-public class Event {
+public class AttendanceTime {
     private DayOfWeek day;
     private LocalTime start;
     private LocalTime end;
     private String note;
     private List<Group> groups;
 
-    protected Event() {
+    protected AttendanceTime() {
     }
 
-    private Event(DayOfWeek day, LocalTime start, LocalTime end, String note, List<Group> groups) {
+    private AttendanceTime(DayOfWeek day, LocalTime start, LocalTime end, String note, List<Group> groups) {
         this.day = day;
         this.start = start;
         this.end = end;
@@ -77,8 +77,8 @@ public class Event {
             return this;
         }
 
-        public Event build() {
-            return new Event(day, start, end, note, groups);
+        public AttendanceTime build() {
+            return new AttendanceTime(day, start, end, note, groups);
         }
     }
 
