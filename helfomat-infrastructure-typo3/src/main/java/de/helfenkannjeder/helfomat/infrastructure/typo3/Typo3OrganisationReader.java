@@ -6,18 +6,18 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Valentin Zickner
  */
 @Component
-@JobScope
 @Order(100)
 @Profile("!" + ProfileRegistry.DISABLE_TYPO3_IMPORT)
+@Transactional
 public class Typo3OrganisationReader implements OrganisationReader {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationReader.class);

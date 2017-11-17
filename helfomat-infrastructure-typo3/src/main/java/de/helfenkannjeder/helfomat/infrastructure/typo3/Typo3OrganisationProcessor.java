@@ -3,23 +3,28 @@ package de.helfenkannjeder.helfomat.infrastructure.typo3;
 import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.AttendanceTime;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
+import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TAddress;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TEmployee;
+import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TGroup;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisationType;
+import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TWorkingHour;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +36,6 @@ import java.util.stream.Collectors;
  * @author Valentin Zickner
  */
 @Component
-@JobScope
 public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, Organisation> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationProcessor.class);
@@ -64,13 +68,46 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setAddresses(tOrganisation.getAddresses().stream().map(Typo3OrganisationProcessor::toAddress).collect(Collectors.toList()))
             .setDefaultAddress(toAddress(tOrganisation.getDefaultaddress()))
             .setGroups(
-                tOrganisation.getGroups().stream().map(tGroup -> {
-                    Group group = new Group();
-                    group.setName(tGroup.getName());
-                    group.setDescription(tGroup.getDescription());
-                    return group;
-                }).collect(Collectors.toList())
+                tOrganisation.getGroups().stream().map(Typo3OrganisationProcessor::toGroup).collect(Collectors.toList())
             )
+            .setAttendanceTimes(tOrganisation.getWorkinghours().stream().map(Typo3OrganisationProcessor::toEvent).collect(Collectors.toList()))
+            .setVolunteers(tOrganisation.getEmployees().stream().filter(employee -> !employee.getMotivation().isEmpty()).map(this::toVolunteer).collect(Collectors.toList()))
+            .build();
+    }
+
+    private Volunteer toVolunteer(TEmployee tEmployee) {
+        return new Volunteer.Builder()
+            .setFirstname(tEmployee.getPrename())
+            .setLastname(tEmployee.getSurname())
+            .setMotivation(tEmployee.getMotivation())
+            .setPicture(toPicture(tEmployee.getPictures()))
+            .build();
+    }
+
+    private static Group toGroup(TGroup tGroup) {
+        return new Group.Builder()
+            .setName(tGroup.getName())
+            .setDescription(tGroup.getDescription())
+            .setContactPersons(tGroup.getContactPersons()
+                .stream()
+                .map(Typo3OrganisationProcessor::toContactPerson)
+                .collect(Collectors.toList()))
+            .setMinimumAge(tGroup.getMinimumAge())
+            .setMaximumAge(tGroup.getMaximumAge())
+            .setWebsite(tGroup.getWebsite())
+            .build();
+    }
+
+    private static AttendanceTime toEvent(TWorkingHour tWorkingHour) {
+        return new AttendanceTime.Builder()
+            .setDay(DayOfWeek.of(tWorkingHour.getDay()))
+            .setStart(LocalTime.of(tWorkingHour.getStarttimehour(), tWorkingHour.getStarttimeminute()))
+            .setEnd(LocalTime.of(tWorkingHour.getStoptimehour(), tWorkingHour.getStoptimeminute()))
+            .setNote(tWorkingHour.getAddition())
+            .setGroups(tWorkingHour.getGroups()
+                .stream()
+                .map(Typo3OrganisationProcessor::toGroup)
+                .collect(Collectors.toList()))
             .build();
     }
 

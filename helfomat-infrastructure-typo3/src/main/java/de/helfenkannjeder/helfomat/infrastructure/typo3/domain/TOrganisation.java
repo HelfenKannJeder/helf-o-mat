@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.infrastructure.typo3.domain;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
@@ -34,24 +35,32 @@ public class TOrganisation {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
-    @Where(clause="deleted=0")
+    @Where(clause = "deleted=0")
     private List<TAddress> addresses;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "defaultaddress")
-    @Where(clause="deleted=0")
+    @Where(clause = "deleted=0")
     @NotFound(action = NotFoundAction.IGNORE)
     private TAddress defaultaddress;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
     @Where(clause = "deleted=0")
+    @OrderBy(clause = "prename")
     private List<TEmployee> employees;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
-    @Where(clause="deleted=0")
+    @Where(clause = "deleted=0")
+    @OrderBy(clause = "sort")
     private List<TGroup> groups;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organisation")
+    @Where(clause = "deleted=0")
+    @OrderBy(clause = "day, starttimehour, starttimeminute")
+    private List<TWorkingHour> workinghours;
 
     private boolean deleted;
 
@@ -108,4 +117,9 @@ public class TOrganisation {
     public List<TEmployee> getEmployees() {
         return employees;
     }
+
+    public List<TWorkingHour> getWorkinghours() {
+        return workinghours;
+    }
+
 }

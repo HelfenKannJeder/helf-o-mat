@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -143,15 +142,12 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     }
 
     private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
-        List<Group> groups = new ArrayList<>();
         Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
-        for (Element groupElement : groupElements) {
-            Group group = new Group();
-            group.setName(getGroupName(groupElement));
-            groups.add(group);
-        }
-        return groups
+        return groupElements
             .stream()
+            .map(groupElement -> new Group.Builder()
+                .setName(getGroupName(groupElement))
+                .build())
             .distinct()
             .collect(Collectors.toList());
     }
