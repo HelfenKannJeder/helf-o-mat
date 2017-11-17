@@ -58,7 +58,7 @@ public class HelfomatConfiguration {
     }
 
     public static class QuestionMapping {
-        private long uid;
+        private String id;
 
         private String question;
 
@@ -68,12 +68,12 @@ public class HelfomatConfiguration {
 
         private int position;
 
-        public long getUid() {
-            return uid;
+        public String getId() {
+            return id;
         }
 
-        public void setUid(long uid) {
-            this.uid = uid;
+        public void setId(String id) {
+            this.id = id;
         }
 
         public Answer getDefaultAnswer() {

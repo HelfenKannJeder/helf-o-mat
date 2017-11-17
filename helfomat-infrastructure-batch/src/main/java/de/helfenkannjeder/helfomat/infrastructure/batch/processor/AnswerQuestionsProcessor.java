@@ -6,6 +6,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
 import de.helfenkannjeder.helfomat.core.question.Answer;
 import de.helfenkannjeder.helfomat.core.question.Question;
+import de.helfenkannjeder.helfomat.core.question.QuestionId;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,7 @@ public class AnswerQuestionsProcessor implements ItemProcessor<Organisation, Org
         return helfomatConfiguration.getQuestions()
             .stream()
             .map(questionMapping -> new Question(
-                questionMapping.getUid(),
+                new QuestionId(questionMapping.getId()),
                 questionMapping.getQuestion(),
                 questionMapping.getPosition(),
                 answerQuestionForOrganisation(questionMapping, organisation)

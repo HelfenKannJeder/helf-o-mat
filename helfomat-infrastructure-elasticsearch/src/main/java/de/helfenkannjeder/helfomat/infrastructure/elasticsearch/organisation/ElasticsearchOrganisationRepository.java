@@ -241,7 +241,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         return organisationQuestions
             .stream()
             .map((question) -> {
-                String questionId = String.valueOf(question.getUid());
+                String questionId = question.getId().getValue();
                 Answer organisationAnswer = question.getAnswer();
                 Answer userAnswer = questionAnswerList.get(questionId);
 

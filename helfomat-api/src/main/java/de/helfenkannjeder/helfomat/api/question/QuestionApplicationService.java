@@ -21,7 +21,7 @@ public class QuestionApplicationService {
         return this.questionRepository.findQuestions()
             .stream()
             .map(question -> new QuestionDto(
-                String.valueOf(question.getUid()),
+                question.getId().getValue(),
                 question.getQuestion(),
                 question.getDescription(),
                 question.getPosition()

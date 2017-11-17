@@ -4,7 +4,7 @@ package de.helfenkannjeder.helfomat.core.question;
  * @author Valentin Zickner
  */
 public class Question {
-    private long uid;
+    private QuestionId id;
     private String question;
     private String description;
     private Answer answer = Answer.MAYBE;
@@ -13,34 +13,19 @@ public class Question {
     public Question() {
     }
 
-    public Question(long uid, String question, int position, Answer answer) {
-        this.uid = uid;
+    public Question(QuestionId id, String question, int position, Answer answer) {
+        this.id = id;
         this.question = question;
         this.position = position;
         this.answer = answer;
     }
 
-    public Question(long uid, String question, String description, int position) {
-        this.uid = uid;
-        this.question = question;
-        this.description = description;
-        this.position = position;
+    public QuestionId getId() {
+        return id;
     }
 
-    public Question(Question question, Answer answer) {
-        this.setUid(question.getUid());
-        this.setQuestion(question.getQuestion());
-        this.setAnswer(answer);
-        this.setPosition(question.getPosition());
-        this.setDescription(question.getDescription());
-    }
-
-    public long getUid() {
-        return uid;
-    }
-
-    public void setUid(long uid) {
-        this.uid = uid;
+    public void setId(QuestionId id) {
+        this.id = id;
     }
 
     public String getQuestion() {
