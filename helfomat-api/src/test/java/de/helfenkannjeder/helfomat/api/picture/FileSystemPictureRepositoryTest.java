@@ -101,20 +101,16 @@ public class FileSystemPictureRepositoryTest {
     public void savePicture_withFileWriteException_expectDownloadFailedException() throws Exception {
         // Arrange
         PictureId pictureId = new PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44adda");
-        String configuredFolder = "/proc";
+        String configuredFolder = "/*";
         byte[] content = {'a', 'b', 'c', 'd'};
         when(this.downloadService.download(PICTURE_URL)).thenReturn(content);
         when(this.helfomatConfiguration.getPictureFolder()).thenReturn(configuredFolder);
-
 
         // Act
         ThrowableAssert.ThrowingCallable throwedException = () ->
             this.fileSystemPictureRepository.savePicture(PICTURE_URL, FOLDER, pictureId);
 
         // Assert
-        Path pathOfOutput = Paths.get(configuredFolder, FOLDER, pictureId.getValue());
-        assertThat(Files.exists(pathOfOutput))
-            .isFalse();
         assertThatThrownBy(throwedException)
             .isInstanceOf(DownloadFailedException.class);
     }
