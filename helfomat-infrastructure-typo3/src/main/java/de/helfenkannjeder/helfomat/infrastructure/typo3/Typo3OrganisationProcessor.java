@@ -67,20 +67,27 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setAddresses(tOrganisation.getAddresses().stream().map(Typo3OrganisationProcessor::toAddress).collect(Collectors.toList()))
             .setDefaultAddress(toAddress(tOrganisation.getDefaultaddress()))
             .setGroups(
-                tOrganisation.getGroups().stream().map(this::toGroup).collect(Collectors.toList())
+                tOrganisation.getGroups().stream().map(Typo3OrganisationProcessor::toGroup).collect(Collectors.toList())
             )
-            .setEvents(tOrganisation.getWorkinghours().stream().map(this::toEvent).collect(Collectors.toList()))
+            .setEvents(tOrganisation.getWorkinghours().stream().map(Typo3OrganisationProcessor::toEvent).collect(Collectors.toList()))
             .build();
     }
 
-    private Group toGroup(TGroup tGroup) {
-        Group group = new Group();
-        group.setName(tGroup.getName());
-        group.setDescription(tGroup.getDescription());
-        return group;
+    private static Group toGroup(TGroup tGroup) {
+        return new Group.Builder()
+            .setName(tGroup.getName())
+            .setDescription(tGroup.getDescription())
+            .setContactPersons(tGroup.getContactPersons()
+                .stream()
+                .map(Typo3OrganisationProcessor::toContactPerson)
+                .collect(Collectors.toList()))
+            .setMinimumAge(tGroup.getMinimumAge())
+            .setMaximumAge(tGroup.getMaximumAge())
+            .setWebsite(tGroup.getWebsite())
+            .build();
     }
 
-    private Event toEvent(TWorkingHour tWorkingHour) {
+    private static Event toEvent(TWorkingHour tWorkingHour) {
         return new Event.Builder()
             .setDay(DayOfWeek.of(tWorkingHour.getDay()))
             .setStart(LocalTime.of(tWorkingHour.getStarttimehour(), tWorkingHour.getStarttimeminute()))
@@ -88,7 +95,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setNote(tWorkingHour.getAddition())
             .setGroups(tWorkingHour.getGroups()
                 .stream()
-                .map(this::toGroup)
+                .map(Typo3OrganisationProcessor::toGroup)
                 .collect(Collectors.toList()))
             .build();
     }

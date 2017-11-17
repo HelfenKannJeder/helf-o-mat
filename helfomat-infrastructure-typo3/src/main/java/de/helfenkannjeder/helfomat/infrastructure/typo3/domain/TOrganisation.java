@@ -52,6 +52,7 @@ public class TOrganisation {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
     @Where(clause = "deleted=0")
+    @OrderBy(clause = "sort")
     private List<TGroup> groups;
 
     @OneToMany(fetch = FetchType.LAZY)

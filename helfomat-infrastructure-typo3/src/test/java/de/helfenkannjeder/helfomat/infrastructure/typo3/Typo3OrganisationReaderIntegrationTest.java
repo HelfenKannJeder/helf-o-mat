@@ -85,6 +85,37 @@ public class Typo3OrganisationReaderIntegrationTest {
             .hasSize(6)
             .contains("1. Bergungsgruppe", "Zugtrupp", "OV-Stab")
             .doesNotContain("Bambini-/Mini-Jugendgruppe");
+
+        List<Group> groups = organisation.getGroups();
+        assertThat(groups).isNotNull();
+        assertThat(groups
+            .stream()
+            .map(Group::getName)
+            .collect(Collectors.toList()))
+            .hasSize(10)
+            .containsExactly(
+                "OV-Stab",
+                "Jugendgruppe",
+                "Bambini-/Mini-Jugendgruppe",
+                "Zugtrupp",
+                "1. Bergungsgruppe",
+                "Fachgruppe Räumen (FGr R, Typ A und B)",
+                "Fachgruppe Beleuchtung (FGr Bel)",
+                "Abstützen",
+                "Feldkochherd",
+                "Technische Hilfe auf Verkehrswegen (THV-Dienst)"
+            );
+        Group group = groups.get(1);
+        assertThat(group.getWebsite()).isEqualTo("http://www.thw-jugend-karlsruhe.de");
+        assertThat(group.getMinimumAge()).isEqualTo(10);
+        assertThat(group.getMaximumAge()).isEqualTo(17);
+        assertThat(group.getContactPersons())
+            .isNotNull()
+            .hasSize(1);
+        ContactPerson groupContactPerson = group.getContactPersons().get(0);
+        assertThat(groupContactPerson).isNotNull();
+        assertThat(groupContactPerson.getFirstname()).isEqualTo("Christian");
+        assertThat(groupContactPerson.getLastname()).isEqualTo("Müller8");
     }
 
     @Test
