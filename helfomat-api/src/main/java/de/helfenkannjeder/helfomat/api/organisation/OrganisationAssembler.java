@@ -164,6 +164,9 @@ class OrganisationAssembler {
     }
 
     private static AddressDto toAddressDto(Address address) {
+        if (address == null) {
+            return null;
+        }
         return new AddressDto(
             address.getStreet(),
             address.getAddressAppendix(),
