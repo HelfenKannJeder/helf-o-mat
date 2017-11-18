@@ -6,7 +6,13 @@ import de.helfenkannjeder.helfomat.api.geopoint.TravelModeDto;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,14 +21,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TravelDistanceApplicationServiceTest {
 
-    private final DistanceMatrixApplicationService distanceMatrixService = mock(DistanceMatrixApplicationService.class);
-    private final TravelDistanceApplicationService travelDistanceApplicationService = new TravelDistanceApplicationService(distanceMatrixService);
+    @Mock
+    private DistanceMatrixApplicationService distanceMatrixService;
+
+    @Mock
+    private OrganisationRepository organisationRepository;
+
+    private TravelDistanceApplicationService travelDistanceApplicationService;
+
     private static TravelDistanceDto DUMMY_TRAVEL_DISTANCE = new TravelDistanceDto();
+
+    @Before
+    public void setUp() throws Exception {
+        travelDistanceApplicationService = new TravelDistanceApplicationService(distanceMatrixService, organisationRepository);
+    }
 
     static {
         DUMMY_TRAVEL_DISTANCE.setTravelMode(TravelModeDto.CYCLING);
@@ -62,11 +79,12 @@ public class TravelDistanceApplicationServiceTest {
     private List<TravelDistanceDto> testSearch() {
         Address address = new Address.Builder().build();
         address.setLocation(new GeoPoint(49.0388109, 8.3433651));
-        Organisation organisation = new Organisation.Builder()
+        OrganisationId organisationId = new OrganisationId();
+        when(organisationRepository.findOne(organisationId.getValue())).thenReturn(new Organisation.Builder()
             .setDefaultAddress(address)
-            .build();
+            .build());
 
-        return travelDistanceApplicationService.requestTravelDistances(organisation, new GeoPoint(48.9808278, 8.4907565));
+        return travelDistanceApplicationService.requestTravelDistances(organisationId, new GeoPoint(48.9808278, 8.4907565));
     }
 
 }

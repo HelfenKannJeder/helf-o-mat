@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.api.organisation;
 
-import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 
 /**
  * @author Valentin Zickner
@@ -10,12 +10,16 @@ public class ContactPersonDto {
     private String lastname;
     private String rank;
     private String telephone;
+    private String mail;
+    private PictureId picture;
 
-    ContactPersonDto(String firstname, String lastname, String rank, String telephone) {
+    ContactPersonDto(String firstname, String lastname, String rank, String telephone, String mail, PictureId picture) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.rank = rank;
         this.telephone = telephone;
+        this.mail = mail;
+        this.picture = picture;
     }
 
     public String getFirstname() {
@@ -50,43 +54,20 @@ public class ContactPersonDto {
         this.telephone = telephone;
     }
 
-    public static ContactPersonDto fromContactPerson(ContactPerson contactPerson) {
-        return new ContactPersonDto.Builder()
-            .setFirstname(contactPerson.getFirstname())
-            .setLastname(contactPerson.getLastname())
-            .setRank(contactPerson.getRank())
-            .setTelephone(contactPerson.getTelephone())
-            .build();
+    public String getMail() {
+        return mail;
     }
 
-    public static class Builder {
-        private String firstname;
-        private String lastname;
-        private String rank;
-        private String telephone;
-
-        public Builder setFirstname(String firstname) {
-            this.firstname = firstname;
-            return this;
-        }
-
-        public Builder setLastname(String lastname) {
-            this.lastname = lastname;
-            return this;
-        }
-
-        public Builder setRank(String rank) {
-            this.rank = rank;
-            return this;
-        }
-
-        public Builder setTelephone(String telephone) {
-            this.telephone = telephone;
-            return this;
-        }
-
-        public ContactPersonDto build() {
-            return new ContactPersonDto(firstname, lastname, rank, telephone);
-        }
+    public void setMail(String mail) {
+        this.mail = mail;
     }
+
+    public PictureId getPicture() {
+        return picture;
+    }
+
+    public void setPicture(PictureId picture) {
+        this.picture = picture;
+    }
+
 }
