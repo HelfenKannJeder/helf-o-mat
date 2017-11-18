@@ -1,5 +1,9 @@
 <div *ngIf="organisation | async; let organisation; else loading">
-    <div class="custom-content" *ngIf="organisation.pictures.length > 0">
+    <div class="custom-content logo-container" *ngIf="organisation.pictures.length > 0">
+        <div class="logo">
+            <img src="api/picture/{{organisation.logo.value}}/icon"
+                 [attr.alt]="organisation.name">
+        </div>
         <img src="api/picture/{{organisation.pictures[0].value}}/teaser" width="100%"/>
     </div>
 
@@ -38,7 +42,7 @@
             <div class="row" *ngFor="let volunteer of organisation.volunteers">
                 <div class="col-md-12">
                     <div class="thumbnail clearfix">
-                        <div class="col-md-4">
+                        <div class="col-md-4" *ngIf="volunteer.picture">
                             <img src="api/picture/{{volunteer.picture.value}}/medium" alt="{{volunteer.firstname}}"
                                  style="width:100%">
                         </div>

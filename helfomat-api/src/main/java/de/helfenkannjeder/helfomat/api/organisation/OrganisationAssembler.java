@@ -30,7 +30,7 @@ class OrganisationAssembler {
             organisation.getMapPin(),
             toAddressDtos(organisation.getAddresses()),
             toContactPersonDtos(organisation.getContactPersons()),
-            pictureIdToString(organisation.getLogo()),
+            organisation.getLogo(),
             scoredOrganisation.getScore()
         );
     }
@@ -175,10 +175,4 @@ class OrganisationAssembler {
         );
     }
 
-    private static String pictureIdToString(PictureId pictureId) {
-        if (pictureId == null) {
-            return null;
-        }
-        return pictureId.getValue();
-    }
 }

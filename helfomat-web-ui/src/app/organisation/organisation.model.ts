@@ -16,7 +16,7 @@ export class Organisation {
     public addresses: Address[] = [];
     public groups: Group[] = [];
     public questions: AnsweredQuestion[] = [];
-    public logo: string;
+    public logo: PictureId;
     public volunteers: Volunteer[] = [];
     public attendanceTimes: AttendanceTime[] = [];
 }
