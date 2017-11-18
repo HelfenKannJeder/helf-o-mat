@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <h2>{{'organisation.questionsAndAnswers.title' | translate}}</h2>
+        <h2 id="compare">{{'organisation.questionsAndAnswers.title' | translate}}</h2>
         <div class="panel panel-default" *ngIf="userAnswers | async; let userAnswers; else loading">
             <table class="table">
                 <tr>
@@ -134,9 +134,9 @@
                 <div class="panel-body">
                     <organisation-score [scoreNorm]="scoreNorm | async"></organisation-score>
                     <div class="btn-group" role="group" aria-label="...">
-                        <button class="btn btn-default">
+                        <a pageScroll class="btn btn-default" href="#compare">
                             {{'organisation.facts.helfomatResult.compare' | translate}}
-                        </button>
+                        </a>
                         <button class="btn btn-default" (click)="_back$.next()">
                             {{'organisation.facts.helfomatResult.back' | translate}}
                         </button>
