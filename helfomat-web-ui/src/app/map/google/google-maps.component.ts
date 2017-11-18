@@ -171,6 +171,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
 
     private configureUpdateViewPort() {
         this.center.subscribe((center: GeoPoint) => {
+            google.maps.event.trigger(this.map, 'resize');
             this.map.setCenter(GoogleMapsComponent.convertGeoPointToLatLng(center));
         });
 
