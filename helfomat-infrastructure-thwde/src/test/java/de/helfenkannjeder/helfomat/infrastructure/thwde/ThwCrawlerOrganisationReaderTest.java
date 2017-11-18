@@ -3,6 +3,7 @@ package de.helfenkannjeder.helfomat.infrastructure.thwde;
 import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
@@ -13,11 +14,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.io.ClassPathResource;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ThwCrawlerOrganisationReaderTest {
@@ -32,6 +40,8 @@ public class ThwCrawlerOrganisationReaderTest {
     @Mock
     private IndexManager indexManager;
 
+    private String domain;
+
     @BeforeClass
     public static void setUpServer() throws Exception {
         EmbeddedHttpServer.start();
@@ -45,6 +55,23 @@ public class ThwCrawlerOrganisationReaderTest {
         EmbeddedHttpServer.setContent(getOrganisationUrl("A", "Achern_Ortsverband"), null, "de/thw/detail/thw-ov-achern.html");
         EmbeddedHttpServer.setContent(getOrganisationUrl("A", "Achim_Ortsverband"), null, "de/thw/detail/thw-ov-achim.html");
         EmbeddedHttpServer.setContent(getOrganisationUrl("B", "Backnang_Ortsverband"), null, "de/thw/detail/thw-ov-backnang.html");
+
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/FGr-Log.html", null, "de/thw/group/fgr-log.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/Log-Fue.html", null, "de/thw/group/log-fue.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/Log-M.html", null, "de/thw/group/log-m.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/Log-V.html", null, "de/thw/group/log-v.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/TZ.html", null, "de/thw/group/tz.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/ZTr.html", null, "de/thw/group/ztr.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/B1.html", null, "de/thw/group/b1.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/EGS.html", null, "de/thw/group/egs.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/B2-A.html", null, "de/thw/group/b2.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/B2-B.html", null, "de/thw/group/b2b.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/FGr-E.html", null, "de/thw/group/fgr-e.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/FGr-O-A.html", null, "de/thw/group/fgr-o-a.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/FGr-R-A.html", null, "de/thw/group/fgr-r-a.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/FGr-O-B.html", null, "de/thw/group/fgr-o-b.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/FGr-W-A.html", null, "de/thw/group/fgr-w-a.html");
+        EmbeddedHttpServer.setContent("/SharedDocs/Einheiten/DE/Inland/FGr-WP.html", null, "de/thw/group/fgr-wp.html");
 
         EmbeddedHttpServer.setContent(MAPVIEW_URL, "oeId=2000612", "de/thw/map/thw-ov-aachen.html");
         EmbeddedHttpServer.setContent(MAPVIEW_URL, "oeId=2000121", "de/thw/map/thw-ov-aalen.html");
@@ -61,11 +88,12 @@ public class ThwCrawlerOrganisationReaderTest {
     @Before
     public void setUp() throws Exception {
         ThwCrawlerConfiguration thwCrawlerConfiguration = new ThwCrawlerConfiguration();
-        thwCrawlerConfiguration.setDomain("http://localhost:" + EmbeddedHttpServer.PORT + "/");
+        this.domain = "http://localhost:" + EmbeddedHttpServer.PORT + "/";
+        thwCrawlerConfiguration.setDomain(this.domain);
         thwCrawlerConfiguration.setFollowDomainNames(false);
         thwCrawlerConfiguration.setResultsPerPage(2);
         thwCrawlerConfiguration.setHttpRequestTimeout(3000);
-        thwCrawlerOrganisationReader = new ThwCrawlerOrganisationReader(thwCrawlerConfiguration, pictureRepository, indexManager);
+        thwCrawlerOrganisationReader = new ThwCrawlerOrganisationReader(thwCrawlerConfiguration, pictureRepository, indexManager, new ClassPathResource("teaser.jpg"));
     }
 
     private static String getOrganisationUrl(final String letter, final String name) {
@@ -160,6 +188,73 @@ public class ThwCrawlerOrganisationReaderTest {
         assertThat(groups.get(2).getName()).isEqualTo("Bergungsgruppe 2, Typ B");
         assertThat(groups.get(3).getName()).isEqualTo("Fachgruppe Räumen Typ A (ALT)");
         assertThat(groups.get(4).getName()).isEqualTo("Fachgruppe Ortung Typ B");
+    }
+
+    @Test
+    public void read_withGroupDescriptionsOfAalen_returnsCorrectListOfOrganisations() throws Exception {
+        // Arrange
+        // Start with the second one, less complexity in group structure
+        thwCrawlerOrganisationReader.read();
+
+        // Act
+        Organisation organisation = thwCrawlerOrganisationReader.read();
+
+        // Assert
+        assertThat(organisation).isNotNull();
+        assertThat(organisation.getName()).isEqualTo("THW Ortsverband Aalen");
+        List<Group> groups = organisation.getGroups();
+        assertThat(groups)
+            .isNotNull()
+            .hasSize(5);
+        Group group = groups.get(0);
+        assertThat(group.getName()).isEqualTo("Zugtrupp");
+        assertThat(group.getDescription()).isEqualTo("An der Spitze des Technischen Zuges steht der Zugführer mit seinem Zugtrupp (ZTr).");
+    }
+
+    @Test
+    public void read_withContactPerson_returnsContactPersonWithoutPicture() throws Exception {
+        // Arrange
+
+        // Act
+        Organisation organisation = thwCrawlerOrganisationReader.read();
+
+        // Assert
+        assertThat(organisation.getContactPersons())
+            .isNotNull()
+            .hasSize(1);
+        ContactPerson contactPerson = organisation.getContactPersons().get(0);
+        assertThat(contactPerson.getFirstname()).isEqualTo("Albert");
+        assertThat(contactPerson.getLastname()).isEqualTo("Willekens");
+        assertThat(contactPerson.getRank()).isEqualTo("Ortsbeauftragter");
+        assertThat(contactPerson.getTelephone()).isEqualTo("0241 9209336");
+        assertThat(contactPerson.getPicture()).isNull();
+        verify(this.pictureRepository, never()).savePicture(
+            eq(this.domain + "/SharedDocs/Bilder/DE/TiUe/NoElementPerson.jpg?__blob=thumbnail&v=5"),
+            anyString(),
+            any()
+        );
+    }
+
+    @Test
+    public void read_withContactPersonOfPicture_verifyPictureDownloaded() throws Exception {
+        // Arrange
+        thwCrawlerOrganisationReader.read();
+        thwCrawlerOrganisationReader.read();
+        thwCrawlerOrganisationReader.read();
+        Mockito.reset(this.pictureRepository);
+
+        // Act
+        Organisation organisation = thwCrawlerOrganisationReader.read();
+
+        // Assert
+        assertThat(organisation.getContactPersons())
+            .isNotNull()
+            .hasSize(1);
+        verify(this.pictureRepository).savePicture(
+            eq(this.domain + "/SharedDocs/Bilder/DE/TiUe/Personen/P/probstc3.jpg?__blob=thumbnail&v=2"),
+            anyString(),
+            any()
+        );
     }
 
     @Test

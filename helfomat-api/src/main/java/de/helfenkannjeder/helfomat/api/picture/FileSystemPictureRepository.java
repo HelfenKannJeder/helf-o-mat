@@ -41,6 +41,15 @@ public class FileSystemPictureRepository implements PictureRepository {
     public PictureId savePicture(String url, String folder, PictureId pictureId) throws DownloadFailedException {
         try {
             byte[] bytes = this.downloadService.download(url);
+            return savePicture(bytes, folder, pictureId);
+        } catch (DownloadFailedException | RestClientException exception) {
+            LOG.error("Failed to write image to filesystem url='" + url + "' picture='" + pictureId + "'", exception);
+            throw new DownloadFailedException(exception);
+        }
+    }
+
+    public PictureId savePicture(byte[] bytes, String folder, PictureId pictureId) throws DownloadFailedException {
+        try {
             Path path = createPath(folder, pictureId.getValue());
             if (bytes == null) {
                 throw new DownloadFailedException();
@@ -54,7 +63,7 @@ public class FileSystemPictureRepository implements PictureRepository {
 
             return pictureId;
         } catch (IOException | InvalidPathException | RestClientException exception) {
-            LOG.error("Failed to write image to filesystem url='" + url + "' picture='" + pictureId + "'", exception);
+            LOG.error("Failed to write image to filesystem picture='" + pictureId + "'", exception);
             throw new DownloadFailedException(exception);
         }
     }
