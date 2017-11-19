@@ -62,6 +62,8 @@ public class HelfomatConfiguration {
 
         private String question;
 
+        private String description;
+
         private Answer defaultAnswer;
 
         private List<QuestionOrganisationGroupMapping> groups = new ArrayList<>();
@@ -98,6 +100,14 @@ public class HelfomatConfiguration {
 
         public void setQuestion(String question) {
             this.question = question;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
         }
 
         public int getPosition() {
