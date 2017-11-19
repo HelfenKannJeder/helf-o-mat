@@ -1,16 +1,17 @@
 {
-  "name": "helfomat-client",
+  "name": "helfomat-web-ui",
   "version": "0.0.0",
-  "license": "MIT",
+  "license": "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007",
   "angular-cli": {},
   "scripts": {
     "start": "./node_modules/.bin/ng serve --proxy-config proxy.conf.json",
+    "start:prod": "./node_modules/.bin/ng serve -prod --build-optimizer --proxy-config proxy.conf.json",
     "start:offline": "./node_modules/.bin/ng serve -e offline --proxy-config proxy.conf.json",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "./node_modules/.bin/ng test",
     "pree2e": "webdriver-manager update",
     "e2e": "protractor",
-    "postinstall": "./node_modules/.bin/ng build -prod --output-path=target/client"
+    "postinstall": "./node_modules/.bin/ng build -prod --build-optimizer --output-path=target/client"
   },
   "private": true,
   "dependencies": {
