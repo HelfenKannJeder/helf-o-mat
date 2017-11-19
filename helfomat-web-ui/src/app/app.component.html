@@ -1,1 +1,51 @@
-<router-outlet></router-outlet>
+<div id="body">
+    <div id="tabsLeft" [@menu]="menuVisible">
+        <ul>
+            <li><a href="https://helfenkannjeder.de/verein/ueber-uns/">Verein</a></li>
+            <li><a href="https://helfenkannjeder.de/meine-hilfsorganisation/registrieren/registrierung/">Meine
+                Hilfsorganisation</a></li>
+            <li class="active"><a href="https://helfenkannjeder.de/helf-o-mat/">HelfenKannJeder</a></li>
+        </ul>
+    </div>
+    <div id="main">
+        <div id="header">
+            <div class="navTrigger" [ngClass]="{'active': menuVisible == 'visible'}" (click)="toggleMenu()">
+                <i></i><i></i><i></i>
+            </div>
+            <div id="headerlink">
+                <a href="/"><img src="assets/images/blank.gif" width="300"
+                                 height="105"/></a>
+            </div>
+            <h1>Wir warten auf Dich!</h1>
+            <h2>Das Freiwilligenportal der Hilfsorganisationen</h2>
+        </div>
+        <router-outlet class="clearfix"></router-outlet>
+        <div class="clear"></div>
+        <div id="sponsors">
+            <div>
+                <a href="http://www.baden-wuerttemberg.de/" target="_blank"><img
+                    src="assets/sponsors/land_bw.png" width="47" height="62"
+                    alt="Land Baden-Württemberg"></a>
+            </div>
+            <div>
+                <a href="http://telematis.de/" target="_blank"><img
+                    src="assets/sponsors/telematis.png" width="150" height="53"
+                    alt="Telematis"></a>
+            </div>
+            <div>
+                <a href="http://www.bohling-eisele.de/" target="_blank"><img
+                    src="assets/sponsors/bohling-eisele.png" width="170" height="74"
+                    alt="Motorradhaus Bohling+Eisele"></a>
+            </div>
+            <div>
+                <img src="assets/sponsors/google-impact-challenge.jpg" width="210" height="86"
+                     alt="Gewinner der Google Impact Challenge Deutschland 2016" border="0">
+            </div>
+            <div>
+                <p><a href="https://helfenkannjeder.de/partner/">Weitere Sponsoren und Partner</a></p>
+            </div>
+            <br class="clear"/>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
