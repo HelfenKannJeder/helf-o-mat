@@ -54,27 +54,62 @@ body {
 
 #body {
   margin: auto;
-  width: 1100px;
+
+  @media (min-width: 768px) {
+    width: 750px;
+  }
+  @media (min-width: 992px) {
+    width: 970px;
+  }
+  @media (min-width: 1200px) {
+    width: 1100px;
+  }
 
   #tabsLeft {
-    float: left;
-    @include transform(rotate(90deg));
-    @include transform-origin(0, 0);
-    height: 50px;
-    padding-left: 185px;
+    @media (max-width: 767px) {
+      position: absolute;
+      z-index: 1000;
+      top: 105px;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+
+      /* upside down */
+      ul {
+        @include transform(scaleY(-1));
+
+        li {
+          @include transform(scaleY(-1));
+        }
+      }
+    }
+
+    @media (min-width: 768px) {
+      float: left;
+      @include transform(rotate(90deg));
+      @include transform-origin(0, 0);
+      height: 50px;
+      padding-left: 185px;
+
+      ul {
+        @include transform(rotate(180deg));
+        @include transform-origin(50%, 50%);
+
+        li {
+          float: left;
+          height: 50px;
+          margin: 0 5px;
+        }
+      }
+    }
 
     ul {
-      @include transform(rotate(180deg));
-      @include transform-origin(50%, 50%);
       text-align: left;
       list-style-type: none;
       margin: 0;
       padding: 0;
 
       li {
-        float: left;
-        height: 50px;
-        margin: 0 5px;
         background-color: $darkgray;
         color: $white;
         font-size: 16px;
@@ -95,46 +130,97 @@ body {
   }
 
   #main {
-    float: left;
-    width: 1000px;
-    margin-left: 50px;
-    margin-top: -50px;
+
+    @media (min-width: 768px) {
+      float: left;
+      width: 700px;
+      margin-left: 50px;
+    }
+    @media (min-width: 992px) {
+      float: left;
+      width: 920px;
+      margin-left: 50px;
+    }
+
+    @media (min-width: 1200px) {
+      float: left;
+      width: 1000px;
+      margin-left: 50px;
+    }
+
     background-color: $white;
     box-shadow: 0 0 20px $darkgray;
     text-align: left;
 
     #header {
-      background-image: url("./assets/images/logo.png");
-      width: 1000px;
+      background: url("./assets/images/logo.jpg") top right;
       height: 160px;
       color: white;
+      position: relative;
 
-      h1 {
-        margin: 0;
-        padding: 30px 30px 0;
-        font-size: 28px;
-        font-family: 'Hand Of Sean', Helvetica, Arial, sans-serif;
+      @media (max-width: 767px) {
+        height: 105px;
+
+        .navTrigger {
+          width: 30px;
+          height: 25px;
+          position: absolute;
+          left: 20px;
+          top: 67px;
+        }
+
+        h1, h2 {
+          display: none;
+        }
+
+        #headerlink {
+          display: none;
+        }
       }
 
-      h2 {
-        margin: 0;
-        padding: 10px 30px 30px;
-        font-size: 12px;
-        font-weight: bold;
+      @media (min-width: 768px) and (max-width: 1199px) {
+        height: 105px;
+
+        .navTrigger {
+          display: none;
+        }
       }
 
-      #headerlink {
-        float: right;
+      @media (min-width: 768px) {
+        .navTrigger {
+          display: none;
+        }
+
+        h1 {
+          margin: 0;
+          padding: 30px 30px 0;
+          font-size: 28px;
+          font-family: 'Hand Of Sean', Helvetica, Arial, sans-serif;
+        }
+
+        h2 {
+          margin: 0;
+          padding: 10px 30px 30px;
+          font-size: 12px;
+          font-weight: bold;
+        }
+
+        #headerlink {
+          float: right;
+        }
       }
     }
 
     #sponsors {
       padding: 3px 30px;
       border-top: 1px solid $darkgray;
+      text-align: center;
 
-      div {
-        float: left;
-        margin-right: 25px;
+      @media (min-width: 768px) {
+        div {
+          float: left;
+          margin-right: 25px;
+        }
       }
     }
   }
