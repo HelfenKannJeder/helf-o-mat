@@ -22,10 +22,9 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
@@ -59,20 +58,20 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     private int currentPage = 1;
     private static final Pattern LATITUDE_PATTERN = Pattern.compile("lat = parseFloat\\((\\d+\\.\\d+)\\)");
     private static final Pattern LONGITUDE_PATTERN = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)");
+    private final PictureId logoPictureid;
     private final PictureId teaserPictureId;
 
     @Autowired
-    public ThwCrawlerOrganisationReader(ThwCrawlerConfiguration thwCrawlerConfiguration,
-                                        PictureRepository pictureRepository,
-                                        IndexManager indexManager,
-                                        @Value("classpath:/teaser.jpg") Resource teaserImage) throws IOException, DownloadFailedException {
+    public ThwCrawlerOrganisationReader(
+        ThwCrawlerConfiguration thwCrawlerConfiguration,
+        PictureRepository pictureRepository,
+        IndexManager indexManager
+    ) throws IOException, DownloadFailedException {
         this.thwCrawlerConfiguration = thwCrawlerConfiguration;
         this.pictureRepository = pictureRepository;
         this.indexManager = indexManager;
-
-        teaserPictureId = new PictureId();
-        byte[] teaserByteArray = StreamUtils.copyToByteArray(teaserImage.getInputStream());
-        this.pictureRepository.savePicture(teaserByteArray, this.indexManager.getCurrentIndex(), teaserPictureId);
+        this.logoPictureid = toPictureIdFromClasspathResource("thwde/logo.png");
+        this.teaserPictureId = toPictureIdFromClasspathResource("thwde/teaser.jpg");
     }
 
     @Override
@@ -134,7 +133,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
             .setPictures(singletonList(this.teaserPictureId))
             .setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
             .setMapPin(this.thwCrawlerConfiguration.getMapPin())
-            .setLogo(toPicture(this.thwCrawlerConfiguration.getLogo()))
+            .setLogo(this.logoPictureid)
             .setAddresses(singletonList(address))
             .setDefaultAddress(address)
             .setGroups(groups)
@@ -172,6 +171,13 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
             LOGGER.warn("Failed to download picture", e);
             return null;
         }
+    }
+
+    private PictureId toPictureIdFromClasspathResource(String imagePath) throws IOException, DownloadFailedException {
+        PictureId pictureId = new PictureId();
+        byte[] imageByteArray = StreamUtils.copyToByteArray(new ClassPathResource(imagePath).getInputStream());
+        this.pictureRepository.savePicture(imageByteArray, this.indexManager.getCurrentIndex(), pictureId);
+        return pictureId;
     }
 
     private List<Group> extractDistinctGroups(Document oeDetailsDocument) throws IOException {

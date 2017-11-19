@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.core.io.ClassPathResource;
 
 import java.util.List;
 
@@ -93,7 +92,11 @@ public class ThwCrawlerOrganisationReaderTest {
         thwCrawlerConfiguration.setFollowDomainNames(false);
         thwCrawlerConfiguration.setResultsPerPage(2);
         thwCrawlerConfiguration.setHttpRequestTimeout(3000);
-        thwCrawlerOrganisationReader = new ThwCrawlerOrganisationReader(thwCrawlerConfiguration, pictureRepository, indexManager, new ClassPathResource("teaser.jpg"));
+        thwCrawlerOrganisationReader = new ThwCrawlerOrganisationReader(
+            thwCrawlerConfiguration,
+            pictureRepository,
+            indexManager
+        );
     }
 
     private static String getOrganisationUrl(final String letter, final String name) {

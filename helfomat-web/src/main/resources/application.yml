@@ -34,7 +34,6 @@ crawler:
     domain: http://thw.de/
     resultsPerPage: 10
     httpRequestTimeout: 60000
-    logo: https://www.helfenkannjeder.de/uploads/pics/THW-Logo_BReg.png
     mapPin: blue-pushpin.png
 
 googlemaps:
