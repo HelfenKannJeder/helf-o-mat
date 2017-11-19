@@ -64,7 +64,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setWebsite(UrlUnifier.unifyOrganisationWebsiteUrl(tOrganisation.getWebsite()))
             .setMapPin(unifyOrganisationPins(tOrganisation.getOrganisationtype().getPicture()))
             .setPictures(toPictures(extractPictures(tOrganisation.getPictures())))
-            .setContactPersons(extractContactPersons(tOrganisation.getEmployees()))
+            .setContactPersons(toContactPersons(tOrganisation.getContactPersons()))
             .setAddresses(tOrganisation.getAddresses().stream().map(Typo3OrganisationProcessor::toAddress).collect(Collectors.toList()))
             .setDefaultAddress(toAddress(tOrganisation.getDefaultaddress()))
             .setGroups(
@@ -88,10 +88,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         return new Group.Builder()
             .setName(tGroup.getName())
             .setDescription(tGroup.getDescription())
-            .setContactPersons(tGroup.getContactPersons()
-                .stream()
-                .map(this::toContactPerson)
-                .collect(Collectors.toList()))
+            .setContactPersons(toContactPersons(tGroup.getContactPersons()))
             .setMinimumAge(tGroup.getMinimumAge())
             .setMaximumAge(tGroup.getMaximumAge())
             .setWebsite(tGroup.getWebsite())
@@ -150,9 +147,8 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         }
     }
 
-    private List<ContactPerson> extractContactPersons(List<TEmployee> employees) {
+    private List<ContactPerson> toContactPersons(List<TEmployee> employees) {
         return employees.stream()
-            .filter(TEmployee::isIscontact)
             .map(this::toContactPerson)
             .collect(Collectors.toList());
     }
