@@ -8,6 +8,7 @@ import {GeoPoint} from './geopoint.model';
 import {Observable} from 'rxjs/Observable';
 import {ObservableUtil} from '../shared/observable.util';
 import {Subject} from 'rxjs/Subject';
+import {Address} from './address.model';
 
 @Component({
     selector: 'organisation',
@@ -84,6 +85,17 @@ export class OrganisationComponent implements OnInit {
             this.position.filter(position => position != null)
         )
             .flatMap(([organisation, position]: [Organisation, GeoPoint]) => this.organisationService.getTravelDistances(organisation.id, position));
+    }
+
+    public areAddressesEqual(address1: Address, address2: Address): boolean {
+        return address1.location.lon == address2.location.lon
+            && address1.location.lat == address2.location.lat
+            && address1.addressAppendix == address2.addressAppendix
+            && address1.city == address2.city
+            && address1.street == address2.street
+            && address1.telephone == address2.telephone
+            && address1.zipcode == address2.zipcode
+            && address1.website == address2.website;
     }
 
     private static calculateZoomLevel(position1: GeoPoint, position2: GeoPoint) {

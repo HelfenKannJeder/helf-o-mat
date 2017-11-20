@@ -10,6 +10,8 @@ public interface PictureRepository {
 
     PictureId savePicture(String url, String folder, PictureId pictureId) throws DownloadFailedException;
 
+    PictureId savePicture(byte[] bytes, String folder, PictureId pictureId) throws DownloadFailedException;
+
     Path getPicture(PictureId pictureId) throws IOException;
 
     Path getPicture(PictureId pictureId, String size);

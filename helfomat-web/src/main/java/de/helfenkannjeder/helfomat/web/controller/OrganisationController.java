@@ -8,7 +8,7 @@ import de.helfenkannjeder.helfomat.api.organisation.TravelDistanceApplicationSer
 import de.helfenkannjeder.helfomat.api.question.QuestionAnswerDto;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
-import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,15 +57,13 @@ public class OrganisationController {
     }
 
     @GetMapping("/organisation/{id}")
-    public OrganisationDetailDto getOrganisation(@PathVariable String id) {
-        return OrganisationDetailDto.fromOrganisation(this.organisationApplicationService.findOne(id));
+    public OrganisationDetailDto getOrganisation(@PathVariable OrganisationId id) {
+        return this.organisationApplicationService.findOrganisationDetails(id);
     }
 
     @GetMapping("/organisation/{id}/travelDistances")
     public List<TravelDistanceDto> getTravelDistances(@PathVariable String id, @RequestParam("lat") Double lat, @RequestParam("lon") Double lon) {
-        Organisation organisation = organisationApplicationService.findOne(id);
-        GeoPoint origin = new GeoPoint(lat, lon);
-        return travelDistanceApplicationService.requestTravelDistances(organisation, origin);
+        return travelDistanceApplicationService.requestTravelDistances(new OrganisationId(id), new GeoPoint(lat, lon));
     }
 
     static class SearchRequestDto {

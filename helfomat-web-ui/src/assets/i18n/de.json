@@ -40,13 +40,33 @@
       "telephone": "Telefon"
     },
     "contact": {
-      "title": "Ansprechpartner"
+      "title": "Ansprechpartner",
+      "mail": "Mail: ",
+      "telephone": "Telefon: "
     },
     "description": {
       "title": "Beschreibung"
     },
-    "appointments": {
-      "title": "Termine"
+    "attendanceTime": {
+      "title": "Termine",
+      "weekday": {
+        "MONDAY": "Montag",
+        "TUESDAY": "Dienstag",
+        "WEDNESDAY": "Mittwoch",
+        "THURSDAY": "Donnerstag",
+        "FRIDAY": "Freitag",
+        "SATURDAY": "Samstag",
+        "SUNDAY": "Sonntag"
+      },
+      "clock": "Uhr",
+      "groups": "Einheiten: ",
+      "note": "Hinweis: "
+    },
+    "groupNames": {
+      "all": "Alle",
+      "allWithout": "Alle außer",
+      "separator": ", ",
+      "and": " und "
     },
     "group": {
       "title": "Einheiten"
@@ -58,7 +78,16 @@
       "title": "Fragen und Antworten",
       "question": "Frage",
       "organisation": "Org.",
-      "you": "Du"
+      "you": "Du",
+      "compare": {
+        "title": "Vergleich",
+        "match0": "0%",
+        "match50": "50%",
+        "match100": "100%"
+      }
+    },
+    "pictures": {
+      "title": "Bilder"
     }
   },
   "question": {

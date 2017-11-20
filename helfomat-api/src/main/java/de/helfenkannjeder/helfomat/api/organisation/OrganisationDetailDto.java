@@ -1,16 +1,9 @@
 package de.helfenkannjeder.helfomat.api.organisation;
 
 import de.helfenkannjeder.helfomat.api.question.AnsweredQuestionDto;
-import de.helfenkannjeder.helfomat.core.organisation.Address;
-import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
-import de.helfenkannjeder.helfomat.core.organisation.Group;
-import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import de.helfenkannjeder.helfomat.core.question.Question;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Valentin Zickner
@@ -24,15 +17,29 @@ public class OrganisationDetailDto {
     private PictureId logo;
     private List<PictureId> pictures;
     private List<ContactPersonDto> contactPersons;
+    private AddressDto defaultAddress;
     private List<AddressDto> addresses;
     private List<AnsweredQuestionDto> questions;
     private String mapPin;
     private List<GroupDto> groups;
+    private List<AttendanceTimeDto> attendanceTimes;
+    private List<VolunteerDto> volunteers;
 
-    public OrganisationDetailDto(String id, String name, String description, String website, PictureId logo,
-                                 List<PictureId> pictures, List<ContactPersonDto> contactPersons, List<AddressDto> addresses,
-                                 List<AnsweredQuestionDto> questions,
-                                 String mapPin, List<GroupDto> groups) {
+    public OrganisationDetailDto(
+        String id,
+        String name,
+        String description,
+        String website,
+        PictureId logo,
+        List<PictureId> pictures,
+        List<ContactPersonDto> contactPersons,
+        AddressDto defaultAddress,
+        List<AddressDto> addresses,
+        List<AnsweredQuestionDto> questions,
+        String mapPin, List<GroupDto> groups,
+        List<AttendanceTimeDto> attendanceTimes,
+        List<VolunteerDto> volunteers
+    ) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -40,10 +47,13 @@ public class OrganisationDetailDto {
         this.logo = logo;
         this.pictures = pictures;
         this.contactPersons = contactPersons;
+        this.defaultAddress = defaultAddress;
         this.addresses = addresses;
         this.questions = questions;
         this.mapPin = mapPin;
         this.groups = groups;
+        this.attendanceTimes = attendanceTimes;
+        this.volunteers = volunteers;
     }
 
     public String getId() {
@@ -70,6 +80,14 @@ public class OrganisationDetailDto {
         return pictures;
     }
 
+    public List<ContactPersonDto> getContactPersons() {
+        return contactPersons;
+    }
+
+    public AddressDto getDefaultAddress() {
+        return defaultAddress;
+    }
+
     public List<AddressDto> getAddresses() {
         return addresses;
     }
@@ -86,65 +104,11 @@ public class OrganisationDetailDto {
         return groups;
     }
 
-    public List<ContactPersonDto> getContactPersons() {
-        return contactPersons;
+    public List<AttendanceTimeDto> getAttendanceTimes() {
+        return attendanceTimes;
     }
 
-    public void setContactPersons(List<ContactPersonDto> contactPersons) {
-        this.contactPersons = contactPersons;
-    }
-
-    public static OrganisationDetailDto fromOrganisation(Organisation organisation) {
-        if (organisation == null) {
-            return null;
-        }
-        return new OrganisationDetailDto(
-            organisation.getId(),
-            organisation.getName(),
-            organisation.getDescription(),
-            organisation.getWebsite(),
-            organisation.getLogo(),
-            toPictures(organisation.getPictures()),
-            toContactPersons(organisation.getContactPersons()),
-            toAddresses(organisation.getAddresses()),
-            toQuestions(organisation.getQuestions()),
-            organisation.getMapPin(),
-            toGroups(organisation.getGroups())
-        );
-    }
-
-    private static List<PictureId> toPictures(List<PictureId> pictures) {
-        if (pictures == null) {
-            return Collections.emptyList();
-        }
-        return pictures;
-    }
-
-    private static List<ContactPersonDto> toContactPersons(List<ContactPerson> contactPersons) {
-        if (contactPersons == null) {
-            return Collections.emptyList();
-        }
-        return contactPersons.stream().map(ContactPersonDto::fromContactPerson).collect(Collectors.toList());
-    }
-
-    private static List<AddressDto> toAddresses(List<Address> addresses) {
-        if (addresses == null) {
-            return Collections.emptyList();
-        }
-        return addresses.stream().map(AddressDto::fromAddress).collect(Collectors.toList());
-    }
-
-    private static List<AnsweredQuestionDto> toQuestions(List<Question> questions) {
-        if (questions == null) {
-            return Collections.emptyList();
-        }
-        return questions.stream().map(AnsweredQuestionDto::fromQuestion).collect(Collectors.toList());
-    }
-
-    private static List<GroupDto> toGroups(List<Group> groups) {
-        if (groups == null) {
-            return Collections.emptyList();
-        }
-        return groups.stream().map(GroupDto::fromGroup).collect(Collectors.toList());
+    public List<VolunteerDto> getVolunteers() {
+        return volunteers;
     }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "helfomat-client",
+  "name": "helfomat-web-ui",
   "version": "0.0.0",
   "lockfileVersion": 1,
   "requires": true,
@@ -5313,6 +5313,11 @@
       "resolved": "https://registry.npmjs.org/negotiator/-/negotiator-0.6.1.tgz",
       "integrity": "sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=",
       "dev": true
+    },
+    "ng2-page-scroll": {
+      "version": "4.0.0-beta.12",
+      "resolved": "https://registry.npmjs.org/ng2-page-scroll/-/ng2-page-scroll-4.0.0-beta.12.tgz",
+      "integrity": "sha1-JrTnHvmtCFnx+k5ejWznx1tzxvc="
     },
     "no-case": {
       "version": "2.3.2",
