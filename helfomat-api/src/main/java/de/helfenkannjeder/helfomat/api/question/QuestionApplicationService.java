@@ -23,8 +23,7 @@ public class QuestionApplicationService {
             .map(question -> new QuestionDto(
                 question.getId().getValue(),
                 question.getQuestion(),
-                question.getDescription(),
-                question.getPosition()
+                question.getDescription()
             ))
             .collect(Collectors.toList());
     }

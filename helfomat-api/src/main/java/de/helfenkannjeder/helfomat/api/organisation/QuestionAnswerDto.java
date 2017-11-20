@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.api.question;
+package de.helfenkannjeder.helfomat.api.organisation;
 
 import de.helfenkannjeder.helfomat.core.question.Answer;
 
