@@ -1,11 +1,11 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
 
 import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
+import de.helfenkannjeder.helfomat.core.organisation.Answer;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
-import de.helfenkannjeder.helfomat.core.question.Answer;
-import de.helfenkannjeder.helfomat.core.question.Question;
+import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.question.QuestionId;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
@@ -32,17 +32,15 @@ public class AnswerQuestionsProcessor implements ItemProcessor<Organisation, Org
         }
 
         return new Organisation.Builder(organisation)
-            .setQuestions(answerAllQuestionsForOrganisation(organisation))
+            .setQuestionAnswers(answerAllQuestionsForOrganisation(organisation))
             .build();
     }
 
-    private List<Question> answerAllQuestionsForOrganisation(Organisation organisation) {
+    private List<QuestionAnswer> answerAllQuestionsForOrganisation(Organisation organisation) {
         return helfomatConfiguration.getQuestions()
             .stream()
-            .map(questionMapping -> new Question(
+            .map(questionMapping -> new QuestionAnswer(
                 new QuestionId(questionMapping.getId()),
-                questionMapping.getQuestion(),
-                questionMapping.getPosition(),
                 answerQuestionForOrganisation(questionMapping, organisation)
             ))
             .collect(Collectors.toList());

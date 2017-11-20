@@ -7,17 +7,8 @@ public class Question {
     private QuestionId id;
     private String question;
     private String description;
-    private Answer answer = Answer.MAYBE;
-    private int position;
 
     public Question() {
-    }
-
-    public Question(QuestionId id, String question, int position, Answer answer) {
-        this.id = id;
-        this.question = question;
-        this.position = position;
-        this.answer = answer;
     }
 
     public QuestionId getId() {
@@ -42,22 +33,6 @@ public class Question {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Answer getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(Answer answer) {
-        this.answer = answer;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
     }
 
 }

@@ -25,8 +25,7 @@ public class ConfigQuestionRepository implements QuestionRepository {
                 Question question = new Question();
                 question.setId(new QuestionId(questionMapping.getId()));
                 question.setQuestion(questionMapping.getQuestion());
-                question.setDescription("");
-                question.setPosition(questionMapping.getPosition());
+                question.setDescription(questionMapping.getDescription());
                 return question;
             })
             .collect(Collectors.toList());

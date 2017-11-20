@@ -64,7 +64,6 @@ helfomat:
     - organisationType: "BW"
       phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
       answer: "YES"
-    position: 2
 
   - id: "6487dd30-8d1a-4421-b424-2d822cb13e32"
     question: "Du hast keine Angst vor Feuer, nur Respekt. Möchtest Du lernen, wie man es löscht?"
@@ -73,7 +72,6 @@ helfomat:
     groups:
     - organisationType: "FF"
       answer: "YES"
-    position: 3
 
   - id: "35a19221-8fbf-45fb-9443-65a43aae9013"
     question: "Hast Du Interesse daran, Menschen bei Verkehrsunfällen aus Fahrzeugen zu retten?"
@@ -86,7 +84,6 @@ helfomat:
       answer: "MAYBE"
     - phrase: "Bergungsgruppe" # THW
       answer: "MAYBE"
-    position: 4
 
   - id: "58aca3fe-1783-42ff-81d6-43212d76ce04"
     question: "Kannst Du sehr kurzfristig, ggf. auch innerhalb Deiner Arbeitszeiten, für Einsätze zur Verfügung stehen?"
@@ -100,7 +97,6 @@ helfomat:
     - organisationType: "BW"
       phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
       answer: "NO"
-    position: 5
 
   - id: "89342f97-4a0e-457b-994b-5a4851618acc"
     question: "Ist Kochen eine Deiner Leidenschaften?"
@@ -113,7 +109,6 @@ helfomat:
       answer: "YES"
     - phrase: "Betreuung" # DLRG / ASB / DRK
       answer: "MAYBE"
-    position: 6
 
   - id: "e30180fd-bd93-4409-a5f4-8b7eb32948da"
     question: "Möchtest Du aktiv im Naturschutz mitwirken?"
@@ -128,7 +123,6 @@ helfomat:
       answer: "YES"
     - phrase: "Umweltschutz" # THW
       answer: "YES"
-    position: 7
 
   - id: "3e3042fa-beca-4d18-bb0c-f6f9a9d8f68f"
     question: "Bist Du handwerklich begabt? Den Umgang mit Kettensäge und Trennschleifer möchtest Du erlernen?"
@@ -139,7 +133,6 @@ helfomat:
       answer: "MAYBE"
     - phrase: "Bergungsgruppe" # THW
       answer: "YES"
-    position: 8
 
   - id: "44d1132f-3407-4387-808d-47368c8d7ffc"
     question: "Hast Du was für Wassersport übrig? Boot fahren, Retten von Menschen aus Gewässern?"
@@ -156,7 +149,6 @@ helfomat:
       answer: "YES"
     - phrase: "Boot" # DLRG / ASB / DRK / FW / THW
       answer: "YES"
-    position: 9
 
   - id: "b6788fa7-a360-4b65-8055-193c4c40d1f4"
     question: "Magst Du die Bergwelt? Kannst Du Dir vorstellen, hier Menschen zu retten?"
@@ -171,7 +163,6 @@ helfomat:
     - organisationType: "BRH"
       phrase: "Staffel"
       answer: "MAYBE"
-    position: 10
 
   - id: "ae4cdb0c-c35f-42fe-8996-599bfffc8fc2"
     question: "Betreuung von unverletzten Menschen, mit ihnen sprechen, die wichtigsten Dinge des Lebens organisieren und verteilen - Dein Ding?"
@@ -190,7 +181,6 @@ helfomat:
     - organisationType: "BRH"
       phrase: "Staffel"
       answer: "MAYBE"
-    position: 11
 
   - id: "c9204024-1399-4b34-b7a4-6919c09cdc41"
     question: "Möchtest Du aktiv als Besatzungsmitglied eines Rettungs- oder Krankentransportwagens mitfahren?"
@@ -199,7 +189,6 @@ helfomat:
     groups:
     - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
       answer: "YES"
-    position: 12
 
   - id: "0d76d16a-c640-40ec-af4e-2111ad36ee46"
     question: "Bist Du handwerklich interessiert und kannst Strom, Heizung, Wasser, etc. in Notunterkünften installieren?"
@@ -212,7 +201,6 @@ helfomat:
       answer: "MAYBE"
     - organisationType: "FF"
       answer: "MAYBE"
-    position: 13
 
   - id: "18662fa9-a854-4174-9ea9-37bb08c65484"
     question: "Fährst Du gerne Motorrad? Kommst Du auch mit etwas größeren Maschinen klar?"
@@ -223,7 +211,6 @@ helfomat:
       answer: "YES"
     - phrase: "ATV/Quad"
       answer: "YES"
-    position: 14
 
   - id: "e025aa16-4b69-42db-9fce-d34792d99a77"
     question: "Gebrochene Knochen schocken Dich nicht - auf die richtige Behandlung kommt es an. Interesse?"
@@ -238,7 +225,6 @@ helfomat:
     - organisationType: "BRH"
       phrase: "Staffel"
       answer: "MAYBE"
-    position: 15
 
   - id: "82113a83-d99a-4a63-89eb-9e5f4268917b"
     question: "Radlader-, Baggerfahren - schwere Baumaschinen fahren?"
@@ -251,7 +237,6 @@ helfomat:
       answer: "YES"
     - phrase: "Drehleiter"
       answer: "MAYBE"
-    position: 16
 
   - id: "4813a002-9c0e-4f29-af0c-26be7c197bea"
     question: "Klettern, Bergsteigen, Verletzte retten - auch aus der Kletterwand? Wäre das etwas für Dich?"
@@ -267,7 +252,6 @@ helfomat:
       answer: "YES"
     - phrase: "Hubschraubergestützte Wasserrettung" # DLRG / ASB / DRK
       answer: "MAYBE"
-    position: 17
 
   - id: "2e82c293-1f6a-4b4c-8366-f773d42f1caf"
     question: "Deinen Hund zum Suchhund ausbilden, mit ihm vermisste Menschen orten und retten? Interesse?"
@@ -283,7 +267,6 @@ helfomat:
     - organisationType: "BRH"
       phrase: "Staffel"
       answer: "YES"
-    position: 18
   picture-sizes:
   - name: icon
     width: 84

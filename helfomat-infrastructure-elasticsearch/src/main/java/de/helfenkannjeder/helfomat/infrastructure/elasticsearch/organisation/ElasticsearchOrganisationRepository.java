@@ -3,11 +3,11 @@ package de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organisation;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.Answer;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
-import de.helfenkannjeder.helfomat.core.question.Answer;
-import de.helfenkannjeder.helfomat.core.question.Question;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -231,17 +231,17 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .stream()
             .map(organisation -> new ScoredOrganisation(
                 organisation,
-                calculateScore(organisation.getQuestions(), questionAnswerList)
+                calculateScore(organisation.getQuestionAnswers(), questionAnswerList)
             ))
             .sorted((o1, o2) -> o1.getScore() < o2.getScore() ? 1 : -1)
             .collect(Collectors.toList());
     }
 
-    private float calculateScore(List<Question> organisationQuestions, Map<String, Answer> questionAnswerList) {
+    private float calculateScore(List<QuestionAnswer> organisationQuestions, Map<String, Answer> questionAnswerList) {
         return organisationQuestions
             .stream()
             .map((question) -> {
-                String questionId = question.getId().getValue();
+                String questionId = question.getQuestionId().getValue();
                 Answer organisationAnswer = question.getAnswer();
                 Answer userAnswer = questionAnswerList.get(questionId);
 

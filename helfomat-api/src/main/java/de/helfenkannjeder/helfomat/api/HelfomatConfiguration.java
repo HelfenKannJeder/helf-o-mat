@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.api;
 
+import de.helfenkannjeder.helfomat.core.organisation.Answer;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
-import de.helfenkannjeder.helfomat.core.question.Answer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -68,8 +68,6 @@ public class HelfomatConfiguration {
 
         private List<QuestionOrganisationGroupMapping> groups = new ArrayList<>();
 
-        private int position;
-
         public String getId() {
             return id;
         }
@@ -108,14 +106,6 @@ public class HelfomatConfiguration {
 
         public void setDescription(String description) {
             this.description = description;
-        }
-
-        public int getPosition() {
-            return position;
-        }
-
-        public void setPosition(int position) {
-            this.position = position;
         }
 
         public static class QuestionOrganisationGroupMapping {
