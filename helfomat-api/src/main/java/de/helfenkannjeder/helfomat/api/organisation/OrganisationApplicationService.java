@@ -1,13 +1,14 @@
 package de.helfenkannjeder.helfomat.api.organisation;
 
-import de.helfenkannjeder.helfomat.api.question.QuestionAnswerDto;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
+import de.helfenkannjeder.helfomat.core.organisation.Answer;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
-import de.helfenkannjeder.helfomat.core.question.Answer;
+import de.helfenkannjeder.helfomat.core.question.Question;
+import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +23,18 @@ import java.util.stream.Collectors;
 public class OrganisationApplicationService {
 
     private final OrganisationRepository organisationRepository;
+    private final QuestionRepository questionRepository;
 
     @Autowired
-    public OrganisationApplicationService(OrganisationRepository organisationRepository) {
+    public OrganisationApplicationService(OrganisationRepository organisationRepository, QuestionRepository questionRepository) {
         this.organisationRepository = organisationRepository;
+        this.questionRepository = questionRepository;
     }
 
     public OrganisationDetailDto findOrganisationDetails(OrganisationId id) {
         Organisation organisation = this.organisationRepository.findOne(id.getValue());
-        return OrganisationAssembler.toOrganisationDetailDto(organisation);
+        List<Question> questions = this.questionRepository.findQuestions();
+        return OrganisationAssembler.toOrganisationDetailDto(organisation, questions);
     }
 
     public List<OrganisationDto> findOrganisation(List<QuestionAnswerDto> questionAnswerDtos,

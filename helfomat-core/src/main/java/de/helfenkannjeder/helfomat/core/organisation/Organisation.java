@@ -1,7 +1,6 @@
 package de.helfenkannjeder.helfomat.core.organisation;
 
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import de.helfenkannjeder.helfomat.core.question.Question;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -25,7 +24,7 @@ public class Organisation {
     private List<PictureId> pictures;
     private List<ContactPerson> contactPersons;
     private List<Address> addresses;
-    private List<Question> questions;
+    private List<QuestionAnswer> questionAnswers;
     private String mapPin;
     private List<Group> groups;
     private List<AttendanceTime> attendanceTimes;
@@ -45,7 +44,7 @@ public class Organisation {
                  List<PictureId> pictures,
                  List<ContactPerson> contactPersons,
                  List<Address> addresses,
-                 List<Question> questions,
+                 List<QuestionAnswer> questionAnswers,
                  String mapPin,
                  List<Group> groups,
                  List<AttendanceTime> attendanceTimes,
@@ -61,7 +60,7 @@ public class Organisation {
         this.pictures = pictures;
         this.contactPersons = contactPersons;
         this.addresses = addresses;
-        this.questions = questions;
+        this.questionAnswers = questionAnswers;
         this.mapPin = mapPin;
         this.groups = groups;
         this.attendanceTimes = attendanceTimes;
@@ -100,8 +99,8 @@ public class Organisation {
         return addresses;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public List<QuestionAnswer> getQuestionAnswers() {
+        return questionAnswers;
     }
 
     public String getMapPin() {
@@ -152,7 +151,7 @@ public class Organisation {
         private Address defaultAddress;
         private List<PictureId> pictures;
         private List<Address> addresses;
-        private List<Question> questions;
+        private List<QuestionAnswer> questionAnswers;
         private String mapPin;
         private List<Group> groups;
         private List<AttendanceTime> attendanceTimes;
@@ -173,7 +172,7 @@ public class Organisation {
             this.defaultAddress = organisation.getDefaultAddress();
             this.pictures = organisation.getPictures();
             this.addresses = organisation.getAddresses();
-            this.questions = organisation.getQuestions();
+            this.questionAnswers = organisation.getQuestionAnswers();
             this.mapPin = organisation.getMapPin();
             this.groups = organisation.getGroups();
             this.attendanceTimes = organisation.getAttendanceTimes();
@@ -235,8 +234,8 @@ public class Organisation {
             return this;
         }
 
-        public Builder setQuestions(List<Question> questions) {
-            this.questions = questions;
+        public Builder setQuestionAnswers(List<QuestionAnswer> questionAnswers) {
+            this.questionAnswers = questionAnswers;
             return this;
         }
 
@@ -273,7 +272,7 @@ public class Organisation {
                 pictures,
                 contactPersons,
                 addresses,
-                questions,
+                questionAnswers,
                 mapPin,
                 groups,
                 attendanceTimes,

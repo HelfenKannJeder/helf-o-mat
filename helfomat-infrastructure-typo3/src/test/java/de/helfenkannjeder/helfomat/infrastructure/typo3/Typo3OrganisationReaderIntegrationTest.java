@@ -57,7 +57,7 @@ public class Typo3OrganisationReaderIntegrationTest {
         assertThat(defaultAddress.getTelephone()).isEqualTo("0123 456789");
         assertThat(defaultAddress.getWebsite()).isNullOrEmpty();
 
-        assertThat(organisation.getQuestions()).isNullOrEmpty();
+        assertThat(organisation.getQuestionAnswers()).isNullOrEmpty();
 
         List<ContactPerson> contactPersons = organisation.getContactPersons();
         assertThat(contactPersons).hasSize(1);

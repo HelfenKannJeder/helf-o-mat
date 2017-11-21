@@ -1,15 +1,18 @@
 package de.helfenkannjeder.helfomat.api.organisation;
 
+import com.google.common.base.Objects;
 import de.helfenkannjeder.helfomat.api.question.AnsweredQuestionDto;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.AttendanceTime;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
 import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.question.Question;
+import de.helfenkannjeder.helfomat.core.question.QuestionId;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +38,7 @@ class OrganisationAssembler {
         );
     }
 
-    static OrganisationDetailDto toOrganisationDetailDto(Organisation organisation) {
+    static OrganisationDetailDto toOrganisationDetailDto(Organisation organisation, List<Question> questions) {
         if (organisation == null) {
             return null;
         }
@@ -49,7 +52,7 @@ class OrganisationAssembler {
             toContactPersonDtos(organisation.getContactPersons()),
             toAddressDto(organisation.getDefaultAddress()),
             toAddressDtos(organisation.getAddresses()),
-            toAnsweredQuestionDto(organisation.getQuestions()),
+            toAnsweredQuestionDtos(organisation.getQuestionAnswers(), questions),
             organisation.getMapPin(),
             toGroupDtos(organisation.getGroups()),
             toAttendenceTimeDtos(organisation.getAttendanceTimes()),
@@ -102,20 +105,29 @@ class OrganisationAssembler {
         return pictures;
     }
 
-    private static List<AnsweredQuestionDto> toAnsweredQuestionDto(List<Question> questions) {
-        if (questions == null) {
+    private static List<AnsweredQuestionDto> toAnsweredQuestionDtos(List<QuestionAnswer> questionAnswers, List<Question> questions) {
+        if (questionAnswers == null) {
             return Collections.emptyList();
         }
-        return questions.stream().map(OrganisationAssembler::toAnsweredQuestionDto).collect(Collectors.toList());
+        return questionAnswers.stream()
+            .map((question) -> OrganisationAssembler.toAnsweredQuestionDto(question, determineQuestionText(questions, question.getQuestionId())))
+            .collect(Collectors.toList());
     }
 
-    private static AnsweredQuestionDto toAnsweredQuestionDto(Question question) {
+    private static AnsweredQuestionDto toAnsweredQuestionDto(QuestionAnswer questionAnswer, String question) {
         return new AnsweredQuestionDto(
-            question.getQuestion(),
-            question.getDescription(),
-            question.getAnswer(),
-            question.getPosition()
+            questionAnswer.getQuestionId(),
+            question,
+            questionAnswer.getAnswer()
         );
+    }
+
+    private static String determineQuestionText(List<Question> questions, QuestionId id) {
+        return questions.stream()
+            .filter(question -> Objects.equal(question.getId(), id))
+            .map(Question::getQuestion)
+            .findFirst()
+            .orElse(null);
     }
 
     private static List<GroupDto> toGroupDtos(List<Group> groups) {

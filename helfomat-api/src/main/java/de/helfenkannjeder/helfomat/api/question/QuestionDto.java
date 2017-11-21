@@ -7,15 +7,14 @@ public class QuestionDto {
     private String id;
     private String question;
     private String description;
-    private int position;
 
-    public QuestionDto() {
+    private QuestionDto() {
     }
 
-    public QuestionDto(String question, String description, int position) {
+    public QuestionDto(String id, String question, String description) {
+        this.id = id;
         this.question = question;
         this.description = description;
-        this.position = position;
     }
 
     public String getId() {
@@ -24,17 +23,6 @@ public class QuestionDto {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public QuestionDto(String question) {
-        this.question = question;
-    }
-
-    public QuestionDto(String id, String question, String description, int position) {
-        this.id = id;
-        this.question = question;
-        this.description = description;
-        this.position = position;
     }
 
     public String getQuestion() {
@@ -53,11 +41,4 @@ public class QuestionDto {
         this.description = description;
     }
 
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
 }
