@@ -14,7 +14,6 @@ public class ThwCrawlerConfiguration {
     private int resultsPerPage;
     private int httpRequestTimeout;
     private String mapPin;
-    private String logo;
 
     public String getDomain() {
         return domain;
@@ -56,11 +55,4 @@ public class ThwCrawlerConfiguration {
         this.mapPin = mapPin;
     }
 
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
 }

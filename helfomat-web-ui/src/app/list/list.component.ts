@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Organisation} from '../organisation/organisation.model';
+import {Organisation, PictureId} from '../organisation/organisation.model';
 import {Observable} from 'rxjs';
 
 @Component({
@@ -25,8 +25,8 @@ export class ListComponent implements OnInit {
         });
     }
 
-    getImagePath(image: string): string {
-        return `api/picture/${image}/icon`;
+    getImagePath(image: PictureId): string {
+        return `api/picture/${image.value}/icon`;
     }
 
 }

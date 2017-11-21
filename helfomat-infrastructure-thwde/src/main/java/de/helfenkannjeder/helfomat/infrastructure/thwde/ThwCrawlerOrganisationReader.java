@@ -4,6 +4,7 @@ import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.ProfileRegistry;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Address;
+import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
@@ -23,7 +24,9 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -55,13 +58,20 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     private int currentPage = 1;
     private static final Pattern LATITUDE_PATTERN = Pattern.compile("lat = parseFloat\\((\\d+\\.\\d+)\\)");
     private static final Pattern LONGITUDE_PATTERN = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)");
+    private final PictureId logoPictureid;
+    private final PictureId teaserPictureId;
 
     @Autowired
-    public ThwCrawlerOrganisationReader(ThwCrawlerConfiguration thwCrawlerConfiguration, PictureRepository pictureRepository, IndexManager
-        indexManager) {
+    public ThwCrawlerOrganisationReader(
+        ThwCrawlerConfiguration thwCrawlerConfiguration,
+        PictureRepository pictureRepository,
+        IndexManager indexManager
+    ) throws IOException, DownloadFailedException {
         this.thwCrawlerConfiguration = thwCrawlerConfiguration;
         this.pictureRepository = pictureRepository;
         this.indexManager = indexManager;
+        this.logoPictureid = toPictureIdFromClasspathResource("thwde/logo.png");
+        this.teaserPictureId = toPictureIdFromClasspathResource("thwde/teaser.jpg");
     }
 
     @Override
@@ -120,16 +130,38 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
             .setId(UUID.randomUUID().toString())
             .setOrganisationType(OrganisationType.THW)
             .setName(checkNotNull(organisationName))
+            .setPictures(singletonList(this.teaserPictureId))
             .setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
             .setMapPin(this.thwCrawlerConfiguration.getMapPin())
-            .setLogo(toPicture(this.thwCrawlerConfiguration.getLogo()))
+            .setLogo(this.logoPictureid)
             .setAddresses(singletonList(address))
             .setDefaultAddress(address)
             .setGroups(groups)
+            .setContactPersons(singletonList(toContactPerson(oeDetailsDocument, contactDataDiv)))
             .build();
 
         LOGGER.trace("New organisation: " + organisation);
         return organisation;
+    }
+
+    private ContactPerson toContactPerson(Document oeDetailsDocument, Elements contactDataDiv) throws IOException {
+        PictureId pictureId = null;
+        String imageSrc = oeDetailsDocument
+            .select(".personenBox")
+            .select(".vcard")
+            .select("img")
+            .attr("src");
+        if (!imageSrc.contains("NoElementPerson.jpg") && !"".equals(imageSrc)) {
+            pictureId = toPicture(this.thwCrawlerConfiguration.getDomain() + imageSrc);
+        }
+
+        return new ContactPerson.Builder()
+            .setFirstname(contactDataDiv.select(".given-name").text())
+            .setLastname(contactDataDiv.select(".family-name").text())
+            .setRank(contactDataDiv.select(".title").select("span").text())
+            .setTelephone(contactDataDiv.select(".tel").first().select("span.value").text())
+            .setPicture(pictureId)
+            .build();
     }
 
     private PictureId toPicture(String picture) throws IOException {
@@ -141,12 +173,20 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
         }
     }
 
-    private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
+    private PictureId toPictureIdFromClasspathResource(String imagePath) throws IOException, DownloadFailedException {
+        PictureId pictureId = new PictureId();
+        byte[] imageByteArray = StreamUtils.copyToByteArray(new ClassPathResource(imagePath).getInputStream());
+        this.pictureRepository.savePicture(imageByteArray, this.indexManager.getCurrentIndex(), pictureId);
+        return pictureId;
+    }
+
+    private List<Group> extractDistinctGroups(Document oeDetailsDocument) throws IOException {
         Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
         return groupElements
             .stream()
             .map(groupElement -> new Group.Builder()
                 .setName(getGroupName(groupElement))
+                .setDescription(getGroupDescription(groupElement))
                 .build())
             .distinct()
             .collect(Collectors.toList());
@@ -159,6 +199,29 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
         }
         // <h4>...</h4>
         return headlineElement.text();
+    }
+
+    private String getGroupDescription(Element headlineElement) {
+        Elements linkElement = headlineElement.select("a");
+
+        if (linkElement.isEmpty()) {
+            linkElement = headlineElement.parent().select("a");
+        }
+        Element first = linkElement.first();
+        if (first == null) {
+            return null;
+        }
+        String href = first.attr("href");
+
+        String groupPage = this.thwCrawlerConfiguration.getDomain() + href;
+        try {
+            Document document = Jsoup.connect(groupPage)
+                .timeout(this.thwCrawlerConfiguration.getHttpRequestTimeout())
+                .get();
+            return document.select(".abstract").select("p").text();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Address extractAddressFromDocument(Document oeDetailsDocument) throws IOException {

@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -49,6 +51,15 @@ public class TOrganisation {
     @Where(clause = "deleted=0")
     @OrderBy(clause = "prename")
     private List<TEmployee> employees;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "tx_helfenkannjeder_organisaton_contactperson_mm",
+        joinColumns = {@JoinColumn(name = "uid_local")},
+        inverseJoinColumns = {@JoinColumn(name = "uid_foreign")}
+    )
+    @Where(clause = "deleted=0")
+    private List<TEmployee> contactPersons;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
@@ -116,6 +127,10 @@ public class TOrganisation {
 
     public List<TEmployee> getEmployees() {
         return employees;
+    }
+
+    public List<TEmployee> getContactPersons() {
+        return contactPersons;
     }
 
     public List<TWorkingHour> getWorkinghours() {
