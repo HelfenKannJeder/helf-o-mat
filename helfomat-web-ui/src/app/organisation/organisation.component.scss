@@ -2,3 +2,19 @@ img.thumb {
   width: 2em;
   height: 2.32em;
 }
+
+.teaser-image {
+  width: 100%;
+}
+
+.logo-container {
+  position: relative;
+
+  .logo {
+    position: absolute;
+    right: 0;
+    bottom: 10%;
+    padding: 1em 1em 1em 1.2em;
+    background-color: white;
+  }
+}

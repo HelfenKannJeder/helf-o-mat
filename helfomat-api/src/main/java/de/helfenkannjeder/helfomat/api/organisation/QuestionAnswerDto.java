@@ -1,6 +1,6 @@
-package de.helfenkannjeder.helfomat.api.question;
+package de.helfenkannjeder.helfomat.api.organisation;
 
-import de.helfenkannjeder.helfomat.core.question.Answer;
+import de.helfenkannjeder.helfomat.core.organisation.Answer;
 
 /**
  * @author Valentin Zickner

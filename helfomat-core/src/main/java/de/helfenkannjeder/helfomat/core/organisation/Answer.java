@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.core.question;
+package de.helfenkannjeder.helfomat.core.organisation;
 
 import java.util.Arrays;
 import java.util.Collections;
