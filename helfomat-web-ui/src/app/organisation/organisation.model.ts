@@ -13,6 +13,7 @@ export class Organisation {
     public scoreNorm: number;
     public mapPin: string;
     public contactPersons: ContactPerson[] = [];
+    public defaultAddress: Address;
     public addresses: Address[] = [];
     public groups: Group[] = [];
     public questions: AnsweredQuestion[] = [];

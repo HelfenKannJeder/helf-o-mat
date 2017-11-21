@@ -49,20 +49,20 @@ export class OrganisationComponent implements OnInit {
         this.center = Observable
             .combineLatest(
                 this.organisations,
-                this.position.filter(position => position != null)
+                OrganisationComponent.prefixWithNull(this.position.filter(position => position != null))
             )
             .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                let location = OrganisationComponent.getOrganisationLocation(position, organisations[0]);
+                let location = OrganisationComponent.getOrganisationLocation(organisations[0]);
                 return GeoPoint.pointBetween(position, location);
             });
 
         this.zoom = Observable
             .combineLatest(
                 this.organisations,
-                this.position.filter(position => position != null)
+                OrganisationComponent.prefixWithNull(this.position.filter(position => position != null))
             )
             .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                let location = OrganisationComponent.getOrganisationLocation(position, organisations[0]);
+                let location = OrganisationComponent.getOrganisationLocation(organisations[0]);
                 return OrganisationComponent.calculateZoomLevel(location, position);
             });
 
@@ -98,7 +98,10 @@ export class OrganisationComponent implements OnInit {
             && address1.website == address2.website;
     }
 
-    private static calculateZoomLevel(position1: GeoPoint, position2: GeoPoint) {
+    private static calculateZoomLevel(position1: GeoPoint, position2: GeoPoint): number {
+        if (position1 == null || position2 == null) {
+            return 12;
+        }
         let distanceInKm = GeoPoint.distanceInKm(position1, position2);
         let mapHeight = 200;
         let distanceInM = distanceInKm * 1000;
@@ -116,17 +119,15 @@ export class OrganisationComponent implements OnInit {
         return zoom - 1;
     }
 
-    private static getOrganisationLocation(position: GeoPoint, organisation: Organisation): GeoPoint {
-        let distance = null;
-        let location = null;
-        for (let address of organisation.addresses) {
-            let potentialDistance = GeoPoint.distanceInKm(position, address.location);
-            if (distance === null || distance > potentialDistance) {
-                distance = potentialDistance;
-                location = address.location;
-            }
-        }
-        return location;
+    private static getOrganisationLocation(organisation: Organisation): GeoPoint {
+        return organisation.defaultAddress.location;
+    }
+
+    private static prefixWithNull<T>(observable: Observable<T>): Observable<T> {
+        return Observable.concat(
+            Observable.of(null),
+            observable
+        );
     }
 
     ngOnInit(): void {
