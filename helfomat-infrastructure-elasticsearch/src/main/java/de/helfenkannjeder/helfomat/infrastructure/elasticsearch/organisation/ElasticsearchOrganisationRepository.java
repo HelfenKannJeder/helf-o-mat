@@ -83,9 +83,9 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
-    public List<ScoredOrganisation> findOrganisations(List<QuestionAnswer> questionAnswers,
-                                                      GeoPoint position,
-                                                      double distance) {
+    public List<ScoredOrganisation> findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+        List<QuestionAnswer> questionAnswers, GeoPoint position, double distance
+    ) {
         return sortOrganisations(
             findOrganisationsWithQuestionsAndFilter(
                 questionAnswers,
@@ -97,7 +97,9 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
-    public List<ScoredOrganisation> findGlobalOrganisations(List<QuestionAnswer> questionAnswers) {
+    public List<ScoredOrganisation> findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(
+        List<QuestionAnswer> questionAnswers
+    ) {
         return sortOrganisations(
             findOrganisationsWithQuestionsAndFilter(
                 questionAnswers,
@@ -132,9 +134,9 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
-    public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,
-                                                 double distance,
-                                                 BoundingBox boundingBox) {
+    public List<GeoPoint> findGeoPointsOfOrganisationsInsideBoundingBox(
+        GeoPoint position, double distance, BoundingBox boundingBox
+    ) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         BoolQueryBuilder positionQuery = boolQuery()
             .must(filterBox(boundingBox));

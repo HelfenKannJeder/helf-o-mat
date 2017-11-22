@@ -14,13 +14,15 @@ public interface OrganisationRepository {
 
     Organisation findOne(String id);
 
-    List<ScoredOrganisation> findOrganisations(List<QuestionAnswer> questionAnswers,
-                                               GeoPoint position,
-                                               double distance);
+    List<ScoredOrganisation> findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+        List<QuestionAnswer> questionAnswers, GeoPoint position, double distance
+    );
 
-    List<ScoredOrganisation> findGlobalOrganisations(List<QuestionAnswer> questionAnswers);
+    List<ScoredOrganisation> findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(
+        List<QuestionAnswer> questionAnswers)
+        ;
 
-    List<GeoPoint> findClusteredGeoPoints(GeoPoint position, double distance, BoundingBox boundingBox);
+    List<GeoPoint> findGeoPointsOfOrganisationsInsideBoundingBox(GeoPoint position, double distance, BoundingBox boundingBox);
 
     void save(String index, List<? extends Organisation> organisations);
 

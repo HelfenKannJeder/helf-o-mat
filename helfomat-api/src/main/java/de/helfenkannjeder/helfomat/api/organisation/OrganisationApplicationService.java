@@ -49,9 +49,9 @@ public class OrganisationApplicationService {
             .collect(Collectors.toList());
         List<ScoredOrganisation> organisations;
         if (position == null) {
-            organisations = this.organisationRepository.findGlobalOrganisations(questionAnswers);
+            organisations = this.organisationRepository.findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(questionAnswers);
         } else {
-            organisations = this.organisationRepository.findOrganisations(
+            organisations = this.organisationRepository.findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
                 questionAnswers,
                 position,
                 distance
@@ -70,7 +70,7 @@ public class OrganisationApplicationService {
     public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,
                                                  double distance,
                                                  BoundingBox boundingBox) {
-        return this.organisationRepository.findClusteredGeoPoints(position,
+        return this.organisationRepository.findGeoPointsOfOrganisationsInsideBoundingBox(position,
             distance,
             boundingBox);
     }
