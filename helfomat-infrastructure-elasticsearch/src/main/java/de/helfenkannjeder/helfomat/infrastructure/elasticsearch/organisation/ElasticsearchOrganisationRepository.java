@@ -8,6 +8,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
+import de.helfenkannjeder.helfomat.core.question.QuestionId;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -26,7 +27,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -81,7 +81,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
-    public List<ScoredOrganisation> findOrganisations(Map<String, Answer> questionAnswers,
+    public List<ScoredOrganisation> findOrganisations(List<QuestionAnswer> questionAnswers,
                                                       GeoPoint position,
                                                       double distance) {
         return findOrganisationsWithQuestionsAndFilterAndSort(
@@ -91,7 +91,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
-    public List<ScoredOrganisation> findGlobalOrganisations(Map<String, Answer> questionAnswers) {
+    public List<ScoredOrganisation> findGlobalOrganisations(List<QuestionAnswer> questionAnswers) {
         return findOrganisationsWithQuestionsAndFilterAndSort(
             questionAnswers,
             boolQuery()
@@ -99,11 +99,11 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         );
     }
 
-    private List<ScoredOrganisation> findOrganisationsWithQuestionsAndFilterAndSort(Map<String, Answer> questionAnswers,
+    private List<ScoredOrganisation> findOrganisationsWithQuestionsAndFilterAndSort(List<QuestionAnswer> questionAnswers,
                                                                                     QueryBuilder filter) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
-        for (Map.Entry<String, Answer> questionAnswerDto : questionAnswers.entrySet()) {
-            boolQueryBuilder.should(buildQuestionQuery(questionAnswerDto));
+        for (QuestionAnswer questionAnswer : questionAnswers) {
+            boolQueryBuilder.should(buildQuestionQuery(questionAnswer));
         }
 
         boolQueryBuilder.filter(filter);
@@ -142,7 +142,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         nativeSearchQuery.setPageable(new PageRequest(0, DEFAULT_MAX_RESULT_SIZE));
         List<Organisation> organisations = this.elasticsearchTemplate.queryForList(nativeSearchQuery, Organisation.class);
 
-        return extractOrganisations(Collections.emptyMap(), organisations)
+        return extractOrganisations(Collections.emptyList(), organisations)
             .stream()
             .map(ScoredOrganisation::getOrganisation)
             .map(Organisation::getDefaultAddress)
@@ -194,13 +194,13 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         elasticsearchTemplate.addAlias(aliasQuery);
     }
 
-    private QueryBuilder buildQuestionQuery(Map.Entry<String, Answer> questionAnswerDto) {
+    private QueryBuilder buildQuestionQuery(QuestionAnswer questionAnswer) {
         BoolQueryBuilder questionQuery = boolQuery()
             .minimumNumberShouldMatch(1)
-            .must(termQuery("questions.uid", questionAnswerDto.getKey()))
-            .should(termQuery("questions.answer", questionAnswerDto.getValue().toString()).boost(2.0f));
+            .must(termQuery("questions.questionId", questionAnswer.getQuestionId().getValue()))
+            .should(termQuery("questions.answer", questionAnswer.getAnswer().toString()).boost(2.0f));
 
-        for (Answer neighbour : questionAnswerDto.getValue().getNeighbours()) {
+        for (Answer neighbour : questionAnswer.getAnswer().getNeighbours()) {
             questionQuery.should(termQuery("questions.answer", neighbour.toString()).boost(1.0f));
         }
 
@@ -226,24 +226,28 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .distance(distance, DistanceUnit.KILOMETERS);
     }
 
-    private List<ScoredOrganisation> extractOrganisations(Map<String, Answer> questionAnswerList, List<Organisation> resultOrganisations) {
+    private List<ScoredOrganisation> extractOrganisations(List<QuestionAnswer> questionAnswers, List<Organisation> resultOrganisations) {
         return resultOrganisations
             .stream()
             .map(organisation -> new ScoredOrganisation(
                 organisation,
-                calculateScore(organisation.getQuestionAnswers(), questionAnswerList)
+                calculateScore(organisation.getQuestionAnswers(), questionAnswers)
             ))
             .sorted((o1, o2) -> o1.getScore() < o2.getScore() ? 1 : -1)
             .collect(Collectors.toList());
     }
 
-    private float calculateScore(List<QuestionAnswer> organisationQuestions, Map<String, Answer> questionAnswerList) {
+    private float calculateScore(List<QuestionAnswer> organisationQuestions, List<QuestionAnswer> questionAnswers) {
         return organisationQuestions
             .stream()
             .map((question) -> {
-                String questionId = question.getQuestionId().getValue();
+                QuestionId questionId = question.getQuestionId();
                 Answer organisationAnswer = question.getAnswer();
-                Answer userAnswer = questionAnswerList.get(questionId);
+                Answer userAnswer = questionAnswers.stream()
+                    .filter(questionAnswer -> questionAnswer.getQuestionId().equals(questionId))
+                    .map(QuestionAnswer::getAnswer)
+                    .findFirst()
+                    .orElse(null);
 
                 if (Objects.equals(organisationAnswer, userAnswer)) {
                     return 100;
