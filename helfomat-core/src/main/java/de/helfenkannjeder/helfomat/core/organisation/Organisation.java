@@ -15,6 +15,7 @@ public class Organisation {
     @Id
     private String id;
     private String name;
+    private String urlName;
     private OrganisationType organisationType;
     private String description;
     private String website;
@@ -35,6 +36,7 @@ public class Organisation {
 
     Organisation(String id,
                  String name,
+                 String urlName,
                  OrganisationType organisationType,
                  String description,
                  String website,
@@ -51,6 +53,7 @@ public class Organisation {
                  List<Volunteer> volunteers) {
         this.id = id;
         this.name = name;
+        this.urlName = urlName;
         this.organisationType = organisationType;
         this.description = description;
         this.website = website;
@@ -73,6 +76,10 @@ public class Organisation {
 
     public String getName() {
         return name;
+    }
+
+    public String getUrlName() {
+        return urlName;
     }
 
     public OrganisationType getOrganisationType() {
@@ -142,6 +149,7 @@ public class Organisation {
     public static class Builder {
         private String id;
         private String name;
+        private String urlName;
         private OrganisationType organisationType;
         private String description;
         private String website;
@@ -163,6 +171,7 @@ public class Organisation {
         public Builder(Organisation organisation) {
             this.id = organisation.getId();
             this.name = organisation.getName();
+            this.urlName = organisation.getUrlName();
             this.organisationType = organisation.getOrganisationType();
             this.description = organisation.getDescription();
             this.website = organisation.getWebsite();
@@ -186,6 +195,11 @@ public class Organisation {
 
         public Builder setName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder setUrlName(String urlName) {
+            this.urlName = urlName;
             return this;
         }
 
@@ -263,6 +277,7 @@ public class Organisation {
             return new Organisation(
                 id,
                 name,
+                urlName,
                 organisationType,
                 description,
                 website,

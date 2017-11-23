@@ -28,6 +28,7 @@ class OrganisationAssembler {
         return new OrganisationDto(
             organisation.getId(),
             organisation.getName(),
+            organisation.getUrlName(),
             organisation.getDescription(),
             organisation.getWebsite(),
             organisation.getMapPin(),
@@ -45,6 +46,7 @@ class OrganisationAssembler {
         return new OrganisationDetailDto(
             organisation.getId(),
             organisation.getName(),
+            organisation.getUrlName(),
             organisation.getDescription(),
             organisation.getWebsite(),
             organisation.getLogo(),
