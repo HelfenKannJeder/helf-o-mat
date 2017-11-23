@@ -56,9 +56,9 @@ public class OrganisationController {
         );
     }
 
-    @GetMapping("/organisation/{id}")
-    public OrganisationDetailDto getOrganisation(@PathVariable OrganisationId id) {
-        return this.organisationApplicationService.findOrganisationDetails(id);
+    @GetMapping("/organisation/{organisationName}")
+    public OrganisationDetailDto getOrganisation(@PathVariable String organisationName) {
+        return this.organisationApplicationService.findOrganisationDetails(organisationName);
     }
 
     @GetMapping("/organisation/{id}/travelDistances")

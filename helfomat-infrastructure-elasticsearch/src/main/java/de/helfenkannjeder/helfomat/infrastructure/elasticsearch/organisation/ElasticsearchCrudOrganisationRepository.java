@@ -7,4 +7,7 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchCrudReposi
  * @author Valentin Zickner
  */
 public interface ElasticsearchCrudOrganisationRepository extends ElasticsearchCrudRepository<Organisation, String> {
+
+    Organisation findByUrlName(String urlName);
+
 }
