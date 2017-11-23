@@ -101,6 +101,9 @@
         "questions": "Zu den Fragen",
         "list": "Zu den Ergebnissen"
       }
+    },
+    "list": {
+      "hoverResultExplain": "Klicke auf das Fragezeichen um herauszufinden, in welchen Punkten '{{ organisationName }}' dir das bietet was du möchtest."
     }
   }
 }

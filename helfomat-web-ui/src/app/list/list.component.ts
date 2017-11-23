@@ -13,6 +13,8 @@ export class ListComponent implements OnInit {
 
     @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
 
+    @Output() openOrganisationScoreExplanation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
+
     public currentOrganisations: Organisation[] = [];
 
     constructor(private changeDetectorRef: ChangeDetectorRef) {

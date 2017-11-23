@@ -9,7 +9,7 @@
         (updatePosition)="_position$.next($event)"
         (updateBoundingBox)="_boundingBox$.next($event)"
         (updateZoom)="_zoom$.next($event)"
-        (openOrganisation)="_organisation$.next($event)"></helfomat-map>
+        (openOrganisation)="openOrganisation($event)"></helfomat-map>
 </div>
 
 <div class="slide">
@@ -28,7 +28,8 @@
             </button>
             <helfomat-list
                 [organisations]="organisations"
-                (openOrganisation)="_organisation$.next($event)"></helfomat-list>
+                (openOrganisation)="openOrganisation($event)"
+                (openOrganisationScoreExplanation)="openOrganisation($event, true)"></helfomat-list>
         </div>
     </div>
 </div>
