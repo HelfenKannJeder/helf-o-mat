@@ -1,10 +1,18 @@
 <div id="body">
     <div id="tabsLeft" [@menu]="menuVisible">
         <ul>
-            <li><a href="https://helfenkannjeder.de/verein/ueber-uns/">Verein</a></li>
-            <li><a href="https://helfenkannjeder.de/meine-hilfsorganisation/registrieren/registrierung/">Meine
-                Hilfsorganisation</a></li>
-            <li class="active"><a href="https://helfenkannjeder.de/helf-o-mat/">HelfenKannJeder</a></li>
+            <li><a href="https://helfenkannjeder.de/verein/ueber-uns/">
+                {{ 'menu.association' | translate }}
+            </a></li>
+            <li><a href="https://helfenkannjeder.de/meine-hilfsorganisation/">
+                {{ 'menu.myOrganisation' | translate }}
+            </a></li>
+            <li><a href="https://helfenkannjeder.de/neues/">
+                {{ 'menu.helfenkannjeder' | translate }}
+            </a></li>
+            <li class="active"><a href="https://helf-o-mat.de/">
+                {{ 'menu.helf-o-mat' | translate }}
+            </a></li>
         </ul>
     </div>
     <div id="main">
@@ -16,11 +24,21 @@
                 <a href="/"><img src="assets/images/blank.gif" width="300"
                                  height="105"/></a>
             </div>
-            <h1>Wir warten auf Dich!</h1>
-            <h2>Das Freiwilligenportal der Hilfsorganisationen</h2>
+            <h1>{{ 'header.title1' | translate }}</h1>
+            <h2>{{ 'header.title2' | translate }}</h2>
         </div>
         <router-outlet class="clearfix"></router-outlet>
         <div class="clear"></div>
+        <div>
+            <ul class="nav nav-pills">
+                <li><a href="//helfenkannjeder.de/neues/">Neues</a></li>
+                <li><a href="https://www.instagram.com/helfenkannjeder/">@Instagram</a></li>
+                <li><a href="https://www.facebook.com/HelfenKannJeder/">@Facebook</a></li>
+                <li class="pull-right"><a href="//helfenkannjeder.de/impressum/">Impressum</a></li>
+                <li class="pull-right"><a href="//helfenkannjeder.de/datenschutz/">Datenschutz</a></li>
+                <li class="pull-right"><a href="//helfenkannjeder.de/faq/">FAQ</a></li>
+            </ul>
+        </div>
         <div id="sponsors">
             <div>
                 <a href="http://www.baden-wuerttemberg.de/" target="_blank"><img
