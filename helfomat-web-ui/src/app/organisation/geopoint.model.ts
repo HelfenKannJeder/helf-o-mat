@@ -8,6 +8,12 @@ export class GeoPoint {
     }
 
     public static pointBetween(first: GeoPoint, second: GeoPoint) {
+        if (first == null) {
+            return second;
+        }
+        if (second == null) {
+            return first;
+        }
         return new GeoPoint(
             (first.lat + second.lat) / 2,
             (first.lon + second.lon) / 2

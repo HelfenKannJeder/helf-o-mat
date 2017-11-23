@@ -147,8 +147,7 @@ export class ResultComponent implements OnInit {
                 if (this.explainScore) {
                     extras.fragment = 'compare';
                 }
-                this.router.navigate(['/organisation', {
-                    organisation: organisation.id,
+                this.router.navigate(['/organisation/' + organisation.urlName, {
                     answers: UrlParamBuilder.buildAnswers(answers),
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance,

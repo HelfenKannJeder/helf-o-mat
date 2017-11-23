@@ -12,6 +12,7 @@ public class OrganisationDetailDto {
 
     private String id;
     private String name;
+    private String urlName;
     private String description;
     private String website;
     private PictureId logo;
@@ -28,6 +29,7 @@ public class OrganisationDetailDto {
     public OrganisationDetailDto(
         String id,
         String name,
+        String urlName,
         String description,
         String website,
         PictureId logo,
@@ -42,6 +44,7 @@ public class OrganisationDetailDto {
     ) {
         this.id = id;
         this.name = name;
+        this.urlName = urlName;
         this.description = description;
         this.website = website;
         this.logo = logo;
@@ -62,6 +65,10 @@ public class OrganisationDetailDto {
 
     public String getName() {
         return name;
+    }
+
+    public String getUrlName() {
+        return urlName;
     }
 
     public String getDescription() {

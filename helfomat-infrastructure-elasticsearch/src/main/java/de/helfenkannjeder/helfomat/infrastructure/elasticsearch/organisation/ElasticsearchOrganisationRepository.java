@@ -8,6 +8,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
+import de.helfenkannjeder.helfomat.core.question.QuestionId;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -22,13 +23,14 @@ import org.springframework.data.elasticsearch.core.query.AliasQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.util.StreamUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.existsQuery;
@@ -76,34 +78,48 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
+    public Organisation findByUrlName(String urlName) {
+        return this.elasticsearchCrudOrganisationRepository.findByUrlName(urlName);
+    }
+
+    @Override
     public Organisation findOne(String id) {
         return this.elasticsearchCrudOrganisationRepository.findOne(id);
     }
 
     @Override
-    public List<ScoredOrganisation> findOrganisations(Map<String, Answer> questionAnswers,
-                                                      GeoPoint position,
-                                                      double distance) {
-        return findOrganisationsWithQuestionsAndFilterAndSort(
-            questionAnswers,
-            filterDistance(position, distance)
-        );
+    public List<ScoredOrganisation> findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+        List<QuestionAnswer> questionAnswers, GeoPoint position, double distance
+    ) {
+        return sortOrganisations(
+            findOrganisationsWithQuestionsAndFilter(
+                questionAnswers,
+                filterDistance(position, distance)
+            ),
+            position
+        )
+            .collect(Collectors.toList());
     }
 
     @Override
-    public List<ScoredOrganisation> findGlobalOrganisations(Map<String, Answer> questionAnswers) {
-        return findOrganisationsWithQuestionsAndFilterAndSort(
-            questionAnswers,
-            boolQuery()
-                .mustNot(existsQuery("defaultAddress"))
-        );
+    public List<ScoredOrganisation> findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(
+        List<QuestionAnswer> questionAnswers
+    ) {
+        return sortOrganisations(
+            findOrganisationsWithQuestionsAndFilter(
+                questionAnswers,
+                boolQuery()
+                    .mustNot(existsQuery("defaultAddress"))
+            )
+        )
+            .collect(Collectors.toList());
     }
 
-    private List<ScoredOrganisation> findOrganisationsWithQuestionsAndFilterAndSort(Map<String, Answer> questionAnswers,
-                                                                                    QueryBuilder filter) {
+    private Stream<ScoredOrganisation> findOrganisationsWithQuestionsAndFilter(List<QuestionAnswer> questionAnswers,
+                                                                               QueryBuilder filter) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
-        for (Map.Entry<String, Answer> questionAnswerDto : questionAnswers.entrySet()) {
-            boolQueryBuilder.should(buildQuestionQuery(questionAnswerDto));
+        for (QuestionAnswer questionAnswer : questionAnswers) {
+            boolQueryBuilder.should(buildQuestionQuery(questionAnswer));
         }
 
         boolQueryBuilder.filter(filter);
@@ -112,7 +128,9 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         nativeSearchQuery.addIndices(elasticsearchConfiguration.getIndex());
         nativeSearchQuery.addTypes(elasticsearchConfiguration.getType().getOrganisation());
         nativeSearchQuery.setPageable(new PageRequest(0, DEFAULT_MAX_RESULT_SIZE));
-        List<Organisation> organisations = this.elasticsearchTemplate.queryForList(nativeSearchQuery, Organisation.class);
+        Stream<Organisation> organisations = StreamUtils.createStreamFromIterator(
+            this.elasticsearchTemplate.stream(nativeSearchQuery, Organisation.class)
+        );
 
         return extractOrganisations(
             questionAnswers,
@@ -121,9 +139,9 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
-    public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,
-                                                 double distance,
-                                                 BoundingBox boundingBox) {
+    public List<GeoPoint> findGeoPointsOfOrganisationsInsideBoundingBox(
+        GeoPoint position, double distance, BoundingBox boundingBox
+    ) {
         BoolQueryBuilder boolQueryBuilder = boolQuery();
         BoolQueryBuilder positionQuery = boolQuery()
             .must(filterBox(boundingBox));
@@ -140,10 +158,11 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         nativeSearchQuery.addIndices(elasticsearchConfiguration.getIndex());
         nativeSearchQuery.addTypes(elasticsearchConfiguration.getType().getOrganisation());
         nativeSearchQuery.setPageable(new PageRequest(0, DEFAULT_MAX_RESULT_SIZE));
-        List<Organisation> organisations = this.elasticsearchTemplate.queryForList(nativeSearchQuery, Organisation.class);
+        Stream<Organisation> organisations = StreamUtils.createStreamFromIterator(
+            this.elasticsearchTemplate.stream(nativeSearchQuery, Organisation.class)
+        );
 
-        return extractOrganisations(Collections.emptyMap(), organisations)
-            .stream()
+        return extractOrganisations(Collections.emptyList(), organisations)
             .map(ScoredOrganisation::getOrganisation)
             .map(Organisation::getDefaultAddress)
             .filter(Objects::nonNull)
@@ -194,13 +213,37 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         elasticsearchTemplate.addAlias(aliasQuery);
     }
 
-    private QueryBuilder buildQuestionQuery(Map.Entry<String, Answer> questionAnswerDto) {
+    private Stream<ScoredOrganisation> sortOrganisations(Stream<ScoredOrganisation> organisations) {
+        return sortOrganisations(organisations, null);
+    }
+
+    private Stream<ScoredOrganisation> sortOrganisations(Stream<ScoredOrganisation> organisations, GeoPoint position) {
+        return organisations
+            .sorted((organisation1, organisation2) -> {
+                float score1 = organisation1.getScore();
+                float score2 = organisation2.getScore();
+
+                if (score1 < score2) {
+                    return 1;
+                } else if (score1 > score2) {
+                    return -1;
+                } else if (position != null) {
+                    double distance1 = GeoPoint.distanceInKm(organisation1.getOrganisation().getDefaultAddress().getLocation(), position);
+                    double distance2 = GeoPoint.distanceInKm(organisation2.getOrganisation().getDefaultAddress().getLocation(), position);
+                    return distance1 > distance2 ? 1 : -1;
+                } else {
+                    return 1;
+                }
+            });
+    }
+
+    private QueryBuilder buildQuestionQuery(QuestionAnswer questionAnswer) {
         BoolQueryBuilder questionQuery = boolQuery()
             .minimumNumberShouldMatch(1)
-            .must(termQuery("questions.uid", questionAnswerDto.getKey()))
-            .should(termQuery("questions.answer", questionAnswerDto.getValue().toString()).boost(2.0f));
+            .must(termQuery("questions.questionId", questionAnswer.getQuestionId().getValue()))
+            .should(termQuery("questions.answer", questionAnswer.getAnswer().toString()).boost(2.0f));
 
-        for (Answer neighbour : questionAnswerDto.getValue().getNeighbours()) {
+        for (Answer neighbour : questionAnswer.getAnswer().getNeighbours()) {
             questionQuery.should(termQuery("questions.answer", neighbour.toString()).boost(1.0f));
         }
 
@@ -226,24 +269,25 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             .distance(distance, DistanceUnit.KILOMETERS);
     }
 
-    private List<ScoredOrganisation> extractOrganisations(Map<String, Answer> questionAnswerList, List<Organisation> resultOrganisations) {
+    private Stream<ScoredOrganisation> extractOrganisations(List<QuestionAnswer> questionAnswers, Stream<Organisation> resultOrganisations) {
         return resultOrganisations
-            .stream()
             .map(organisation -> new ScoredOrganisation(
                 organisation,
-                calculateScore(organisation.getQuestionAnswers(), questionAnswerList)
-            ))
-            .sorted((o1, o2) -> o1.getScore() < o2.getScore() ? 1 : -1)
-            .collect(Collectors.toList());
+                calculateScore(organisation.getQuestionAnswers(), questionAnswers)
+            ));
     }
 
-    private float calculateScore(List<QuestionAnswer> organisationQuestions, Map<String, Answer> questionAnswerList) {
+    private float calculateScore(List<QuestionAnswer> organisationQuestions, List<QuestionAnswer> questionAnswers) {
         return organisationQuestions
             .stream()
             .map((question) -> {
-                String questionId = question.getQuestionId().getValue();
+                QuestionId questionId = question.getQuestionId();
                 Answer organisationAnswer = question.getAnswer();
-                Answer userAnswer = questionAnswerList.get(questionId);
+                Answer userAnswer = questionAnswers.stream()
+                    .filter(questionAnswer -> questionAnswer.getQuestionId().equals(questionId))
+                    .map(QuestionAnswer::getAnswer)
+                    .findFirst()
+                    .orElse(null);
 
                 if (Objects.equals(organisationAnswer, userAnswer)) {
                     return 100;
