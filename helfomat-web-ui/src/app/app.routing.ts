@@ -7,7 +7,7 @@ import {LocationComponent} from './location/location.component';
 
 const appRoutes: Routes = [
     {path: 'result', component: ResultComponent},
-    {path: 'organisation', component: OrganisationComponent},
+    {path: 'organisation/:organisation', component: OrganisationComponent},
     {path: 'question', component: QuestionComponent},
     {path: 'location', component: LocationComponent},
     {path: '', redirectTo: '/question', pathMatch: 'full'}

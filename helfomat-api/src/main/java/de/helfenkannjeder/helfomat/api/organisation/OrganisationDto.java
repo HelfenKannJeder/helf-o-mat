@@ -10,6 +10,7 @@ import java.util.List;
 public class OrganisationDto {
     private String id;
     private String name;
+    private String urlName;
     private String description;
     private String website;
     private float scoreNorm;
@@ -21,10 +22,11 @@ public class OrganisationDto {
     public OrganisationDto() {
     }
 
-    public OrganisationDto(String id, String name, String description, String website, String mapPin, List<AddressDto> addresses, List
+    public OrganisationDto(String id, String name, String urlName, String description, String website, String mapPin, List<AddressDto> addresses, List
         <ContactPersonDto> contactPersons, PictureId logo, float scoreNorm) {
         this.id = id;
         this.name = name;
+        this.urlName = urlName;
         this.description = description;
         this.website = website;
         this.mapPin = mapPin;
@@ -40,6 +42,10 @@ public class OrganisationDto {
 
     public String getName() {
         return name;
+    }
+
+    public String getUrlName() {
+        return urlName;
     }
 
     public String getDescription() {
