@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {OrganisationService, TravelDistance} from './organisation.service';
 import {Organisation} from './organisation.model';
@@ -16,7 +16,7 @@ import {Address} from './address.model';
     styleUrls: ['./organisation.component.scss'],
     providers: [OrganisationService]
 })
-export class OrganisationComponent implements OnInit {
+export class OrganisationComponent implements OnInit, AfterViewInit {
 
     public _back$: Subject<void>;
     public organisation: Observable<Organisation>;
@@ -28,6 +28,7 @@ export class OrganisationComponent implements OnInit {
     public zoom: Observable<number>;
     public scoreNorm: Observable<number>;
     public travelDistances: Observable<Array<TravelDistance>>;
+    private fragment: string;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -87,6 +88,22 @@ export class OrganisationComponent implements OnInit {
             .flatMap(([organisation, position]: [Organisation, GeoPoint]) => this.organisationService.getTravelDistances(organisation.id, position));
     }
 
+    public ngOnInit() {
+        this.route.fragment.subscribe(fragment => {
+            this.fragment = fragment;
+        });
+    }
+
+    public ngAfterViewInit(): void {
+        if (this.fragment !== undefined) {
+            this.organisation.subscribe(() => {
+                window.setTimeout(() => {
+                    document.querySelector('#' + this.fragment).scrollIntoView();
+                });
+            });
+        }
+    }
+
     public areAddressesEqual(address1: Address, address2: Address): boolean {
         return address1.location.lon == address2.location.lon
             && address1.location.lat == address2.location.lat
@@ -128,9 +145,6 @@ export class OrganisationComponent implements OnInit {
             Observable.of(null),
             observable
         );
-    }
-
-    ngOnInit(): void {
     }
 
 }
