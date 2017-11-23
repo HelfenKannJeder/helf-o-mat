@@ -1,10 +1,12 @@
 <div *ngIf="organisation | async; let organisation; else loading">
-    <div class="custom-content logo-container" *ngIf="organisation.pictures.length > 0">
-        <div class="logo">
-            <img src="api/picture/{{organisation.logo.value}}/icon"
-                 [attr.alt]="organisation.name">
+    <div class="custom-content">
+        <div class="logo-container" *ngIf="organisation.pictures.length > 0">
+            <div class="logo">
+                <img src="api/picture/{{organisation.logo.value}}/icon"
+                     [attr.alt]="organisation.name">
+            </div>
+            <img src="api/picture/{{organisation.pictures[0].value}}/teaser" width="100%"/>
         </div>
-        <img src="api/picture/{{organisation.pictures[0].value}}/teaser" width="100%"/>
     </div>
 
     <div class="col-md-8">
@@ -97,7 +99,7 @@
                 <ul class="list-group">
                     <li *ngFor="let address of organisation.addresses" class="list-group-item"
                         [ngClass]="{'list-group-item-info': areAddressesEqual(organisation.defaultAddress, address)}">
-                        <strong *ngIf="address.addressAppendix">{{address.addressAppendix}}<br /></strong>
+                        <strong *ngIf="address.addressAppendix">{{address.addressAppendix}}<br/></strong>
                         {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
                         <span
                             *ngIf="address.telephone">{{'organisation.address.telephone' | translate}}: {{address.telephone}}</span>
