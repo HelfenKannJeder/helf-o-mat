@@ -103,7 +103,8 @@
       }
     },
     "list": {
-      "hoverResultExplain": "Klicke auf das Fragezeichen um herauszufinden, in welchen Punkten '{{ organisationName }}' dir das bietet was du möchtest."
+      "hoverResultExplain": "Klicke auf das Fragezeichen um herauszufinden, in welchen Punkten '{{ organisationName }}' dir das bietet was du möchtest.",
+      "more": "[Weitere Informationen]"
     }
   }
 }

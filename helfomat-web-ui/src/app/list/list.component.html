@@ -26,6 +26,7 @@
                 <p>
                     <a [attr.href]="organisation.website">{{organisation.website}}</a>
                 </p>
+                <p><a class="pull-right" (click)="openOrganisation.emit(organisation)">{{'result.list.more' | translate}}</a></p>
             </div>
         </div>
     </div>
