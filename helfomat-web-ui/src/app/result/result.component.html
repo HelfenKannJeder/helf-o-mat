@@ -20,12 +20,14 @@
                     {{'result.mobile.swipe.list' | translate}}
                 </button>
             </div>
+            <div class="well">{{ 'result.header.questions' | translate }}</div>
             <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
         </div>
         <div class="col-xs-6">
             <button class="btn btn-default hidden-lg" (click)="visibleComponent = 'question'">
                 {{'result.mobile.swipe.questions' | translate}}
             </button>
+            <div class="well">{{ 'result.header.list' | translate }}</div>
             <helfomat-list
                 [organisations]="organisations"
                 (openOrganisation)="openOrganisation($event)"
