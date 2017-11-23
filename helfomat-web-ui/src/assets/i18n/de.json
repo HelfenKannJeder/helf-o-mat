@@ -5,11 +5,12 @@
     "address": "Adresse..."
   },
   "location": {
-    "headline": "Adresse",
-    "contentStart": "Um die Ergebnisse auf Hilfsorganisationen in deiner Nähe einschränken zu können brauchen wir deine Adresse:",
-    "contentEnd1": "Möchtest du aus welchen Gründen auch immer deine Adresse nicht angeben, kannst du auch so ",
+    "headline": "Ort / Adresse",
+    "contentStart": "Um die Ergebnisse auf Hilfsorganisationen in deiner Nähe einschränken zu können brauchen wir deine Adresse oder zumindest den Ort/die PLZ:",
+    "contentEnd1": "Möchtest du aus welchen Gründen auch immer deinen Ort nicht angeben, kannst du auch so ",
     "contentEnd2Link": "fortfahren",
-    "contentEnd3": ". In diesem Fall werden wir Hilfsorganisationen in ganz Deutschland betrachten."
+    "contentEnd3": ". In diesem Fall werden wir allgemeine Hilfsorganisationen in ganz Deutschland betrachten, die ggf. lokal noch viel besser zu dir passen könnten.",
+    "buttonContinueWithoutAddress": "Fortfahren ohne Adresse"
   },
   "organisation": {
     "dataLoading": "Die Daten werde geladen, bitte gedulde dich einen Moment.",
