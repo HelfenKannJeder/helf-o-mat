@@ -97,6 +97,7 @@
                 <ul class="list-group">
                     <li *ngFor="let address of organisation.addresses" class="list-group-item"
                         [ngClass]="{'list-group-item-info': areAddressesEqual(organisation.defaultAddress, address)}">
+                        <strong *ngIf="address.addressAppendix">{{address.addressAppendix}}<br /></strong>
                         {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
                         <span
                             *ngIf="address.telephone">{{'organisation.address.telephone' | translate}}: {{address.telephone}}</span>
