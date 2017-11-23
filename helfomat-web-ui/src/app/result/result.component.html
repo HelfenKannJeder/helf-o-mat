@@ -9,7 +9,7 @@
         (updatePosition)="_position$.next($event)"
         (updateBoundingBox)="_boundingBox$.next($event)"
         (updateZoom)="_zoom$.next($event)"
-        (openOrganisation)="_organisation$.next($event)"></helfomat-map>
+        (openOrganisation)="openOrganisation($event)"></helfomat-map>
 </div>
 
 <div class="slide">
@@ -20,15 +20,18 @@
                     {{'result.mobile.swipe.list' | translate}}
                 </button>
             </div>
+            <div class="well">{{ 'result.header.questions' | translate }}</div>
             <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
         </div>
         <div class="col-xs-6">
             <button class="btn btn-default hidden-lg" (click)="visibleComponent = 'question'">
                 {{'result.mobile.swipe.questions' | translate}}
             </button>
+            <div class="well">{{ 'result.header.list' | translate }}</div>
             <helfomat-list
                 [organisations]="organisations"
-                (openOrganisation)="_organisation$.next($event)"></helfomat-list>
+                (openOrganisation)="openOrganisation($event)"
+                (openOrganisationScoreExplanation)="openOrganisation($event, true)"></helfomat-list>
         </div>
     </div>
 </div>

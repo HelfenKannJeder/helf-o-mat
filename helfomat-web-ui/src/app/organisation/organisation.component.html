@@ -1,10 +1,12 @@
 <div *ngIf="organisation | async; let organisation; else loading">
-    <div class="custom-content logo-container" *ngIf="organisation.pictures.length > 0">
-        <div class="logo">
-            <img src="api/picture/{{organisation.logo.value}}/icon"
-                 [attr.alt]="organisation.name">
+    <div class="custom-content">
+        <div class="logo-container" *ngIf="organisation.pictures.length > 0">
+            <div class="logo">
+                <img src="api/picture/{{organisation.logo.value}}/icon"
+                     [attr.alt]="organisation.name">
+            </div>
+            <img src="api/picture/{{organisation.pictures[0].value}}/teaser" width="100%"/>
         </div>
-        <img src="api/picture/{{organisation.pictures[0].value}}/teaser" width="100%"/>
     </div>
 
     <div class="col-md-8">
@@ -57,24 +59,26 @@
             </div>
         </div>
 
-        <h2 id="compare">{{'organisation.questionsAndAnswers.title' | translate}}</h2>
-        <div class="panel panel-default" *ngIf="userAnswers | async; let userAnswers; else loading">
-            <table class="table">
-                <tr>
-                    <th>{{'organisation.questionsAndAnswers.question' | translate}}</th>
-                    <th>{{'organisation.questionsAndAnswers.organisation' | translate}}</th>
-                    <th>{{'organisation.questionsAndAnswers.you' | translate}}</th>
-                    <th>{{'organisation.questionsAndAnswers.compare.title' | translate}}</th>
-                </tr>
-                <tr *ngFor="let question of organisation.questions;  let i = index;">
-                    <td>{{question.question}}</td>
-                    <td><img src="{{question.answer | answerImage}}" class="thumb"/></td>
-                    <td><img src="{{userAnswers[i] | answerImage}}" class="thumb"/></td>
-                    <td class="text-right">{{'organisation.questionsAndAnswers.compare.match' + (question.answer |
-                        compareAnswer:userAnswers[i]) | translate}}
-                    </td>
-                </tr>
-            </table>
+        <div *ngIf="userAnswers | async; let userAnswers">
+            <h2 id="compare">{{'organisation.questionsAndAnswers.title' | translate}}</h2>
+            <div class="panel panel-default">
+                <table class="table">
+                    <tr>
+                        <th>{{'organisation.questionsAndAnswers.question' | translate}}</th>
+                        <th>{{'organisation.questionsAndAnswers.organisation' | translate}}</th>
+                        <th>{{'organisation.questionsAndAnswers.you' | translate}}</th>
+                        <th>{{'organisation.questionsAndAnswers.compare.title' | translate}}</th>
+                    </tr>
+                    <tr *ngFor="let question of organisation.questions;  let i = index;">
+                        <td>{{question.question}}</td>
+                        <td><img src="{{question.answer | answerImage}}" class="thumb"/></td>
+                        <td><img src="{{userAnswers[i] | answerImage}}" class="thumb"/></td>
+                        <td class="text-right">{{'organisation.questionsAndAnswers.compare.match' + (question.answer |
+                            compareAnswer:userAnswers[i]) | translate}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
     <div class="col-md-4">
@@ -97,6 +101,7 @@
                 <ul class="list-group">
                     <li *ngFor="let address of organisation.addresses" class="list-group-item"
                         [ngClass]="{'list-group-item-info': areAddressesEqual(organisation.defaultAddress, address)}">
+                        <strong *ngIf="address.addressAppendix">{{address.addressAppendix}}<br/></strong>
                         {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
                         <span
                             *ngIf="address.telephone">{{'organisation.address.telephone' | translate}}: {{address.telephone}}</span>
@@ -131,7 +136,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-default" *ngIf="scoreNorm | async">
                 <div class="panel-heading">
                     {{'organisation.facts.helfomatResult.title' | translate}}
                 </div>

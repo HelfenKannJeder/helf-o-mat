@@ -34,6 +34,23 @@ public class GeoPoint {
             Double.compare(geoPoint.lon, lon) == 0;
     }
 
+    public static double distanceInKm(GeoPoint first, GeoPoint second) {
+        double R_earth = 6371;
+        double dLat = deg2rad(second.getLat() - first.getLat());
+        double dLon = deg2rad(second.getLon() - first.getLon());
+        double a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(first.getLat())) * Math.cos(deg2rad(second.getLat())) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R_earth * c;
+    }
+
+    private static double deg2rad(double deg) {
+        return deg * (Math.PI / 180);
+    }
+
+
     @Override
     public int hashCode() {
         return Objects.hash(lat, lon);

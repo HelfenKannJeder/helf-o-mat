@@ -10,8 +10,8 @@ export class OrganisationService {
     constructor(private http: Http) {
     }
 
-    getOrganisation(id: string): Observable<Organisation> {
-        return this.http.get('api/organisation/' + id)
+    getOrganisation(urlName: string): Observable<Organisation> {
+        return this.http.get('api/organisation/' + urlName)
             .map((response: Response) => response.json());
     }
 

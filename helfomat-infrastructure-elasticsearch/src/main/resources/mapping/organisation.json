@@ -63,6 +63,10 @@
     "name": {
       "type": "string"
     },
+    "urlName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
     "pictures": {
       "type": "string"
     },
