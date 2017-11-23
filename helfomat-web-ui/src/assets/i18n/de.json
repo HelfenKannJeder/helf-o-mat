@@ -1,4 +1,14 @@
 {
+  "menu": {
+    "helf-o-mat": "Helf-O-Mat",
+    "helfenkannjeder": "HelfenKannJeder",
+    "myOrganisation": "Meine Hilfsorganisation",
+    "association": "Verein"
+  },
+  "header": {
+    "title1": "Wir warten auf Dich!",
+    "title2": "Das Freiwilligenportal der Hilfsorganisationen"
+  },
   "list": {
   },
   "map": {
