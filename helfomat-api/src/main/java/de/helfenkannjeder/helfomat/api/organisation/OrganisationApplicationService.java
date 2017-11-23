@@ -4,7 +4,6 @@ import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Answer;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
 import de.helfenkannjeder.helfomat.core.question.Question;
@@ -31,8 +30,8 @@ public class OrganisationApplicationService {
         this.questionRepository = questionRepository;
     }
 
-    public OrganisationDetailDto findOrganisationDetails(OrganisationId id) {
-        Organisation organisation = this.organisationRepository.findOne(id.getValue());
+    public OrganisationDetailDto findOrganisationDetails(String urlName) {
+        Organisation organisation = this.organisationRepository.findByUrlName(urlName);
         List<Question> questions = this.questionRepository.findQuestions();
         return OrganisationAssembler.toOrganisationDetailDto(organisation, questions);
     }

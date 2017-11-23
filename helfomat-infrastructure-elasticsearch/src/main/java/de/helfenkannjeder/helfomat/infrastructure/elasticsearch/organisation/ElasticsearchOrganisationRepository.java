@@ -76,6 +76,11 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     }
 
     @Override
+    public Organisation findByUrlName(String urlName) {
+        return this.elasticsearchCrudOrganisationRepository.findByUrlName(urlName);
+    }
+
+    @Override
     public Organisation findOne(String id) {
         return this.elasticsearchCrudOrganisationRepository.findOne(id);
     }

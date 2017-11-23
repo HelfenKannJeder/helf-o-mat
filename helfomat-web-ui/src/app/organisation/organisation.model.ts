@@ -8,6 +8,7 @@ import {AttendanceTime} from './attendance-time.model';
 export class Organisation {
     public id: string;
     public name: string;
+    public urlName: string;
     public description: string;
     public website: string;
     public scoreNorm: number;

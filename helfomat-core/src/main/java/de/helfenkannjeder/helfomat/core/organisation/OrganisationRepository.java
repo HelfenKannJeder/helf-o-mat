@@ -13,6 +13,8 @@ public interface OrganisationRepository {
 
     boolean existsOrganisationWithSameTypeInDistance(String index, Organisation organisation, Long distanceInMeters);
 
+    Organisation findByUrlName(String urlName);
+
     Organisation findOne(String id);
 
     List<ScoredOrganisation> findOrganisations(Map<String, Answer> questionAnswers,

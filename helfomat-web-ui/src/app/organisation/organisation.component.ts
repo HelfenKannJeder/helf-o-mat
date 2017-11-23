@@ -43,7 +43,7 @@ export class OrganisationComponent implements OnInit {
         this.scoreNorm = ObservableUtil.extractObjectMember(this.route.params, 'scoreNorm')
             .map(UrlParamBuilder.parseInt);
         this.organisation = ObservableUtil.extractObjectMember(this.route.params, 'organisation')
-            .switchMap((id: string) => this.organisationService.getOrganisation(id));
+            .switchMap((organisationName: string) => this.organisationService.getOrganisation(organisationName));
         this.organisations = this.organisation.map(organisation => [organisation]);
 
         this.center = Observable

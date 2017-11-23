@@ -142,7 +142,7 @@ export class ResultComponent implements OnInit {
             this.distance
         )
             .subscribe(([organisation, answers, position, distance]: [Organisation, Answer[], GeoPoint, number]) => {
-                this.router.navigate(['/organisation/' + organisation.id, {
+                this.router.navigate(['/organisation/' + organisation.urlName, {
                     answers: UrlParamBuilder.buildAnswers(answers),
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance,
