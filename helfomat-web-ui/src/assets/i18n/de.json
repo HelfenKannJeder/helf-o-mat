@@ -12,12 +12,12 @@
   "list": {
   },
   "map": {
-    "address": "Adresse..."
+    "address": "Adresse Deines Suchortes"
   },
   "location": {
     "headline": "Ort / Adresse",
-    "contentStart": "Um die Ergebnisse auf Hilfsorganisationen in deiner Nähe einschränken zu können brauchen wir deine Adresse oder zumindest den Ort/die PLZ:",
-    "contentEnd1": "Möchtest du aus welchen Gründen auch immer deinen Ort nicht angeben, kannst du auch so ",
+    "contentStart": "Um die Ergebnisse auf Hilfsorganisationen in Deiner Nähe einschränken zu können brauchen wir Deine Adresse oder zumindest den Ort/die PLZ:",
+    "contentEnd1": "Möchtest Du aus welchen Gründen auch immer Deinen Ort nicht angeben, kannst Du auch so ",
     "contentEnd2Link": "fortfahren",
     "contentEnd3": ". In diesem Fall werden wir allgemeine Hilfsorganisationen in ganz Deutschland betrachten, die ggf. lokal noch viel besser zu dir passen könnten.",
     "buttonContinueWithoutAddress": "Fortfahren ohne Adresse"
@@ -109,7 +109,7 @@
   "result": {
     "header": {
       "questions": "Du kannst Deine Antworten noch durch Klick auf die jeweils anderen Daumen anpassen. Anschließend wird das Ergebnis automatisch angepasst.",
-      "list": "Aufgrund deiner Antworten haben wir hier die Übereinstimmung mit den Hilfsorganisationen die auf HelfenKannJeder.de erfasst sind, dargestellt."
+      "list": "Aufgrund Deiner Antworten haben wir hier die Übereinstimmung mit den Hilfsorganisationen die auf HelfenKannJeder.de erfasst sind, dargestellt."
     },
     "mobile": {
       "swipe": {
@@ -118,7 +118,7 @@
       }
     },
     "list": {
-      "hoverResultExplain": "Klicke auf das Fragezeichen um herauszufinden, in welchen Punkten '{{ organisationName }}' dir das bietet was du möchtest.",
+      "hoverResultExplain": "Klicke auf das Fragezeichen um herauszufinden, in welchen Punkten '{{ organisationName }}' dir das bietet was Du möchtest.",
       "more": "[Weitere Informationen]"
     }
   }
