@@ -47,7 +47,8 @@ For the execution of the production you must encrypt the vault values:
 
 ## Development
 
-For development you can start `helfomat-web` like normal applications. For the frontend
+For development you can start `helfomat-web` like normal applications, you should use the
+spring profile `dev`, this will enable logging to the console. For the frontend
 project `helfomat-web-ui` you can execute `npm run start` to have it in development mode.
 The API is automatically redirected to the backend.
 
