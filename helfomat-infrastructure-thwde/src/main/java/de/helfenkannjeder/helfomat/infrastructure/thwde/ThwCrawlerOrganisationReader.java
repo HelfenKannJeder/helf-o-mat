@@ -225,17 +225,15 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     }
 
     private Address extractAddressFromDocument(Document oeDetailsDocument) throws IOException {
-        Address address = new Address.Builder().build();
-
         Elements contactDataDiv = oeDetailsDocument.select(".contact-data");
         Elements addressDiv = contactDataDiv.select(".adr");
-        address.setZipcode(addressDiv.select(".postal-code").text());
-        address.setCity(addressDiv.select(".locality").text());
-        address.setStreet(addressDiv.select(".street-address").text());
 
-        address.setLocation(extractLocationFromDocument(oeDetailsDocument));
-
-        return address;
+        return new Address.Builder()
+            .setZipcode(addressDiv.select(".postal-code").text())
+            .setCity(addressDiv.select(".locality").text())
+            .setStreet(addressDiv.select(".street-address").text())
+            .setLocation(extractLocationFromDocument(oeDetailsDocument))
+            .build();
     }
 
     private GeoPoint extractLocationFromDocument(Document oeDetailsDocument) throws IOException {
