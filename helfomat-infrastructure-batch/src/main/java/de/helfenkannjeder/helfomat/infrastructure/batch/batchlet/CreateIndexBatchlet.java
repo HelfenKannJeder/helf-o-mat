@@ -4,6 +4,7 @@ import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.configuration.annotation.JobScope;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,10 @@ public class CreateIndexBatchlet extends AbstractBatchlet {
     private final Resource organisationMapping;
     private final IndexManager indexManager;
 
-    public CreateIndexBatchlet(OrganisationRepository organisationRepository,
+    public CreateIndexBatchlet(@Qualifier("importOrganisationRepository") OrganisationRepository importOrganisationRepository,
                                @Value("classpath:/mapping/organisation.json") Resource organisationMapping,
                                IndexManager indexManager1) {
-        this.organisationRepository = organisationRepository;
+        this.organisationRepository = importOrganisationRepository;
         this.organisationMapping = organisationMapping;
         this.indexManager = indexManager1;
     }
@@ -36,7 +37,7 @@ public class CreateIndexBatchlet extends AbstractBatchlet {
         String mapping = StreamUtils.copyToString(organisationMapping.getInputStream(), Charset.forName("UTF8"));
         String index = indexManager.getCurrentIndex();
 
-        this.organisationRepository.createIndex(index, mapping);
+        this.organisationRepository.createIndex(mapping);
 
         return ExitStatus.COMPLETED.toString();
     }

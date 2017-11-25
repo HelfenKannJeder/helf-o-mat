@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface OrganisationRepository {
 
-    boolean existsOrganisationWithSameTypeInDistance(String index, Organisation organisation, Long distanceInMeters);
+    boolean existsOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters);
 
     Organisation findByUrlName(String urlName);
 
@@ -26,12 +26,12 @@ public interface OrganisationRepository {
 
     List<GeoPoint> findGeoPointsOfOrganisationsInsideBoundingBox(GeoPoint position, double distance, BoundingBox boundingBox);
 
-    void save(String index, List<? extends Organisation> organisations);
+    void save(List<? extends Organisation> organisations);
 
-    void createIndex(String index, String mapping);
+    void createIndex(String mapping);
 
-    void deleteIndex(String index);
+    void deleteIndex();
 
-    void updateAlias(String index);
+    void updateAlias(String alias);
 
 }
