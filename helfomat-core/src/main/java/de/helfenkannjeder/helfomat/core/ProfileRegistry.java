@@ -5,6 +5,8 @@ package de.helfenkannjeder.helfomat.core;
  */
 public class ProfileRegistry {
 
+    public static final String DEV = "dev";
+
     public static final String MOCK_DOWNLOAD = "mock-download";
 
     public static final String MOCK_DISTANCE_CALCULATION = "mock-distance-calculation";

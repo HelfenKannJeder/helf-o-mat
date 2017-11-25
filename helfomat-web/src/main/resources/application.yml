@@ -284,7 +284,8 @@ helfomat:
     print-password: true
 
 logging:
-  file: ${logging.path:${LOG_TEMP:${java.io.tmpdir:/tmp}}}/helfenkannjeder-helfomat.log
+  path: /var/log
+  file: ${logging.path:${LOG_TEMP:${java.io.tmpdir:/tmp}}}/helfomat.log
 
   level:
     de.helfenkannjeder: DEBUG
