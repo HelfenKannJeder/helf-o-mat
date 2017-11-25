@@ -89,6 +89,7 @@ body {
       @include transform(rotate(90deg));
       @include transform-origin(0, 0);
       height: 50px;
+      width: 850px;
       padding-left: 185px;
 
       ul {
@@ -208,6 +209,12 @@ body {
         #headerlink {
           float: right;
         }
+      }
+    }
+
+    @media (min-width: 768px) {
+      .content {
+        min-height: 600px;
       }
     }
 
