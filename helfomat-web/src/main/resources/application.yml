@@ -51,6 +51,9 @@ googlemaps:
 
 helfomat:
   picture-folder: pictures/
+  autoImport:
+    enabled: true
+    schedule: "0 0 3 * * *"
   questions:
   - id: "8dd070ed-a9de-42af-a017-57a096cf8ec1"
     question: "Möchtest Du Dich in medizinischer Hilfe ausbilden lassen und diese leisten?"

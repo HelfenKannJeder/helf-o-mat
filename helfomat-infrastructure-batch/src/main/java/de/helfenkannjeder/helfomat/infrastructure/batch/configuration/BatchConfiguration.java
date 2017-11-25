@@ -18,6 +18,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * @author Valentin Zickner
  */
 @Configuration
+@EnableScheduling
 public class BatchConfiguration {
 
     private final AnswerQuestionsProcessor answerQuestionsProcessor;
