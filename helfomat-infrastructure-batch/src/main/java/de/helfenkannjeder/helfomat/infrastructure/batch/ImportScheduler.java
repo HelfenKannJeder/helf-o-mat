@@ -19,7 +19,7 @@ public class ImportScheduler {
 
     @Scheduled(cron = "#{@helfomatConfiguration.autoImport.schedule}")
     public void scheduledImport() {
-        if(helfomatConfiguration.getAutoImport().isEnabled()) {
+        if (helfomatConfiguration.getAutoImport().isEnabled()) {
             LOGGER.info("Scheduled import started");
             importJobRunnerService.run();
         }
