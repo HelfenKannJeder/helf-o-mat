@@ -7,9 +7,15 @@
                      [attr.alt]="organisation.name">
             </div>
             <div class="media-body">
-                <p>
-                    <organisation-score [scoreNorm]="organisation.scoreNorm"></organisation-score>
-                </p>
+                <div class="row">
+                    <div class="col-xs-10 col-sm-10">
+                        <organisation-score [scoreNorm]="organisation.scoreNorm"></organisation-score>
+                    </div>
+                    <div class="col-xs-2 col-sm-2"><a
+                        (click)="openOrganisationScoreExplanation.emit(organisation)"
+                        [title]="'result.list.hoverResultExplain' | translate:{'organisationName': organisation.name}"><span
+                        class="glyphicon glyphicon-question-sign"></span></a></div>
+                </div>
                 <p>
                     <span *ngFor="let contactPerson of organisation.contactPersons">
                         <strong>{{contactPerson.firstname}} {{contactPerson.lastname}}</strong>
@@ -20,6 +26,7 @@
                 <p>
                     <a [attr.href]="organisation.website">{{organisation.website}}</a>
                 </p>
+                <p><a class="pull-right" (click)="openOrganisation.emit(organisation)">{{'result.list.more' | translate}}</a></p>
             </div>
         </div>
     </div>

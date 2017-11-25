@@ -1,7 +1,6 @@
 package de.helfenkannjeder.helfomat.core.organisation;
 
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import de.helfenkannjeder.helfomat.core.question.Question;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -16,6 +15,7 @@ public class Organisation {
     @Id
     private String id;
     private String name;
+    private String urlName;
     private OrganisationType organisationType;
     private String description;
     private String website;
@@ -25,7 +25,7 @@ public class Organisation {
     private List<PictureId> pictures;
     private List<ContactPerson> contactPersons;
     private List<Address> addresses;
-    private List<Question> questions;
+    private List<QuestionAnswer> questionAnswers;
     private String mapPin;
     private List<Group> groups;
     private List<AttendanceTime> attendanceTimes;
@@ -36,6 +36,7 @@ public class Organisation {
 
     Organisation(String id,
                  String name,
+                 String urlName,
                  OrganisationType organisationType,
                  String description,
                  String website,
@@ -45,13 +46,14 @@ public class Organisation {
                  List<PictureId> pictures,
                  List<ContactPerson> contactPersons,
                  List<Address> addresses,
-                 List<Question> questions,
+                 List<QuestionAnswer> questionAnswers,
                  String mapPin,
                  List<Group> groups,
                  List<AttendanceTime> attendanceTimes,
                  List<Volunteer> volunteers) {
         this.id = id;
         this.name = name;
+        this.urlName = urlName;
         this.organisationType = organisationType;
         this.description = description;
         this.website = website;
@@ -61,7 +63,7 @@ public class Organisation {
         this.pictures = pictures;
         this.contactPersons = contactPersons;
         this.addresses = addresses;
-        this.questions = questions;
+        this.questionAnswers = questionAnswers;
         this.mapPin = mapPin;
         this.groups = groups;
         this.attendanceTimes = attendanceTimes;
@@ -74,6 +76,10 @@ public class Organisation {
 
     public String getName() {
         return name;
+    }
+
+    public String getUrlName() {
+        return urlName;
     }
 
     public OrganisationType getOrganisationType() {
@@ -100,8 +106,8 @@ public class Organisation {
         return addresses;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public List<QuestionAnswer> getQuestionAnswers() {
+        return questionAnswers;
     }
 
     public String getMapPin() {
@@ -143,6 +149,7 @@ public class Organisation {
     public static class Builder {
         private String id;
         private String name;
+        private String urlName;
         private OrganisationType organisationType;
         private String description;
         private String website;
@@ -152,7 +159,7 @@ public class Organisation {
         private Address defaultAddress;
         private List<PictureId> pictures;
         private List<Address> addresses;
-        private List<Question> questions;
+        private List<QuestionAnswer> questionAnswers;
         private String mapPin;
         private List<Group> groups;
         private List<AttendanceTime> attendanceTimes;
@@ -164,6 +171,7 @@ public class Organisation {
         public Builder(Organisation organisation) {
             this.id = organisation.getId();
             this.name = organisation.getName();
+            this.urlName = organisation.getUrlName();
             this.organisationType = organisation.getOrganisationType();
             this.description = organisation.getDescription();
             this.website = organisation.getWebsite();
@@ -173,7 +181,7 @@ public class Organisation {
             this.defaultAddress = organisation.getDefaultAddress();
             this.pictures = organisation.getPictures();
             this.addresses = organisation.getAddresses();
-            this.questions = organisation.getQuestions();
+            this.questionAnswers = organisation.getQuestionAnswers();
             this.mapPin = organisation.getMapPin();
             this.groups = organisation.getGroups();
             this.attendanceTimes = organisation.getAttendanceTimes();
@@ -187,6 +195,11 @@ public class Organisation {
 
         public Builder setName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder setUrlName(String urlName) {
+            this.urlName = urlName;
             return this;
         }
 
@@ -235,8 +248,8 @@ public class Organisation {
             return this;
         }
 
-        public Builder setQuestions(List<Question> questions) {
-            this.questions = questions;
+        public Builder setQuestionAnswers(List<QuestionAnswer> questionAnswers) {
+            this.questionAnswers = questionAnswers;
             return this;
         }
 
@@ -264,6 +277,7 @@ public class Organisation {
             return new Organisation(
                 id,
                 name,
+                urlName,
                 organisationType,
                 description,
                 website,
@@ -273,7 +287,7 @@ public class Organisation {
                 pictures,
                 contactPersons,
                 addresses,
-                questions,
+                questionAnswers,
                 mapPin,
                 groups,
                 attendanceTimes,

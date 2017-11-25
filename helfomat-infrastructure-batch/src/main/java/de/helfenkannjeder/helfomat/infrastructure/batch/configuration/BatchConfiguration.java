@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenameAliasBatchlet;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenamePictureSymlinkBatchlet;
+import de.helfenkannjeder.helfomat.infrastructure.batch.listener.UniqueOrganisationUrlNameOrganisationProcessor;
 import de.helfenkannjeder.helfomat.infrastructure.batch.processor.AnswerQuestionsProcessor;
 import de.helfenkannjeder.helfomat.infrastructure.batch.processor.DuplicateOrganisationFilterProcessor;
 import org.springframework.batch.core.Job;
@@ -40,6 +41,7 @@ public class BatchConfiguration {
     public List<Step> importOrganisationFromThw(StepBuilderFactory stepBuilderFactory,
                                                 List<OrganisationReader> organisationReaders,
                                                 DuplicateOrganisationFilterProcessor duplicateOrganisationFilterProcessor,
+                                                UniqueOrganisationUrlNameOrganisationProcessor uniqueOrganisationUrlNameOrganisationProcessor,
                                                 ItemWriter<Organisation> organisationItemWriter) {
         return organisationReaders.stream()
             .map(organisationReader ->
@@ -48,6 +50,7 @@ public class BatchConfiguration {
                     .reader(organisationReader::read)
                     .processor(organisation -> {
                         organisation = duplicateOrganisationFilterProcessor.process(organisation);
+                        organisation = uniqueOrganisationUrlNameOrganisationProcessor.process(organisation);
                         return this.answerQuestionsProcessor.process(organisation);
                     })
                     .writer(organisationItemWriter)

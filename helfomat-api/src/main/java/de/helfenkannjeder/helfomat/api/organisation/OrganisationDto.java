@@ -1,5 +1,7 @@
 package de.helfenkannjeder.helfomat.api.organisation;
 
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
+
 import java.util.List;
 
 /**
@@ -8,21 +10,23 @@ import java.util.List;
 public class OrganisationDto {
     private String id;
     private String name;
+    private String urlName;
     private String description;
     private String website;
     private float scoreNorm;
     private String mapPin;
     private List<AddressDto> addresses;
     private List<ContactPersonDto> contactPersons;
-    private String logo;
+    private PictureId logo;
 
     public OrganisationDto() {
     }
 
-    public OrganisationDto(String id, String name, String description, String website, String mapPin, List<AddressDto> addresses, List
-        <ContactPersonDto> contactPersons, String logo, float scoreNorm) {
+    public OrganisationDto(String id, String name, String urlName, String description, String website, String mapPin, List<AddressDto> addresses, List
+        <ContactPersonDto> contactPersons, PictureId logo, float scoreNorm) {
         this.id = id;
         this.name = name;
+        this.urlName = urlName;
         this.description = description;
         this.website = website;
         this.mapPin = mapPin;
@@ -38,6 +42,10 @@ public class OrganisationDto {
 
     public String getName() {
         return name;
+    }
+
+    public String getUrlName() {
+        return urlName;
     }
 
     public String getDescription() {
@@ -60,7 +68,7 @@ public class OrganisationDto {
         return addresses;
     }
 
-    public String getLogo() {
+    public PictureId getLogo() {
         return logo;
     }
 

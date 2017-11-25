@@ -2,10 +2,8 @@ package de.helfenkannjeder.helfomat.core.organisation;
 
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
-import de.helfenkannjeder.helfomat.core.question.Answer;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Valentin Zickner
@@ -14,15 +12,19 @@ public interface OrganisationRepository {
 
     boolean existsOrganisationWithSameTypeInDistance(String index, Organisation organisation, Long distanceInMeters);
 
+    Organisation findByUrlName(String urlName);
+
     Organisation findOne(String id);
 
-    List<ScoredOrganisation> findOrganisations(Map<String, Answer> questionAnswers,
-                                               GeoPoint position,
-                                               double distance);
+    List<ScoredOrganisation> findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+        List<QuestionAnswer> questionAnswers, GeoPoint position, double distance
+    );
 
-    List<ScoredOrganisation> findGlobalOrganisations(Map<String, Answer> questionAnswers);
+    List<ScoredOrganisation> findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(
+        List<QuestionAnswer> questionAnswers)
+        ;
 
-    List<GeoPoint> findClusteredGeoPoints(GeoPoint position, double distance, BoundingBox boundingBox);
+    List<GeoPoint> findGeoPointsOfOrganisationsInsideBoundingBox(GeoPoint position, double distance, BoundingBox boundingBox);
 
     void save(String index, List<? extends Organisation> organisations);
 

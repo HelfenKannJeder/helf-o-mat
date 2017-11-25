@@ -4,7 +4,7 @@
             <h1>{{question.question}}</h1>
             <p class="description">{{question.description}}</p>
         </div>
-        <p class="clearfix">
+        <p class="text-center clearfix">
             <a class="btn btn-lg btn-yes" role="button" (click)="answerQuestion('YES', question);">
                 <img src="{{ 'YES' | answerImage}}"/><br/>
                 {{ 'question.yes' | translate }}

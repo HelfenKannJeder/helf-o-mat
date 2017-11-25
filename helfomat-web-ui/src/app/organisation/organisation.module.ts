@@ -7,6 +7,10 @@ import {TranslateModule} from '@ngx-translate/core';
 import {MapModule} from '../map/map.module';
 import {DistanceComponent} from './unit/distance.component';
 import {TimeComponent} from './unit/time.component';
+import {CompareAnswerPipe} from './compare-answer.pipe';
+import {TimeModule} from '../shared/time.module';
+import {GroupNamesPipe} from './group-names.pipe';
+import {Ng2PageScrollModule} from 'ng2-page-scroll';
 
 @NgModule({
     imports: [
@@ -14,12 +18,16 @@ import {TimeComponent} from './unit/time.component';
         MapModule,
         AnswerImageModule,
         BrowserModule,
-        OrganisationScoreModule
+        OrganisationScoreModule,
+        TimeModule,
+        Ng2PageScrollModule
     ],
     declarations: [
         OrganisationComponent,
         DistanceComponent,
-        TimeComponent
+        TimeComponent,
+        CompareAnswerPipe,
+        GroupNamesPipe
     ],
     exports: [
         OrganisationComponent

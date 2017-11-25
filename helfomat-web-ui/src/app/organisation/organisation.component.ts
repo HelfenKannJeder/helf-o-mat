@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {OrganisationService, TravelDistance} from './organisation.service';
 import {Organisation} from './organisation.model';
@@ -8,6 +8,7 @@ import {GeoPoint} from './geopoint.model';
 import {Observable} from 'rxjs/Observable';
 import {ObservableUtil} from '../shared/observable.util';
 import {Subject} from 'rxjs/Subject';
+import {Address} from './address.model';
 
 @Component({
     selector: 'organisation',
@@ -15,7 +16,7 @@ import {Subject} from 'rxjs/Subject';
     styleUrls: ['./organisation.component.scss'],
     providers: [OrganisationService]
 })
-export class OrganisationComponent implements OnInit {
+export class OrganisationComponent implements OnInit, AfterViewInit {
 
     public _back$: Subject<void>;
     public organisation: Observable<Organisation>;
@@ -27,6 +28,7 @@ export class OrganisationComponent implements OnInit {
     public zoom: Observable<number>;
     public scoreNorm: Observable<number>;
     public travelDistances: Observable<Array<TravelDistance>>;
+    private fragment: string;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -42,26 +44,26 @@ export class OrganisationComponent implements OnInit {
         this.scoreNorm = ObservableUtil.extractObjectMember(this.route.params, 'scoreNorm')
             .map(UrlParamBuilder.parseInt);
         this.organisation = ObservableUtil.extractObjectMember(this.route.params, 'organisation')
-            .switchMap((id: string) => this.organisationService.getOrganisation(id));
+            .switchMap((organisationName: string) => this.organisationService.getOrganisation(organisationName));
         this.organisations = this.organisation.map(organisation => [organisation]);
 
         this.center = Observable
             .combineLatest(
                 this.organisations,
-                this.position.filter(position => position != null)
+                OrganisationComponent.prefixWithNull(this.position.filter(position => position != null))
             )
             .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                let location = OrganisationComponent.getOrganisationLocation(position, organisations[0]);
+                let location = OrganisationComponent.getOrganisationLocation(organisations[0]);
                 return GeoPoint.pointBetween(position, location);
             });
 
         this.zoom = Observable
             .combineLatest(
                 this.organisations,
-                this.position.filter(position => position != null)
+                OrganisationComponent.prefixWithNull(this.position.filter(position => position != null))
             )
             .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                let location = OrganisationComponent.getOrganisationLocation(position, organisations[0]);
+                let location = OrganisationComponent.getOrganisationLocation(organisations[0]);
                 return OrganisationComponent.calculateZoomLevel(location, position);
             });
 
@@ -86,7 +88,37 @@ export class OrganisationComponent implements OnInit {
             .flatMap(([organisation, position]: [Organisation, GeoPoint]) => this.organisationService.getTravelDistances(organisation.id, position));
     }
 
-    private static calculateZoomLevel(position1: GeoPoint, position2: GeoPoint) {
+    public ngOnInit() {
+        this.route.fragment.subscribe(fragment => {
+            this.fragment = fragment;
+        });
+    }
+
+    public ngAfterViewInit(): void {
+        if (this.fragment !== undefined) {
+            this.organisation.subscribe(() => {
+                window.setTimeout(() => {
+                    document.querySelector('#' + this.fragment).scrollIntoView();
+                });
+            });
+        }
+    }
+
+    public areAddressesEqual(address1: Address, address2: Address): boolean {
+        return address1.location.lon == address2.location.lon
+            && address1.location.lat == address2.location.lat
+            && address1.addressAppendix == address2.addressAppendix
+            && address1.city == address2.city
+            && address1.street == address2.street
+            && address1.telephone == address2.telephone
+            && address1.zipcode == address2.zipcode
+            && address1.website == address2.website;
+    }
+
+    private static calculateZoomLevel(position1: GeoPoint, position2: GeoPoint): number {
+        if (position1 == null || position2 == null) {
+            return 12;
+        }
         let distanceInKm = GeoPoint.distanceInKm(position1, position2);
         let mapHeight = 200;
         let distanceInM = distanceInKm * 1000;
@@ -104,20 +136,15 @@ export class OrganisationComponent implements OnInit {
         return zoom - 1;
     }
 
-    private static getOrganisationLocation(position: GeoPoint, organisation: Organisation): GeoPoint {
-        let distance = null;
-        let location = null;
-        for (let address of organisation.addresses) {
-            let potentialDistance = GeoPoint.distanceInKm(position, address.location);
-            if (distance === null || distance > potentialDistance) {
-                distance = potentialDistance;
-                location = address.location;
-            }
-        }
-        return location;
+    private static getOrganisationLocation(organisation: Organisation): GeoPoint {
+        return organisation.defaultAddress.location;
     }
 
-    ngOnInit(): void {
+    private static prefixWithNull<T>(observable: Observable<T>): Observable<T> {
+        return Observable.concat(
+            Observable.of(null),
+            observable
+        );
     }
 
 }

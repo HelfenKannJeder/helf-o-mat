@@ -20,6 +20,7 @@ import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisationType
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TWorkingHour;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
  * @author Valentin Zickner
  */
 @Component
+@JobScope
 public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, Organisation> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationProcessor.class);
@@ -64,13 +66,13 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setWebsite(UrlUnifier.unifyOrganisationWebsiteUrl(tOrganisation.getWebsite()))
             .setMapPin(unifyOrganisationPins(tOrganisation.getOrganisationtype().getPicture()))
             .setPictures(toPictures(extractPictures(tOrganisation.getPictures())))
-            .setContactPersons(extractContactPersons(tOrganisation.getEmployees()))
+            .setContactPersons(toContactPersons(tOrganisation.getContactPersons()))
             .setAddresses(tOrganisation.getAddresses().stream().map(Typo3OrganisationProcessor::toAddress).collect(Collectors.toList()))
             .setDefaultAddress(toAddress(tOrganisation.getDefaultaddress()))
             .setGroups(
-                tOrganisation.getGroups().stream().map(Typo3OrganisationProcessor::toGroup).collect(Collectors.toList())
+                tOrganisation.getGroups().stream().map(this::toGroup).collect(Collectors.toList())
             )
-            .setAttendanceTimes(tOrganisation.getWorkinghours().stream().map(Typo3OrganisationProcessor::toEvent).collect(Collectors.toList()))
+            .setAttendanceTimes(tOrganisation.getWorkinghours().stream().map(this::toEvent).collect(Collectors.toList()))
             .setVolunteers(tOrganisation.getEmployees().stream().filter(employee -> !employee.getMotivation().isEmpty()).map(this::toVolunteer).collect(Collectors.toList()))
             .build();
     }
@@ -84,21 +86,18 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .build();
     }
 
-    private static Group toGroup(TGroup tGroup) {
+    private Group toGroup(TGroup tGroup) {
         return new Group.Builder()
             .setName(tGroup.getName())
             .setDescription(tGroup.getDescription())
-            .setContactPersons(tGroup.getContactPersons()
-                .stream()
-                .map(Typo3OrganisationProcessor::toContactPerson)
-                .collect(Collectors.toList()))
+            .setContactPersons(toContactPersons(tGroup.getContactPersons()))
             .setMinimumAge(tGroup.getMinimumAge())
             .setMaximumAge(tGroup.getMaximumAge())
             .setWebsite(tGroup.getWebsite())
             .build();
     }
 
-    private static AttendanceTime toEvent(TWorkingHour tWorkingHour) {
+    private AttendanceTime toEvent(TWorkingHour tWorkingHour) {
         return new AttendanceTime.Builder()
             .setDay(DayOfWeek.of(tWorkingHour.getDay()))
             .setStart(LocalTime.of(tWorkingHour.getStarttimehour(), tWorkingHour.getStarttimeminute()))
@@ -106,7 +105,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .setNote(tWorkingHour.getAddition())
             .setGroups(tWorkingHour.getGroups()
                 .stream()
-                .map(Typo3OrganisationProcessor::toGroup)
+                .map(this::toGroup)
                 .collect(Collectors.toList()))
             .build();
     }
@@ -150,20 +149,20 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         }
     }
 
-    private static List<ContactPerson> extractContactPersons(List<TEmployee> employees) {
+    private List<ContactPerson> toContactPersons(List<TEmployee> employees) {
         return employees.stream()
-            .filter(TEmployee::isIscontact)
-            .map(Typo3OrganisationProcessor::toContactPerson)
+            .map(this::toContactPerson)
             .collect(Collectors.toList());
     }
 
-    private static ContactPerson toContactPerson(TEmployee tEmployee) {
+    private ContactPerson toContactPerson(TEmployee tEmployee) {
         return new ContactPerson.Builder()
             .setFirstname(tEmployee.getPrename())
             .setLastname(tEmployee.getSurname())
             .setRank(tEmployee.getRank())
             .setTelephone(tEmployee.getTelephone())
             .setMail(tEmployee.getMail())
+            .setPicture(toPicture(tEmployee.getPictures()))
             .build();
     }
 
