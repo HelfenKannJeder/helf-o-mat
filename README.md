@@ -55,6 +55,9 @@ The API is automatically redirected to the backend.
 For offline usage add the parameter `--spring.profiles.active=offline`, then the backend
 will automatically mock all application which are require network.
 
+You can reach the application at `http://localhost:8080/helf-o-mat/` or 
+with the frontend running separate at `http://localhost:4200/`
+
 ## License
 
 GNU GENERAL PUBLIC LICENSE Version 3

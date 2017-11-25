@@ -30,7 +30,8 @@
         "dev": "environments/environment.ts",
         "offline": "environments/environment.offline.ts",
         "prod": "environments/environment.prod.ts"
-      }
+      },
+      "baseHref": "/"
     }
   ],
   "addons": [],
