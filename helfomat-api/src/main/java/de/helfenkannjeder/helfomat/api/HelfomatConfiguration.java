@@ -23,6 +23,8 @@ public class HelfomatConfiguration {
 
     private List<PictureSize> pictureSizes = new ArrayList<>();
 
+    private AutoImport autoImport = new AutoImport();
+
     private List<User> adminUsers = new ArrayList<>();
 
     public List<QuestionMapping> getQuestions() {
@@ -41,6 +43,14 @@ public class HelfomatConfiguration {
         this.pictureFolder = pictureFolder;
     }
 
+    public AutoImport getAutoImport() {
+        return autoImport;
+    }
+
+    public void setAutoImport(AutoImport autoImport) {
+        this.autoImport = autoImport;
+    }
+
     public List<PictureSize> getPictureSizes() {
         return pictureSizes;
     }
@@ -55,6 +65,28 @@ public class HelfomatConfiguration {
 
     public void setAdminUsers(List<User> adminUsers) {
         this.adminUsers = adminUsers;
+    }
+
+    public class AutoImport {
+        private boolean enabled;
+
+        private String schedule;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getSchedule() {
+            return schedule;
+        }
+
+        public void setSchedule(String schedule) {
+            this.schedule = schedule;
+        }
     }
 
     public static class QuestionMapping {

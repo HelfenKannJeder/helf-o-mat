@@ -42,6 +42,9 @@ googlemaps:
 
 helfomat:
   picture-folder: pictures/
+  autoImport:
+    enabled: true
+    schedule: "0 0 3 1/1 * *"
   questions:
   - uid: 17
     question: "Möchtest Du gerne Einsatzfahrzeuge - ggf. auch mit Blaulicht und Martinshorn - fahren?"
