@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organisation.ElasticsearchOrganisationRepository;
 import org.elasticsearch.client.Client;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,15 @@ public class ElasticsearchConfig {
     @Bean
     public ElasticsearchTemplate elasticsearchTemplate(Client client) {
         return new ElasticsearchTemplate(client, new CustomEntityMapper());
+    }
+
+    @Bean
+    public OrganisationRepository organisationRepository(ElasticsearchConfiguration elasticsearchConfiguration, Client client) {
+        return new ElasticsearchOrganisationRepository(
+            elasticsearchConfiguration,
+            elasticsearchTemplate(client),
+            elasticsearchConfiguration.getIndex()
+        );
     }
 
     public static class CustomEntityMapper implements EntityMapper {
