@@ -10,7 +10,6 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Valentin Zickner
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @JobScope
 @Order(100)
 @Profile("!" + ProfileRegistry.DISABLE_TYPO3_IMPORT)
-@Transactional
 public class Typo3OrganisationReader implements OrganisationReader {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationReader.class);
