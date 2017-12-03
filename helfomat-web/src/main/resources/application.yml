@@ -256,6 +256,8 @@ helfomat:
       answer: "YES"
     - phrase: "Hubschraubergestützte Wasserrettung" # DLRG / ASB / DRK
       answer: "MAYBE"
+    - phrase: "Bergungsgruppe" # THW
+      answer: "MAYBE"
 
   - id: "2e82c293-1f6a-4b4c-8366-f773d42f1caf"
     question: "Deinen Hund zum Suchhund ausbilden, mit ihm vermisste Menschen orten und retten? Interesse?"
