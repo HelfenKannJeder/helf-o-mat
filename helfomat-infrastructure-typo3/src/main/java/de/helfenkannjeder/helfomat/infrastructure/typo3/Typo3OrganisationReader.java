@@ -3,47 +3,79 @@ package de.helfenkannjeder.helfomat.infrastructure.typo3;
 import de.helfenkannjeder.helfomat.core.ProfileRegistry;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
-import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganisation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.configuration.annotation.JobScope;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * @author Valentin Zickner
  */
 @Component
-@JobScope
 @Order(100)
+@Transactional(propagation = Propagation.REQUIRED)
 @Profile("!" + ProfileRegistry.DISABLE_TYPO3_IMPORT)
-@Transactional
 public class Typo3OrganisationReader implements OrganisationReader {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationReader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationReader.class);
+    private static final int PAGE_SIZE = 10;
 
-    private final Typo3OrganisationItemReader typo3OrganisationItemReader;
-    private final Typo3OrganisationProcessor typo3OrganisationProcessor;
+    private volatile List<Organisation> results = null;
+    private volatile int page = 0;
+    private volatile int current = 0;
 
-    public Typo3OrganisationReader(Typo3OrganisationItemReader typo3OrganisationItemReader, Typo3OrganisationProcessor typo3OrganisationProcessor) {
-        this.typo3OrganisationItemReader = typo3OrganisationItemReader;
+
+    private Typo3OrganisationRepository typo3OrganisationRepository;
+    private Typo3OrganisationProcessor typo3OrganisationProcessor;
+
+
+    @Autowired
+    public Typo3OrganisationReader(Typo3OrganisationRepository typo3OrganisationRepository, Typo3OrganisationProcessor typo3OrganisationProcessor) {
+        this.typo3OrganisationRepository = typo3OrganisationRepository;
         this.typo3OrganisationProcessor = typo3OrganisationProcessor;
+    }
+
+    private void doReadPage() {
+        if (this.results == null) {
+            this.results = new CopyOnWriteArrayList<>();
+        } else {
+            this.results.clear();
+        }
+
+        this.results.addAll(
+            this.typo3OrganisationRepository
+                .findAvailable(new PageRequest(page, PAGE_SIZE))
+                .map(organisation -> this.typo3OrganisationProcessor.process(organisation))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
+        );
     }
 
     @Override
     public Organisation read() throws Exception {
-        Organisation result;
-        do {
-            TOrganisation tOrganisation = this.typo3OrganisationItemReader.read();
-            if (tOrganisation == null) {
-                return null;
-            }
-            result = this.typo3OrganisationProcessor.process(tOrganisation);
-        } while (result == null);
-        LOGGER.debug("Read organisation from TYPO3 '" + result.getName() + "'");
-        return result;
+        if (results == null || current >= results.size()) {
+            LOGGER.debug("Reading page " + page);
+            doReadPage();
+            page++;
+            current = 0;
+        }
+
+        int next = current++;
+        if (next < results.size()) {
+            return results.get(next);
+        } else {
+            return null;
+        }
     }
 
 }
