@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Valentin Zickner
@@ -16,6 +16,6 @@ public interface Typo3OrganisationRepository extends PagingAndSortingRepository<
         "where organisation.deleted = 0 " +
         "and organisation.hidden = 0 " +
         "and organisation.organisationtype <> null")
-    List<TOrganisation> findAvailable(Pageable pageable);
+    Stream<TOrganisation> findAvailable(Pageable pageable);
 
 }
