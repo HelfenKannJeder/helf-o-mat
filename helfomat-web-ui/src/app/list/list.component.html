@@ -2,7 +2,7 @@
     <div class="panel-heading pointer" (click)="openOrganisation.emit(organisation)">{{organisation.name}}</div>
     <div class="panel-body pointer" (click)="openOrganisation.emit(organisation)">
         <div class="media">
-            <div class="media-left media-top media-logo">
+            <div class="media-left media-top media-logo" *ngIf="organisation.logo">
                 <img class="media-object" [attr.src]="getImagePath(organisation.logo)"
                      [attr.alt]="organisation.name">
             </div>
