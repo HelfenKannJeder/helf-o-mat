@@ -115,7 +115,7 @@ public class ElasticsearchOrganisationRepositoryTest {
 
     private Organisation createOrganisation(OrganisationType organisationType, GeoPoint position) {
         return new Organisation.Builder()
-            .setId(new OrganisationId().getValue())
+            .setId(new OrganisationId())
             .setName("Test Organisation")
             .setOrganisationType(organisationType)
             .setDefaultAddress(new Address.Builder()

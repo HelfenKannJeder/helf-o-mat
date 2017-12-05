@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
 
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
 import org.junit.Before;
@@ -29,7 +30,7 @@ public class DuplicateOrganisationFilterProcessorTest {
     @Test
     public void anExistingOrganisationIsNotReturned() throws Exception {
         Organisation candidateOrganisation = new Organisation.Builder()
-            .setId("1")
+            .setId(new OrganisationId())
             .setOrganisationType(OrganisationType.THW)
             .build();
         when(organisationRepository.existsOrganisationWithSameTypeInDistance(any(), any())).thenReturn(true);

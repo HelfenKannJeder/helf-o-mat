@@ -7,6 +7,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
@@ -32,7 +33,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -127,7 +127,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
 
         Address address = extractAddressFromDocument(oeDetailsDocument);
         Organisation organisation = new Organisation.Builder()
-            .setId(UUID.randomUUID().toString())
+            .setId(new OrganisationId())
             .setOrganisationType(OrganisationType.THW)
             .setName(checkNotNull(organisationName))
             .setPictures(singletonList(this.teaserPictureId))
