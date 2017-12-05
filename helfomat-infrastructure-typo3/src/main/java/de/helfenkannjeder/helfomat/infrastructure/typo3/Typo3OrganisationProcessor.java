@@ -7,6 +7,7 @@ import de.helfenkannjeder.helfomat.core.organisation.AttendanceTime;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
 import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
@@ -31,7 +32,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -59,7 +59,7 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         }
 
         return new Organisation.Builder()
-            .setId(UUID.randomUUID().toString())
+            .setId(new OrganisationId())
             .setName(tOrganisation.getName())
             .setOrganisationType(OrganisationType.findByName(tOrganisation.getOrganisationtype().getName()))
             .setDescription(tOrganisation.getDescription())

@@ -1,19 +1,15 @@
 package de.helfenkannjeder.helfomat.core.organisation;
 
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.List;
 
 /**
  * @author Valentin Zickner
  */
-@Document(indexName = "helfomat")
 public class Organisation {
 
-    @Id
-    private String id;
+    private OrganisationId id;
     private String name;
     private String urlName;
     private OrganisationType organisationType;
@@ -34,7 +30,7 @@ public class Organisation {
     Organisation() {
     }
 
-    Organisation(String id,
+    Organisation(OrganisationId id,
                  String name,
                  String urlName,
                  OrganisationType organisationType,
@@ -70,7 +66,7 @@ public class Organisation {
         this.volunteers = volunteers;
     }
 
-    public String getId() {
+    public OrganisationId getId() {
         return id;
     }
 
@@ -147,7 +143,7 @@ public class Organisation {
     }
 
     public static class Builder {
-        private String id;
+        private OrganisationId id;
         private String name;
         private String urlName;
         private OrganisationType organisationType;
@@ -188,7 +184,7 @@ public class Organisation {
             this.volunteers = organisation.getVolunteers();
         }
 
-        public Builder setId(String id) {
+        public Builder setId(OrganisationId id) {
             this.id = id;
             return this;
         }
