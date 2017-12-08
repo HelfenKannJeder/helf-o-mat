@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @Order(100)
 @Transactional(propagation = Propagation.REQUIRED)
 @Profile("!" + ProfileRegistry.DISABLE_TYPO3_IMPORT)
+@JobScope
 public class Typo3OrganisationReader implements OrganisationReader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationReader.class);
