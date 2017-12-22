@@ -5,7 +5,7 @@ import {Organisation} from './organisation.model';
 import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
 import {GeoPoint} from './geopoint.model';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs/Rx';
 import {ObservableUtil} from '../shared/observable.util';
 import {Subject} from 'rxjs/Subject';
 import {Address} from './address.model';
