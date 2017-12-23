@@ -34,7 +34,7 @@ public class ElasticsearchOrganisationRepositoryTest {
     ElasticsearchConfiguration elasticsearchConfiguration;
 
     @Autowired
-    ElasticsearchOrganisationRepository elasticsearchOrganisationRepository;
+    ElasticsearchOrganisationRepository organisationRepository;
 
     @Autowired
     Client client;
@@ -45,8 +45,7 @@ public class ElasticsearchOrganisationRepositoryTest {
     @Before
     public void setUp() throws Exception {
         String mapping = StreamUtils.copyToString(organisationMapping.getInputStream(), Charset.forName("UTF8"));
-        String indexName = this.elasticsearchConfiguration.getIndex();
-        this.elasticsearchOrganisationRepository.createIndex(indexName, mapping);
+        this.organisationRepository.createIndex(mapping);
     }
 
     private void flush(String indexName) {
@@ -55,7 +54,7 @@ public class ElasticsearchOrganisationRepositoryTest {
 
     @After
     public void tearDown() throws Exception {
-        this.elasticsearchOrganisationRepository.deleteIndex(this.elasticsearchConfiguration.getIndex());
+        this.organisationRepository.deleteIndex();
     }
 
     @Test
@@ -63,12 +62,11 @@ public class ElasticsearchOrganisationRepositoryTest {
         // Arrange
         Organisation organisation = createOrganisation(OrganisationType.THW, new GeoPoint(49.0, 8.5));
         String indexName = this.elasticsearchConfiguration.getIndex();
-        this.elasticsearchOrganisationRepository.save(indexName, Collections.singletonList(organisation));
+        this.organisationRepository.save(Collections.singletonList(organisation));
         flush(indexName);
 
         // Act
-        boolean exists = this.elasticsearchOrganisationRepository.existsOrganisationWithSameTypeInDistance(
-            indexName,
+        boolean exists = this.organisationRepository.existsOrganisationWithSameTypeInDistance(
             organisation,
             1L
         );
@@ -82,13 +80,12 @@ public class ElasticsearchOrganisationRepositoryTest {
         // Arrange
         Organisation createdOrganisation = createOrganisation(OrganisationType.THW, new GeoPoint(49.0, 8.5));
         String indexName = this.elasticsearchConfiguration.getIndex();
-        this.elasticsearchOrganisationRepository.save(indexName, Collections.singletonList(createdOrganisation));
+        this.organisationRepository.save(Collections.singletonList(createdOrganisation));
         flush(indexName);
         Organisation organisation = createOrganisation(OrganisationType.FF, new GeoPoint(49.0, 8.5));
 
         // Act
-        boolean exists = this.elasticsearchOrganisationRepository.existsOrganisationWithSameTypeInDistance(
-            indexName,
+        boolean exists = this.organisationRepository.existsOrganisationWithSameTypeInDistance(
             organisation,
             1L
         );
@@ -102,13 +99,12 @@ public class ElasticsearchOrganisationRepositoryTest {
         // Arrange
         Organisation createdOrganisation = createOrganisation(OrganisationType.THW, new GeoPoint(49.0, 8.5));
         String indexName = this.elasticsearchConfiguration.getIndex();
-        this.elasticsearchOrganisationRepository.save(indexName, Collections.singletonList(createdOrganisation));
+        this.organisationRepository.save(Collections.singletonList(createdOrganisation));
         flush(indexName);
         Organisation organisation = createOrganisation(OrganisationType.THW, new GeoPoint(49.0, 8.6));
 
         // Act
-        boolean exists = this.elasticsearchOrganisationRepository.existsOrganisationWithSameTypeInDistance(
-            indexName,
+        boolean exists = this.organisationRepository.existsOrganisationWithSameTypeInDistance(
             organisation,
             1L
         );
@@ -119,7 +115,7 @@ public class ElasticsearchOrganisationRepositoryTest {
 
     private Organisation createOrganisation(OrganisationType organisationType, GeoPoint position) {
         return new Organisation.Builder()
-            .setId(new OrganisationId().getValue())
+            .setId(new OrganisationId())
             .setName("Test Organisation")
             .setOrganisationType(organisationType)
             .setDefaultAddress(new Address.Builder()

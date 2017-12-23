@@ -26,7 +26,7 @@ class OrganisationAssembler {
     static OrganisationDto toOrganisationDto(ScoredOrganisation scoredOrganisation) {
         Organisation organisation = scoredOrganisation.getOrganisation();
         return new OrganisationDto(
-            organisation.getId(),
+            organisation.getId().getValue(),
             organisation.getName(),
             organisation.getUrlName(),
             organisation.getDescription(),
@@ -44,7 +44,7 @@ class OrganisationAssembler {
             return null;
         }
         return new OrganisationDetailDto(
-            organisation.getId(),
+            organisation.getId().getValue(),
             organisation.getName(),
             organisation.getUrlName(),
             organisation.getDescription(),
