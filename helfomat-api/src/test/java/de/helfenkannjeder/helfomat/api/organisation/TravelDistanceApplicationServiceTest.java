@@ -77,8 +77,9 @@ public class TravelDistanceApplicationServiceTest {
     }
 
     private List<TravelDistanceDto> testSearch() {
-        Address address = new Address.Builder().build();
-        address.setLocation(new GeoPoint(49.0388109, 8.3433651));
+        Address address = new Address.Builder()
+            .setLocation(new GeoPoint(49.0388109, 8.3433651))
+            .build();
         OrganisationId organisationId = new OrganisationId();
         when(organisationRepository.findOne(organisationId.getValue())).thenReturn(new Organisation.Builder()
             .setDefaultAddress(address)
