@@ -1,5 +1,5 @@
 import {HelfomatService} from './helfomat.service';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {Question} from './question.model';
 import {EventEmitter} from '@angular/core';
 import {UserAnswer} from '../organisation/userAnswer.model';
@@ -9,44 +9,32 @@ import {Answer} from '../shared/answer.model';
 
 export abstract class AbstractQuestionComponent {
 
-    public organisations: EventEmitter<UserAnswer[]> = <EventEmitter<UserAnswer[]>>new EventEmitter();
+    public questionAnswers: EventEmitter<UserAnswer[]> = <EventEmitter<UserAnswer[]>>new EventEmitter();
 
-    private showIndex: number = 0;
+    private indexOfCurrentQuestion: number = 0;
     public questions: Question[] = [];
     private userAnswers: Answer[] = [];
     protected unansweredQuestions: number[] = [];
     protected router: Router;
-    protected route: ActivatedRoute;
     protected helfomatService: HelfomatService;
 
     constructor() {
     }
 
     ngOnInit(): void {
-        this.showIndex = 0;
+        this.indexOfCurrentQuestion = 0;
         Observable.combineLatest(
             this.helfomatService.findQuestions(),
-            this.route.params
+            this.getAnswers()
         )
-            .subscribe(([questions, params]: [Question[], Params]) => {
+            .subscribe(([questions, answers]: [Question[], Answer[]]) => {
                 this.questions = questions;
-
-                let numberOfAnswers: number = 0;
-                if (params.hasOwnProperty('answers')) {
-                    this.userAnswers = JSON.parse(params['answers']);
-                    this.showIndex = this.userAnswers.length;
-
-                    let transmitAnswers: UserAnswer[] = [];
-                    this.userAnswers.forEach((answer, index) => {
-                        if (this.questions[index] !== undefined) {
-                            let id = this.questions[index].id;
-                            transmitAnswers.push({id, answer});
-                        }
-                    });
-                    numberOfAnswers = this.userAnswers.length;
-                    this.organisations.emit(transmitAnswers);
+                if (answers != null) {
+                    this.userAnswers = answers;
+                    this.indexOfCurrentQuestion = answers.length;
+                    this.questionAnswers.emit(this.toUserAnswers(answers));
                 }
-                this.unansweredQuestions = Array(this.questions.length - numberOfAnswers).fill(0);
+                this.unansweredQuestions = Array(this.questions.length - this.indexOfCurrentQuestion).fill(0);
             });
     }
 
@@ -78,5 +66,18 @@ export abstract class AbstractQuestionComponent {
         this.router.navigate([url, {answers: JSON.stringify(this.userAnswers)}]);
     }
 
+    private toUserAnswers(userAnswers: Answer[]): UserAnswer[] {
+        let transmitAnswers: UserAnswer[] = [];
+        userAnswers.forEach((answer, index) => {
+            if (this.questions[index] !== undefined) {
+                let id = this.questions[index].id;
+                transmitAnswers.push({id, answer});
+            }
+        });
+        return transmitAnswers;
+    }
+
     abstract getNavigateUrl(allQuestionsAnswered: boolean): string;
+
+    abstract getAnswers(): Observable<Answer[]>;
 }

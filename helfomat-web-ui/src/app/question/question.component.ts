@@ -2,6 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {AbstractQuestionComponent} from './abstractQuestion.component';
 import {HelfomatService} from './helfomat.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ObservableUtil} from '../shared/observable.util';
+import {Answer} from '../shared/answer.model';
+import {Observable} from 'rxjs/Observable';
+import {UrlParamBuilder} from '../url-param.builder';
 
 @Component({
     selector: 'app-question',
@@ -11,7 +15,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class QuestionComponent extends AbstractQuestionComponent implements OnInit {
     constructor(protected router: Router,
-                protected route: ActivatedRoute,
+                private route: ActivatedRoute,
                 protected helfomatService: HelfomatService) {
         super();
     }
@@ -23,4 +27,13 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
             return '/question';
         }
     }
+
+    getAnswers(): Observable<Answer[]> {
+        return Observable.concat(
+            Observable.of(null),
+            ObservableUtil.extractObjectMember<string>(this.route.params, 'answers')
+                .map(userAnswers => UrlParamBuilder.parseAnswers(userAnswers))
+        );
+    }
+
 }

@@ -21,7 +21,9 @@
                 </button>
             </div>
             <div class="well">{{ 'result.header.questions' | translate }}</div>
-            <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
+            <app-question-overview
+                [answers]="answers"
+                (questionAnswers)="updateOrganisations($event)"></app-question-overview>
         </div>
         <div class="col-xs-6">
             <button class="btn btn-default hidden-lg" (click)="visibleComponent = 'question'">

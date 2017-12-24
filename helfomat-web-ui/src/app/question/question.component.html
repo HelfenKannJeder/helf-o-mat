@@ -1,5 +1,5 @@
 <div class="col-md-12">
-    <div class="jumbotron" *ngFor="let question of questions; let i = index" [hidden]="i != showIndex">
+    <div class="jumbotron" *ngFor="let question of questions; let i = index" [hidden]="i != indexOfCurrentQuestion">
         <div class="fix-height">
             <h1>{{question.question}}</h1>
             <p class="description">{{question.description}}</p>

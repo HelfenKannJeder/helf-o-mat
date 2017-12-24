@@ -1,7 +1,9 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AbstractQuestionComponent} from './abstractQuestion.component';
 import {HelfomatService} from './helfomat.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
+import {Answer} from '../shared/answer.model';
 
 @Component({
     selector: 'app-question-overview',
@@ -11,10 +13,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class QuestionOverviewComponent extends AbstractQuestionComponent implements OnInit {
 
-    @Output() public organisations: EventEmitter<any> = new EventEmitter();
+    @Input() public answers: Observable<Answer[]>;
+    @Output() public questionAnswers: EventEmitter<any> = new EventEmitter();
 
     constructor(protected router: Router,
-                protected route: ActivatedRoute,
                 protected helfomatService: HelfomatService) {
         super();
     }
@@ -23,4 +25,7 @@ export class QuestionOverviewComponent extends AbstractQuestionComponent impleme
         return '/result';
     }
 
+    getAnswers(): Observable<Answer[]> {
+        return this.answers;
+    }
 }
