@@ -2,6 +2,8 @@ package de.helfenkannjeder.helfomat.core.organisation;
 
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 
+import java.util.Objects;
+
 /**
  * @author Valentin Zickner
  */
@@ -54,6 +56,25 @@ public class Address {
 
     public String getWebsite() {
         return website;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(street, address.street) &&
+            Objects.equals(addressAppendix, address.addressAppendix) &&
+            Objects.equals(city, address.city) &&
+            Objects.equals(zipcode, address.zipcode) &&
+            Objects.equals(location, address.location) &&
+            Objects.equals(telephone, address.telephone) &&
+            Objects.equals(website, address.website);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(street, addressAppendix, city, zipcode, location, telephone, website);
     }
 
     public static class Builder {

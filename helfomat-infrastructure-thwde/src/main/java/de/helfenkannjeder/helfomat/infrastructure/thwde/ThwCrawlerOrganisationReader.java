@@ -75,6 +75,11 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     }
 
     @Override
+    public String getName() {
+        return "thw-crawler";
+    }
+
+    @Override
     public Organisation read() throws Exception {
         if (iterator == null || !iterator.hasNext()) {
             requestOverviewPage(currentLetter, currentPage++);

@@ -5,6 +5,8 @@ package de.helfenkannjeder.helfomat.core.organisation;
  */
 public interface OrganisationReader {
 
+    String getName();
+
     Organisation read() throws Exception;
 
 }

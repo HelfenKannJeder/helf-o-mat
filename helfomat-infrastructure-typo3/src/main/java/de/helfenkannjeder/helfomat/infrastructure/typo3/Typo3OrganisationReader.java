@@ -64,6 +64,11 @@ public class Typo3OrganisationReader implements OrganisationReader {
     }
 
     @Override
+    public String getName() {
+        return "typo3";
+    }
+
+    @Override
     public Organisation read() throws Exception {
         if (results == null || current >= results.size()) {
             LOGGER.debug("Reading page " + page);

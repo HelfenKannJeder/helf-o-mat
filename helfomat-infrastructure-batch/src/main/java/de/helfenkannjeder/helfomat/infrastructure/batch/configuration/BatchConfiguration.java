@@ -1,27 +1,23 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.configuration;
 
-import de.helfenkannjeder.helfomat.core.organisation.Organisation;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
+import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenameAliasBatchlet;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenamePictureSymlinkBatchlet;
-import de.helfenkannjeder.helfomat.infrastructure.batch.listener.UniqueOrganisationUrlNameOrganisationProcessor;
-import de.helfenkannjeder.helfomat.infrastructure.batch.processor.AnswerQuestionsProcessor;
-import de.helfenkannjeder.helfomat.infrastructure.batch.processor.DuplicateOrganisationFilterProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.SimpleJobBuilder;
 import org.springframework.batch.core.jsr.step.batchlet.BatchletAdapter;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Valentin Zickner
@@ -30,33 +26,14 @@ import java.util.stream.Collectors;
 @EnableScheduling
 public class BatchConfiguration {
 
-    private final AnswerQuestionsProcessor answerQuestionsProcessor;
+    @Component
+    class TestListener {
 
-    public BatchConfiguration(AnswerQuestionsProcessor answerQuestionsProcessor) {
-        this.answerQuestionsProcessor = answerQuestionsProcessor;
-    }
-
-    @Bean
-    @Qualifier("importSteps")
-    public List<Step> importOrganisationFromThw(StepBuilderFactory stepBuilderFactory,
-                                                List<OrganisationReader> organisationReaders,
-                                                DuplicateOrganisationFilterProcessor duplicateOrganisationFilterProcessor,
-                                                UniqueOrganisationUrlNameOrganisationProcessor uniqueOrganisationUrlNameOrganisationProcessor,
-                                                ItemWriter<Organisation> organisationItemWriter) {
-        return organisationReaders.stream()
-            .map(organisationReader ->
-                stepBuilderFactory.get("import" + organisationReader.getClass().getSimpleName())
-                    .<Organisation, Organisation>chunk(20)
-                    .reader(organisationReader::read)
-                    .processor(organisation -> {
-                        organisation = duplicateOrganisationFilterProcessor.process(organisation);
-                        organisation = uniqueOrganisationUrlNameOrganisationProcessor.process(organisation);
-                        return this.answerQuestionsProcessor.process(organisation);
-                    })
-                    .writer(organisationItemWriter)
-                    .build()
-            )
-            .collect(Collectors.toList());
+        @EventListener
+        public void testEventListener(OrganisationEvent organisationEvent) {
+            System.out.println("Received test event");
+            System.out.println(organisationEvent);
+        }
     }
 
     @Bean

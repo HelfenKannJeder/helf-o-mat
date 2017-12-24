@@ -54,24 +54,25 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         this.indexName = indexName;
     }
 
+    @Override
     public boolean existsOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters) {
         Address address = organisation.getDefaultAddress();
         if (address == null) {
             return false;
         }
-        GeoPoint locationToCheck = address.getLocation();
-
-        GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("defaultAddress.location")
-            .point(locationToCheck.getLat(), locationToCheck.getLon())
-            .distance(distanceInMeters, DistanceUnit.METERS);
-
-        BoolQueryBuilder organisationListQuery = boolQuery()
-            .must(termQuery("organisationType", organisation.getOrganisationType().name()))
-            .must(geoDistanceQuery);
+        BoolQueryBuilder organisationListQuery = buildQueryForOrganisationWithSameTypeInDistance(organisation, distanceInMeters);
         NativeSearchQuery query = new NativeSearchQuery(organisationListQuery);
         query.addIndices(indexName);
         query.addTypes(elasticsearchConfiguration.getType().getOrganisation());
         return this.elasticsearchTemplate.count(query) > 0;
+    }
+
+    @Override
+    public Organisation findOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters) {
+        BoolQueryBuilder nativeSearchQuery = buildQueryForOrganisationWithSameTypeInDistance(organisation, distanceInMeters);
+        return search(nativeSearchQuery)
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
@@ -173,8 +174,10 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
     @Override
     public void createIndex(String mapping) {
-        this.elasticsearchTemplate.createIndex(indexName);
-        this.elasticsearchTemplate.putMapping(indexName, this.elasticsearchConfiguration.getType().getOrganisation(), mapping);
+        if (!this.elasticsearchTemplate.indexExists(indexName)) {
+            this.elasticsearchTemplate.createIndex(indexName);
+            this.elasticsearchTemplate.putMapping(indexName, this.elasticsearchConfiguration.getType().getOrganisation(), mapping);
+        }
     }
 
     @Override
@@ -197,6 +200,24 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         aliasQuery.setAliasName(alias);
         aliasQuery.setIndexName(indexName);
         elasticsearchTemplate.addAlias(aliasQuery);
+    }
+
+    private BoolQueryBuilder buildQueryForOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters) {
+        BoolQueryBuilder organisationListQuery = boolQuery();
+        organisationListQuery.must(termQuery("organisationType", organisation.getOrganisationType().name()));
+
+        Address address = organisation.getDefaultAddress();
+        if (address == null) {
+            organisationListQuery.mustNot(existsQuery("defaultAddress"));
+        } else {
+            GeoPoint locationToCheck = address.getLocation();
+
+            GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("defaultAddress.location")
+                .point(locationToCheck.getLat(), locationToCheck.getLon())
+                .distance(distanceInMeters, DistanceUnit.METERS);
+            organisationListQuery.must(geoDistanceQuery);
+        }
+        return organisationListQuery;
     }
 
     private Stream<ScoredOrganisation> sortOrganisations(Stream<ScoredOrganisation> organisations) {
