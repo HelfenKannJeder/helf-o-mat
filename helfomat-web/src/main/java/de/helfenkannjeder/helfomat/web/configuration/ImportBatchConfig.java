@@ -45,18 +45,18 @@ public class ImportBatchConfig {
                                                 ElasticsearchConfiguration elasticsearchConfiguration,
                                                 ElasticsearchTemplate elasticsearchTemplate,
                                                 ApplicationEventPublisher applicationEventPublisher,
+                                                OrganisationRepository organisationRepository,
                                                 @Value("classpath:/mapping/organisation.json") Resource organisationMapping) {
         return organisationReaders.stream()
             .map((OrganisationReader organisationReader) -> {
                 UniqueOrganisationUrlNameOrganisationProcessor uniqueOrganisationUrlNameOrganisationProcessor = new UniqueOrganisationUrlNameOrganisationProcessor();
-                OrganisationStepExecutionListener organisationStepExecutionListener = new OrganisationStepExecutionListener(organisationReader, elasticsearchConfiguration, elasticsearchTemplate, organisationMapping);
+                OrganisationStepExecutionListener organisationStepExecutionListener = new OrganisationStepExecutionListener(organisationReader, elasticsearchConfiguration, elasticsearchTemplate, organisationMapping, organisationRepository);
                 return stepBuilderFactory.get("import" + organisationReader.getClass().getSimpleName())
                     .<Organisation, Pair<Organisation, Stream<OrganisationEvent>>>chunk(20)
                     .reader(organisationReader::read)
                     .processor(organisation -> {
                         organisation = uniqueOrganisationUrlNameOrganisationProcessor.process(organisation);
-                        Stream<OrganisationEvent> organisationEventStream = organisationStepExecutionListener.getOrganisationDifferenceProcessor().process(organisation);
-                        return Pair.of(organisation, organisationEventStream);
+                        return organisationStepExecutionListener.getOrganisationDifferenceProcessor().process(organisation);
                     })
                     .writer((List<? extends Pair<Organisation, Stream<OrganisationEvent>>> organisationInfo) -> {
                         organisationInfo.stream().flatMap(Pair::getSecond).forEach(applicationEventPublisher::publishEvent);
@@ -75,14 +75,16 @@ public class ImportBatchConfig {
         private final ElasticsearchConfiguration elasticsearchConfiguration;
         private final ElasticsearchTemplate elasticsearchTemplate;
         private final Resource organisationMapping;
+        private final OrganisationRepository generalOrganisationRepository;
         private OrganisationDifferenceProcessor organisationDifferenceProcessor;
         private OrganisationItemWriter organisationItemWriter;
 
-        public OrganisationStepExecutionListener(OrganisationReader organisationReader, ElasticsearchConfiguration elasticsearchConfiguration, ElasticsearchTemplate elasticsearchTemplate, Resource organisationMapping) {
+        public OrganisationStepExecutionListener(OrganisationReader organisationReader, ElasticsearchConfiguration elasticsearchConfiguration, ElasticsearchTemplate elasticsearchTemplate, Resource organisationMapping, OrganisationRepository generalOrganisationRepository) {
             this.organisationReader = organisationReader;
             this.elasticsearchConfiguration = elasticsearchConfiguration;
             this.elasticsearchTemplate = elasticsearchTemplate;
             this.organisationMapping = organisationMapping;
+            this.generalOrganisationRepository = generalOrganisationRepository;
         }
 
         @Override
@@ -100,7 +102,7 @@ public class ImportBatchConfig {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            organisationDifferenceProcessor = new OrganisationDifferenceProcessor(organisationRepository);
+            organisationDifferenceProcessor = new OrganisationDifferenceProcessor(organisationRepository, generalOrganisationRepository);
             organisationItemWriter = new OrganisationItemWriter(organisationRepository);
         }
 
