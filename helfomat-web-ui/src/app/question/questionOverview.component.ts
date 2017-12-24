@@ -4,6 +4,7 @@ import {HelfomatService} from './helfomat.service';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Answer} from '../shared/answer.model';
+import {UserAnswer} from '../organisation/userAnswer.model';
 
 @Component({
     selector: 'app-question-overview',
@@ -14,7 +15,7 @@ import {Answer} from '../shared/answer.model';
 export class QuestionOverviewComponent extends AbstractQuestionComponent implements OnInit {
 
     @Input() public answers: Observable<Answer[]>;
-    @Output() public questionAnswers: EventEmitter<any> = new EventEmitter();
+    @Output() public questionAnswers: EventEmitter<UserAnswer[]> = new EventEmitter<UserAnswer[]>();
 
     constructor(protected router: Router,
                 protected helfomatService: HelfomatService) {

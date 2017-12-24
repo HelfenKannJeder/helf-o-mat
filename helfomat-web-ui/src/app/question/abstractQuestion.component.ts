@@ -33,6 +33,8 @@ export abstract class AbstractQuestionComponent {
                     this.userAnswers = answers;
                     this.indexOfCurrentQuestion = answers.length;
                     this.questionAnswers.emit(this.toUserAnswers(answers));
+                } else {
+                    this.questionAnswers.emit(null);
                 }
                 this.unansweredQuestions = Array(this.questions.length - this.indexOfCurrentQuestion).fill(0);
             });

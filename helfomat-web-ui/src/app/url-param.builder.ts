@@ -8,8 +8,10 @@ export class UrlParamBuilder {
     public static buildAnswersFromUserAnswer(userAnswers: UserAnswer[]) {
         // TODO: Should not work like that, because ordering of userAnswers is not ensured
         let answers: Answer[] = [];
-        for (let userAnswer of userAnswers) {
-            answers.push(userAnswer.answer);
+        if (userAnswers != null) {
+            for (let userAnswer of userAnswers) {
+                answers.push(userAnswer.answer);
+            }
         }
         return UrlParamBuilder.buildAnswers(answers);
     }
