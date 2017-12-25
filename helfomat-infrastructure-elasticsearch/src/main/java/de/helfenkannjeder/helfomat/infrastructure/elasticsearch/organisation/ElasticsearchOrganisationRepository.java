@@ -290,6 +290,9 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
                     .filter(Objects::nonNull)
                     .findFirst()
                     .orElse(null);
+                if (userAnswer == null) {
+                    return null;
+                }
 
                 if (Objects.equals(organisationAnswer, userAnswer)) {
                     return 100;
@@ -298,6 +301,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
                 }
                 return 0;
             })
+            .filter(Objects::nonNull)
             .collect(Collectors.averagingDouble(value -> value))
             .floatValue();
     }

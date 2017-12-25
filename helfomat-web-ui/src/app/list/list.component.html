@@ -7,7 +7,7 @@
                      [attr.alt]="organisation.name">
             </div>
             <div class="media-body">
-                <div class="row">
+                <div class="row" *ngIf="organisation.scoreNorm">
                     <div class="col-xs-10 col-sm-10">
                         <organisation-score [scoreNorm]="organisation.scoreNorm"></organisation-score>
                     </div>
