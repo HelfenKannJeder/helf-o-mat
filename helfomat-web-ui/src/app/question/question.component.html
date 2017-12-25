@@ -26,3 +26,18 @@
         </p>
     </div>
 </div>
+<div class="col-md-12">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{ 'question.skip.headline' | translate }}
+            </div>
+            <div class="panel-body">
+                <p>{{ 'question.skip.contentEnd1' | translate }}<a (click)="continueWithoutAnswers()">{{
+                    'question.skip.contentEnd2Link' | translate }}</a>{{ 'question.skip.contentEnd3' | translate }}</p>
+                <p><a (click)="continueWithoutAnswers()" class="btn btn-xs btn-default">{{
+                    'question.skip.buttonContinueWithoutAddress' | translate}}</a></p>
+            </div>
+        </div>
+    </div>
+</div>

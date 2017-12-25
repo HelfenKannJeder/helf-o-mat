@@ -28,6 +28,13 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
         }
     }
 
+    continueWithoutAnswers(): void {
+        this.router.navigate([
+            this.getNavigateUrl(true),
+            {answers: null}
+        ]);
+    }
+
     getAnswers(): Observable<Answer[]> {
         return Observable.concat(
             Observable.of(null),
