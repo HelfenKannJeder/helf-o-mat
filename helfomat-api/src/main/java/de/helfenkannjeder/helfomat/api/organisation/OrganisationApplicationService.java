@@ -4,7 +4,6 @@ import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
-import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.question.Question;
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,31 +32,32 @@ public class OrganisationApplicationService {
         return OrganisationAssembler.toOrganisationDetailDto(organisation, questions);
     }
 
-    public List<OrganisationDto> findOrganisation(List<QuestionAnswerDto> questionAnswerDtos,
-                                                  GeoPoint position,
-                                                  double distance) {
-        List<QuestionAnswer> questionAnswers = QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos);
-        if (questionAnswers == null && position == null) {
-            return OrganisationAssembler.toOrganisationDtos(
-                this.organisationRepository.findGlobalOrganisations()
-            );
-        } else if (questionAnswers == null) {
-            return OrganisationAssembler.toOrganisationDtos(
-                this.organisationRepository.findOrganisationsByDistanceSortByDistance(position, distance)
-            );
-        } else if (position == null) {
-            return OrganisationAssembler.toScoredOrganisationDtos(
-                this.organisationRepository.findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(questionAnswers)
-            );
-        } else {
-            return OrganisationAssembler.toScoredOrganisationDtos(
-                this.organisationRepository.findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
-                    questionAnswers,
-                    position,
-                    distance
-                )
-            );
-        }
+    public List<OrganisationDto> findGlobalOrganisations() {
+        return OrganisationAssembler.toOrganisationDtos(
+            this.organisationRepository.findGlobalOrganisations()
+        );
+    }
+
+    public List<OrganisationDto> findGlobalOrganisationsWith(List<QuestionAnswerDto> questionAnswerDtos) {
+        return OrganisationAssembler.toScoredOrganisationDtos(
+            this.organisationRepository.findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos))
+        );
+    }
+
+    public List<OrganisationDto> findOrganisationsWith(GeoPoint position, double distance) {
+        return OrganisationAssembler.toOrganisationDtos(
+            this.organisationRepository.findOrganisationsByDistanceSortByDistance(position, distance)
+        );
+    }
+
+    public List<OrganisationDto> findOrganisationsWith(List<QuestionAnswerDto> questionAnswerDtos, GeoPoint position, double distance) {
+        return OrganisationAssembler.toScoredOrganisationDtos(
+            this.organisationRepository.findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+                QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos),
+                position,
+                distance
+            )
+        );
     }
 
     public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,

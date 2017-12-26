@@ -38,12 +38,44 @@ public class OrganisationController {
         this.travelDistanceApplicationService = travelDistanceApplicationService;
     }
 
+    @Deprecated
     @PostMapping("/organisation/search")
     public List<OrganisationDto> search(@RequestBody SearchRequestDto searchRequestDto) {
-        return organisationApplicationService.findOrganisation(
-            searchRequestDto.getAnswers(),
-            searchRequestDto.getPosition(),
-            searchRequestDto.getDistance()
+        List<QuestionAnswerDto> questionAnswers = searchRequestDto.getAnswers();
+        GeoPoint position = searchRequestDto.getPosition();
+        double distance = searchRequestDto.getDistance();
+        if (questionAnswers == null && position == null) {
+            return this.organisationApplicationService.findGlobalOrganisations();
+        } else if (questionAnswers == null) {
+            return this.organisationApplicationService.findOrganisationsWith(position, distance);
+        } else if (position == null) {
+            return this.organisationApplicationService.findGlobalOrganisationsWith(questionAnswers);
+        } else {
+            return this.organisationApplicationService.findOrganisationsWith(questionAnswers, position, distance);
+        }
+    }
+
+    @GetMapping("/organisation/global")
+    public List<OrganisationDto> findGlobalOrganisations() {
+        return this.organisationApplicationService.findGlobalOrganisations();
+    }
+
+    @PostMapping("/organisation/global/byQuestionAnswers")
+    public List<OrganisationDto> findOrganisationsByQuestionAnswers(@RequestBody List<QuestionAnswerDto> questionAnswersDto) {
+        return this.organisationApplicationService.findGlobalOrganisationsWith(questionAnswersDto);
+    }
+
+    @GetMapping("/organisation/byPosition")
+    public List<OrganisationDto> findOrganisationsByPosition(@RequestParam GeoPoint position, @RequestParam double distance) {
+        return this.organisationApplicationService.findOrganisationsWith(position, distance);
+    }
+
+    @PostMapping("/organisation/byQuestionAnswersAndPosition")
+    public List<OrganisationDto> findOrganisationsByQuestionAnswersAndPosition(@RequestParam GeoPoint position, @RequestParam double distance, @RequestBody List<QuestionAnswerDto> questionAnswersDto) {
+        return this.organisationApplicationService.findOrganisationsWith(
+            questionAnswersDto,
+            position,
+            distance
         );
     }
 
