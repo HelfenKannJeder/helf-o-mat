@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {GeoPoint} from '../organisation/geopoint.model';
 import {UrlParamBuilder} from '../url-param.builder';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import {environment} from '../../environments/environment';
+import {GeoPoint} from '../../_internal/geopoint';
 
 @Component({
     selector: 'location',

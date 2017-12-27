@@ -2,10 +2,10 @@ import {HelfomatService} from './helfomat.service';
 import {Router} from '@angular/router';
 import {Question} from './question.model';
 import {EventEmitter} from '@angular/core';
-import {UserAnswer} from '../organisation/userAnswer.model';
 import {Observable} from 'rxjs';
 import 'rxjs/add/observable/combineLatest';
 import {Answer} from '../shared/answer.model';
+import {UserAnswer} from '../_internal/resources/organisation.service';
 
 export abstract class AbstractQuestionComponent {
 

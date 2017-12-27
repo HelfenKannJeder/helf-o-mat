@@ -1,10 +1,9 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Organisation} from '../../organisation/organisation.model';
 import {Observable} from 'rxjs';
-import {GeoPoint} from '../../organisation/geopoint.model';
-import {BoundingBox} from '../../organisation/boundingbox.model';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {BoundingBox, Organisation} from '../../_internal/resources/organisation.service';
+import {GeoPoint} from '../../../_internal/geopoint';
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;

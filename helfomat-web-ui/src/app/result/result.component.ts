@@ -1,22 +1,19 @@
 import {Component, OnInit} from '@angular/core';
-import {SearchService} from './search.service';
+import {BoundingBox, Organisation, OrganisationService, UserAnswer} from '../_internal/resources/organisation.service';
 import {Observable, Subject} from 'rxjs';
-import {GeoPoint} from '../organisation/geopoint.model';
-import {UserAnswer} from '../organisation/userAnswer.model';
-import {BoundingBox} from '../organisation/boundingbox.model';
-import {Organisation} from '../organisation/organisation.model';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
 import {Answer} from '../shared/answer.model';
 import {ObservableUtil} from '../shared/observable.util';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {environment} from '../../environments/environment';
+import {GeoPoint} from '../../_internal/geopoint';
 
 @Component({
     selector: 'app-result',
     templateUrl: './result.component.html',
     styleUrls: ['./result.component.less'],
-    providers: [SearchService],
+    providers: [OrganisationService],
     animations: [
         trigger('slide', [
             state('question', style({
@@ -51,7 +48,7 @@ export class ResultComponent implements OnInit {
     public visibleComponent: 'list' | 'question' = 'list';
     private explainScore: boolean = false;
 
-    constructor(private searchService: SearchService,
+    constructor(private organisationService: OrganisationService,
                 private router: Router,
                 private route: ActivatedRoute) {
         this._answers$ = <Subject<UserAnswer[]>>new Subject();
@@ -59,8 +56,8 @@ export class ResultComponent implements OnInit {
         this._boundingBox$ = <Subject<BoundingBox>>new Subject();
         this._zoom$ = <Subject<number>>new Subject();
         this._organisation$ = <Subject<Organisation>>new Subject();
-        this.organisations = searchService.organisations$;
-        this.clusteredOrganisations = searchService.clusteredOrganisations$;
+        this.organisations = organisationService.organisations$;
+        this.clusteredOrganisations = organisationService.clusteredOrganisations$;
 
         let position = Observable.merge(
             ObservableUtil.extractObjectMember(this.route.params, 'position')
@@ -124,7 +121,7 @@ export class ResultComponent implements OnInit {
             this.position,
             this.distance
         ).subscribe(([answer, position, distance]: [UserAnswer[], GeoPoint, number]) => {
-            this.searchService.search(answer, position, distance);
+            this.organisationService.search(answer, position, distance);
         });
 
         Observable.combineLatest(
@@ -133,7 +130,7 @@ export class ResultComponent implements OnInit {
             this._boundingBox$.asObservable(),
             this.zoom
         ).subscribe(([position, distance, boundingBox, zoom]: [GeoPoint, number, BoundingBox, number]) => {
-            this.searchService.boundingBox(position, distance, boundingBox, zoom);
+            this.organisationService.boundingBox(position, distance, boundingBox, zoom);
         });
 
         Observable.combineLatest(

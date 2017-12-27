@@ -1,7 +1,6 @@
 import {Answer} from './shared/answer.model';
-import {GeoPoint} from './organisation/geopoint.model';
-import {UserAnswer} from './organisation/userAnswer.model';
-import {BoundingBox} from './organisation/boundingbox.model';
+import {BoundingBox, UserAnswer} from './_internal/resources/organisation.service';
+import {GeoPoint} from '../_internal/geopoint';
 
 export class UrlParamBuilder {
 

@@ -1,8 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Organisation} from '../../organisation/organisation.model';
-import {BoundingBox} from '../../organisation/boundingbox.model';
-import {GeoPoint} from '../../organisation/geopoint.model';
 import {Observable} from 'rxjs/Observable';
+import {BoundingBox, Organisation} from '../../_internal/resources/organisation.service';
+import {GeoPoint} from '../../../_internal/geopoint';
 
 @Component({
     selector: 'helfomat-alternative-map',

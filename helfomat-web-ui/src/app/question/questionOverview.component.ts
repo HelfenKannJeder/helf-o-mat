@@ -4,7 +4,7 @@ import {HelfomatService} from './helfomat.service';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Answer} from '../shared/answer.model';
-import {UserAnswer} from '../organisation/userAnswer.model';
+import {UserAnswer} from '../_internal/resources/organisation.service';
 
 @Component({
     selector: 'app-question-overview',
