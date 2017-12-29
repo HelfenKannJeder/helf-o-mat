@@ -201,12 +201,16 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
                             scaledSize: new Size(32, 32)
                         };
 
+                        let opacity = 1;
+                        if (organisation.scoreNorm !== null) {
+                            opacity = organisation.scoreNorm / 100;
+                        }
                         let marker = new Marker({
                             position: GoogleMapsComponent.convertGeoPointToLatLng(address.location),
                             map: this.map,
                             title: organisation.name,
-                            icon: icon,
-                            opacity: organisation.scoreNorm / 100
+                            icon,
+                            opacity
                         });
                         marker.addListener('click', () => {
                             this.openOrganisation.emit(organisation);
