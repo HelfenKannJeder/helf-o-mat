@@ -96,7 +96,10 @@ export class OrganisationComponent implements OnInit, AfterViewInit {
         if (this.fragment !== undefined) {
             this.organisation.subscribe(() => {
                 window.setTimeout(() => {
-                    document.querySelector('#' + this.fragment).scrollIntoView();
+                    let querySelector = document.querySelector('#' + this.fragment);
+                    if (querySelector != null) {
+                        querySelector.scrollIntoView();
+                    }
                 });
             });
         }

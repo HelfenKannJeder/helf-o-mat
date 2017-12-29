@@ -36,6 +36,9 @@ export class UrlParamBuilder {
     }
 
     public static parseInt(shouldBeInteger: string): number {
+        if (shouldBeInteger == null) {
+            return null;
+        }
         return parseInt(shouldBeInteger);
     }
 }

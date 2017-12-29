@@ -8,12 +8,11 @@ export class ObservableUtil {
     public static extractObjectMember<T>(params: Observable<Params>, property: string): Observable<T> {
         return params
             .map((params: Params) => {
-                if (params.hasOwnProperty(property)) {
+                if (params.hasOwnProperty(property) && params[property] != 'null') {
                     return params[property];
                 }
                 return null;
             })
-            .filter(element => element != null)
             .distinctUntilChanged();
     }
 }
