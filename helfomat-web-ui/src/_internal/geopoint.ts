@@ -7,6 +7,10 @@ export class GeoPoint {
         this.lon = lon;
     }
 
+    public static asString(geoPoint: GeoPoint): string {
+        return geoPoint.lat + ',' + geoPoint.lon;
+    }
+
     public static pointBetween(first: GeoPoint, second: GeoPoint) {
         if (first == null) {
             return second;

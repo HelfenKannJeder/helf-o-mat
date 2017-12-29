@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import 'rxjs/add/operator/map';
-import {Subject} from 'rxjs';
 import {AnsweredQuestion} from '../../organisation/answeredQuestion.model';
 import {Group} from '../../organisation/group.model';
 import {AttendanceTime} from '../../organisation/attendance-time.model';
@@ -12,51 +11,54 @@ import {GeoPoint} from '../../../_internal/geopoint';
 @Injectable()
 export class OrganisationService {
 
-    private _organisations$: Subject<Organisation[]>;
-    private _clusteredOrganisations$: Subject<GeoPoint[]>;
-    private dataStore: {
-        organisations: Organisation[],
-        clusteredOrganisations: GeoPoint[]
-    };
-
     constructor(private http: Http) {
-        this._organisations$ = <Subject<Organisation[]>>new Subject();
-        this._clusteredOrganisations$ = <Subject<GeoPoint[]>>new Subject();
-        this.dataStore = {
-            organisations: [],
-            clusteredOrganisations: []
-        };
     }
 
-    get organisations$() {
-        return this._organisations$.asObservable();
+    findGlobal(): Observable<Organisation[]> {
+        return this.http
+            .get('api/organisation/global')
+            .map((response: Response) => response.json());
     }
 
-    get clusteredOrganisations$() {
-        return this._clusteredOrganisations$.asObservable();
+    findGlobalByQuestionAnswers(answers: UserAnswer[]): Observable<Organisation[]> {
+        return this.http
+            .post('api/organisation/global/byQuestionAnswers', answers)
+            .map((response: Response) => response.json());
     }
 
-    search(answers: UserAnswer[], position: GeoPoint, distance: number) {
-        this.http.post('api/organisation/search', {
-            answers,
-            position,
-            distance
-        }).map((response: Response) => response.json()).subscribe(data => {
-            this.dataStore.organisations = data;
-            this._organisations$.next(this.dataStore.organisations);
-        });
+    findByPosition(position: GeoPoint, distance: number): Observable<Organisation[]> {
+        return this.http
+            .get('api/organisation/byPosition', {
+                params: {
+                    position: GeoPoint.asString(position),
+                    distance
+                }
+            })
+            .map((response: Response) => response.json());
     }
 
-    boundingBox(position: GeoPoint, distance: number, boundingBox: BoundingBox, zoom: number) {
-        this.http.post('api/organisation/boundingBox', {
-            position,
-            distance,
-            boundingBox,
-            zoom
-        }).map((response: Response) => response.json()).subscribe(data => {
-            this.dataStore.clusteredOrganisations = data;
-            this._clusteredOrganisations$.next(this.dataStore.clusteredOrganisations);
-        });
+    findByQuestionAnswersAndPosition(answers: UserAnswer[], position: GeoPoint, distance: number): Observable<Organisation[]> {
+        return this.http
+            .post('api/organisation/byQuestionAnswersAndPosition',
+                answers,
+                {
+                    params: {
+                        position: GeoPoint.asString(position),
+                        distance
+                    }
+                })
+            .map((response: Response) => response.json());
+    }
+
+    boundingBox(position: GeoPoint, distance: number, boundingBox: BoundingBox, zoom: number): Observable<GeoPoint[]> {
+        return this.http
+            .post('api/organisation/boundingBox', {
+                position,
+                distance,
+                boundingBox,
+                zoom
+            })
+            .map((response: Response) => response.json());
     }
 
     getOrganisation(urlName: string): Observable<Organisation> {

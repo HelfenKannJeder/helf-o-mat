@@ -30,11 +30,11 @@ import {GeoPoint} from '../../_internal/geopoint';
 export class ResultComponent implements OnInit {
 
     // Inputs
-    private _answers$: Subject<UserAnswer[]>;
-    public _position$: Subject<GeoPoint>;
-    public _boundingBox$: Subject<BoundingBox>;
-    public _zoom$: Subject<number>;
-    public _organisation$: Subject<Organisation>;
+    private _answers$: Subject<UserAnswer[]> = new Subject<UserAnswer[]>();
+    public _position$: Subject<GeoPoint> = new Subject<GeoPoint>();
+    public _boundingBox$: Subject<BoundingBox> = new Subject<BoundingBox>();
+    public _zoom$: Subject<number> = new Subject<number>();
+    public _organisation$: Subject<Organisation> = new Subject<Organisation>();
     public answers: Observable<Answer[]>;
     public position: Observable<GeoPoint>;
     public center: Observable<GeoPoint>;
@@ -42,8 +42,8 @@ export class ResultComponent implements OnInit {
     public zoom: Observable<number>;
 
     // Outputs
-    public organisations: Observable<Organisation[]>;
-    public clusteredOrganisations: Observable<GeoPoint[]>;
+    public organisations: Subject<Organisation[]> = new Subject<Organisation[]>();
+    public clusteredOrganisations: Subject<GeoPoint[]> = new Subject<GeoPoint[]>();
 
     public visibleComponent: 'list' | 'question' = 'list';
     private explainScore: boolean = false;
@@ -51,14 +51,6 @@ export class ResultComponent implements OnInit {
     constructor(private organisationService: OrganisationService,
                 private router: Router,
                 private route: ActivatedRoute) {
-        this._answers$ = <Subject<UserAnswer[]>>new Subject();
-        this._position$ = <Subject<GeoPoint>>new Subject();
-        this._boundingBox$ = <Subject<BoundingBox>>new Subject();
-        this._zoom$ = <Subject<number>>new Subject();
-        this._organisation$ = <Subject<Organisation>>new Subject();
-        this.organisations = organisationService.organisations$;
-        this.clusteredOrganisations = organisationService.clusteredOrganisations$;
-
         let position = Observable.merge(
             ObservableUtil.extractObjectMember(this.route.params, 'position')
                 .map(UrlParamBuilder.parseGeoPoint),
@@ -120,18 +112,34 @@ export class ResultComponent implements OnInit {
             this._answers$.asObservable(),
             this.position,
             this.distance
-        ).subscribe(([answer, position, distance]: [UserAnswer[], GeoPoint, number]) => {
-            this.organisationService.search(answer, position, distance);
-        });
+        )
+            .flatMap(([answers, position, distance]: [UserAnswer[], GeoPoint, number]) => {
+                if (answers == null && position == null) {
+                    return this.organisationService.findGlobal();
+                } else if (answers == null) {
+                    return this.organisationService.findByPosition(position, distance);
+                } else if (position == null) {
+                    return this.organisationService.findGlobalByQuestionAnswers(answers);
+                } else {
+                    return this.organisationService.findByQuestionAnswersAndPosition(answers, position, distance);
+                }
+            })
+            .subscribe((organisations) => {
+                this.organisations.next(organisations);
+            });
 
         Observable.combineLatest(
             this.position,
             this.distance,
             this._boundingBox$.asObservable(),
             this.zoom
-        ).subscribe(([position, distance, boundingBox, zoom]: [GeoPoint, number, BoundingBox, number]) => {
-            this.organisationService.boundingBox(position, distance, boundingBox, zoom);
-        });
+        )
+            .flatMap(([position, distance, boundingBox, zoom]: [GeoPoint, number, BoundingBox, number]) => {
+                return this.organisationService.boundingBox(position, distance, boundingBox, zoom);
+            })
+            .subscribe((clusteredOrganisations: GeoPoint[]) => {
+                this.clusteredOrganisations.next(clusteredOrganisations);
+            });
 
         Observable.combineLatest(
             this._organisation$.asObservable(),

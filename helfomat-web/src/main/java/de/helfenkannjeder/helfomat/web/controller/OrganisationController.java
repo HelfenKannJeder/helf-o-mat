@@ -38,23 +38,6 @@ public class OrganisationController {
         this.travelDistanceApplicationService = travelDistanceApplicationService;
     }
 
-    @Deprecated
-    @PostMapping("/organisation/search")
-    public List<OrganisationDto> search(@RequestBody SearchRequestDto searchRequestDto) {
-        List<QuestionAnswerDto> questionAnswers = searchRequestDto.getAnswers();
-        GeoPoint position = searchRequestDto.getPosition();
-        double distance = searchRequestDto.getDistance();
-        if (questionAnswers == null && position == null) {
-            return this.organisationApplicationService.findGlobalOrganisations();
-        } else if (questionAnswers == null) {
-            return this.organisationApplicationService.findOrganisationsWith(position, distance);
-        } else if (position == null) {
-            return this.organisationApplicationService.findGlobalOrganisationsWith(questionAnswers);
-        } else {
-            return this.organisationApplicationService.findOrganisationsWith(questionAnswers, position, distance);
-        }
-    }
-
     @GetMapping("/organisation/global")
     public List<OrganisationDto> findGlobalOrganisations() {
         return this.organisationApplicationService.findGlobalOrganisations();
