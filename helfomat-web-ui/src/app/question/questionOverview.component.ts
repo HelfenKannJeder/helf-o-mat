@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {AbstractQuestionComponent} from './abstractQuestion.component';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstractQuestion.component';
 import {HelfomatService} from './helfomat.service';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
-import {Answer} from '../shared/answer.model';
 import {UserAnswer} from '../_internal/resources/organisation.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
     selector: 'app-question-overview',
@@ -12,21 +12,44 @@ import {UserAnswer} from '../_internal/resources/organisation.service';
     styleUrls: ['./questionOverview.component.scss'],
     providers: [HelfomatService]
 })
-export class QuestionOverviewComponent extends AbstractQuestionComponent implements OnInit {
+export class QuestionOverviewComponent extends AbstractQuestionComponent implements OnInit, OnDestroy {
 
-    @Input() public answers: Observable<Answer[]>;
-    @Output() public questionAnswers: EventEmitter<UserAnswer[]> = new EventEmitter<UserAnswer[]>();
+    @Input() public currentAnswers: Observable<string>;
+    @Output() public newAnswers: EventEmitter<string>;
+    @Output() public questionUserAnswers: EventEmitter<Array<UserAnswer>> = new EventEmitter<Array<UserAnswer>>();
+
+    private questionUserAnswersSubscription: Subscription;
 
     constructor(protected router: Router,
                 protected helfomatService: HelfomatService) {
         super();
     }
 
-    getNavigateUrl(allQuestionsAnswered: boolean): string {
-        return '/result';
+    public ngOnInit(): void {
+        super.ngOnInit();
+
+        this.questionUserAnswersSubscription = this.questionWithUserAnswers
+            .map((questionWithUserAnswers: Array<QuestionWithUserAnswer>) => {
+                let userAnswers = [];
+                for (let questionWithUserAnswer of questionWithUserAnswers) {
+                    if (questionWithUserAnswer.userAnswer != null) {
+                        userAnswers.push(questionWithUserAnswer.userAnswer);
+                    }
+                }
+                return userAnswers;
+            })
+            .subscribe((userAnswers: Array<UserAnswer>) => {
+                this.questionUserAnswers.next(userAnswers);
+            });
     }
 
-    getAnswers(): Observable<Answer[]> {
-        return this.answers;
+    public ngOnDestroy(): void {
+        super.ngOnDestroy();
+
+        this.questionUserAnswersSubscription.unsubscribe();
+    }
+
+    protected getCurrentAnswers(): Observable<string> {
+        return this.currentAnswers;
     }
 }

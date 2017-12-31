@@ -3,7 +3,6 @@ import {BoundingBox, Organisation, OrganisationService, UserAnswer} from '../_in
 import {Observable, Subject} from 'rxjs';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
-import {Answer} from '../shared/answer.model';
 import {ObservableUtil} from '../shared/observable.util';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {environment} from '../../environments/environment';
@@ -35,7 +34,8 @@ export class ResultComponent implements OnInit {
     public _boundingBox$: Subject<BoundingBox> = new Subject<BoundingBox>();
     public _zoom$: Subject<number> = new Subject<number>();
     public _organisation$: Subject<Organisation> = new Subject<Organisation>();
-    public answers: Observable<Answer[]>;
+    public _newAnswers$: Subject<string> = new Subject<string>();
+    public answers: Observable<string>;
     public position: Observable<GeoPoint>;
     public center: Observable<GeoPoint>;
     public distance = Observable.from([10]);
@@ -83,8 +83,7 @@ export class ResultComponent implements OnInit {
             .debounceTime(100)
             .distinctUntilChanged();
 
-        this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
-            .map(UrlParamBuilder.parseAnswers);
+        this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers');
 
     }
 
@@ -113,10 +112,10 @@ export class ResultComponent implements OnInit {
             this.position,
             this.distance
         )
-            .flatMap(([answers, position, distance]: [UserAnswer[], GeoPoint, number]) => {
-                if (answers == null && position == null) {
+            .flatMap(([answers, position, distance]: [Array<UserAnswer>, GeoPoint, number]) => {
+                if (answers == [] && position == null) {
                     return this.organisationService.findGlobal();
-                } else if (answers == null) {
+                } else if (answers == []) {
                     return this.organisationService.findByPosition(position, distance);
                 } else if (position == null) {
                     return this.organisationService.findGlobalByQuestionAnswers(answers);
@@ -143,17 +142,17 @@ export class ResultComponent implements OnInit {
 
         Observable.combineLatest(
             this._organisation$.asObservable(),
-            this.answers,
+            this._newAnswers$.asObservable(),
             this.position,
             this.distance
         )
-            .subscribe(([organisation, answers, position, distance]: [Organisation, Answer[], GeoPoint, number]) => {
+            .subscribe(([organisation, answers, position, distance]: [Organisation, string, GeoPoint, number]) => {
                 let extras: NavigationExtras = {};
                 if (this.explainScore) {
                     extras.fragment = 'compare';
                 }
                 this.router.navigate(['/organisation/' + organisation.urlName, {
-                    answers: UrlParamBuilder.buildAnswers(answers),
+                    answers: answers,
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance,
                     scoreNorm: organisation.scoreNorm

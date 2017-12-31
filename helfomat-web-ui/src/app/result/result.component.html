@@ -22,8 +22,9 @@
             </div>
             <div class="well">{{ 'result.header.questions' | translate }}</div>
             <app-question-overview
-                [answers]="answers"
-                (questionAnswers)="updateOrganisations($event)"></app-question-overview>
+                [currentAnswers]="answers"
+                (questionUserAnswers)="updateOrganisations($event)"
+                (newAnswers)="_newAnswers$.next($event)"></app-question-overview>
         </div>
         <div class="col-xs-6">
             <button class="btn btn-default hidden-lg" (click)="visibleComponent = 'question'">

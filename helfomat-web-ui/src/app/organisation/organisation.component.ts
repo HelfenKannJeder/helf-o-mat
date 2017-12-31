@@ -31,7 +31,7 @@ export class OrganisationComponent implements OnInit, AfterViewInit {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private organisationService: OrganisationService) {
-        this._back$ = <Subject<void>>new Subject();
+        this._back$ = new Subject<void>();
 
         this.userAnswers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
             .map(UrlParamBuilder.parseAnswers);
