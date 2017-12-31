@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstractQuestion.component';
+import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstract-question.component';
 import {HelfomatService} from './helfomat.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ObservableUtil} from '../shared/observable.util';

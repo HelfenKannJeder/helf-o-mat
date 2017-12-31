@@ -1,9 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import 'rxjs/add/operator/map';
-import {AnsweredQuestion} from '../../organisation/answeredQuestion.model';
-import {Group} from '../../organisation/group.model';
-import {AttendanceTime} from '../../organisation/attendance-time.model';
 import {Observable} from 'rxjs/Rx';
 import {Answer} from '../../shared/answer.model';
 import {GeoPoint} from '../../../_internal/geopoint';
@@ -152,4 +149,36 @@ export class Address {
     public location: GeoPoint;
     public telephone: string;
     public website: string;
+}
+
+export class AnsweredQuestion {
+    public question: string;
+    public answer: string;
+    public description: string;
+    public id: string;
+    public position: number;
+}
+
+
+export class AttendanceTime {
+    public day: DayOfWeek;
+    public start: number[];
+    public end: number[];
+    public note: string;
+    public groups: Array<Group>;
+}
+
+export enum DayOfWeek {
+    MONDAY = "MONDAY",
+    TUESDAY = "TUESDAY",
+    WEDNESDAY = "WEDNESDAY",
+    THURSDAY = "THURSDAY",
+    FRIDAY = "FRIDAY",
+    SATURDAY = "SATURDAY",
+    SUNDAY = "SUNDAY"
+}
+
+export class Group {
+    public name: string;
+    public description: string;
 }
