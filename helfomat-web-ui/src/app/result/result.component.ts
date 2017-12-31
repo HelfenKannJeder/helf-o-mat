@@ -90,7 +90,7 @@ export class ResultComponent implements OnInit {
     ngOnInit() {
         Observable.combineLatest(
             this._answers$.asObservable(),
-            this._position$.asObservable(),
+            Observable.merge(Observable.of(null), this._position$.asObservable()),
             this.distance,
             this._boundingBox$.asObservable(),
             this._zoom$.asObservable()
@@ -113,9 +113,9 @@ export class ResultComponent implements OnInit {
             this.distance
         )
             .flatMap(([answers, position, distance]: [Array<UserAnswer>, GeoPoint, number]) => {
-                if (answers == [] && position == null) {
+                if (answers.length == 0 && position == null) {
                     return this.organisationService.findGlobal();
-                } else if (answers == []) {
+                } else if (answers.length == 0) {
                     return this.organisationService.findByPosition(position, distance);
                 } else if (position == null) {
                     return this.organisationService.findGlobalByQuestionAnswers(answers);
