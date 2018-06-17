@@ -1,4 +1,4 @@
-import {GeoPoint} from '../app/organisation/geopoint.model';
+import {GeoPoint} from '../_internal/geopoint';
 
 export const environment = {
     offline: false,

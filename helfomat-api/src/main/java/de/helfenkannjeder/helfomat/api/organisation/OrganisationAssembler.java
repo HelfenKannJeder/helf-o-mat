@@ -23,6 +23,13 @@ import java.util.stream.Collectors;
  */
 class OrganisationAssembler {
 
+    static List<OrganisationDto> toScoredOrganisationDtos(List<ScoredOrganisation> organisations) {
+        return organisations
+            .stream()
+            .map(OrganisationAssembler::toOrganisationDto)
+            .collect(Collectors.toList());
+    }
+
     static OrganisationDto toOrganisationDto(ScoredOrganisation scoredOrganisation) {
         Organisation organisation = scoredOrganisation.getOrganisation();
         return new OrganisationDto(
@@ -36,6 +43,28 @@ class OrganisationAssembler {
             toContactPersonDtos(organisation.getContactPersons()),
             organisation.getLogo(),
             scoredOrganisation.getScore()
+        );
+    }
+
+    static List<OrganisationDto> toOrganisationDtos(List<Organisation> organisations) {
+        return organisations
+            .stream()
+            .map(OrganisationAssembler::toOrganisationDto)
+            .collect(Collectors.toList());
+    }
+
+    static OrganisationDto toOrganisationDto(Organisation organisation) {
+        return new OrganisationDto(
+            organisation.getId().getValue(),
+            organisation.getName(),
+            organisation.getUrlName(),
+            organisation.getDescription(),
+            organisation.getWebsite(),
+            organisation.getMapPin(),
+            toAddressDtos(organisation.getAddresses()),
+            toContactPersonDtos(organisation.getContactPersons()),
+            organisation.getLogo(),
+            null
         );
     }
 

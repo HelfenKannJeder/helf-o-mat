@@ -16,13 +16,13 @@ public interface OrganisationRepository {
 
     Organisation findOne(String id);
 
-    List<ScoredOrganisation> findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
-        List<QuestionAnswer> questionAnswers, GeoPoint position, double distance
-    );
+    List<ScoredOrganisation> findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(List<QuestionAnswer> questionAnswers, GeoPoint position, double distance);
 
-    List<ScoredOrganisation> findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(
-        List<QuestionAnswer> questionAnswers)
-        ;
+    List<Organisation> findOrganisationsByDistanceSortByDistance(GeoPoint position, double distance);
+
+    List<ScoredOrganisation> findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(List<QuestionAnswer> questionAnswers);
+
+    List<Organisation> findGlobalOrganisations();
 
     List<GeoPoint> findGeoPointsOfOrganisationsInsideBoundingBox(GeoPoint position, double distance, BoundingBox boundingBox);
 
@@ -33,5 +33,4 @@ public interface OrganisationRepository {
     void deleteIndex();
 
     void updateAlias(String alias);
-
 }

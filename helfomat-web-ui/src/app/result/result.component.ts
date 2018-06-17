@@ -1,22 +1,18 @@
 import {Component, OnInit} from '@angular/core';
-import {SearchService} from './search.service';
+import {BoundingBox, Organisation, OrganisationService, UserAnswer} from '../_internal/resources/organisation.service';
 import {Observable, Subject} from 'rxjs';
-import {GeoPoint} from '../organisation/geopoint.model';
-import {UserAnswer} from '../organisation/userAnswer.model';
-import {BoundingBox} from '../organisation/boundingbox.model';
-import {Organisation} from '../organisation/organisation.model';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
-import {Answer} from '../shared/answer.model';
 import {ObservableUtil} from '../shared/observable.util';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {environment} from '../../environments/environment';
+import {GeoPoint} from '../../_internal/geopoint';
 
 @Component({
     selector: 'app-result',
     templateUrl: './result.component.html',
     styleUrls: ['./result.component.less'],
-    providers: [SearchService],
+    providers: [OrganisationService],
     animations: [
         trigger('slide', [
             state('question', style({
@@ -33,35 +29,28 @@ import {environment} from '../../environments/environment';
 export class ResultComponent implements OnInit {
 
     // Inputs
-    private _answers$: Subject<UserAnswer[]>;
-    public _position$: Subject<GeoPoint>;
-    public _boundingBox$: Subject<BoundingBox>;
-    public _zoom$: Subject<number>;
-    public _organisation$: Subject<Organisation>;
-    public answers: Observable<Answer[]>;
+    private _answers$: Subject<UserAnswer[]> = new Subject<UserAnswer[]>();
+    public _position$: Subject<GeoPoint> = new Subject<GeoPoint>();
+    public _boundingBox$: Subject<BoundingBox> = new Subject<BoundingBox>();
+    public _zoom$: Subject<number> = new Subject<number>();
+    public _organisation$: Subject<Organisation> = new Subject<Organisation>();
+    public _newAnswers$: Subject<string> = new Subject<string>();
+    public answers: Observable<string>;
     public position: Observable<GeoPoint>;
     public center: Observable<GeoPoint>;
     public distance = Observable.from([10]);
     public zoom: Observable<number>;
 
     // Outputs
-    public organisations: Observable<Organisation[]>;
-    public clusteredOrganisations: Observable<GeoPoint[]>;
+    public organisations: Subject<Organisation[]> = new Subject<Organisation[]>();
+    public clusteredOrganisations: Subject<GeoPoint[]> = new Subject<GeoPoint[]>();
 
     public visibleComponent: 'list' | 'question' = 'list';
     private explainScore: boolean = false;
 
-    constructor(private searchService: SearchService,
+    constructor(private organisationService: OrganisationService,
                 private router: Router,
                 private route: ActivatedRoute) {
-        this._answers$ = <Subject<UserAnswer[]>>new Subject();
-        this._position$ = <Subject<GeoPoint>>new Subject();
-        this._boundingBox$ = <Subject<BoundingBox>>new Subject();
-        this._zoom$ = <Subject<number>>new Subject();
-        this._organisation$ = <Subject<Organisation>>new Subject();
-        this.organisations = searchService.organisations$;
-        this.clusteredOrganisations = searchService.clusteredOrganisations$;
-
         let position = Observable.merge(
             ObservableUtil.extractObjectMember(this.route.params, 'position')
                 .map(UrlParamBuilder.parseGeoPoint),
@@ -94,15 +83,14 @@ export class ResultComponent implements OnInit {
             .debounceTime(100)
             .distinctUntilChanged();
 
-        this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
-            .map(UrlParamBuilder.parseAnswers);
+        this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers');
 
     }
 
     ngOnInit() {
         Observable.combineLatest(
             this._answers$.asObservable(),
-            this._position$.asObservable(),
+            Observable.merge(Observable.of(null), this._position$.asObservable()),
             this.distance,
             this._boundingBox$.asObservable(),
             this._zoom$.asObservable()
@@ -123,32 +111,48 @@ export class ResultComponent implements OnInit {
             this._answers$.asObservable(),
             this.position,
             this.distance
-        ).subscribe(([answer, position, distance]: [UserAnswer[], GeoPoint, number]) => {
-            this.searchService.search(answer, position, distance);
-        });
+        )
+            .flatMap(([answers, position, distance]: [Array<UserAnswer>, GeoPoint, number]) => {
+                if (answers.length == 0 && position == null) {
+                    return this.organisationService.findGlobal();
+                } else if (answers.length == 0) {
+                    return this.organisationService.findByPosition(position, distance);
+                } else if (position == null) {
+                    return this.organisationService.findGlobalByQuestionAnswers(answers);
+                } else {
+                    return this.organisationService.findByQuestionAnswersAndPosition(answers, position, distance);
+                }
+            })
+            .subscribe((organisations) => {
+                this.organisations.next(organisations);
+            });
 
         Observable.combineLatest(
             this.position,
             this.distance,
             this._boundingBox$.asObservable(),
             this.zoom
-        ).subscribe(([position, distance, boundingBox, zoom]: [GeoPoint, number, BoundingBox, number]) => {
-            this.searchService.boundingBox(position, distance, boundingBox, zoom);
-        });
+        )
+            .flatMap(([position, distance, boundingBox, zoom]: [GeoPoint, number, BoundingBox, number]) => {
+                return this.organisationService.boundingBox(position, distance, boundingBox, zoom);
+            })
+            .subscribe((clusteredOrganisations: GeoPoint[]) => {
+                this.clusteredOrganisations.next(clusteredOrganisations);
+            });
 
         Observable.combineLatest(
             this._organisation$.asObservable(),
-            this.answers,
+            this._newAnswers$.asObservable(),
             this.position,
             this.distance
         )
-            .subscribe(([organisation, answers, position, distance]: [Organisation, Answer[], GeoPoint, number]) => {
+            .subscribe(([organisation, answers, position, distance]: [Organisation, string, GeoPoint, number]) => {
                 let extras: NavigationExtras = {};
                 if (this.explainScore) {
                     extras.fragment = 'compare';
                 }
                 this.router.navigate(['/organisation/' + organisation.urlName, {
-                    answers: UrlParamBuilder.buildAnswers(answers),
+                    answers: answers,
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance,
                     scoreNorm: organisation.scoreNorm

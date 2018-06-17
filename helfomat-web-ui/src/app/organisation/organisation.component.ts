@@ -1,14 +1,12 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {OrganisationService, TravelDistance} from './organisation.service';
-import {Organisation} from './organisation.model';
 import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
-import {GeoPoint} from './geopoint.model';
 import {Observable} from 'rxjs/Rx';
 import {ObservableUtil} from '../shared/observable.util';
 import {Subject} from 'rxjs/Subject';
-import {Address} from './address.model';
+import {Address, Organisation, OrganisationService, TravelDistance} from '../_internal/resources/organisation.service';
+import {GeoPoint} from '../../_internal/geopoint';
 
 @Component({
     selector: 'organisation',
@@ -33,7 +31,7 @@ export class OrganisationComponent implements OnInit, AfterViewInit {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private organisationService: OrganisationService) {
-        this._back$ = <Subject<void>>new Subject();
+        this._back$ = new Subject<void>();
 
         this.userAnswers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
             .map(UrlParamBuilder.parseAnswers);
@@ -98,7 +96,10 @@ export class OrganisationComponent implements OnInit, AfterViewInit {
         if (this.fragment !== undefined) {
             this.organisation.subscribe(() => {
                 window.setTimeout(() => {
-                    document.querySelector('#' + this.fragment).scrollIntoView();
+                    let querySelector = document.querySelector('#' + this.fragment);
+                    if (querySelector != null) {
+                        querySelector.scrollIntoView();
+                    }
                 });
             });
         }

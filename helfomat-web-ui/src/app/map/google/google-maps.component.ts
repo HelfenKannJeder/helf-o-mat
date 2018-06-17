@@ -1,10 +1,9 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Organisation} from '../../organisation/organisation.model';
 import {Observable} from 'rxjs';
-import {GeoPoint} from '../../organisation/geopoint.model';
-import {BoundingBox} from '../../organisation/boundingbox.model';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {BoundingBox, Organisation} from '../../_internal/resources/organisation.service';
+import {GeoPoint} from '../../../_internal/geopoint';
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
@@ -202,12 +201,16 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
                             scaledSize: new Size(32, 32)
                         };
 
+                        let opacity = 1;
+                        if (organisation.scoreNorm !== null) {
+                            opacity = organisation.scoreNorm / 100;
+                        }
                         let marker = new Marker({
                             position: GoogleMapsComponent.convertGeoPointToLatLng(address.location),
                             map: this.map,
                             title: organisation.name,
-                            icon: icon,
-                            opacity: organisation.scoreNorm / 100
+                            icon,
+                            opacity
                         });
                         marker.addListener('click', () => {
                             this.openOrganisation.emit(organisation);
