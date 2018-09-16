@@ -2,9 +2,9 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstract-question.component';
 import {HelfomatService} from './helfomat.service';
 import {Router} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
+import {Observable, Subscription} from 'rxjs';
 import {UserAnswer} from '../_internal/resources/organisation.service';
-import {Subscription} from 'rxjs/Subscription';
+import {map} from "rxjs/operators";
 
 @Component({
     selector: 'app-question-overview',
@@ -29,17 +29,19 @@ export class QuestionOverviewComponent extends AbstractQuestionComponent impleme
         super.ngOnInit();
 
         this.questionUserAnswersSubscription = this.questionWithUserAnswers
-            .map((questionWithUserAnswers: Array<QuestionWithUserAnswer>) => {
-                let userAnswers = [];
-                for (let questionWithUserAnswer of questionWithUserAnswers) {
-                    if (questionWithUserAnswer.userAnswer != null) {
-                        userAnswers.push(questionWithUserAnswer.userAnswer);
+            .pipe(
+                map((questionWithUserAnswers: Array<QuestionWithUserAnswer>) => {
+                    let userAnswers = [];
+                    for (let questionWithUserAnswer of questionWithUserAnswers) {
+                        if (questionWithUserAnswer.userAnswer != null) {
+                            userAnswers.push(questionWithUserAnswer.userAnswer);
+                        }
                     }
-                }
-                return userAnswers;
-            })
+                    return userAnswers;
+                })
+            )
             .subscribe((userAnswers: Array<UserAnswer>) => {
-                this.questionUserAnswers.next(userAnswers);
+                this.questionUserAnswers.emit(userAnswers);
             });
     }
 

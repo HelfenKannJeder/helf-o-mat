@@ -1,12 +1,10 @@
 import {HelfomatService} from './helfomat.service';
 import {Question} from './question.model';
 import {EventEmitter, OnDestroy, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
-import 'rxjs/add/observable/combineLatest';
+import {combineLatest, merge, Observable, of, Subject, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
 import {UserAnswer} from '../_internal/resources/organisation.service';
-import {Subject} from 'rxjs/Subject';
-import {Subscription} from 'rxjs/Subscription';
+import {distinctUntilChanged, map} from "rxjs/operators";
 
 export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
 
@@ -29,23 +27,27 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.userAnswers = this.getCurrentUserAnswers();
 
-        let questionsAndAnswers: Observable<[Array<UserAnswer>, Array<Question>]> = Observable.combineLatest(
+        let questionsAndAnswers: Observable<[Array<UserAnswer>, Array<Question>]> = combineLatest(
             this.getCombinedUserAnswersWithNewUserAnswer(),
             this.helfomatService.findQuestions()
         );
 
         this.questionsAndAnswersSubscription = questionsAndAnswers
-            .map(([userAnswers, questions]: [Array<UserAnswer>, Array<Question>]) => this.combineUserAnswersWithQuestions(userAnswers, questions))
+            .pipe(
+                map(([userAnswers, questions]: [Array<UserAnswer>, Array<Question>]) => this.combineUserAnswersWithQuestions(userAnswers, questions))
+            )
             .subscribe((questionWithUserAnswers: Array<QuestionWithUserAnswer>) => {
                 this.questionWithUserAnswers.next(questionWithUserAnswers);
             });
 
         this.newAnswersSubscription = questionsAndAnswers
-            .map(([userAnswers, questions]: [Array<UserAnswer>, Array<Question>]) => this.toAnswers(questions, userAnswers))
-            .map(answers => JSON.stringify(answers))
-            .distinctUntilChanged()
+            .pipe(
+                map(([userAnswers, questions]: [Array<UserAnswer>, Array<Question>]) => this.toAnswers(questions, userAnswers)),
+                map(answers => JSON.stringify(answers)),
+                distinctUntilChanged()
+            )
             .subscribe((answers: string) => {
-                this.newAnswers.next(answers);
+                this.newAnswers.emit(answers);
             });
     }
 
@@ -58,23 +60,23 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
         let userAnswer = new UserAnswer();
         userAnswer.id = question.id;
         userAnswer.answer = answer;
-        this.nextAnswer.next(userAnswer)
+        this.nextAnswer.emit(userAnswer)
     }
 
     protected abstract getCurrentAnswers(): Observable<string>;
 
     private getCombinedUserAnswersWithNewUserAnswer(): Observable<Array<UserAnswer>> {
-        return Observable.combineLatest(
-            Observable.merge(
-                Observable.of([]),
+        return combineLatest(
+            merge(
+                of([]),
                 this.getCurrentUserAnswers()
             ),
-            Observable.merge(
-                Observable.of(null),
-                this.nextAnswer.asObservable()
+            merge(
+                of(null),
+                this.nextAnswer
             )
         )
-            .map(([userAnswers, newAnswer]: [Array<UserAnswer>, UserAnswer]) => AbstractQuestionComponent.combineUserAnswersWithNewAnswer(userAnswers, newAnswer));
+            .pipe(map(([userAnswers, newAnswer]: [Array<UserAnswer>, UserAnswer]) => AbstractQuestionComponent.combineUserAnswersWithNewAnswer(userAnswers, newAnswer)));
     }
 
     private combineUserAnswersWithQuestions(userAnswers: Array<UserAnswer>, questions: Array<Question>): Array<QuestionWithUserAnswer> {
@@ -139,11 +141,15 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
     }
 
     private getCurrentUserAnswers() {
-        return Observable.combineLatest(
-            this.getCurrentAnswers().map(string => JSON.parse(string)),
+        return combineLatest(
+            this.getCurrentAnswers().pipe(
+                map(string => JSON.parse(string))
+            ),
             this.helfomatService.findQuestions()
         )
-            .map(([answers, questions]: [Array<Answer>, Array<Question>]) => this.toUserAnswers(questions, answers));
+            .pipe(
+                map(([answers, questions]: [Array<Answer>, Array<Question>]) => this.toUserAnswers(questions, answers))
+            );
     }
 
     private toUserAnswers(questions: Array<Question>, answers: Array<Answer>): Array<UserAnswer> {

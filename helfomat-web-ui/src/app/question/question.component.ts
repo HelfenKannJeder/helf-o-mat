@@ -3,8 +3,7 @@ import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstract-ques
 import {HelfomatService} from './helfomat.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ObservableUtil} from '../shared/observable.util';
-import {Observable} from 'rxjs/Observable';
-import {Subscription} from 'rxjs/Subscription';
+import {combineLatest, concat, Observable, of, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
 
 @Component({
@@ -24,7 +23,7 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
                 protected helfomatService: HelfomatService) {
         super();
 
-        Observable.combineLatest(
+        combineLatest(
             this.newAnswers,
             this.questionWithUserAnswers
         )
@@ -83,8 +82,8 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
     }
 
     protected getCurrentAnswers(): Observable<string> {
-        return Observable.concat(
-            Observable.of(null),
+        return concat(
+            of(null),
             ObservableUtil.extractObjectMember<string>(this.route.params, 'answers')
         );
     }

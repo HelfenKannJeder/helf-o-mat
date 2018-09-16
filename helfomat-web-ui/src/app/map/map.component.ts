@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {BoundingBox, Organisation} from '../_internal/resources/organisation.service';
 import {GeoPoint} from '../../_internal/geopoint';

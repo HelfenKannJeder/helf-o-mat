@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
-import 'rxjs/add/operator/map';
-import {Observable} from 'rxjs/Rx';
+import {Observable} from 'rxjs';
 import {Answer} from '../../shared/answer.model';
 import {GeoPoint} from '../../../_internal/geopoint';
+import {map} from "rxjs/operators";
 
 @Injectable()
 export class OrganisationService {
@@ -14,13 +14,17 @@ export class OrganisationService {
     findGlobal(): Observable<Organisation[]> {
         return this.http
             .get('api/organisation/global')
-            .map((response: Response) => response.json());
+            .pipe(
+                map((response: Response) => response.json())
+            );
     }
 
     findGlobalByQuestionAnswers(answers: UserAnswer[]): Observable<Organisation[]> {
         return this.http
             .post('api/organisation/global/byQuestionAnswers', answers)
-            .map((response: Response) => response.json());
+            .pipe(
+                map((response: Response) => response.json())
+            );
     }
 
     findByPosition(position: GeoPoint, distance: number): Observable<Organisation[]> {
@@ -31,7 +35,9 @@ export class OrganisationService {
                     distance
                 }
             })
-            .map((response: Response) => response.json());
+            .pipe(
+                map((response: Response) => response.json())
+            );
     }
 
     findByQuestionAnswersAndPosition(answers: UserAnswer[], position: GeoPoint, distance: number): Observable<Organisation[]> {
@@ -44,7 +50,9 @@ export class OrganisationService {
                         distance
                     }
                 })
-            .map((response: Response) => response.json());
+            .pipe(
+                map((response: Response) => response.json())
+            );
     }
 
     boundingBox(position: GeoPoint, distance: number, boundingBox: BoundingBox, zoom: number): Observable<GeoPoint[]> {
@@ -55,12 +63,16 @@ export class OrganisationService {
                 boundingBox,
                 zoom
             })
-            .map((response: Response) => response.json());
+            .pipe(
+                map((response: Response) => response.json())
+            );
     }
 
     getOrganisation(urlName: string): Observable<Organisation> {
         return this.http.get('api/organisation/' + urlName)
-            .map((response: Response) => response.json());
+            .pipe(
+                map((response: Response) => response.json())
+            );
     }
 
     getTravelDistances(id: string, location: GeoPoint): Observable<Array<TravelDistance>> {
@@ -70,7 +82,9 @@ export class OrganisationService {
                 lon: location.lon
             }
         })
-            .map((response: Response) => response.json());
+            .pipe(
+                map((response: Response) => response.json())
+            );
     }
 
 }

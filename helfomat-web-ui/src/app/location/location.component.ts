@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
+import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {GeoPoint} from '../../_internal/geopoint';
 
@@ -21,17 +20,16 @@ export class LocationComponent implements OnInit {
 
     constructor(private router: Router,
                 private route: ActivatedRoute) {
-        this.position = Observable.of(environment.defaults.mapCenter);
-        this.zoom = Observable.of(environment.defaults.zoomLevel.withoutPosition);
+        this.position = of(environment.defaults.mapCenter);
+        this.zoom = of(environment.defaults.zoomLevel.withoutPosition);
         this._position$ = new Subject();
     }
 
     ngOnInit(): void {
-        Observable
-            .combineLatest(
-                this.route.params,
-                this._position$.asObservable()
-            )
+        combineLatest(
+            this.route.params,
+            this._position$.asObservable()
+        )
             .subscribe(([params, position]: [Params, GeoPoint]) => {
                 this.router.navigate(['/result', {
                     answers: params.answers,

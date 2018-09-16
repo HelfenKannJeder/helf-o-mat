@@ -2,11 +2,11 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
-import {Observable} from 'rxjs/Rx';
+import {combineLatest, concat, Observable, of, Subject} from 'rxjs';
 import {ObservableUtil} from '../shared/observable.util';
-import {Subject} from 'rxjs/Subject';
 import {Address, Organisation, OrganisationService, TravelDistance} from '../_internal/resources/organisation.service';
 import {GeoPoint} from '../../_internal/geopoint';
+import {filter, flatMap, map, switchMap} from "rxjs/operators";
 
 @Component({
     selector: 'organisation',
@@ -34,38 +34,52 @@ export class OrganisationComponent implements OnInit, AfterViewInit {
         this._back$ = new Subject<void>();
 
         this.userAnswers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
-            .map(UrlParamBuilder.parseAnswers);
+            .pipe(
+                map(UrlParamBuilder.parseAnswers)
+            );
         this.position = ObservableUtil.extractObjectMember(this.route.params, 'position')
-            .map(UrlParamBuilder.parseGeoPoint);
+            .pipe(
+                map(UrlParamBuilder.parseGeoPoint)
+            );
         this.distance = ObservableUtil.extractObjectMember(this.route.params, 'distance')
-            .map(UrlParamBuilder.parseInt);
+            .pipe(
+                map(UrlParamBuilder.parseInt)
+            );
         this.scoreNorm = ObservableUtil.extractObjectMember(this.route.params, 'scoreNorm')
-            .map(UrlParamBuilder.parseInt);
+            .pipe(
+                map(UrlParamBuilder.parseInt)
+            );
         this.organisation = ObservableUtil.extractObjectMember(this.route.params, 'organisation')
-            .switchMap((organisationName: string) => this.organisationService.getOrganisation(organisationName));
-        this.organisations = this.organisation.map(organisation => [organisation]);
+            .pipe(
+                switchMap((organisationName: string) => this.organisationService.getOrganisation(organisationName))
+            );
+        this.organisations = this.organisation.pipe(
+            map(organisation => [organisation])
+        );
 
-        this.center = Observable
-            .combineLatest(
-                this.organisations,
-                OrganisationComponent.prefixWithNull(this.position.filter(position => position != null))
-            )
-            .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                let location = OrganisationComponent.getOrganisationLocation(organisations[0]);
-                return GeoPoint.pointBetween(position, location);
-            });
+        this.center = combineLatest(
+            this.organisations,
+            OrganisationComponent.prefixWithNull(this.position.pipe(filter(position => position != null)))
+        )
+            .pipe(
+                map(([organisations, position]: [Organisation[], GeoPoint]) => {
+                    let location = OrganisationComponent.getOrganisationLocation(organisations[0]);
+                    return GeoPoint.pointBetween(position, location);
+                })
+            );
 
-        this.zoom = Observable
-            .combineLatest(
-                this.organisations,
-                OrganisationComponent.prefixWithNull(this.position.filter(position => position != null))
-            )
-            .map(([organisations, position]: [Organisation[], GeoPoint]) => {
-                let location = OrganisationComponent.getOrganisationLocation(organisations[0]);
-                return OrganisationComponent.calculateZoomLevel(location, position);
-            });
+        this.zoom = combineLatest(
+            this.organisations,
+            OrganisationComponent.prefixWithNull(this.position.pipe(filter(position => position != null)))
+        )
+            .pipe(
+                map(([organisations, position]: [Organisation[], GeoPoint]) => {
+                    let location = OrganisationComponent.getOrganisationLocation(organisations[0]);
+                    return OrganisationComponent.calculateZoomLevel(location, position);
+                })
+            );
 
-        Observable.combineLatest(
+        combineLatest(
             this.position,
             this.distance,
             this.userAnswers,
@@ -79,11 +93,15 @@ export class OrganisationComponent implements OnInit, AfterViewInit {
                 }]);
             });
 
-        this.travelDistances = Observable.combineLatest(
+        this.travelDistances = combineLatest(
             this.organisation,
-            this.position.filter(position => position != null)
+            this.position.pipe(
+                filter(position => position != null)
+            )
         )
-            .flatMap(([organisation, position]: [Organisation, GeoPoint]) => this.organisationService.getTravelDistances(organisation.id, position));
+            .pipe(
+                flatMap(([organisation, position]: [Organisation, GeoPoint]) => this.organisationService.getTravelDistances(organisation.id, position))
+            );
     }
 
     public ngOnInit() {
@@ -142,10 +160,7 @@ export class OrganisationComponent implements OnInit, AfterViewInit {
     }
 
     private static prefixWithNull<T>(observable: Observable<T>): Observable<T> {
-        return Observable.concat(
-            Observable.of(null),
-            observable
-        );
+        return concat(of(null), observable);
     }
 
 }

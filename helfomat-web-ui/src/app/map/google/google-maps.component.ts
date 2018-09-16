@@ -9,7 +9,7 @@ import {
     Output,
     ViewChild
 } from '@angular/core';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {BoundingBox, Organisation} from '../../_internal/resources/organisation.service';
@@ -155,16 +155,17 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
             return;
         }
 
-        Observable.combineLatest(
+        combineLatest(
             this.position,
             this.distance
-        ).subscribe(([position, distance]: [GeoPoint, number]) => {
-            if (position == null) {
-                return;
-            }
-            const mapsPosition = GoogleMapsComponent.convertGeoPointToLatLng(position);
-            this.drawUserPosition(mapsPosition, distance);
-        });
+        )
+            .subscribe(([position, distance]: [GeoPoint, number]) => {
+                if (position == null) {
+                    return;
+                }
+                const mapsPosition = GoogleMapsComponent.convertGeoPointToLatLng(position);
+                this.drawUserPosition(mapsPosition, distance);
+            });
     }
 
     private configureSearchBox() {
