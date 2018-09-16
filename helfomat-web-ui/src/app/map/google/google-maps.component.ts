@@ -135,20 +135,24 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
 
     private configureViewPortChange() {
         this.map.addListener('bounds_changed', () => {
-            let bounds = this.map.getBounds();
-            if (bounds == null) {
-                return;
-            }
+            this.ngZone.run(() => {
+                let bounds = this.map.getBounds();
+                if (bounds == null) {
+                    return;
+                }
 
-            const northEast = GoogleMapsComponent.convertLatLngToGeoPoint(bounds.getNorthEast());
-            const southWest = GoogleMapsComponent.convertLatLngToGeoPoint(bounds.getSouthWest());
+                const northEast = GoogleMapsComponent.convertLatLngToGeoPoint(bounds.getNorthEast());
+                const southWest = GoogleMapsComponent.convertLatLngToGeoPoint(bounds.getSouthWest());
 
-            this.updateBoundingBox.emit(new BoundingBox(northEast, southWest));
+                this.updateBoundingBox.emit(new BoundingBox(northEast, southWest));
+            });
         });
 
         if (this.updateZoom != null) {
             this.map.addListener('zoom_changed', () => {
-                this.updateZoom.emit(this.map.getZoom());
+                this.ngZone.run(() => {
+                    this.updateZoom.emit(this.map.getZoom());
+                });
             });
         }
     }
@@ -254,7 +258,9 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
                             opacity
                         });
                         marker.addListener('click', () => {
-                            this.openOrganisation.emit(organisation);
+                            this.ngZone.run(() => {
+                                this.openOrganisation.emit(organisation);
+                            });
                         });
                         this.markers.push(marker);
                     }
@@ -335,18 +341,19 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
         this.controlButton.style.marginBottom = '22px';
         this.controlButton.style.cursor = 'pointer';
         this.controlButton.addEventListener('click', () => {
-            let center = this.map.getCenter();
-            if (this.mapSize === 'normal') {
-                this.mapSize = 'fullscreen';
-            } else {
-                this.mapSize = 'normal';
-            }
-            console.log('map resize emit', this.mapSize);
-            this.mapResize.emit(this.mapSize);
-            setTimeout(() => {
-                google.maps.event.trigger(this.map, 'resize');
-                this.map.setCenter(center);
-            }, GoogleMapsComponent.MAP_RESIZE_DURATION);
+            this.ngZone.run(() => {
+                let center = this.map.getCenter();
+                if (this.mapSize === 'normal') {
+                    this.mapSize = 'fullscreen';
+                } else {
+                    this.mapSize = 'normal';
+                }
+                this.mapResize.emit(this.mapSize);
+                setTimeout(() => {
+                    google.maps.event.trigger(this.map, 'resize');
+                    this.map.setCenter(center);
+                }, GoogleMapsComponent.MAP_RESIZE_DURATION);
+            });
         });
 
         let centerControlDiv: any = document.createElement('div');
