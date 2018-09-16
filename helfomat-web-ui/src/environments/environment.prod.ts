@@ -4,6 +4,7 @@ export const environment = {
     offline: false,
     production: true,
     defaults: {
+        countries: ['de'],
         mapCenter: new GeoPoint(51.163375, 10.447683),
         zoomLevel: {
             withoutPosition: 6,

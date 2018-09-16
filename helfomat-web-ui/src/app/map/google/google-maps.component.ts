@@ -5,6 +5,7 @@ import {
     ElementRef,
     EventEmitter,
     Input,
+    NgZone,
     OnInit,
     Output,
     ViewChild
@@ -14,6 +15,7 @@ import MarkerClusterer from 'node-js-marker-clusterer';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {BoundingBox, Organisation} from '../../_internal/resources/organisation.service';
 import {GeoPoint} from '../../../_internal/geopoint';
+import {environment} from "../../../environments/environment";
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
@@ -22,7 +24,7 @@ import MapTypeId = google.maps.MapTypeId;
 import Point = google.maps.Point;
 import Size = google.maps.Size;
 import ControlPosition = google.maps.ControlPosition;
-import SearchBox = google.maps.places.SearchBox;
+import Autocomplete = google.maps.places.Autocomplete;
 
 @Component({
     selector: 'helfomat-google-maps',
@@ -77,7 +79,8 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
 
     private searchContainers: HTMLElement[] = [];
 
-    constructor(private element: ElementRef) {
+    constructor(private element: ElementRef,
+                private ngZone: NgZone) {
     }
 
     ngOnInit() {
@@ -186,21 +189,21 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
                 searchText = <HTMLInputElement>addressSearchContainer.getElementsByClassName('addressInput')[0];
             }
 
-            let searchBox = new SearchBox(searchText);
+            let autocomplete = new Autocomplete(searchText,  {types: ['geocode']});
+            autocomplete.setComponentRestrictions({'country': environment.defaults.countries});
 
-            searchBox.addListener('places_changed', () => {
-                let places = searchBox.getPlaces();
-
-                if (places.length != 0) {
-                    this.updatePosition.next(GoogleMapsComponent.convertLatLngToGeoPoint(places[0].geometry.location));
-                }
+            autocomplete.addListener('place_changed', () => {
+                this.ngZone.run(() => {
+                    let place = autocomplete.getPlace();
+                    this.updatePosition.next(GoogleMapsComponent.convertLatLngToGeoPoint(place.geometry.location));
+                });
             });
 
             this.map.addListener('bounds_changed', () => {
                 let bounds = this.map.getBounds();
 
                 if (bounds != null) {
-                    searchBox.setBounds(bounds);
+                    autocomplete.setBounds(bounds);
                 }
             });
         }
