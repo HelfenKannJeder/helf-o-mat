@@ -25,6 +25,7 @@ export class MapComponent {
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();
     @Output() updateZoom: EventEmitter<number> = new EventEmitter<number>();
     @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
+    @Output() mapResize: EventEmitter<string> = new EventEmitter<string>();
 
     public offlineMode: boolean = environment.offline;
 

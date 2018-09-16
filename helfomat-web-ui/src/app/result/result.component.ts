@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {BoundingBox, Organisation, OrganisationService, UserAnswer} from '../_internal/resources/organisation.service';
-import {Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
 import {ObservableUtil} from '../shared/observable.util';
@@ -40,6 +40,9 @@ export class ResultComponent implements OnInit {
     public center: Observable<GeoPoint>;
     public distance = Observable.from([10]);
     public zoom: Observable<number>;
+    public _mapSize$: Subject<string> = new BehaviorSubject<string>('normal');
+    public mapSize: Observable<string>;
+    public hasPosition: boolean = true;
 
     // Outputs
     public organisations: Subject<Organisation[]> = new Subject<Organisation[]>();
@@ -50,7 +53,8 @@ export class ResultComponent implements OnInit {
 
     constructor(private organisationService: OrganisationService,
                 private router: Router,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private changeDetectorRef: ChangeDetectorRef) {
         let position = Observable.merge(
             ObservableUtil.extractObjectMember(this.route.params, 'position')
                 .map(UrlParamBuilder.parseGeoPoint),
@@ -60,6 +64,16 @@ export class ResultComponent implements OnInit {
         this.position = position
             .debounceTime(100)
             .distinctUntilChanged();
+
+        position
+            .filter(position => position !== null)
+            .first()
+            .subscribe(() => {
+                this.hasPosition = true;
+                this._mapSize$.next('normal');
+                this._zoom$.next(environment.defaults.zoomLevel.withPosition);
+                this.changeDetectorRef.detectChanges();
+            });
 
         this.center = position
             .map((position) => {
@@ -72,12 +86,7 @@ export class ResultComponent implements OnInit {
             .distinctUntilChanged();
 
         this.zoom = Observable.concat(
-            Observable.merge(
-                Observable.of(environment.defaults.zoomLevel.withPosition),
-                position
-                    .filter(position => position == null)
-                    .map(position => environment.defaults.zoomLevel.withoutPosition)
-            ),
+            Observable.of(environment.defaults.zoomLevel.withoutPosition),
             this._zoom$.asObservable()
         )
             .debounceTime(100)
@@ -85,6 +94,15 @@ export class ResultComponent implements OnInit {
 
         this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers');
 
+        ObservableUtil.extractObjectMember(this.route.params, 'mapSize')
+            .filter(mapSize => mapSize != null)
+            .subscribe(mapSize => {
+                if (mapSize === 'fullscreen') {
+                    this.hasPosition = false;
+                }
+                return this._mapSize$.next(mapSize);
+            });
+        this.mapSize = this._mapSize$.asObservable();
     }
 
     ngOnInit() {
@@ -158,6 +176,16 @@ export class ResultComponent implements OnInit {
                     scoreNorm: organisation.scoreNorm
                 }], extras);
             });
+    }
+
+    public continueWithoutLocation(mapSize?: string): void {
+        if (!this.hasPosition) {
+            this.hasPosition = true;
+            if (mapSize !== 'normal') {
+                this._mapSize$.next('normal');
+            }
+            this.changeDetectorRef.detectChanges();
+        }
     }
 
     updateOrganisations(answers: UserAnswer[]) {

@@ -110,7 +110,7 @@
       "contentEnd1": "Wenn du unentschlossen bist und einfach nur schauen möchtest welche Organisationen in deiner Nähe sind, kannst du auch fortfahren",
       "contentEnd2Link": "ohne",
       "contentEnd3": "die Fragen zu beantworten.",
-      "buttonContinueWithoutAddress": "Ohne Fragen fortfahren"
+      "buttonContinueWithoutQuestions": "Direkt zur Karte"
     }
   },
   "result": {

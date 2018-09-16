@@ -1,4 +1,13 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+    AfterViewChecked,
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {Observable} from 'rxjs';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -34,7 +43,7 @@ import SearchBox = google.maps.places.SearchBox;
         ])
     ]
 })
-export class GoogleMapsComponent implements OnInit, AfterViewInit {
+export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
     public static readonly MAP_RESIZE_DURATION = 400;
 
@@ -53,6 +62,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();
     @Output() updateZoom: EventEmitter<number> = new EventEmitter<number>();
     @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
+    @Output() mapResize: EventEmitter<string> = new EventEmitter<string>();
 
     private map: Map;
     private markers: Marker[] = [];
@@ -60,7 +70,9 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
     private positionMarker: Marker;
     private positionCircle: Circle;
     private markerClusterer: MarkerClusterer;
+    private controlButton: HTMLElement;
 
+    private searchContainers: HTMLElement[] = [];
 
     constructor(private element: ElementRef) {
     }
@@ -98,7 +110,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
         }
 
         this.markerClusterer = new MarkerClusterer(this.map, [], {imagePath: 'assets/images/m'});
-        if (this.hasClustedOrganisations()) {
+        if (this.hasClusteredOrganisations()) {
             this.drawClusteredOrganisations();
         }
 
@@ -106,6 +118,13 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
             this.configureMapResizeButton();
         }
         google.maps.event.trigger(this.map, 'resize');
+    }
+
+    ngAfterViewChecked(): void {
+        if (this.canChoosePosition()) {
+            this.configureSearchBox();
+        }
+        this.updateMapResizeButton();
     }
 
     private configureViewPortChange() {
@@ -146,26 +165,41 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
     }
 
     private configureSearchBox() {
-        let searchContainer: HTMLElement = this.element.nativeElement.getElementsByClassName('addressSearchContainer')[0];
-        let searchText: HTMLInputElement = this.element.nativeElement.getElementsByClassName('addressInput')[0];
-        let searchBox = new SearchBox(searchText);
-        this.map.controls[ControlPosition.TOP_LEFT].push(searchContainer);
-
-        searchBox.addListener('places_changed', () => {
-            let places = searchBox.getPlaces();
-
-            if (places.length != 0) {
-                this.updatePosition.next(GoogleMapsComponent.convertLatLngToGeoPoint(places[0].geometry.location));
+        let addressSearchContainers: HTMLElement[] = this.element.nativeElement.getElementsByClassName('addressSearchContainer');
+        for (const addressSearchContainer of addressSearchContainers) {
+            if (this.searchContainers.indexOf(addressSearchContainer) >= 0) {
+                continue;
             }
-        });
+            this.searchContainers.push(addressSearchContainer);
 
-        this.map.addListener('bounds_changed', () => {
-            let bounds = this.map.getBounds();
+            this.map.controls[ControlPosition.TOP_LEFT].push(addressSearchContainer);
 
-            if (bounds != null) {
-                searchBox.setBounds(bounds);
+            let isInputField = addressSearchContainer.classList.contains('addressInput');
+            let searchText: HTMLInputElement;
+            if (isInputField) {
+                searchText = <HTMLInputElement>addressSearchContainer;
+            } else {
+                searchText = <HTMLInputElement>addressSearchContainer.getElementsByClassName('addressInput')[0];
             }
-        });
+
+            let searchBox = new SearchBox(searchText);
+
+            searchBox.addListener('places_changed', () => {
+                let places = searchBox.getPlaces();
+
+                if (places.length != 0) {
+                    this.updatePosition.next(GoogleMapsComponent.convertLatLngToGeoPoint(places[0].geometry.location));
+                }
+            });
+
+            this.map.addListener('bounds_changed', () => {
+                let bounds = this.map.getBounds();
+
+                if (bounds != null) {
+                    searchBox.setBounds(bounds);
+                }
+            });
+        }
     }
 
     private configureUpdateViewPort() {
@@ -222,7 +256,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
         });
     }
 
-    private hasClustedOrganisations() {
+    private hasClusteredOrganisations() {
         return this.clusteredOrganisations !== undefined;
     }
 
@@ -284,24 +318,24 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
     }
 
     private configureMapResizeButton() {
-        let controlButton = document.createElement('span');
+        this.controlButton = document.createElement('span');
         if (this.mapSize === 'fullscreen') {
-            controlButton.className = 'glyphicon glyphicon-chevron-up';
+            this.controlButton.className = 'glyphicon glyphicon-chevron-up';
         } else {
-            controlButton.className = 'glyphicon glyphicon-chevron-down';
+            this.controlButton.className = 'glyphicon glyphicon-chevron-down';
         }
-        controlButton.style.fontSize = '24px';
-        controlButton.style.marginBottom = '22px';
-        controlButton.style.cursor = 'pointer';
-        controlButton.addEventListener('click', () => {
+        this.controlButton.style.fontSize = '24px';
+        this.controlButton.style.marginBottom = '22px';
+        this.controlButton.style.cursor = 'pointer';
+        this.controlButton.addEventListener('click', () => {
             let center = this.map.getCenter();
             if (this.mapSize === 'normal') {
                 this.mapSize = 'fullscreen';
-                controlButton.className = 'glyphicon glyphicon-chevron-up';
             } else {
                 this.mapSize = 'normal';
-                controlButton.className = 'glyphicon glyphicon-chevron-down';
             }
+            console.log('map resize emit', this.mapSize);
+            this.mapResize.emit(this.mapSize);
             setTimeout(() => {
                 google.maps.event.trigger(this.map, 'resize');
                 this.map.setCenter(center);
@@ -309,9 +343,20 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
         });
 
         let centerControlDiv: any = document.createElement('div');
-        centerControlDiv.appendChild(controlButton);
+        centerControlDiv.appendChild(this.controlButton);
         centerControlDiv.index = 1;
         this.map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
+    }
+
+    private updateMapResizeButton(): void {
+        if (this.controlButton === undefined) {
+            return;
+        }
+        if (this.mapSize === 'normal') {
+            this.controlButton.className = 'glyphicon glyphicon-chevron-down';
+        } else {
+            this.controlButton.className = 'glyphicon glyphicon-chevron-up';
+        }
     }
 
     private static convertGeoPointToLatLng(location: GeoPoint): LatLng {
