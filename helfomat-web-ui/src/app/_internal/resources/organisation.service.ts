@@ -1,90 +1,63 @@
 import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs';
 import {Answer} from '../../shared/answer.model';
 import {GeoPoint} from '../../../_internal/geopoint';
-import {map} from "rxjs/operators";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 export class OrganisationService {
 
-    constructor(private http: Http) {
+    constructor(private httpClient: HttpClient) {
     }
 
     findGlobal(): Observable<Organisation[]> {
-        return this.http
-            .get('api/organisation/global')
-            .pipe(
-                map((response: Response) => response.json())
-            );
+        return this.httpClient.get<Organisation[]>('api/organisation/global');
     }
 
     findGlobalByQuestionAnswers(answers: UserAnswer[]): Observable<Organisation[]> {
-        return this.http
-            .post('api/organisation/global/byQuestionAnswers', answers)
-            .pipe(
-                map((response: Response) => response.json())
-            );
+        return this.httpClient.post<Organisation[]>('api/organisation/global/byQuestionAnswers', answers);
     }
 
     findByPosition(position: GeoPoint, distance: number): Observable<Organisation[]> {
-        return this.http
-            .get('api/organisation/byPosition', {
-                params: {
-                    position: GeoPoint.asString(position),
-                    distance
-                }
-            })
-            .pipe(
-                map((response: Response) => response.json())
-            );
+        return this.httpClient.get<Organisation[]>('api/organisation/byPosition', {
+            params: {
+                position: GeoPoint.asString(position),
+                distance: String(distance)
+            }
+        });
     }
 
     findByQuestionAnswersAndPosition(answers: UserAnswer[], position: GeoPoint, distance: number): Observable<Organisation[]> {
-        return this.http
-            .post('api/organisation/byQuestionAnswersAndPosition',
-                answers,
-                {
-                    params: {
-                        position: GeoPoint.asString(position),
-                        distance
-                    }
-                })
-            .pipe(
-                map((response: Response) => response.json())
-            );
+        return this.httpClient.post<Organisation[]>('api/organisation/byQuestionAnswersAndPosition',
+            answers,
+            {
+                params: {
+                    position: GeoPoint.asString(position),
+                    distance: String(distance)
+                }
+            });
     }
 
     boundingBox(position: GeoPoint, distance: number, boundingBox: BoundingBox, zoom: number): Observable<GeoPoint[]> {
-        return this.http
-            .post('api/organisation/boundingBox', {
-                position,
-                distance,
-                boundingBox,
-                zoom
-            })
-            .pipe(
-                map((response: Response) => response.json())
-            );
+        return this.httpClient.post<GeoPoint[]>('api/organisation/boundingBox', {
+            position,
+            distance,
+            boundingBox,
+            zoom
+        });
     }
 
     getOrganisation(urlName: string): Observable<Organisation> {
-        return this.http.get('api/organisation/' + urlName)
-            .pipe(
-                map((response: Response) => response.json())
-            );
+        return this.httpClient.get<Organisation>('api/organisation/' + urlName);
     }
 
     getTravelDistances(id: string, location: GeoPoint): Observable<Array<TravelDistance>> {
-        return this.http.get(`api/organisation/${id}/travelDistances`, {
+        return this.httpClient.get<Array<TravelDistance>>(`api/organisation/${id}/travelDistances`, {
             params: {
-                lat: location.lat,
-                lon: location.lon
+                lat: String(location.lat),
+                lon: String(location.lon)
             }
-        })
-            .pipe(
-                map((response: Response) => response.json())
-            );
+        });
     }
 
 }

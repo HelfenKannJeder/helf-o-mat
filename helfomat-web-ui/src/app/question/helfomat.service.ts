@@ -1,17 +1,16 @@
 import {Injectable} from '@angular/core';
 import {Question} from './question.model';
-import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs';
-import {map} from "rxjs/operators";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 export class HelfomatService {
 
-    constructor(private http: Http) {
+    constructor(private httpClient: HttpClient) {
     }
 
     findQuestions(): Observable<Array<Question>> {
-        return this.http.get('api/questions').pipe(map((r: Response) => r.json()));
+        return this.httpClient.get<Array<Question>>('api/questions');
     }
 
 }

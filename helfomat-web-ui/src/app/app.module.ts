@@ -1,7 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
 import {AppComponent} from './app.component';
 import {appRoutingProviders, routing} from './app.routing';
 import {OrganisationModule} from './organisation/organisation.module';
@@ -27,7 +26,6 @@ export function createTranslateLoader(http: HttpClient) {
         BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
-        HttpModule,
         HttpClientModule,
         routing,
         TranslateModule.forRoot({
