@@ -96,7 +96,7 @@ export class ResultComponent implements OnInit {
 
         ObservableUtil.extractObjectMember(this.route.params, 'mapSize')
             .filter(mapSize => mapSize != null)
-            .subscribe(mapSize => {
+            .subscribe((mapSize: string) => {
                 if (mapSize === 'fullscreen') {
                     this.hasPosition = false;
                 }

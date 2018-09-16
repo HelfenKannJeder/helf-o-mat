@@ -6,7 +6,8 @@ import {
     EventEmitter,
     Input,
     OnInit,
-    Output
+    Output,
+    ViewChild
 } from '@angular/core';
 import {Observable} from 'rxjs';
 import MarkerClusterer from 'node-js-marker-clusterer';
@@ -64,6 +65,8 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
     @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
     @Output() mapResize: EventEmitter<string> = new EventEmitter<string>();
 
+    @ViewChild('googleMaps') public googleMapsElement: any;
+
     private map: Map;
     private markers: Marker[] = [];
     private clusteredMarkers: Marker[] = [];
@@ -88,7 +91,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
     }
 
     ngAfterViewInit() {
-        this.map = new Map(this.element.nativeElement.getElementsByClassName('googleMap')[0], {
+        this.map = new Map(this.googleMapsElement.nativeElement, {
             mapTypeId: MapTypeId.ROADMAP,
             zoomControl: true,
             mapTypeControl: false,
