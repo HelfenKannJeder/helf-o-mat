@@ -3,8 +3,7 @@ import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstract-ques
 import {HelfomatService} from './helfomat.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ObservableUtil} from '../shared/observable.util';
-import {Observable} from 'rxjs/Observable';
-import {Subscription} from 'rxjs/Subscription';
+import {combineLatest, concat, Observable, of, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
 
 @Component({
@@ -24,13 +23,13 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
                 protected helfomatService: HelfomatService) {
         super();
 
-        Observable.combineLatest(
+        combineLatest(
             this.newAnswers,
             this.questionWithUserAnswers
         )
             .subscribe(([answers, questionWithUserAnswers]: [string, Array<QuestionWithUserAnswer>]) => {
                 let url = QuestionComponent.getNavigateUrl(this.getLastAnsweredQuestion(questionWithUserAnswers) == questionWithUserAnswers.length);
-                this.router.navigate([url, {answers}]);
+                this.router.navigate([url, {answers, position: null, mapSize: 'fullscreen'}]);
             })
     }
 
@@ -60,10 +59,10 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
         return numQuestion;
     }
 
-    public continueWithoutAnswers(): void {
+    public continueWithoutQuestions(): void {
         this.router.navigate([
             QuestionComponent.getNavigateUrl(true),
-            {answers: null}
+            {answers: null, position: null, mapSize: 'fullscreen'}
         ]);
     }
 
@@ -83,15 +82,15 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
     }
 
     protected getCurrentAnswers(): Observable<string> {
-        return Observable.concat(
-            Observable.of(null),
+        return concat(
+            of(null),
             ObservableUtil.extractObjectMember<string>(this.route.params, 'answers')
         );
     }
 
     private static getNavigateUrl(allQuestionsAnswered: boolean): string {
         if (allQuestionsAnswered) {
-            return '/location';
+            return '/result';
         } else {
             return '/question';
         }

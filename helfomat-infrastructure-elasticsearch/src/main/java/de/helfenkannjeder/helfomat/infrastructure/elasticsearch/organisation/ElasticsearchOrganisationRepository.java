@@ -163,7 +163,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     public void save(List<? extends Organisation> items) {
         List<IndexQuery> indexQueries = items.stream()
             .map(item -> new IndexQueryBuilder()
-                .withId(String.valueOf(item.getId()))
+                .withId(item.getId().getValue())
                 .withObject(item))
             .map(builder -> builder.withType(this.elasticsearchConfiguration.getType().getOrganisation()))
             .map(builder -> builder.withIndexName(indexName))

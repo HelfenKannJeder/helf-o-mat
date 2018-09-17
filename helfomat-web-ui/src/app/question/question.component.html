@@ -20,23 +20,23 @@
             </a>
         </p>
         <p class="text-center question-progress">
-        <span *ngFor="let subQuestionWithUserAnswer of questionWithUserAnswers | async"
+        <span *ngFor="let subQuestionWithUserAnswer of questionWithUserAnswersSync"
               class="glyphicon glyphicon-stop answer"
-              [ngClass]="classOfAnswer(subQuestionWithUserAnswer.answer.answer)" aria-hidden="true"></span>
+              [ngClass]="classOfAnswer(subQuestionWithUserAnswer.userAnswer?.answer)" aria-hidden="true"></span>
         </p>
     </div>
 </div>
-<div class="col-md-12">
+<div class="col-md-3 pull-right">
     <div class="row">
         <div class="panel panel-default">
             <div class="panel-heading">
                 {{ 'question.skip.headline' | translate }}
             </div>
             <div class="panel-body">
-                <p>{{ 'question.skip.contentEnd1' | translate }}<a (click)="continueWithoutAnswers()">{{
-                    'question.skip.contentEnd2Link' | translate }}</a>{{ 'question.skip.contentEnd3' | translate }}</p>
-                <p><a (click)="continueWithoutAnswers()" class="btn btn-xs btn-default">{{
-                    'question.skip.buttonContinueWithoutAddress' | translate}}</a></p>
+                <p>{{ 'question.skip.contentEnd1' | translate }} <a (click)="continueWithoutQuestions()">{{
+                    'question.skip.contentEnd2Link' | translate }}</a> {{ 'question.skip.contentEnd3' | translate }}</p>
+                <p><a (click)="continueWithoutQuestions()" class="btn btn-xs btn-default">{{
+                    'question.skip.buttonContinueWithoutQuestions' | translate}}</a></p>
             </div>
         </div>
     </div>
