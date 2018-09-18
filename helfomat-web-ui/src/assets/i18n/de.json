@@ -29,6 +29,7 @@
       "helfomatResult": {
         "title": "Helf-O-Mat-Ergebnis",
         "compare": "Vergleichen",
+        "backToOverviewTitle": "Zurück",
         "back": "Zurück zum Ergebnis"
       },
       "distance": {
