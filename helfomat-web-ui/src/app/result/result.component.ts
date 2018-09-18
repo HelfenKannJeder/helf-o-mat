@@ -44,7 +44,6 @@ export class ResultComponent implements OnInit {
     public _mapSize$: Subject<string> = new BehaviorSubject<string>('normal');
     public mapSize: Observable<string>;
     public hasPosition: boolean = true;
-    public isDefaultZoom: boolean = true;
 
     // Outputs
     public organisations: Subject<Organisation[]> = new Subject<Organisation[]>();
@@ -70,7 +69,6 @@ export class ResultComponent implements OnInit {
                     if (zoom == null) {
                         return environment.defaults.zoomLevel.withoutPosition;
                     }
-                    this.isDefaultZoom = false;
                     return zoom;
                 })
             )
@@ -92,9 +90,7 @@ export class ResultComponent implements OnInit {
             .subscribe(() => {
                 this.hasPosition = true;
                 this._mapSize$.next('normal');
-                if (this.isDefaultZoom) {
-                    this._zoom$.next(environment.defaults.zoomLevel.withPosition);
-                }
+                this._zoom$.next(environment.defaults.zoomLevel.withPosition);
                 this.changeDetectorRef.detectChanges();
             });
 
