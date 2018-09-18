@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {BoundingBox, Organisation, OrganisationService, UserAnswer} from '../_internal/resources/organisation.service';
-import {BehaviorSubject, combineLatest, concat, from, merge, Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, from, Observable, Subject} from 'rxjs';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
 import {ObservableUtil} from '../shared/observable.util';
@@ -31,9 +31,9 @@ export class ResultComponent implements OnInit {
 
     // Inputs
     private _answers$: Subject<UserAnswer[]> = new Subject<UserAnswer[]>();
-    public _position$: Subject<GeoPoint> = new Subject<GeoPoint>();
+    public _position$: Subject<GeoPoint> = new BehaviorSubject<GeoPoint>(null);
     public _boundingBox$: Subject<BoundingBox> = new Subject<BoundingBox>();
-    public _zoom$: Subject<number> = new Subject<number>();
+    public _zoom$: Subject<number> = new BehaviorSubject<number>(environment.defaults.zoomLevel.withoutPosition);
     public _organisation$: Subject<Organisation> = new Subject<Organisation>();
     public _newAnswers$: Subject<string> = new Subject<string>();
     public answers: Observable<string>;
@@ -44,6 +44,7 @@ export class ResultComponent implements OnInit {
     public _mapSize$: Subject<string> = new BehaviorSubject<string>('normal');
     public mapSize: Observable<string>;
     public hasPosition: boolean = true;
+    public isDefaultZoom: boolean = true;
 
     // Outputs
     public organisations: Subject<Organisation[]> = new Subject<Organisation[]>();
@@ -56,13 +57,26 @@ export class ResultComponent implements OnInit {
                 private router: Router,
                 private route: ActivatedRoute,
                 private changeDetectorRef: ChangeDetectorRef) {
-        let position: Observable<GeoPoint> = merge(
-            ObservableUtil.extractObjectMember(this.route.params, 'position')
-                .pipe(
-                    map(UrlParamBuilder.parseGeoPoint)
-                ),
-            this._position$.asObservable() // should not be necessary if position is written to URL
-        );
+        ObservableUtil.extractObjectMember(this.route.params, 'position')
+            .pipe(
+                map(UrlParamBuilder.parseGeoPoint)
+            )
+            .subscribe(position => this._position$.next(position));
+
+        ObservableUtil.extractObjectMember(this.route.params, 'zoom')
+            .pipe(map(UrlParamBuilder.parseInt))
+            .pipe(
+                map((zoom: number) => {
+                    if (zoom == null) {
+                        return environment.defaults.zoomLevel.withoutPosition;
+                    }
+                    this.isDefaultZoom = false;
+                    return zoom;
+                })
+            )
+            .subscribe(zoom => this._zoom$.next(zoom));
+
+        let position: Observable<GeoPoint> = this._position$.asObservable();
 
         this.position = position
             .pipe(
@@ -78,7 +92,9 @@ export class ResultComponent implements OnInit {
             .subscribe(() => {
                 this.hasPosition = true;
                 this._mapSize$.next('normal');
-                this._zoom$.next(environment.defaults.zoomLevel.withPosition);
+                if (this.isDefaultZoom) {
+                    this._zoom$.next(environment.defaults.zoomLevel.withPosition);
+                }
                 this.changeDetectorRef.detectChanges();
             });
 
@@ -94,14 +110,13 @@ export class ResultComponent implements OnInit {
                 distinctUntilChanged()
             );
 
-        this.zoom = concat(
-            of(environment.defaults.zoomLevel.withoutPosition),
-            this._zoom$.asObservable()
-        )
+        this.zoom = this._zoom$.asObservable()
             .pipe(
                 debounceTime(100),
                 distinctUntilChanged()
             );
+
+        this.zoom.subscribe((zoom) => console.log("current zoom", zoom));
 
         this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers');
 
@@ -121,7 +136,7 @@ export class ResultComponent implements OnInit {
     ngOnInit() {
         combineLatest(
             this._answers$.asObservable(),
-            merge(of(null), this._position$.asObservable()),
+            this._position$.asObservable(),
             this.distance,
             this._boundingBox$.asObservable(),
             this._zoom$.asObservable()
@@ -179,9 +194,10 @@ export class ResultComponent implements OnInit {
             this._organisation$.asObservable(),
             this._newAnswers$.asObservable(),
             this.position,
+            this.zoom,
             this.distance
         )
-            .subscribe(([organisation, answers, position, distance]: [Organisation, string, GeoPoint, number]) => {
+            .subscribe(([organisation, answers, position, zoom, distance]: [Organisation, string, GeoPoint, number, number]) => {
                 let extras: NavigationExtras = {};
                 if (this.explainScore) {
                     extras.fragment = 'compare';
@@ -189,6 +205,7 @@ export class ResultComponent implements OnInit {
                 this.router.navigate(['/organisation/' + organisation.urlName, {
                     answers: answers,
                     position: UrlParamBuilder.buildGeoPoint(position),
+                    zoom: zoom,
                     distance: distance,
                     scoreNorm: organisation.scoreNorm
                 }], extras);

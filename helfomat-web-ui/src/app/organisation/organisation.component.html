@@ -137,7 +137,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default" *ngIf="scoreNorm | async">
+            <div class="panel panel-default" *ngIf="scoreNorm | async; else backLink">
                 <div class="panel-heading">
                     {{'organisation.facts.helfomatResult.title' | translate}}
                 </div>
@@ -153,6 +153,18 @@
                     </div>
                 </div>
             </div>
+            <ng-template #backLink>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        {{'organisation.facts.helfomatResult.backToOverviewTitle' | translate}}
+                    </div>
+                    <div class="panel-body">
+                        <button class="btn btn-default" (click)="_back$.next()">
+                            {{'organisation.facts.helfomatResult.back' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </ng-template>
             <div class="panel panel-default" *ngIf="travelDistances | async; let travelDistances">
                 <div class="panel-heading">
                     {{'organisation.facts.distance.title' | translate}}
