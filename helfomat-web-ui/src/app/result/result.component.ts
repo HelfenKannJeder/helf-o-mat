@@ -1,22 +1,19 @@
-import {Component, OnInit} from '@angular/core';
-import {SearchService} from './search.service';
-import {Observable, Subject} from 'rxjs';
-import {GeoPoint} from '../organisation/geopoint.model';
-import {UserAnswer} from '../organisation/userAnswer.model';
-import {BoundingBox} from '../organisation/boundingbox.model';
-import {Organisation} from '../organisation/organisation.model';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {BoundingBox, Organisation, OrganisationService, UserAnswer} from '../_internal/resources/organisation.service';
+import {BehaviorSubject, combineLatest, from, Observable, Subject} from 'rxjs';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
-import {Answer} from '../shared/answer.model';
 import {ObservableUtil} from '../shared/observable.util';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {environment} from '../../environments/environment';
+import {GeoPoint} from '../../_internal/geopoint';
+import {debounceTime, distinctUntilChanged, filter, first, flatMap, map} from "rxjs/operators";
 
 @Component({
     selector: 'app-result',
     templateUrl: './result.component.html',
     styleUrls: ['./result.component.less'],
-    providers: [SearchService],
+    providers: [OrganisationService],
     animations: [
         trigger('slide', [
             state('question', style({
@@ -33,74 +30,107 @@ import {environment} from '../../environments/environment';
 export class ResultComponent implements OnInit {
 
     // Inputs
-    private _answers$: Subject<UserAnswer[]>;
-    public _position$: Subject<GeoPoint>;
-    public _boundingBox$: Subject<BoundingBox>;
-    public _zoom$: Subject<number>;
-    public _organisation$: Subject<Organisation>;
-    public answers: Observable<Answer[]>;
+    private _answers$: Subject<UserAnswer[]> = new Subject<UserAnswer[]>();
+    public _position$: Subject<GeoPoint> = new BehaviorSubject<GeoPoint>(null);
+    public _boundingBox$: Subject<BoundingBox> = new Subject<BoundingBox>();
+    public _zoom$: Subject<number> = new BehaviorSubject<number>(environment.defaults.zoomLevel.withoutPosition);
+    public _organisation$: Subject<Organisation> = new Subject<Organisation>();
+    public _newAnswers$: Subject<string> = new Subject<string>();
+    public answers: Observable<string>;
     public position: Observable<GeoPoint>;
     public center: Observable<GeoPoint>;
-    public distance = Observable.from([10]);
+    public distance = from([10]);
     public zoom: Observable<number>;
+    public _mapSize$: Subject<string> = new BehaviorSubject<string>('normal');
+    public mapSize: Observable<string>;
+    public hasPosition: boolean = true;
 
     // Outputs
-    public organisations: Observable<Organisation[]>;
-    public clusteredOrganisations: Observable<GeoPoint[]>;
+    public organisations: Subject<Organisation[]> = new Subject<Organisation[]>();
+    public clusteredOrganisations: Subject<GeoPoint[]> = new Subject<GeoPoint[]>();
 
     public visibleComponent: 'list' | 'question' = 'list';
     private explainScore: boolean = false;
 
-    constructor(private searchService: SearchService,
+    constructor(private organisationService: OrganisationService,
                 private router: Router,
-                private route: ActivatedRoute) {
-        this._answers$ = <Subject<UserAnswer[]>>new Subject();
-        this._position$ = <Subject<GeoPoint>>new Subject();
-        this._boundingBox$ = <Subject<BoundingBox>>new Subject();
-        this._zoom$ = <Subject<number>>new Subject();
-        this._organisation$ = <Subject<Organisation>>new Subject();
-        this.organisations = searchService.organisations$;
-        this.clusteredOrganisations = searchService.clusteredOrganisations$;
+                private route: ActivatedRoute,
+                private changeDetectorRef: ChangeDetectorRef) {
+        ObservableUtil.extractObjectMember(this.route.params, 'position')
+            .pipe(
+                map(UrlParamBuilder.parseGeoPoint)
+            )
+            .subscribe(position => this._position$.next(position));
 
-        let position = Observable.merge(
-            ObservableUtil.extractObjectMember(this.route.params, 'position')
-                .map(UrlParamBuilder.parseGeoPoint),
-            this._position$.asObservable() // should not be necessary if position is written to URL
-        );
+        ObservableUtil.extractObjectMember(this.route.params, 'zoom')
+            .pipe(map(UrlParamBuilder.parseInt))
+            .pipe(
+                map((zoom: number) => {
+                    if (zoom == null) {
+                        return environment.defaults.zoomLevel.withoutPosition;
+                    }
+                    return zoom;
+                })
+            )
+            .subscribe(zoom => this._zoom$.next(zoom));
+
+        let position: Observable<GeoPoint> = this._position$.asObservable();
 
         this.position = position
-            .debounceTime(100)
-            .distinctUntilChanged();
+            .pipe(
+                debounceTime(100),
+                distinctUntilChanged()
+            );
+
+        position
+            .pipe(
+                filter(position => position !== null),
+                first()
+            )
+            .subscribe(() => {
+                this.hasPosition = true;
+                this._mapSize$.next('normal');
+                this._zoom$.next(environment.defaults.zoomLevel.withPosition);
+                this.changeDetectorRef.detectChanges();
+            });
 
         this.center = position
-            .map((position) => {
-                if (position == null) {
-                    return environment.defaults.mapCenter;
+            .pipe(
+                map((position) => {
+                    if (position == null) {
+                        return environment.defaults.mapCenter;
+                    }
+                    return position;
+                }),
+                debounceTime(100),
+                distinctUntilChanged()
+            );
+
+        this.zoom = this._zoom$.asObservable()
+            .pipe(
+                debounceTime(100),
+                distinctUntilChanged()
+            );
+
+        this.zoom.subscribe((zoom) => console.log("current zoom", zoom));
+
+        this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers');
+
+        ObservableUtil.extractObjectMember(this.route.params, 'mapSize')
+            .pipe(
+                filter(mapSize => mapSize != null)
+            )
+            .subscribe((mapSize: string) => {
+                if (mapSize === 'fullscreen') {
+                    this.hasPosition = false;
                 }
-                return position;
-            })
-            .debounceTime(100)
-            .distinctUntilChanged();
-
-        this.zoom = Observable.concat(
-            Observable.merge(
-                Observable.of(environment.defaults.zoomLevel.withPosition),
-                position
-                    .filter(position => position == null)
-                    .map(position => environment.defaults.zoomLevel.withoutPosition)
-            ),
-            this._zoom$.asObservable()
-        )
-            .debounceTime(100)
-            .distinctUntilChanged();
-
-        this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
-            .map(UrlParamBuilder.parseAnswers);
-
+                return this._mapSize$.next(mapSize);
+            });
+        this.mapSize = this._mapSize$.asObservable();
     }
 
     ngOnInit() {
-        Observable.combineLatest(
+        combineLatest(
             this._answers$.asObservable(),
             this._position$.asObservable(),
             this.distance,
@@ -119,41 +149,73 @@ export class ResultComponent implements OnInit {
                 });
             });
 
-        Observable.combineLatest(
+        combineLatest(
             this._answers$.asObservable(),
             this.position,
             this.distance
-        ).subscribe(([answer, position, distance]: [UserAnswer[], GeoPoint, number]) => {
-            this.searchService.search(answer, position, distance);
-        });
+        )
+            .pipe(
+                flatMap(([answers, position, distance]: [Array<UserAnswer>, GeoPoint, number]) => {
+                    if (answers.length == 0 && position == null) {
+                        return this.organisationService.findGlobal();
+                    } else if (answers.length == 0) {
+                        return this.organisationService.findByPosition(position, distance);
+                    } else if (position == null) {
+                        return this.organisationService.findGlobalByQuestionAnswers(answers);
+                    } else {
+                        return this.organisationService.findByQuestionAnswersAndPosition(answers, position, distance);
+                    }
+                })
+            )
+            .subscribe((organisations) => {
+                this.organisations.next(organisations);
+            });
 
-        Observable.combineLatest(
+        combineLatest(
             this.position,
             this.distance,
             this._boundingBox$.asObservable(),
             this.zoom
-        ).subscribe(([position, distance, boundingBox, zoom]: [GeoPoint, number, BoundingBox, number]) => {
-            this.searchService.boundingBox(position, distance, boundingBox, zoom);
-        });
+        )
+            .pipe(
+                flatMap(([position, distance, boundingBox, zoom]: [GeoPoint, number, BoundingBox, number]) => {
+                    return this.organisationService.boundingBox(position, distance, boundingBox, zoom);
+                })
+            )
+            .subscribe((clusteredOrganisations: GeoPoint[]) => {
+                this.clusteredOrganisations.next(clusteredOrganisations);
+            });
 
-        Observable.combineLatest(
+        combineLatest(
             this._organisation$.asObservable(),
-            this.answers,
+            this._newAnswers$.asObservable(),
             this.position,
+            this.zoom,
             this.distance
         )
-            .subscribe(([organisation, answers, position, distance]: [Organisation, Answer[], GeoPoint, number]) => {
+            .subscribe(([organisation, answers, position, zoom, distance]: [Organisation, string, GeoPoint, number, number]) => {
                 let extras: NavigationExtras = {};
                 if (this.explainScore) {
                     extras.fragment = 'compare';
                 }
                 this.router.navigate(['/organisation/' + organisation.urlName, {
-                    answers: UrlParamBuilder.buildAnswers(answers),
+                    answers: answers,
                     position: UrlParamBuilder.buildGeoPoint(position),
+                    zoom: zoom,
                     distance: distance,
                     scoreNorm: organisation.scoreNorm
                 }], extras);
             });
+    }
+
+    public continueWithoutLocation(mapSize?: string): void {
+        if (!this.hasPosition) {
+            this.hasPosition = true;
+            if (mapSize !== 'normal') {
+                this._mapSize$.next('normal');
+            }
+            this.changeDetectorRef.detectChanges();
+        }
     }
 
     updateOrganisations(answers: UserAnswer[]) {

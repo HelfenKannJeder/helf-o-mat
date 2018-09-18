@@ -1,7 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {AbstractQuestionComponent} from './abstractQuestion.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstract-question.component';
 import {HelfomatService} from './helfomat.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ObservableUtil} from '../shared/observable.util';
+import {combineLatest, concat, Observable, of, Subscription} from 'rxjs';
+import {Answer} from '../shared/answer.model';
 
 @Component({
     selector: 'app-question',
@@ -9,18 +12,88 @@ import {ActivatedRoute, Router} from '@angular/router';
     styleUrls: ['./question.component.scss'],
     providers: [HelfomatService]
 })
-export class QuestionComponent extends AbstractQuestionComponent implements OnInit {
+export class QuestionComponent extends AbstractQuestionComponent implements OnInit, OnDestroy {
+
+    public questionWithUserAnswersSync: Array<QuestionWithUserAnswer>;
+
+    private questionWithUserAnswersSubscription: Subscription;
+
     constructor(protected router: Router,
-                protected route: ActivatedRoute,
+                private route: ActivatedRoute,
                 protected helfomatService: HelfomatService) {
         super();
+
+        combineLatest(
+            this.newAnswers,
+            this.questionWithUserAnswers
+        )
+            .subscribe(([answers, questionWithUserAnswers]: [string, Array<QuestionWithUserAnswer>]) => {
+                let url = QuestionComponent.getNavigateUrl(this.getLastAnsweredQuestion(questionWithUserAnswers) == questionWithUserAnswers.length);
+                this.router.navigate([url, {answers, position: null, mapSize: 'fullscreen'}]);
+            })
     }
 
-    getNavigateUrl(allQuestionsAnswered: boolean): string {
+    public ngOnInit(): void {
+        super.ngOnInit();
+
+        this.questionWithUserAnswersSubscription = this.questionWithUserAnswers
+            .subscribe((questionWithUserAnswersSync: Array<QuestionWithUserAnswer>) => {
+                this.questionWithUserAnswersSync = questionWithUserAnswersSync;
+            });
+    }
+
+    public ngOnDestroy(): void {
+        super.ngOnDestroy();
+
+        this.questionWithUserAnswersSubscription.unsubscribe();
+    }
+
+    public getLastAnsweredQuestion(questionWithUserAnswers: Array<QuestionWithUserAnswer>): number {
+        let numQuestion: number = 0;
+        for (let questionWithUserAnswer of questionWithUserAnswers) {
+            if (questionWithUserAnswer.userAnswer == null) {
+                return numQuestion;
+            }
+            numQuestion++;
+        }
+        return numQuestion;
+    }
+
+    public continueWithoutQuestions(): void {
+        this.router.navigate([
+            QuestionComponent.getNavigateUrl(true),
+            {answers: null, position: null, mapSize: 'fullscreen'}
+        ]);
+    }
+
+    public classOfAnswer(answer: Answer): string[] {
+        if (answer == null) {
+            return ['answer-missing'];
+        }
+        switch (answer) {
+            case Answer.NO:
+                return ['answer-no'];
+            case Answer.MAYBE:
+                return ['answer-maybe'];
+            case Answer.YES:
+                return ['answer-yes'];
+        }
+        return [];
+    }
+
+    protected getCurrentAnswers(): Observable<string> {
+        return concat(
+            of(null),
+            ObservableUtil.extractObjectMember<string>(this.route.params, 'answers')
+        );
+    }
+
+    private static getNavigateUrl(allQuestionsAnswered: boolean): string {
         if (allQuestionsAnswered) {
-            return '/location';
+            return '/result';
         } else {
             return '/question';
         }
     }
+
 }

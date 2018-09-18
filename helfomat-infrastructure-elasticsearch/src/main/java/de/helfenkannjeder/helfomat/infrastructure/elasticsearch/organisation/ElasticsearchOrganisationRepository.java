@@ -25,6 +25,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.util.StreamUtils;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -94,43 +95,44 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     public List<ScoredOrganisation> findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
         List<QuestionAnswer> questionAnswers, GeoPoint position, double distance
     ) {
-        return sortOrganisations(
-            findOrganisationsWithQuestionsAndFilter(
-                questionAnswers,
-                filterDistance(position, distance)
-            ),
-            position
+        return findOrganisationsWithQuestionsAndFilter(
+            questionAnswers,
+            filterDistance(position, distance)
         )
+            .sorted((organisation1, organisation2) -> compareOrganisationsBasedOnScoreAndDistance(organisation1, organisation2, position))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Organisation> findOrganisationsByDistanceSortByDistance(GeoPoint position, double distance) {
+        return
+            search(filterDistance(position, distance))
+                .sorted((organisation1, organisation2) -> compareOrganisationsBasedOnDistance(organisation1, organisation2, position))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ScoredOrganisation> findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(
         List<QuestionAnswer> questionAnswers
     ) {
-        return sortOrganisations(
-            findOrganisationsWithQuestionsAndFilter(
-                questionAnswers,
-                boolQuery()
-                    .mustNot(existsQuery("defaultAddress"))
-            )
+        return findOrganisationsWithQuestionsAndFilter(
+            questionAnswers,
+            boolQuery()
+                .mustNot(existsQuery("defaultAddress"))
         )
+            .sorted((organisation1, organisation2) -> compareOrganisationsBasedOnScoreAndDistance(organisation1, organisation2, null))
             .collect(Collectors.toList());
     }
 
-    private Stream<ScoredOrganisation> findOrganisationsWithQuestionsAndFilter(List<QuestionAnswer> questionAnswers,
-                                                                               QueryBuilder filter) {
-        BoolQueryBuilder boolQueryBuilder = boolQuery();
-        for (QuestionAnswer questionAnswer : questionAnswers) {
-            boolQueryBuilder.should(buildQuestionQuery(questionAnswer));
-        }
-
-        boolQueryBuilder.filter(filter);
-
-        return extractOrganisations(
-            questionAnswers,
-            search(boolQueryBuilder)
-        );
+    @Override
+    public List<Organisation> findGlobalOrganisations() {
+        return
+            search(
+                boolQuery()
+                    .mustNot(existsQuery("defaultAddress"))
+            )
+                .sorted(Comparator.comparing(Organisation::getName))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -162,7 +164,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     public void save(List<? extends Organisation> items) {
         List<IndexQuery> indexQueries = items.stream()
             .map(item -> new IndexQueryBuilder()
-                .withId(String.valueOf(item.getId()))
+                .withId(item.getId().getValue())
                 .withObject(item))
             .map(builder -> builder.withType(this.elasticsearchConfiguration.getType().getOrganisation()))
             .map(builder -> builder.withIndexName(indexName))
@@ -220,28 +222,41 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         return organisationListQuery;
     }
 
-    private Stream<ScoredOrganisation> sortOrganisations(Stream<ScoredOrganisation> organisations) {
-        return sortOrganisations(organisations, null);
+    private Stream<ScoredOrganisation> findOrganisationsWithQuestionsAndFilter(List<QuestionAnswer> questionAnswers,
+                                                                               QueryBuilder filter) {
+        BoolQueryBuilder boolQueryBuilder = boolQuery();
+        questionAnswers
+            .stream()
+            .filter(questionAnswer -> Objects.nonNull(questionAnswer.getAnswer()))
+            .map(this::buildQuestionQuery)
+            .forEach(boolQueryBuilder::should);
+        boolQueryBuilder.filter(filter);
+
+        return extractOrganisations(
+            questionAnswers,
+            search(boolQueryBuilder)
+        );
     }
 
-    private Stream<ScoredOrganisation> sortOrganisations(Stream<ScoredOrganisation> organisations, GeoPoint position) {
-        return organisations
-            .sorted((organisation1, organisation2) -> {
-                float score1 = organisation1.getScore();
-                float score2 = organisation2.getScore();
+    private int compareOrganisationsBasedOnScoreAndDistance(ScoredOrganisation organisation1, ScoredOrganisation organisation2, GeoPoint position) {
+        float score1 = organisation1.getScore();
+        float score2 = organisation2.getScore();
 
-                if (score1 < score2) {
-                    return 1;
-                } else if (score1 > score2) {
-                    return -1;
-                } else if (position != null) {
-                    double distance1 = GeoPoint.distanceInKm(organisation1.getOrganisation().getDefaultAddress().getLocation(), position);
-                    double distance2 = GeoPoint.distanceInKm(organisation2.getOrganisation().getDefaultAddress().getLocation(), position);
-                    return distance1 > distance2 ? 1 : -1;
-                } else {
-                    return 1;
-                }
-            });
+        if (score1 < score2) {
+            return 1;
+        } else if (score1 > score2) {
+            return -1;
+        } else if (position != null) {
+            return compareOrganisationsBasedOnDistance(organisation1.getOrganisation(), organisation2.getOrganisation(), position);
+        } else {
+            return 1;
+        }
+    }
+
+    private int compareOrganisationsBasedOnDistance(Organisation organisation1, Organisation organisation2, GeoPoint position) {
+        double distance1 = GeoPoint.distanceInKm(organisation1.getDefaultAddress().getLocation(), position);
+        double distance2 = GeoPoint.distanceInKm(organisation2.getDefaultAddress().getLocation(), position);
+        return distance1 > distance2 ? 1 : -1;
     }
 
     private QueryBuilder buildQuestionQuery(QuestionAnswer questionAnswer) {
@@ -293,8 +308,12 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
                 Answer userAnswer = questionAnswers.stream()
                     .filter(questionAnswer -> questionAnswer.getQuestionId().equals(questionId))
                     .map(QuestionAnswer::getAnswer)
+                    .filter(Objects::nonNull)
                     .findFirst()
                     .orElse(null);
+                if (userAnswer == null) {
+                    return null;
+                }
 
                 if (Objects.equals(organisationAnswer, userAnswer)) {
                     return 100;
@@ -303,6 +322,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
                 }
                 return 0;
             })
+            .filter(Objects::nonNull)
             .collect(Collectors.averagingDouble(value -> value))
             .floatValue();
     }

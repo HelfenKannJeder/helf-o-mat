@@ -1,15 +1,16 @@
 import {Answer} from './shared/answer.model';
-import {GeoPoint} from './organisation/geopoint.model';
-import {UserAnswer} from './organisation/userAnswer.model';
-import {BoundingBox} from './organisation/boundingbox.model';
+import {BoundingBox, UserAnswer} from './_internal/resources/organisation.service';
+import {GeoPoint} from '../_internal/geopoint';
 
 export class UrlParamBuilder {
 
     public static buildAnswersFromUserAnswer(userAnswers: UserAnswer[]) {
         // TODO: Should not work like that, because ordering of userAnswers is not ensured
         let answers: Answer[] = [];
-        for (let userAnswer of userAnswers) {
-            answers.push(userAnswer.answer);
+        if (userAnswers != null) {
+            for (let userAnswer of userAnswers) {
+                answers.push(userAnswer.answer);
+            }
         }
         return UrlParamBuilder.buildAnswers(answers);
     }
@@ -35,6 +36,9 @@ export class UrlParamBuilder {
     }
 
     public static parseInt(shouldBeInteger: string): number {
+        if (shouldBeInteger == null) {
+            return null;
+        }
         return parseInt(shouldBeInteger);
     }
 }

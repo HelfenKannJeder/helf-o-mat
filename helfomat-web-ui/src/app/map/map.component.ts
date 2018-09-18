@@ -1,9 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {BoundingBox} from '../organisation/boundingbox.model';
-import {Organisation} from '../organisation/organisation.model';
-import {GeoPoint} from '../organisation/geopoint.model';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {BoundingBox, Organisation} from '../_internal/resources/organisation.service';
+import {GeoPoint} from '../../_internal/geopoint';
 
 @Component({
     selector: 'helfomat-map',
@@ -26,6 +25,7 @@ export class MapComponent {
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();
     @Output() updateZoom: EventEmitter<number> = new EventEmitter<number>();
     @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
+    @Output() mapResize: EventEmitter<string> = new EventEmitter<string>();
 
     public offlineMode: boolean = environment.offline;
 

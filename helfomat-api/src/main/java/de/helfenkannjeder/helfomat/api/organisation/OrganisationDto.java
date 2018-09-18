@@ -13,7 +13,7 @@ public class OrganisationDto {
     private String urlName;
     private String description;
     private String website;
-    private float scoreNorm;
+    private Float scoreNorm;
     private String mapPin;
     private List<AddressDto> addresses;
     private List<ContactPersonDto> contactPersons;
@@ -23,7 +23,7 @@ public class OrganisationDto {
     }
 
     public OrganisationDto(String id, String name, String urlName, String description, String website, String mapPin, List<AddressDto> addresses, List
-        <ContactPersonDto> contactPersons, PictureId logo, float scoreNorm) {
+        <ContactPersonDto> contactPersons, PictureId logo, Float scoreNorm) {
         this.id = id;
         this.name = name;
         this.urlName = urlName;
@@ -56,7 +56,7 @@ public class OrganisationDto {
         return website;
     }
 
-    public float getScoreNorm() {
+    public Float getScoreNorm() {
         return scoreNorm;
     }
 
@@ -72,7 +72,7 @@ public class OrganisationDto {
         return logo;
     }
 
-    public void setScoreNorm(float scoreNorm) {
+    public void setScoreNorm(Float scoreNorm) {
         this.scoreNorm = scoreNorm;
     }
 

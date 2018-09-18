@@ -6,10 +6,38 @@
         [distance]="distance"
         [center]="center"
         [zoom]="zoom"
+        [mapSize]="mapSize | async"
+        [showDefaultAddressBar]="hasPosition"
         (updatePosition)="_position$.next($event)"
         (updateBoundingBox)="_boundingBox$.next($event)"
         (updateZoom)="_zoom$.next($event)"
-        (openOrganisation)="openOrganisation($event)"></helfomat-map>
+        (openOrganisation)="openOrganisation($event)"
+        (mapResize)="continueWithoutLocation($event)">
+        <div class="addressSearchContainer row" *ngIf="!hasPosition">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        {{ 'location.headline' | translate }}
+                    </div>
+                    <div class="panel-body">
+                        <p>{{ 'location.contentStart' | translate }}</p>
+                        <p>
+                            <input
+                                class="addressInput form-control"
+                                type="text"
+                                placeholder="{{ 'map.address' | translate }}"/>
+                        </p>
+                        <p>{{ 'location.contentEnd1' | translate }}<a
+                            (click)="continueWithoutLocation()">{{
+                            'location.contentEnd2Link' | translate }}</a>{{
+                            'location.contentEnd3' | translate }}</p>
+                        <p><a (click)="continueWithoutLocation()" class="btn btn-xs btn-default">{{
+                            'location.buttonContinueWithoutAddress' | translate}}</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </helfomat-map>
 </div>
 
 <div class="slide">
@@ -21,7 +49,10 @@
                 </button>
             </div>
             <div class="well">{{ 'result.header.questions' | translate }}</div>
-            <app-question-overview (organisations)="updateOrganisations($event)"></app-question-overview>
+            <app-question-overview
+                [currentAnswers]="answers"
+                (questionUserAnswers)="updateOrganisations($event)"
+                (newAnswers)="_newAnswers$.next($event)"></app-question-overview>
         </div>
         <div class="col-xs-6">
             <button class="btn btn-default hidden-lg" (click)="visibleComponent = 'question'">

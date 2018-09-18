@@ -1,28 +1,43 @@
 <div class="col-md-12">
-    <div class="jumbotron" *ngFor="let question of questions; let i = index" [hidden]="i != showIndex">
+    <div class="jumbotron" *ngFor="let questionWithUserAnswer of questionWithUserAnswersSync; let i = index"
+         [hidden]="getLastAnsweredQuestion(questionWithUserAnswersSync) !== i">
         <div class="fix-height">
-            <h1>{{question.question}}</h1>
-            <p class="description">{{question.description}}</p>
+            <h1>{{questionWithUserAnswer.question.question}}</h1>
+            <p class="description">{{questionWithUserAnswer.question.description}}</p>
         </div>
         <p class="text-center clearfix">
-            <a class="btn btn-lg btn-yes" role="button" (click)="answerQuestion('YES', question);">
+            <a class="btn btn-lg btn-yes" role="button" (click)="answerQuestion('YES', questionWithUserAnswer.question);">
                 <img src="{{ 'YES' | answerImage}}"/><br/>
                 {{ 'question.yes' | translate }}
             </a>
-            <a class="btn btn-lg btn-maybe" role="button" (click)="answerQuestion('MAYBE', question);">
+            <a class="btn btn-lg btn-maybe" role="button" (click)="answerQuestion('MAYBE', questionWithUserAnswer.question);">
                 <img src="{{ 'MAYBE' | answerImage}}"/><br/>
                 {{ 'question.maybe' | translate }}
             </a>
-            <a class="btn btn-lg btn-no" role="button" (click)="answerQuestion('NO', question);">
+            <a class="btn btn-lg btn-no" role="button" (click)="answerQuestion('NO', questionWithUserAnswer.question);">
                 <img src="{{ 'NO' | answerImage}}"/><br/>
                 {{ 'question.no' | translate }}
             </a>
         </p>
         <p class="text-center question-progress">
-        <span *ngFor="let answer of userAnswers" class="glyphicon glyphicon-stop answer"
-              [ngClass]="classOfAnswer(answer)" aria-hidden="true"></span>
-            <span *ngFor="let number of unansweredQuestions" class="glyphicon glyphicon-stop answer answer-missing"
-                  aria-hidden="true"></span>
+        <span *ngFor="let subQuestionWithUserAnswer of questionWithUserAnswersSync"
+              class="glyphicon glyphicon-stop answer"
+              [ngClass]="classOfAnswer(subQuestionWithUserAnswer.userAnswer?.answer)" aria-hidden="true"></span>
         </p>
+    </div>
+</div>
+<div class="col-md-3 pull-right">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{ 'question.skip.headline' | translate }}
+            </div>
+            <div class="panel-body">
+                <p>{{ 'question.skip.contentEnd1' | translate }} <a (click)="continueWithoutQuestions()">{{
+                    'question.skip.contentEnd2Link' | translate }}</a> {{ 'question.skip.contentEnd3' | translate }}</p>
+                <p><a (click)="continueWithoutQuestions()" class="btn btn-xs btn-default">{{
+                    'question.skip.buttonContinueWithoutQuestions' | translate}}</a></p>
+            </div>
+        </div>
     </div>
 </div>

@@ -1,19 +1,18 @@
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {Params} from '@angular/router';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/distinctUntilChanged';
+import {distinctUntilChanged, map} from "rxjs/operators";
 
 export class ObservableUtil {
     public static extractObjectMember<T>(params: Observable<Params>, property: string): Observable<T> {
         return params
-            .map((params: Params) => {
-                if (params.hasOwnProperty(property)) {
-                    return params[property];
-                }
-                return null;
-            })
-            .filter(element => element != null)
-            .distinctUntilChanged();
+            .pipe(
+                map((params: Params) => {
+                    if (params.hasOwnProperty(property) && params[property] != 'null') {
+                        return params[property];
+                    }
+                    return null;
+                }),
+                distinctUntilChanged()
+            );
     }
 }

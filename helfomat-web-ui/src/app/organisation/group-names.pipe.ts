@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {Group} from './group.model';
 import {TranslateService} from '@ngx-translate/core';
+import {Group} from '../_internal/resources/organisation.service';
 
 @Pipe({
     name: 'groupNames'

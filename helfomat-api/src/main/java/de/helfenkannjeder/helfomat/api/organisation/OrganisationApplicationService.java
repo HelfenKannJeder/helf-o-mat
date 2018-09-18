@@ -4,16 +4,12 @@ import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
-import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
-import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
 import de.helfenkannjeder.helfomat.core.question.Question;
-import de.helfenkannjeder.helfomat.core.question.QuestionId;
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Valentin Zickner
@@ -36,34 +32,32 @@ public class OrganisationApplicationService {
         return OrganisationAssembler.toOrganisationDetailDto(organisation, questions);
     }
 
-    public List<OrganisationDto> findOrganisation(List<QuestionAnswerDto> questionAnswerDtos,
-                                                  GeoPoint position,
-                                                  double distance) {
-        List<QuestionAnswer> questionAnswers = questionAnswerDtos.stream()
-            .map(
-                questionAnswerDto -> new QuestionAnswer(
-                    new QuestionId(questionAnswerDto.getId()),
-                    questionAnswerDto.getAnswer())
-            )
-            .collect(Collectors.toList());
-        List<ScoredOrganisation> organisations;
-        if (position == null) {
-            organisations = this.organisationRepository.findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(questionAnswers);
-        } else {
-            organisations = this.organisationRepository.findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
-                questionAnswers,
-                position,
-                distance
-            );
-        }
-        return toOrganisationDtos(organisations);
+    public List<OrganisationDto> findGlobalOrganisations() {
+        return OrganisationAssembler.toOrganisationDtos(
+            this.organisationRepository.findGlobalOrganisations()
+        );
     }
 
-    private List<OrganisationDto> toOrganisationDtos(List<ScoredOrganisation> organisations) {
-        return organisations
-            .stream()
-            .map(OrganisationAssembler::toOrganisationDto)
-            .collect(Collectors.toList());
+    public List<OrganisationDto> findGlobalOrganisationsWith(List<QuestionAnswerDto> questionAnswerDtos) {
+        return OrganisationAssembler.toScoredOrganisationDtos(
+            this.organisationRepository.findGlobalOrganisationsByQuestionAnswersSortByAnswerMatch(QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos))
+        );
+    }
+
+    public List<OrganisationDto> findOrganisationsWith(GeoPoint position, double distance) {
+        return OrganisationAssembler.toOrganisationDtos(
+            this.organisationRepository.findOrganisationsByDistanceSortByDistance(position, distance)
+        );
+    }
+
+    public List<OrganisationDto> findOrganisationsWith(List<QuestionAnswerDto> questionAnswerDtos, GeoPoint position, double distance) {
+        return OrganisationAssembler.toScoredOrganisationDtos(
+            this.organisationRepository.findOrganisationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+                QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos),
+                position,
+                distance
+            )
+        );
     }
 
     public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,

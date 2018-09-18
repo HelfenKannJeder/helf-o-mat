@@ -29,6 +29,7 @@
       "helfomatResult": {
         "title": "Helf-O-Mat-Ergebnis",
         "compare": "Vergleichen",
+        "backToOverviewTitle": "Zurück",
         "back": "Zurück zum Ergebnis"
       },
       "distance": {
@@ -104,7 +105,14 @@
   "question": {
     "yes": "Ja",
     "maybe": "Egal",
-    "no": "Nein"
+    "no": "Nein",
+    "skip": {
+      "headline": "Keine Lust auf Fragen?",
+      "contentEnd1": "Wenn du unentschlossen bist und einfach nur schauen möchtest welche Organisationen in deiner Nähe sind, kannst du auch fortfahren",
+      "contentEnd2Link": "ohne",
+      "contentEnd3": "die Fragen zu beantworten.",
+      "buttonContinueWithoutQuestions": "Direkt zur Karte"
+    }
   },
   "result": {
     "header": {

@@ -1,10 +1,21 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Organisation} from '../../organisation/organisation.model';
-import {Observable} from 'rxjs';
-import {GeoPoint} from '../../organisation/geopoint.model';
-import {BoundingBox} from '../../organisation/boundingbox.model';
+import {
+    AfterViewChecked,
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    NgZone,
+    OnInit,
+    Output,
+    ViewChild
+} from '@angular/core';
+import {combineLatest, Observable} from 'rxjs';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {BoundingBox, Organisation} from '../../_internal/resources/organisation.service';
+import {GeoPoint} from '../../../_internal/geopoint';
+import {environment} from "../../../environments/environment";
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 import Circle = google.maps.Circle;
@@ -13,7 +24,7 @@ import MapTypeId = google.maps.MapTypeId;
 import Point = google.maps.Point;
 import Size = google.maps.Size;
 import ControlPosition = google.maps.ControlPosition;
-import SearchBox = google.maps.places.SearchBox;
+import Autocomplete = google.maps.places.Autocomplete;
 
 @Component({
     selector: 'helfomat-google-maps',
@@ -35,7 +46,7 @@ import SearchBox = google.maps.places.SearchBox;
         ])
     ]
 })
-export class GoogleMapsComponent implements OnInit, AfterViewInit {
+export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
     public static readonly MAP_RESIZE_DURATION = 400;
 
@@ -54,6 +65,9 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();
     @Output() updateZoom: EventEmitter<number> = new EventEmitter<number>();
     @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
+    @Output() mapResize: EventEmitter<string> = new EventEmitter<string>();
+
+    @ViewChild('googleMaps') public googleMapsElement: any;
 
     private map: Map;
     private markers: Marker[] = [];
@@ -61,9 +75,12 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
     private positionMarker: Marker;
     private positionCircle: Circle;
     private markerClusterer: MarkerClusterer;
+    private controlButton: HTMLElement;
 
+    private searchContainers: HTMLElement[] = [];
 
-    constructor(private element: ElementRef) {
+    constructor(private element: ElementRef,
+                private ngZone: NgZone) {
     }
 
     ngOnInit() {
@@ -77,7 +94,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.map = new Map(this.element.nativeElement.getElementsByClassName('googleMap')[0], {
+        this.map = new Map(this.googleMapsElement.nativeElement, {
             mapTypeId: MapTypeId.ROADMAP,
             zoomControl: true,
             mapTypeControl: false,
@@ -99,7 +116,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
         }
 
         this.markerClusterer = new MarkerClusterer(this.map, [], {imagePath: 'assets/images/m'});
-        if (this.hasClustedOrganisations()) {
+        if (this.hasClusteredOrganisations()) {
             this.drawClusteredOrganisations();
         }
 
@@ -109,22 +126,33 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
         google.maps.event.trigger(this.map, 'resize');
     }
 
+    ngAfterViewChecked(): void {
+        if (this.canChoosePosition()) {
+            this.configureSearchBox();
+        }
+        this.updateMapResizeButton();
+    }
+
     private configureViewPortChange() {
         this.map.addListener('bounds_changed', () => {
-            let bounds = this.map.getBounds();
-            if (bounds == null) {
-                return;
-            }
+            this.ngZone.run(() => {
+                let bounds = this.map.getBounds();
+                if (bounds == null) {
+                    return;
+                }
 
-            const northEast = GoogleMapsComponent.convertLatLngToGeoPoint(bounds.getNorthEast());
-            const southWest = GoogleMapsComponent.convertLatLngToGeoPoint(bounds.getSouthWest());
+                const northEast = GoogleMapsComponent.convertLatLngToGeoPoint(bounds.getNorthEast());
+                const southWest = GoogleMapsComponent.convertLatLngToGeoPoint(bounds.getSouthWest());
 
-            this.updateBoundingBox.emit(new BoundingBox(northEast, southWest));
+                this.updateBoundingBox.emit(new BoundingBox(northEast, southWest));
+            });
         });
 
         if (this.updateZoom != null) {
             this.map.addListener('zoom_changed', () => {
-                this.updateZoom.emit(this.map.getZoom());
+                this.ngZone.run(() => {
+                    this.updateZoom.emit(this.map.getZoom());
+                });
             });
         }
     }
@@ -134,39 +162,55 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
             return;
         }
 
-        Observable.combineLatest(
+        combineLatest(
             this.position,
             this.distance
-        ).subscribe(([position, distance]: [GeoPoint, number]) => {
-            if (position == null) {
-                return;
-            }
-            const mapsPosition = GoogleMapsComponent.convertGeoPointToLatLng(position);
-            this.drawUserPosition(mapsPosition, distance);
-        });
+        )
+            .subscribe(([position, distance]: [GeoPoint, number]) => {
+                if (position == null) {
+                    return;
+                }
+                const mapsPosition = GoogleMapsComponent.convertGeoPointToLatLng(position);
+                this.drawUserPosition(mapsPosition, distance);
+            });
     }
 
     private configureSearchBox() {
-        let searchContainer: HTMLElement = this.element.nativeElement.getElementsByClassName('addressSearchContainer')[0];
-        let searchText: HTMLInputElement = this.element.nativeElement.getElementsByClassName('addressInput')[0];
-        let searchBox = new SearchBox(searchText);
-        this.map.controls[ControlPosition.TOP_LEFT].push(searchContainer);
-
-        searchBox.addListener('places_changed', () => {
-            let places = searchBox.getPlaces();
-
-            if (places.length != 0) {
-                this.updatePosition.next(GoogleMapsComponent.convertLatLngToGeoPoint(places[0].geometry.location));
+        let addressSearchContainers: HTMLElement[] = this.element.nativeElement.getElementsByClassName('addressSearchContainer');
+        for (const addressSearchContainer of addressSearchContainers) {
+            if (this.searchContainers.indexOf(addressSearchContainer) >= 0) {
+                continue;
             }
-        });
+            this.searchContainers.push(addressSearchContainer);
 
-        this.map.addListener('bounds_changed', () => {
-            let bounds = this.map.getBounds();
+            this.map.controls[ControlPosition.TOP_LEFT].push(addressSearchContainer);
 
-            if (bounds != null) {
-                searchBox.setBounds(bounds);
+            let isInputField = addressSearchContainer.classList.contains('addressInput');
+            let searchText: HTMLInputElement;
+            if (isInputField) {
+                searchText = <HTMLInputElement>addressSearchContainer;
+            } else {
+                searchText = <HTMLInputElement>addressSearchContainer.getElementsByClassName('addressInput')[0];
             }
-        });
+
+            let autocomplete = new Autocomplete(searchText,  {types: ['geocode']});
+            autocomplete.setComponentRestrictions({'country': environment.defaults.countries});
+
+            autocomplete.addListener('place_changed', () => {
+                this.ngZone.run(() => {
+                    let place = autocomplete.getPlace();
+                    this.updatePosition.next(GoogleMapsComponent.convertLatLngToGeoPoint(place.geometry.location));
+                });
+            });
+
+            this.map.addListener('bounds_changed', () => {
+                let bounds = this.map.getBounds();
+
+                if (bounds != null) {
+                    autocomplete.setBounds(bounds);
+                }
+            });
+        }
     }
 
     private configureUpdateViewPort() {
@@ -202,15 +246,21 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
                             scaledSize: new Size(32, 32)
                         };
 
+                        let opacity = 1;
+                        if (organisation.scoreNorm !== null) {
+                            opacity = organisation.scoreNorm / 100;
+                        }
                         let marker = new Marker({
                             position: GoogleMapsComponent.convertGeoPointToLatLng(address.location),
                             map: this.map,
                             title: organisation.name,
-                            icon: icon,
-                            opacity: organisation.scoreNorm / 100
+                            icon,
+                            opacity
                         });
                         marker.addListener('click', () => {
-                            this.openOrganisation.emit(organisation);
+                            this.ngZone.run(() => {
+                                this.openOrganisation.emit(organisation);
+                            });
                         });
                         this.markers.push(marker);
                     }
@@ -219,7 +269,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
         });
     }
 
-    private hasClustedOrganisations() {
+    private hasClusteredOrganisations() {
         return this.clusteredOrganisations !== undefined;
     }
 
@@ -281,34 +331,46 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit {
     }
 
     private configureMapResizeButton() {
-        let controlButton = document.createElement('span');
+        this.controlButton = document.createElement('span');
         if (this.mapSize === 'fullscreen') {
-            controlButton.className = 'glyphicon glyphicon-chevron-up';
+            this.controlButton.className = 'glyphicon glyphicon-chevron-up';
         } else {
-            controlButton.className = 'glyphicon glyphicon-chevron-down';
+            this.controlButton.className = 'glyphicon glyphicon-chevron-down';
         }
-        controlButton.style.fontSize = '24px';
-        controlButton.style.marginBottom = '22px';
-        controlButton.style.cursor = 'pointer';
-        controlButton.addEventListener('click', () => {
-            let center = this.map.getCenter();
-            if (this.mapSize === 'normal') {
-                this.mapSize = 'fullscreen';
-                controlButton.className = 'glyphicon glyphicon-chevron-up';
-            } else {
-                this.mapSize = 'normal';
-                controlButton.className = 'glyphicon glyphicon-chevron-down';
-            }
-            setTimeout(() => {
-                google.maps.event.trigger(this.map, 'resize');
-                this.map.setCenter(center);
-            }, GoogleMapsComponent.MAP_RESIZE_DURATION);
+        this.controlButton.style.fontSize = '24px';
+        this.controlButton.style.marginBottom = '22px';
+        this.controlButton.style.cursor = 'pointer';
+        this.controlButton.addEventListener('click', () => {
+            this.ngZone.run(() => {
+                let center = this.map.getCenter();
+                if (this.mapSize === 'normal') {
+                    this.mapSize = 'fullscreen';
+                } else {
+                    this.mapSize = 'normal';
+                }
+                this.mapResize.emit(this.mapSize);
+                setTimeout(() => {
+                    google.maps.event.trigger(this.map, 'resize');
+                    this.map.setCenter(center);
+                }, GoogleMapsComponent.MAP_RESIZE_DURATION);
+            });
         });
 
         let centerControlDiv: any = document.createElement('div');
-        centerControlDiv.appendChild(controlButton);
+        centerControlDiv.appendChild(this.controlButton);
         centerControlDiv.index = 1;
         this.map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
+    }
+
+    private updateMapResizeButton(): void {
+        if (this.controlButton === undefined) {
+            return;
+        }
+        if (this.mapSize === 'normal') {
+            this.controlButton.className = 'glyphicon glyphicon-chevron-down';
+        } else {
+            this.controlButton.className = 'glyphicon glyphicon-chevron-up';
+        }
     }
 
     private static convertGeoPointToLatLng(location: GeoPoint): LatLng {

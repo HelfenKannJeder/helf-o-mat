@@ -38,12 +38,27 @@ public class OrganisationController {
         this.travelDistanceApplicationService = travelDistanceApplicationService;
     }
 
-    @PostMapping("/organisation/search")
-    public List<OrganisationDto> search(@RequestBody SearchRequestDto searchRequestDto) {
-        return organisationApplicationService.findOrganisation(
-            searchRequestDto.getAnswers(),
-            searchRequestDto.getPosition(),
-            searchRequestDto.getDistance()
+    @GetMapping("/organisation/global")
+    public List<OrganisationDto> findGlobalOrganisations() {
+        return this.organisationApplicationService.findGlobalOrganisations();
+    }
+
+    @PostMapping("/organisation/global/byQuestionAnswers")
+    public List<OrganisationDto> findOrganisationsByQuestionAnswers(@RequestBody List<QuestionAnswerDto> questionAnswersDto) {
+        return this.organisationApplicationService.findGlobalOrganisationsWith(questionAnswersDto);
+    }
+
+    @GetMapping("/organisation/byPosition")
+    public List<OrganisationDto> findOrganisationsByPosition(@RequestParam GeoPoint position, @RequestParam double distance) {
+        return this.organisationApplicationService.findOrganisationsWith(position, distance);
+    }
+
+    @PostMapping("/organisation/byQuestionAnswersAndPosition")
+    public List<OrganisationDto> findOrganisationsByQuestionAnswersAndPosition(@RequestParam GeoPoint position, @RequestParam double distance, @RequestBody List<QuestionAnswerDto> questionAnswersDto) {
+        return this.organisationApplicationService.findOrganisationsWith(
+            questionAnswersDto,
+            position,
+            distance
         );
     }
 
