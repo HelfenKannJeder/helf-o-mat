@@ -178,8 +178,8 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
     private configureSearchBox() {
         let addressSearchContainers: HTMLCollectionOf<HTMLElement> = this.element.nativeElement.getElementsByClassName('addressSearchContainer');
         let addressSearchContainersArray: HTMLElement[] = [];
-        for (const addressSearchContainer of addressSearchContainers) {
-            addressSearchContainersArray.push(<HTMLElement>addressSearchContainer);
+        for (let i = 0; i < addressSearchContainers.length; i++) {
+            addressSearchContainersArray.push(addressSearchContainers.item(i));
         }
 
         for (const addressSearchContainer of this.searchContainers) {
