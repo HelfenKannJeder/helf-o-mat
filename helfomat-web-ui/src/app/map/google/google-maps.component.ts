@@ -176,8 +176,21 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
     }
 
     private configureSearchBox() {
-        let addressSearchContainers: HTMLElement[] = this.element.nativeElement.getElementsByClassName('addressSearchContainer');
-        for (const addressSearchContainer of addressSearchContainers) {
+        let addressSearchContainers: HTMLCollectionOf<HTMLElement> = this.element.nativeElement.getElementsByClassName('addressSearchContainer');
+        let addressSearchContainersArray: HTMLElement[] = [];
+        for (const addressSearchContainer: HTMLElement of addressSearchContainers) {
+            addressSearchContainersArray.push(addressSearchContainer);
+        }
+
+        for (const addressSearchContainer of this.searchContainers) {
+            let index = this.map.controls[ControlPosition.TOP_LEFT].getArray().indexOf(addressSearchContainer);
+            if (index >= 0 && addressSearchContainersArray.indexOf(addressSearchContainer) < 0) {
+                this.map.controls[ControlPosition.TOP_LEFT].removeAt(index);
+            }
+        }
+
+
+        for (const addressSearchContainer: HTMLElement of addressSearchContainers) {
             if (this.searchContainers.indexOf(addressSearchContainer) >= 0) {
                 continue;
             }
