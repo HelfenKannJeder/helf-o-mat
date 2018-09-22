@@ -31,8 +31,10 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -171,7 +173,9 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
 
     private PictureId toPicture(String picture) throws IOException {
         try {
-            return this.pictureRepository.savePicture(picture, this.indexManager.getCurrentIndex(), new PictureId());
+            PictureId pictureId = toPictureId(picture);
+            this.pictureRepository.savePicture(picture, this.indexManager.getCurrentIndex(), pictureId);
+            return pictureId;
         } catch (DownloadFailedException e) {
             LOGGER.warn("Failed to download picture", e);
             return null;
@@ -179,10 +183,17 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     }
 
     private PictureId toPictureIdFromClasspathResource(String imagePath) throws IOException, DownloadFailedException {
-        PictureId pictureId = new PictureId();
+        PictureId pictureId = toPictureId("classpath:" + imagePath);
+        if (this.pictureRepository.existPicture(pictureId)) {
+            return pictureId;
+        }
         byte[] imageByteArray = StreamUtils.copyToByteArray(new ClassPathResource(imagePath).getInputStream());
         this.pictureRepository.savePicture(imageByteArray, this.indexManager.getCurrentIndex(), pictureId);
         return pictureId;
+    }
+
+    PictureId toPictureId(String url) {
+        return new PictureId(UUID.nameUUIDFromBytes(url.getBytes(Charset.defaultCharset())).toString());
     }
 
     private List<Group> extractDistinctGroups(Document oeDetailsDocument) throws IOException {

@@ -68,13 +68,18 @@ public class FileSystemPictureRepository implements PictureRepository {
         }
     }
 
-    public Path getPicture(PictureId pictureId) throws IOException {
+    public Path getPicture(PictureId pictureId) {
         return Paths.get(this.helfomatConfiguration.getPictureFolder(), "helfomat", pictureId.getValue());
     }
 
     public Path getPicture(PictureId pictureId, String size) {
         Preconditions.checkArgument(Pattern.compile("^[a-z\\-]+$").matcher(size).matches());
         return Paths.get(this.helfomatConfiguration.getPictureFolder(), "helfomat", size, pictureId.getValue());
+    }
+
+    @Override
+    public boolean existPicture(PictureId pictureId) {
+        return Files.exists(getPicture(pictureId));
     }
 
     private Path createPath(String... folder) throws IOException {

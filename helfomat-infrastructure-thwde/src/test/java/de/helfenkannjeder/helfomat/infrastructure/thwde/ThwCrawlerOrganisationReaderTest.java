@@ -6,6 +6,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Address;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
 import org.assertj.core.data.Offset;
 import org.junit.AfterClass;
@@ -273,6 +274,30 @@ public class ThwCrawlerOrganisationReaderTest {
         assertThat(organisation.getGroups())
             .isNotNull()
             .hasSize(9);
+    }
+
+    @Test
+    public void toPicture_withSameUrls_ensureThatUuidIsStatic() {
+        // Arrange
+
+        // Act
+        PictureId pictureId1 = thwCrawlerOrganisationReader.toPictureId("dummyPicture.jpg");
+        PictureId pictureId2 = thwCrawlerOrganisationReader.toPictureId("dummyPicture.jpg");
+
+        // Assert
+        assertThat(pictureId1).isEqualTo(pictureId2);
+    }
+
+    @Test
+    public void toPicture_withDifferentUrls_ensureThatUuidIsStatic() {
+        // Arrange
+
+        // Act
+        PictureId pictureId1 = thwCrawlerOrganisationReader.toPictureId("dummyPicture.jpg");
+        PictureId pictureId2 = thwCrawlerOrganisationReader.toPictureId("dummyPicture2.jpg");
+
+        // Assert
+        assertThat(pictureId1).isNotEqualTo(pictureId2);
     }
 
 }

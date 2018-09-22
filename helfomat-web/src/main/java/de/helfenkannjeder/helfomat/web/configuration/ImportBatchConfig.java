@@ -40,13 +40,13 @@ public class ImportBatchConfig {
 
     @Bean
     @Qualifier("importSteps")
-    public List<Step> importOrganisationFromThw(StepBuilderFactory stepBuilderFactory,
-                                                List<OrganisationReader> organisationReaders,
-                                                ElasticsearchConfiguration elasticsearchConfiguration,
-                                                ElasticsearchTemplate elasticsearchTemplate,
-                                                ApplicationEventPublisher applicationEventPublisher,
-                                                OrganisationRepository organisationRepository,
-                                                @Value("classpath:/mapping/organisation.json") Resource organisationMapping) {
+    public List<Step> importSteps(StepBuilderFactory stepBuilderFactory,
+                                  List<OrganisationReader> organisationReaders,
+                                  ElasticsearchConfiguration elasticsearchConfiguration,
+                                  ElasticsearchTemplate elasticsearchTemplate,
+                                  ApplicationEventPublisher applicationEventPublisher,
+                                  OrganisationRepository organisationRepository,
+                                  @Value("classpath:/mapping/organisation.json") Resource organisationMapping) {
         return organisationReaders.stream()
             .map((OrganisationReader organisationReader) -> {
                 UniqueOrganisationUrlNameOrganisationProcessor uniqueOrganisationUrlNameOrganisationProcessor = new UniqueOrganisationUrlNameOrganisationProcessor();
