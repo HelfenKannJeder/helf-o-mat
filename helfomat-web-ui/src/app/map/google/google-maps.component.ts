@@ -178,8 +178,8 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
     private configureSearchBox() {
         let addressSearchContainers: HTMLCollectionOf<HTMLElement> = this.element.nativeElement.getElementsByClassName('addressSearchContainer');
         let addressSearchContainersArray: HTMLElement[] = [];
-        for (const addressSearchContainer: HTMLElement of addressSearchContainers) {
-            addressSearchContainersArray.push(addressSearchContainer);
+        for (const addressSearchContainer of addressSearchContainers) {
+            addressSearchContainersArray.push(<HTMLElement>addressSearchContainer);
         }
 
         for (const addressSearchContainer of this.searchContainers) {
@@ -190,7 +190,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
         }
 
 
-        for (const addressSearchContainer: HTMLElement of addressSearchContainers) {
+        for (const addressSearchContainer of addressSearchContainersArray) {
             if (this.searchContainers.indexOf(addressSearchContainer) >= 0) {
                 continue;
             }
