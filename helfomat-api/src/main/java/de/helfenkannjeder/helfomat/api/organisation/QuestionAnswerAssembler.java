@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 /**
  * @author Valentin Zickner
  */
-public class QuestionAnswerAssembler {
+class QuestionAnswerAssembler {
 
-    public static List<QuestionAnswer> toQuestionAnswers(List<QuestionAnswerDto> questionAnswerDtos) {
+    static List<QuestionAnswer> toQuestionAnswers(List<QuestionAnswerDto> questionAnswerDtos) {
         if (questionAnswerDtos == null) {
             return null;
         }
@@ -20,7 +20,7 @@ public class QuestionAnswerAssembler {
             .collect(Collectors.toList());
     }
 
-    public static QuestionAnswer toQuestionAnswer(QuestionAnswerDto questionAnswerDto) {
+    private static QuestionAnswer toQuestionAnswer(QuestionAnswerDto questionAnswerDto) {
         return new QuestionAnswer(
             new QuestionId(questionAnswerDto.getId()),
             questionAnswerDto.getAnswer());

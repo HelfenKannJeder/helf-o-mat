@@ -31,7 +31,7 @@ public class ElasticsearchConfig {
         );
     }
 
-    public static class CustomEntityMapper implements EntityMapper {
+    static class CustomEntityMapper implements EntityMapper {
 
         private final ObjectMapper objectMapper;
 

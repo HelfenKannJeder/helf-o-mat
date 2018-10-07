@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.core.organisation;
 
 import java.util.Arrays;
 
+@SuppressWarnings("WeakerAccess")
 public enum OrganisationType {
     THW("Technisches Hilfswerk"),
     ASB("Arbeiter-Samariter-Bund"),
@@ -16,7 +17,7 @@ public enum OrganisationType {
     PRIV_SAN("Privater Sanitätsdienst"),
     BRH("Bundesverband Rettungshunde");
 
-    String name;
+    final String name;
 
     OrganisationType(String name){
         this.name = name;

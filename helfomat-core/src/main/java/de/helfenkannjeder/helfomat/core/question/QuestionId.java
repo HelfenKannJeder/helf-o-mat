@@ -8,8 +8,9 @@ import java.util.regex.Pattern;
 
 public class QuestionId {
 
-    private static Pattern VALID_UUID = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$");
+    private final static Pattern VALID_UUID = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$");
 
+    @SuppressWarnings("CanBeFinal")
     private String value;
 
     public QuestionId() {

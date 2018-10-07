@@ -7,11 +7,12 @@ server:
     - text/html
     - text/xml
     - text/plain
-  context-path: /helf-o-mat
+  servlet:
+    context-path: /helf-o-mat
 
 spring:
   jpa:
-    database: mysql
+    database: MYSQL
     hibernate:
       ddl-auto: none
     show-sql: true
@@ -26,11 +27,6 @@ spring:
       cluster-name: application
       cluster-nodes: localhost:9300
 
-  elasticsearch:
-    jest:
-      uris: http://localhost:9200
-      read-timeout: 10000
-
   batch:
     job:
       enabled: false
@@ -43,9 +39,9 @@ elasticsearch:
 crawler:
   thw:
     domain: http://thw.de/
-    resultsPerPage: 10
-    httpRequestTimeout: 60000
-    mapPin: blue-pushpin.png
+    results-per-page: 10
+    http-request-timeout: 60000
+    map-pin: blue-pushpin.png
 
 googlemaps:
   api-key: ReplaceMe
@@ -283,7 +279,7 @@ helfomat:
     width: 300
   admin-users:
   - username: admin
-    password: ${random.value}
+    password: "{noop}${random.value}"
     print-password: true
 
 logging:

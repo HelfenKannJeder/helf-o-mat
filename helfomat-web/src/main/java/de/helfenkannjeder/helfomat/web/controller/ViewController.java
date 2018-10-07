@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Valentin Zickner
  */
 @Controller
+@SuppressWarnings("SameReturnValue")
 public class ViewController {
 
     @RequestMapping({

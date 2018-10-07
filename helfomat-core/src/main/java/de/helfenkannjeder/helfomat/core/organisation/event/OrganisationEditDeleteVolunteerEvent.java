@@ -7,6 +7,7 @@ import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
 public class OrganisationEditDeleteVolunteerEvent extends OrganisationEditEvent {
     private Volunteer volunteer;
 

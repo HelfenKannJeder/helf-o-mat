@@ -151,7 +151,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
         return organisation;
     }
 
-    private ContactPerson toContactPerson(Document oeDetailsDocument, Elements contactDataDiv) throws IOException {
+    private ContactPerson toContactPerson(Document oeDetailsDocument, Elements contactDataDiv) {
         PictureId pictureId = null;
         String imageSrc = oeDetailsDocument
             .select(".personenBox")
@@ -171,7 +171,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
             .build();
     }
 
-    private PictureId toPicture(String picture) throws IOException {
+    private PictureId toPicture(String picture) {
         try {
             PictureId pictureId = toPictureId(picture);
             this.pictureRepository.savePicture(picture, this.indexManager.getCurrentIndex(), pictureId);
@@ -196,7 +196,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
         return new PictureId(UUID.nameUUIDFromBytes(url.getBytes(Charset.defaultCharset())).toString());
     }
 
-    private List<Group> extractDistinctGroups(Document oeDetailsDocument) throws IOException {
+    private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
         Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
         return groupElements
             .stream()

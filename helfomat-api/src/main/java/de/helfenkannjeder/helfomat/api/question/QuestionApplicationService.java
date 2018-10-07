@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class QuestionApplicationService {
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
     public QuestionApplicationService(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;

@@ -7,6 +7,7 @@ import java.util.Objects;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class Address {
 
     private String street;

@@ -12,12 +12,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
@@ -33,12 +34,12 @@ public class Typo3OrganisationProcessorTest {
     private IndexManager indexManager;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.typo3OrganisationProcessor = new Typo3OrganisationProcessor(pictureRepository, indexManager);
     }
 
     @Test
-    public void organisationsWithoutTypeAreIgnored() throws Exception {
+    public void organisationsWithoutTypeAreIgnored() {
         TOrganisation tOrganisation = new TOrganisation();
         Organisation processedOrganisation = typo3OrganisationProcessor.process(tOrganisation);
 
@@ -46,7 +47,7 @@ public class Typo3OrganisationProcessorTest {
     }
 
     @Test
-    public void organisationsOfTypeAktivbueroAreIgnored() throws Exception {
+    public void organisationsOfTypeAktivbueroAreIgnored() {
         TOrganisation tOrganisation = new TOrganisation();
         TOrganisationType tOrganisationType = new TOrganisationType();
         tOrganisationType.setName("Aktivbüro");
@@ -84,7 +85,7 @@ public class Typo3OrganisationProcessorTest {
 
     private List<PictureId> getPictureIdsOfLastInsert() throws DownloadFailedException {
         ArgumentCaptor<PictureId> pictureIdArgumentCaptor = ArgumentCaptor.forClass(PictureId.class);
-        verify(pictureRepository, atLeastOnce()).savePicture(anyString(), anyString(), pictureIdArgumentCaptor.capture());
+        verify(pictureRepository, atLeastOnce()).savePicture(anyString(), eq(null), pictureIdArgumentCaptor.capture());
 
         return pictureIdArgumentCaptor.getAllValues();
     }

@@ -81,6 +81,7 @@ public class OrganisationController {
         return travelDistanceApplicationService.requestTravelDistances(new OrganisationId(id), new GeoPoint(lat, lon));
     }
 
+    @SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
     static class SearchRequestDto {
         private List<QuestionAnswerDto> answers;
         private GeoPoint position;
@@ -111,6 +112,7 @@ public class OrganisationController {
         }
     }
 
+    @SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
     static class BoundingBoxRequestDto {
         private GeoPoint position;
         private double distance;

@@ -29,6 +29,7 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,8 +55,8 @@ public class ImportBatchConfig {
                 return stepBuilderFactory.get("import" + organisationReader.getClass().getSimpleName())
                     .<Organisation, Pair<Organisation, Stream<OrganisationEvent>>>chunk(20)
                     .reader(organisationReader::read)
-                    .processor(organisation -> {
-                        organisation = uniqueOrganisationUrlNameOrganisationProcessor.process(organisation);
+                    .processor((Function<Organisation, Pair<Organisation, Stream<OrganisationEvent>>>) organisation -> {
+                        organisation = uniqueOrganisationUrlNameOrganisationProcessor.apply(organisation);
                         return organisationStepExecutionListener.getOrganisationDifferenceProcessor().process(organisation);
                     })
                     .writer((List<? extends Pair<Organisation, Stream<OrganisationEvent>>> organisationInfo) -> {
@@ -79,7 +80,7 @@ public class ImportBatchConfig {
         private OrganisationDifferenceProcessor organisationDifferenceProcessor;
         private OrganisationItemWriter organisationItemWriter;
 
-        public OrganisationStepExecutionListener(OrganisationReader organisationReader, ElasticsearchConfiguration elasticsearchConfiguration, ElasticsearchTemplate elasticsearchTemplate, Resource organisationMapping, OrganisationRepository generalOrganisationRepository) {
+        OrganisationStepExecutionListener(OrganisationReader organisationReader, ElasticsearchConfiguration elasticsearchConfiguration, ElasticsearchTemplate elasticsearchTemplate, Resource organisationMapping, OrganisationRepository generalOrganisationRepository) {
             this.organisationReader = organisationReader;
             this.elasticsearchConfiguration = elasticsearchConfiguration;
             this.elasticsearchTemplate = elasticsearchTemplate;
@@ -111,11 +112,11 @@ public class ImportBatchConfig {
             return null;
         }
 
-        public OrganisationDifferenceProcessor getOrganisationDifferenceProcessor() {
+        OrganisationDifferenceProcessor getOrganisationDifferenceProcessor() {
             return organisationDifferenceProcessor;
         }
 
-        public OrganisationItemWriter getOrganisationItemWriter() {
+        OrganisationItemWriter getOrganisationItemWriter() {
             return organisationItemWriter;
         }
     }

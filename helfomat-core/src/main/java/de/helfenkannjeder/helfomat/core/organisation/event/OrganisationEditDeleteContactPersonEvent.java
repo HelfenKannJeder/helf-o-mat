@@ -7,6 +7,7 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
 public class OrganisationEditDeleteContactPersonEvent extends OrganisationEditEvent {
     private ContactPerson contactPerson;
 

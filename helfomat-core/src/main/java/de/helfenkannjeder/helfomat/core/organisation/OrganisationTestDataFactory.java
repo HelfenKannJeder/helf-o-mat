@@ -11,6 +11,7 @@ import java.util.Collections;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings("WeakerAccess")
 public class OrganisationTestDataFactory {
 
     private static final Address ORGANISATION_1_ADDRESS = new Address.Builder()

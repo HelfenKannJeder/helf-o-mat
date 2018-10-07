@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrganisationTest {
 
     @Test
-    public void compareTo_withNull_returnsAllChanges() throws Exception {
+    public void compareTo_withNull_returnsAllChanges() {
         // Arrange
         OrganisationId organisationId = new OrganisationId();
         Organisation organisation = new Organisation.Builder()
@@ -49,7 +49,7 @@ public class OrganisationTest {
     }
 
     @Test
-    public void compareTo_withWrongId_justNormalProcessingWithOriginalId() throws Exception {
+    public void compareTo_withWrongId_justNormalProcessingWithOriginalId() {
         // Arrange
         OrganisationId organisationId1 = new OrganisationId();
         OrganisationId organisationId2 = new OrganisationId();

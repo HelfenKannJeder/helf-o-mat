@@ -6,6 +6,7 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class OrganisationEditDescriptionEvent extends OrganisationEditEvent {
     private String description;
 

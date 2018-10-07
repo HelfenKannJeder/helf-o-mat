@@ -12,15 +12,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,10 +34,10 @@ public class TravelDistanceApplicationServiceTest {
 
     private TravelDistanceApplicationService travelDistanceApplicationService;
 
-    private static TravelDistanceDto DUMMY_TRAVEL_DISTANCE = new TravelDistanceDto();
+    private static final TravelDistanceDto DUMMY_TRAVEL_DISTANCE = new TravelDistanceDto();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         travelDistanceApplicationService = new TravelDistanceApplicationService(distanceMatrixService, organisationRepository);
     }
 
@@ -48,7 +48,7 @@ public class TravelDistanceApplicationServiceTest {
     }
 
     @Test
-    public void searchReturnsValuesForAllPossibleTravelOptions() throws Exception {
+    public void searchReturnsValuesForAllPossibleTravelOptions() {
         when(distanceMatrixService.getTravelDistanceFor(any(), any(), any())).thenReturn(DUMMY_TRAVEL_DISTANCE);
 
         List<TravelDistanceDto> travelOptions = testSearch();
@@ -59,7 +59,7 @@ public class TravelDistanceApplicationServiceTest {
     }
 
     @Test
-    public void onlyReturnDistancesForFoundRoutes() throws Exception {
+    public void onlyReturnDistancesForFoundRoutes() {
         when(distanceMatrixService.getTravelDistanceFor(eq(TravelModeDto.TRANSIT), any(), any())).thenReturn(null);
         when(distanceMatrixService.getTravelDistanceFor(not(eq(TravelModeDto.TRANSIT)), any(), any())).thenReturn(DUMMY_TRAVEL_DISTANCE);
 

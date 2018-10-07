@@ -10,37 +10,37 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class UrlUnifierTest {
 
     @Test
-    public void unifyOrganisationWebsiteUrl_withNull_returnNull() throws Exception {
+    public void unifyOrganisationWebsiteUrl_withNull_returnNull() {
         assertThat(unifyOrganisationWebsiteUrl(null), is(nullValue()));
     }
 
     @Test
-    public void unifyOrganisationWebsiteUrl_withEmptyString_returnNull() throws Exception {
+    public void unifyOrganisationWebsiteUrl_withEmptyString_returnNull() {
         assertThat(unifyOrganisationWebsiteUrl(""), is(nullValue()));
     }
 
     @Test
-    public void urlStartingWithWwwIsCompletedWithHttp() throws Exception {
+    public void urlStartingWithWwwIsCompletedWithHttp() {
         assertThat(unifyOrganisationWebsiteUrl("www.test.de"), is("http://www.test.de"));
     }
 
     @Test
-    public void urlStartingWithhttpIsCunchanged() throws Exception {
+    public void urlStartingWithhttpIsCunchanged() {
         assertThat(unifyOrganisationWebsiteUrl("http://www.test.de"), is("http://www.test.de"));
     }
 
     @Test
-    public void urlStartingWithhttpsIsCunchanged() throws Exception {
+    public void urlStartingWithhttpsIsCunchanged() {
         assertThat(unifyOrganisationWebsiteUrl("https://www.test.de"), is("https://www.test.de"));
     }
 
     @Test
-    public void closingShlashIsRemoved() throws Exception {
+    public void closingShlashIsRemoved() {
         assertThat(unifyOrganisationWebsiteUrl("https://www.test.de/"), is("https://www.test.de"));
     }
 
     @Test
-    public void unifyOrganisationWebsiteUrl_withWhichIsStartingWithHttp_returnHttpBeforeUrl() throws Exception {
+    public void unifyOrganisationWebsiteUrl_withWhichIsStartingWithHttp_returnHttpBeforeUrl() {
         assertThat(unifyOrganisationWebsiteUrl("http.helfenkannjeder.de/"), is("http://http.helfenkannjeder.de"));
     }
 }

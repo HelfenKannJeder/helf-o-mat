@@ -23,6 +23,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return createErrorResponse(HttpStatus.BAD_REQUEST, e);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private ResponseEntity<ErrorDetails> createErrorResponse(HttpStatus status, Exception e) {
         ErrorDetails error = new ErrorDetails(e.getClass().getSimpleName());
         return new ResponseEntity<>(error, new HttpHeaders(), status);
@@ -35,6 +36,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             this.exceptionName = exceptionName;
         }
 
+        @SuppressWarnings("unused")
         public String getExceptionName() {
             return exceptionName;
         }

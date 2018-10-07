@@ -13,11 +13,12 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings({"WeakerAccess", "Duplicates"})
 public class EmbeddedHttpServer {
 
 	public static final int PORT = SocketUtils.findAvailableTcpPort();
 	private static HttpServer server;
-	private static Map<String, FileContentHandler> RESOURCES = new HashMap<>();
+	private static final Map<String, FileContentHandler> RESOURCES = new HashMap<>();
 
 	public static void start() throws IOException {
 		server = HttpServer.create(new InetSocketAddress(PORT), 0);
@@ -25,7 +26,7 @@ public class EmbeddedHttpServer {
 		server.start();
 	}
 
-    public static void stop() throws IOException {
+    public static void stop() {
         server.stop(0);
         server = null;
     }
@@ -43,10 +44,10 @@ public class EmbeddedHttpServer {
 
 	private static class FileContentHandler implements HttpHandler {
 
-        private Map<String, ClassPathResource> resources = new HashMap<>();
-        private ClassPathResource defaultResource;
+        private final Map<String, ClassPathResource> resources = new HashMap<>();
+        private final ClassPathResource defaultResource;
 
-        public FileContentHandler(ClassPathResource defaultResource) {
+        FileContentHandler(ClassPathResource defaultResource) {
             this.defaultResource = defaultResource;
         }
 
@@ -67,7 +68,7 @@ public class EmbeddedHttpServer {
 		}
 
 
-        public void addParameters(String parameters, ClassPathResource classPathResource) {
+        void addParameters(String parameters, ClassPathResource classPathResource) {
             this.resources.put(parameters, classPathResource);
         }
     }

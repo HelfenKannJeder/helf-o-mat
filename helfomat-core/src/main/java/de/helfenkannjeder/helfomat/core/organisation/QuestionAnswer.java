@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.core.question.QuestionId;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class QuestionAnswer {
     private QuestionId questionId;
     private Answer answer;

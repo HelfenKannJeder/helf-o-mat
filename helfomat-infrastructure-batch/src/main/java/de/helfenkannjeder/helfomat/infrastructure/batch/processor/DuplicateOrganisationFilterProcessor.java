@@ -20,7 +20,7 @@ public class DuplicateOrganisationFilterProcessor implements ItemProcessor<Organ
     }
 
     @Override
-    public Organisation process(Organisation organisation) throws Exception {
+    public Organisation process(Organisation organisation) {
         if (organisationRepository.existsOrganisationWithSameTypeInDistance(organisation, 500L)) {
             return null;
         } else {

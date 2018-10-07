@@ -37,8 +37,8 @@ public class Typo3OrganisationReader implements OrganisationReader {
     private volatile int current = 0;
 
 
-    private Typo3OrganisationRepository typo3OrganisationRepository;
-    private Typo3OrganisationProcessor typo3OrganisationProcessor;
+    private final Typo3OrganisationRepository typo3OrganisationRepository;
+    private final Typo3OrganisationProcessor typo3OrganisationProcessor;
 
 
     @Autowired
@@ -56,8 +56,8 @@ public class Typo3OrganisationReader implements OrganisationReader {
 
         this.results.addAll(
             this.typo3OrganisationRepository
-                .findAvailable(new PageRequest(page, PAGE_SIZE))
-                .map(organisation -> this.typo3OrganisationProcessor.process(organisation))
+                .findAvailable(PageRequest.of(page, PAGE_SIZE))
+                .map(this.typo3OrganisationProcessor::process)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList())
         );
@@ -69,7 +69,7 @@ public class Typo3OrganisationReader implements OrganisationReader {
     }
 
     @Override
-    public Organisation read() throws Exception {
+    public Organisation read() {
         if (results == null || current >= results.size()) {
             LOGGER.debug("Reading page " + page);
             doReadPage();

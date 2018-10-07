@@ -1,17 +1,13 @@
 package de.helfenkannjeder.helfomat.web.configuration;
 
 import de.helfenkannjeder.helfomat.api.geopoint.GeoPointConverter;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.web.servlet.ErrorPage;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebApplicationConfig extends WebMvcConfigurerAdapter {
+public class WebApplicationConfig implements WebMvcConfigurer {
 
     private final GeoPointConverter geoPointConverter;
 
@@ -27,12 +23,6 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(geoPointConverter);
-    }
-
-    @Bean
-    public EmbeddedServletContainerCustomizer containerCustomizer() {
-        return container -> container
-            .addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/notFound"));
     }
 
 }

@@ -7,6 +7,7 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
 public class OrganisationEditLogoEvent extends OrganisationEditEvent {
     private PictureId logo;
 

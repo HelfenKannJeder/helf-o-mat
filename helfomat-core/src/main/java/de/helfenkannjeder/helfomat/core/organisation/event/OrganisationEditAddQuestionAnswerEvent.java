@@ -7,6 +7,7 @@ import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
 public class OrganisationEditAddQuestionAnswerEvent extends OrganisationEditEvent {
     private int index;
     private QuestionAnswer questionAnswer;

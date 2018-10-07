@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.core.geopoint;
 
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class BoundingBox {
     private GeoPoint northEast;
     private GeoPoint southWest;
