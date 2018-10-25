@@ -14,7 +14,8 @@ public enum OrganisationType {
     MHD("Malteser Hilfsdienst"),
     KIT("Notfallseelsorge / Kriseninterventionsteam"),
     PRIV_SAN("Privater Sanitätsdienst"),
-    BRH("Bundesverband Rettungshunde");
+    BRH("Bundesverband Rettungshunde"),
+    DRV("Deutscher Rettungshunde Verein");
 
     String name;
 
