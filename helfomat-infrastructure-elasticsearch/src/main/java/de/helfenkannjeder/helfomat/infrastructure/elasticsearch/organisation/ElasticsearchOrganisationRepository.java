@@ -72,9 +72,18 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
     @Override
     public Organisation findOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters) {
         BoolQueryBuilder nativeSearchQuery = buildQueryForOrganisationWithSameTypeInDistance(organisation, distanceInMeters);
-        return search(nativeSearchQuery)
-            .findFirst()
-            .orElse(null);
+        List<Organisation> organisations = search(nativeSearchQuery).collect(Collectors.toList());
+        if (organisations.size() == 1) {
+            return organisations.get(0);
+        } else if (organisations.size() == 0) {
+            return null;
+        } else {
+            return organisations
+                .stream()
+                .filter(o -> o.getUrlName().equals(organisation.getUrlName()))
+                .findFirst()
+                .orElse(null);
+        }
     }
 
     @Override

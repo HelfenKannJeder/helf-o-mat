@@ -64,6 +64,7 @@ public class ImportBatchConfig {
                         organisationStepExecutionListener.getOrganisationItemWriter().write(organisationInfo.stream().map(Pair::getFirst).collect(Collectors.toList()));
                     })
                     .listener(organisationStepExecutionListener)
+                    .listener(uniqueOrganisationUrlNameOrganisationProcessor)
                     .build();
             })
             .collect(Collectors.toList());

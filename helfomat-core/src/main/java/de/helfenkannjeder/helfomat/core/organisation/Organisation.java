@@ -54,26 +54,26 @@ public class Organisation {
     private List<AttendanceTime> attendanceTimes;
     private List<Volunteer> volunteers;
 
-    Organisation() {
+    private Organisation() {
     }
 
-    Organisation(OrganisationId id,
-                 String name,
-                 String urlName,
-                 OrganisationType organisationType,
-                 String description,
-                 String website,
-                 PictureId logo,
-                 PictureId teaserImage,
-                 Address defaultAddress,
-                 List<PictureId> pictures,
-                 List<ContactPerson> contactPersons,
-                 List<Address> addresses,
-                 List<QuestionAnswer> questionAnswers,
-                 String mapPin,
-                 List<Group> groups,
-                 List<AttendanceTime> attendanceTimes,
-                 List<Volunteer> volunteers) {
+    private Organisation(OrganisationId id,
+                         String name,
+                         String urlName,
+                         OrganisationType organisationType,
+                         String description,
+                         String website,
+                         PictureId logo,
+                         PictureId teaserImage,
+                         Address defaultAddress,
+                         List<PictureId> pictures,
+                         List<ContactPerson> contactPersons,
+                         List<Address> addresses,
+                         List<QuestionAnswer> questionAnswers,
+                         String mapPin,
+                         List<Group> groups,
+                         List<AttendanceTime> attendanceTimes,
+                         List<Volunteer> volunteers) {
         this.id = id;
         this.name = name;
         this.urlName = urlName;
