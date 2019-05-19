@@ -16,6 +16,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
+import javax.batch.api.AbstractBatchlet;
 import java.util.List;
 
 /**
@@ -44,6 +45,18 @@ public class BatchConfiguration {
     }
 
     @Bean
+    public Step noopStep(StepBuilderFactory stepBuilderFactory) {
+        return stepBuilderFactory.get("noopStep")
+            .tasklet(new BatchletAdapter(new AbstractBatchlet() {
+                @Override
+                public String process() {
+                    return null;
+                }
+            }))
+            .build();
+    }
+
+    @Bean
     public Step renameAliasStep(StepBuilderFactory stepBuilderFactory,
                                 RenameAliasBatchlet renameAliasBatchlet) {
         return stepBuilderFactory.get("renameAliasStep")
@@ -53,16 +66,14 @@ public class BatchConfiguration {
 
     @Bean
     public Job importDataJob(JobBuilderFactory jobBuilderFactory,
-                             Step createIndexStep,
-                             @Qualifier("importSteps") List<Step> importSteps,
-                             Step renameAliasStep) {
+                             Step noopStep,
+                             @Qualifier("importSteps") List<Step> importSteps) {
         SimpleJobBuilder importDataJob = jobBuilderFactory.get("importDataJob")
-            .start(createIndexStep);
+            .start(noopStep);
         for (Step importStep : importSteps) {
             importDataJob = importDataJob.next(importStep);
         }
         return importDataJob
-            .next(renameAliasStep)
             .build();
     }
 }
