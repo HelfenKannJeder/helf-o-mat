@@ -1,7 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
 
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
 import org.elasticsearch.index.IndexNotFoundException;
@@ -26,20 +25,18 @@ public class OrganisationDifferenceProcessor implements ItemProcessor<Organisati
     @Override
     public Pair<Organisation, Stream<OrganisationEvent>> process(Organisation updatedOrganisation) {
         Organisation originalOrganisation = specificOrganisationRepository.findOrganisationWithSameTypeInDistance(updatedOrganisation, 5L);
+        if (originalOrganisation == null) {
+            return generateExistingOrganisationFromOtherDatasource(updatedOrganisation);
+        }
         return generateUpdateBetweenExistingOrganisation(updatedOrganisation, originalOrganisation);
     }
 
     private Pair<Organisation, Stream<OrganisationEvent>> generateExistingOrganisationFromOtherDatasource(Organisation updatedOrganisation) {
-        Organisation alreadyAvailableOrganisation = null;
+        Organisation alreadyAvailableOrganisation;
         try {
             alreadyAvailableOrganisation = generalOrganisationRepository.findOrganisationWithSameTypeInDistance(updatedOrganisation, 5L);
         } catch (IndexNotFoundException ignored) {
-            return Pair.of(
-                new Organisation.Builder(updatedOrganisation)
-                    .setId(new OrganisationId())
-                    .build(),
-                Stream.empty()
-            );
+            return generateCompleteNewOrganisation(updatedOrganisation);
         }
         return Pair.of(
             new Organisation.Builder(updatedOrganisation)
@@ -50,11 +47,7 @@ public class OrganisationDifferenceProcessor implements ItemProcessor<Organisati
     }
 
     private Pair<Organisation, Stream<OrganisationEvent>> generateCompleteNewOrganisation(Organisation updatedOrganisation) {
-        return Pair.of(
-            new Organisation.Builder(updatedOrganisation)
-                .build(),
-            Stream.empty()
-        );
+        return generateUpdateBetweenExistingOrganisation(updatedOrganisation, null);
     }
 
     private Pair<Organisation, Stream<OrganisationEvent>> generateUpdateBetweenExistingOrganisation(Organisation updatedOrganisation, Organisation originalOrganisation) {

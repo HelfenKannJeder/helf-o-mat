@@ -6,7 +6,6 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditNameEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -73,7 +72,6 @@ public class OrganisationDifferenceProcessorTest {
     }
 
     @Test
-    @Ignore("general repository is replaced with new organsiation with domain events")
     public void process_withOrganisationFromGeneralRepository_returnsNoEventsAndExistingUid() {
         // Arrange
         OrganisationId resultOrganisationId = new OrganisationId();
