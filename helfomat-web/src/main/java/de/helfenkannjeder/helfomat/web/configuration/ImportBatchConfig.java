@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.web.configuration;
 
-import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
@@ -14,7 +13,6 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -120,20 +118,6 @@ public class ImportBatchConfig {
         OrganisationItemWriter getOrganisationItemWriter() {
             return organisationItemWriter;
         }
-    }
-
-    @Bean
-    @JobScope
-    public OrganisationRepository importOrganisationRepository(
-        ElasticsearchConfiguration elasticsearchConfiguration,
-        ElasticsearchTemplate elasticsearchTemplate,
-        IndexManager indexManager
-    ) {
-        return new ElasticsearchOrganisationRepository(
-            elasticsearchConfiguration,
-            elasticsearchTemplate,
-            indexManager.getCurrentIndex()
-        );
     }
 
 }

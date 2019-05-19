@@ -9,6 +9,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 @SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class OrganisationDeleteEvent extends OrganisationEditEvent {
 
+    protected OrganisationDeleteEvent() {
+    }
+
     public OrganisationDeleteEvent(OrganisationId organisationId) {
         super(organisationId);
     }

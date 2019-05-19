@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId;
 public class OrganisationEditDeletePictureEvent extends OrganisationEditEvent {
     private PictureId pictureId;
 
+    protected OrganisationEditDeletePictureEvent() {
+    }
+
     public OrganisationEditDeletePictureEvent(OrganisationId organisationId, PictureId pictureId) {
         super(organisationId);
         this.pictureId = pictureId;

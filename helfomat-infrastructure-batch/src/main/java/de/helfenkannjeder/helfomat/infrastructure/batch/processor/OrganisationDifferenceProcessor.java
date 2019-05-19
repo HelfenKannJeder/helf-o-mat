@@ -38,6 +38,9 @@ public class OrganisationDifferenceProcessor implements ItemProcessor<Organisati
         } catch (IndexNotFoundException ignored) {
             return generateCompleteNewOrganisation(updatedOrganisation);
         }
+        if (alreadyAvailableOrganisation == null) {
+            return generateCompleteNewOrganisation(updatedOrganisation);
+        }
         return Pair.of(
             new Organisation.Builder(updatedOrganisation)
                 .setId(alreadyAvailableOrganisation.getId())

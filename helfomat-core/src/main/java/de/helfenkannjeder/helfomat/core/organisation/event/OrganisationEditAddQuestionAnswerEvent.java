@@ -12,6 +12,9 @@ public class OrganisationEditAddQuestionAnswerEvent extends OrganisationEditEven
     private int index;
     private QuestionAnswer questionAnswer;
 
+    protected OrganisationEditAddQuestionAnswerEvent() {
+    }
+
     public OrganisationEditAddQuestionAnswerEvent(OrganisationId organisationId, int index, QuestionAnswer questionAnswer) {
         super(organisationId);
         this.index = index;

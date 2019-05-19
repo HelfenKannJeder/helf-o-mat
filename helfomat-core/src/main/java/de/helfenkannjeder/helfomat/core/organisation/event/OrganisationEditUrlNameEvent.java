@@ -10,6 +10,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 public class OrganisationEditUrlNameEvent extends OrganisationEditEvent {
     private String urlName;
 
+    protected OrganisationEditUrlNameEvent() {
+    }
+
     public OrganisationEditUrlNameEvent(OrganisationId organisationId, String urlName) {
         super(organisationId);
         this.urlName = urlName;

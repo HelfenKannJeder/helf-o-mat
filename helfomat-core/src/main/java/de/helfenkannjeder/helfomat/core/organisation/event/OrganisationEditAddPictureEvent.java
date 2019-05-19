@@ -12,6 +12,9 @@ public class OrganisationEditAddPictureEvent extends OrganisationEditEvent {
     private int index;
     private PictureId pictureId;
 
+    protected OrganisationEditAddPictureEvent() {
+    }
+
     public OrganisationEditAddPictureEvent(OrganisationId organisationId, int index, PictureId pictureId) {
         super(organisationId);
         this.index = index;

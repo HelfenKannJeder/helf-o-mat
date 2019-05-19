@@ -14,6 +14,9 @@ public class OrganisationCreateEvent extends OrganisationEvent {
     private String urlName;
     private OrganisationType organisationType;
 
+    protected OrganisationCreateEvent() {
+    }
+
     public OrganisationCreateEvent(OrganisationId organisationId,
                                    String name,
                                    String urlName,

@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
 public class OrganisationEditDeleteVolunteerEvent extends OrganisationEditEvent {
     private Volunteer volunteer;
 
+    protected OrganisationEditDeleteVolunteerEvent() {
+    }
+
     public OrganisationEditDeleteVolunteerEvent(OrganisationId organisationId, Volunteer volunteer) {
         super(organisationId);
         this.volunteer = volunteer;

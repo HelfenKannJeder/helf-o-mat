@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId;
 public class OrganisationEditTeaserImageEvent extends OrganisationEditEvent {
     private PictureId teaserImage;
 
+    protected OrganisationEditTeaserImageEvent() {
+    }
+
     public OrganisationEditTeaserImageEvent(OrganisationId organisationId, PictureId teaserImage) {
         super(organisationId);
         this.teaserImage = teaserImage;

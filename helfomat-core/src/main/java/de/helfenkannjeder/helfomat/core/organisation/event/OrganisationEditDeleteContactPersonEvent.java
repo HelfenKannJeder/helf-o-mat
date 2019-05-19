@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 public class OrganisationEditDeleteContactPersonEvent extends OrganisationEditEvent {
     private ContactPerson contactPerson;
 
+    protected OrganisationEditDeleteContactPersonEvent() {
+    }
+
     public OrganisationEditDeleteContactPersonEvent(OrganisationId organisationId, ContactPerson contactPerson) {
         super(organisationId);
         this.contactPerson = contactPerson;

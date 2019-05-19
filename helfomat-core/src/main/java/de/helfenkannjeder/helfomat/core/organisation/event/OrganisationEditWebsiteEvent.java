@@ -10,6 +10,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 public class OrganisationEditWebsiteEvent extends OrganisationEditEvent {
     private String website;
 
+    protected OrganisationEditWebsiteEvent() {
+    }
+
     public OrganisationEditWebsiteEvent(OrganisationId organisationId, String website) {
         super(organisationId);
         this.website = website;

@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 public class OrganisationEditDeleteAttendanceTimeEvent extends OrganisationEditEvent {
     private AttendanceTime attendanceTime;
 
+    protected OrganisationEditDeleteAttendanceTimeEvent() {
+    }
+
     public OrganisationEditDeleteAttendanceTimeEvent(OrganisationId organisationId, AttendanceTime attendanceTime) {
         super(organisationId);
         this.attendanceTime = attendanceTime;

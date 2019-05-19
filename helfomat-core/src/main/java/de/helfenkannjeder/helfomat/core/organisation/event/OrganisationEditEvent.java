@@ -8,6 +8,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 @SuppressWarnings({"WeakerAccess", "CanBeFinal"})
 public abstract class OrganisationEditEvent extends OrganisationEvent {
 
+    protected OrganisationEditEvent() {
+    }
+
     public OrganisationEditEvent(OrganisationId organisationId) {
         super(organisationId);
     }

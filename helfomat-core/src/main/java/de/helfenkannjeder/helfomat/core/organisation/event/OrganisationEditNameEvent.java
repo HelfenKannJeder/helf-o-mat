@@ -10,6 +10,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 public class OrganisationEditNameEvent extends OrganisationEditEvent {
     private String name;
 
+    protected OrganisationEditNameEvent() {
+    }
+
     public OrganisationEditNameEvent(OrganisationId organisationId, String name) {
         super(organisationId);
         this.name = name;

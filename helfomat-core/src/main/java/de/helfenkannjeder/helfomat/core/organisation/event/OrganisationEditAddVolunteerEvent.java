@@ -12,6 +12,9 @@ public class OrganisationEditAddVolunteerEvent extends OrganisationEditEvent {
     private int index;
     private Volunteer volunteer;
 
+    protected OrganisationEditAddVolunteerEvent() {
+    }
+
     public OrganisationEditAddVolunteerEvent(OrganisationId organisationId, int index, Volunteer volunteer) {
         super(organisationId);
         this.index = index;

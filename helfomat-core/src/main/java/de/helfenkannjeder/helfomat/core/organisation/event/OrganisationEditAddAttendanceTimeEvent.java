@@ -12,6 +12,9 @@ public class OrganisationEditAddAttendanceTimeEvent extends OrganisationEditEven
     private int index;
     private AttendanceTime attendanceTime;
 
+    protected OrganisationEditAddAttendanceTimeEvent() {
+    }
+
     public OrganisationEditAddAttendanceTimeEvent(OrganisationId organisationId, int index, AttendanceTime attendanceTime) {
         super(organisationId);
         this.index = index;

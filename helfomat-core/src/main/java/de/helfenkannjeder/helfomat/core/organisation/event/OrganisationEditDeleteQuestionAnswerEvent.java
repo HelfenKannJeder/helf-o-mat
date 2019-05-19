@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 public class OrganisationEditDeleteQuestionAnswerEvent extends OrganisationEditEvent {
     private QuestionAnswer questionAnswer;
 
+    protected OrganisationEditDeleteQuestionAnswerEvent() {
+    }
+
     public OrganisationEditDeleteQuestionAnswerEvent(OrganisationId organisationId, QuestionAnswer questionAnswer) {
         super(organisationId);
         this.questionAnswer = questionAnswer;

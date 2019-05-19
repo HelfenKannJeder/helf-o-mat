@@ -12,6 +12,9 @@ public class OrganisationEditAddAddressEvent extends OrganisationEditEvent {
     private int index;
     private Address address;
 
+    protected OrganisationEditAddAddressEvent() {
+    }
+
     public OrganisationEditAddAddressEvent(OrganisationId organisationId, int index, Address address) {
         super(organisationId);
         this.index = index;

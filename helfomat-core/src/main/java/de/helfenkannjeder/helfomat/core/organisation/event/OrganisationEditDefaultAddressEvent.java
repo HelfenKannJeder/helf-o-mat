@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 public class OrganisationEditDefaultAddressEvent extends OrganisationEditEvent {
     private Address defaultAddress;
 
+    protected OrganisationEditDefaultAddressEvent() {
+    }
+
     public OrganisationEditDefaultAddressEvent(OrganisationId organisationId, Address defaultAddress) {
         super(organisationId);
         this.defaultAddress = defaultAddress;

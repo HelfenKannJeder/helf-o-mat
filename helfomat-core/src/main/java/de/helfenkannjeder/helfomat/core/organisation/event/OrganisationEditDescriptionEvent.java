@@ -10,6 +10,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 public class OrganisationEditDescriptionEvent extends OrganisationEditEvent {
     private String description;
 
+    protected OrganisationEditDescriptionEvent() {
+    }
+
     public OrganisationEditDescriptionEvent(OrganisationId organisationId, String description) {
         super(organisationId);
         this.description = description;

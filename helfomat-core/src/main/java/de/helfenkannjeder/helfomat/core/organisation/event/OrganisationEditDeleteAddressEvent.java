@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 public class OrganisationEditDeleteAddressEvent extends OrganisationEditEvent {
     private Address address;
 
+    protected OrganisationEditDeleteAddressEvent() {
+    }
+
     public OrganisationEditDeleteAddressEvent(OrganisationId organisationId, Address address) {
         super(organisationId);
         this.address = address;

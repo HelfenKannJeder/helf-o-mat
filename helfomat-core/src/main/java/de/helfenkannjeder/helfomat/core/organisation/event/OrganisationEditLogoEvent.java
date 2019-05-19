@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId;
 public class OrganisationEditLogoEvent extends OrganisationEditEvent {
     private PictureId logo;
 
+    protected OrganisationEditLogoEvent() {
+    }
+
     public OrganisationEditLogoEvent(OrganisationId organisationId, PictureId logo) {
         super(organisationId);
         this.logo = logo;

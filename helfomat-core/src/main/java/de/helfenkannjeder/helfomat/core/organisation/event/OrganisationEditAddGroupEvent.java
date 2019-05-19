@@ -12,6 +12,9 @@ public class OrganisationEditAddGroupEvent extends OrganisationEditEvent {
     private int index;
     private Group group;
 
+    protected OrganisationEditAddGroupEvent() {
+    }
+
     public OrganisationEditAddGroupEvent(OrganisationId organisationId, int index, Group group) {
         super(organisationId);
         this.index = index;

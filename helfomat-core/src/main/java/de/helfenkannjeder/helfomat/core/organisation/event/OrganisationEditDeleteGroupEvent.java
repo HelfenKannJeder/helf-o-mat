@@ -11,6 +11,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 public class OrganisationEditDeleteGroupEvent extends OrganisationEditEvent {
     private Group group;
 
+    protected OrganisationEditDeleteGroupEvent() {
+    }
+
     public OrganisationEditDeleteGroupEvent(OrganisationId organisationId, Group group) {
         super(organisationId);
         this.group = group;
