@@ -143,9 +143,12 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
         try {
             String url = "https://helfenkannjeder.de/uploads/pics/" + picture;
             PictureId pictureId = toPictureId(url);
+            if (this.pictureRepository.existPicture(pictureId)) {
+                return pictureId;
+            }
             this.pictureRepository.savePicture(
                 url,
-                this.indexManager.getCurrentIndex(),
+                this.indexManager.getAlias(),
                 pictureId
             );
             return pictureId;

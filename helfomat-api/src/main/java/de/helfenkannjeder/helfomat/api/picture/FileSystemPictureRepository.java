@@ -84,7 +84,9 @@ public class FileSystemPictureRepository implements PictureRepository {
 
     private Path createPath(String... folder) throws IOException {
         Path path = Paths.get(helfomatConfiguration.getPictureFolder(), folder);
-        Files.createDirectories(path.getParent());
+        if (!path.getParent().toFile().exists()) {
+            Files.createDirectories(path.getParent());
+        }
         return path;
     }
 }

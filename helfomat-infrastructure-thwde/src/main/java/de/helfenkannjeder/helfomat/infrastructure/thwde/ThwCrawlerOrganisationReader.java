@@ -174,7 +174,10 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     private PictureId toPicture(String picture) {
         try {
             PictureId pictureId = toPictureId(picture);
-            this.pictureRepository.savePicture(picture, this.indexManager.getCurrentIndex(), pictureId);
+            if (this.pictureRepository.existPicture(pictureId)) {
+                return pictureId;
+            }
+            this.pictureRepository.savePicture(picture, this.indexManager.getAlias(), pictureId);
             return pictureId;
         } catch (DownloadFailedException e) {
             LOGGER.warn("Failed to download picture", e);
@@ -188,7 +191,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
             return pictureId;
         }
         byte[] imageByteArray = StreamUtils.copyToByteArray(new ClassPathResource(imagePath).getInputStream());
-        this.pictureRepository.savePicture(imageByteArray, this.indexManager.getCurrentIndex(), pictureId);
+        this.pictureRepository.savePicture(imageByteArray, this.indexManager.getAlias(), pictureId);
         return pictureId;
     }
 

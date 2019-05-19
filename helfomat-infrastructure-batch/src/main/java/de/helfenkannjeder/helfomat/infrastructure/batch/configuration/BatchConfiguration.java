@@ -3,7 +3,6 @@ package de.helfenkannjeder.helfomat.infrastructure.batch.configuration;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenameAliasBatchlet;
-import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenamePictureSymlinkBatchlet;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -53,19 +52,10 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step renamePictureSymlinkStep(StepBuilderFactory stepBuilderFactory,
-                                         RenamePictureSymlinkBatchlet renamePictureSymlinkBatchlet) {
-        return stepBuilderFactory.get("renamePictureSymlinkStep")
-            .tasklet(new BatchletAdapter(renamePictureSymlinkBatchlet))
-            .build();
-    }
-
-    @Bean
     public Job importDataJob(JobBuilderFactory jobBuilderFactory,
                              Step createIndexStep,
                              @Qualifier("importSteps") List<Step> importSteps,
-                             Step renameAliasStep,
-                             Step renamePictureSymlinkStep) {
+                             Step renameAliasStep) {
         SimpleJobBuilder importDataJob = jobBuilderFactory.get("importDataJob")
             .start(createIndexStep);
         for (Step importStep : importSteps) {
@@ -73,7 +63,6 @@ public class BatchConfiguration {
         }
         return importDataJob
             .next(renameAliasStep)
-            .next(renamePictureSymlinkStep)
             .build();
     }
 }
