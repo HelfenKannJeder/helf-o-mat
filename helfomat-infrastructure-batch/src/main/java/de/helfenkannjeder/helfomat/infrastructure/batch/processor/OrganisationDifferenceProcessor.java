@@ -26,9 +26,6 @@ public class OrganisationDifferenceProcessor implements ItemProcessor<Organisati
     @Override
     public Pair<Organisation, Stream<OrganisationEvent>> process(Organisation updatedOrganisation) {
         Organisation originalOrganisation = specificOrganisationRepository.findOrganisationWithSameTypeInDistance(updatedOrganisation, 5L);
-        if (originalOrganisation == null) {
-            return generateExistingOrganisationFromOtherDatasource(updatedOrganisation);
-        }
         return generateUpdateBetweenExistingOrganisation(updatedOrganisation, originalOrganisation);
     }
 

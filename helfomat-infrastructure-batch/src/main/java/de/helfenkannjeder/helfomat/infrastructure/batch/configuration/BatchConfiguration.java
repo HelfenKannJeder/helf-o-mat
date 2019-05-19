@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.configuration;
 
-import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.CreateIndexBatchlet;
 import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenameAliasBatchlet;
 import org.springframework.batch.core.Job;
@@ -12,9 +11,7 @@ import org.springframework.batch.core.jsr.step.batchlet.BatchletAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.stereotype.Component;
 
 import javax.batch.api.AbstractBatchlet;
 import java.util.List;
@@ -25,16 +22,6 @@ import java.util.List;
 @Configuration
 @EnableScheduling
 public class BatchConfiguration {
-
-    @Component
-    class TestListener {
-
-        @EventListener
-        public void testEventListener(OrganisationEvent organisationEvent) {
-            System.out.println("Received test event");
-            System.out.println(organisationEvent);
-        }
-    }
 
     @Bean
     public Step createIndexStep(StepBuilderFactory stepBuilderFactory,

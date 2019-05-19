@@ -11,7 +11,6 @@
 
     <artifactId>helfomat-web</artifactId>
 
-
     <dependencies>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
@@ -36,6 +35,10 @@
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
             <artifactId>helfomat-infrastructure-google-maps</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.helfenkannjeder.helfomat</groupId>
+            <artifactId>helfomat-infrastructure-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
