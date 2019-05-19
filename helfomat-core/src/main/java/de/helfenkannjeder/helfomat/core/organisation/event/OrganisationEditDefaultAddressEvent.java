@@ -19,6 +19,10 @@ public class OrganisationEditDefaultAddressEvent extends OrganisationEditEvent {
         this.defaultAddress = defaultAddress;
     }
 
+    public Address getDefaultAddress() {
+        return defaultAddress;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.setDefaultAddress(defaultAddress);

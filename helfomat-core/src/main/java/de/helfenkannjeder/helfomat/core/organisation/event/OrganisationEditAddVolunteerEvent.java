@@ -21,6 +21,14 @@ public class OrganisationEditAddVolunteerEvent extends OrganisationEditEvent {
         this.volunteer = volunteer;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.addVolunteer(index, volunteer);

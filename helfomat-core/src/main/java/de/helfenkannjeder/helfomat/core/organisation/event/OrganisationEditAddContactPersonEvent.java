@@ -21,8 +21,17 @@ public class OrganisationEditAddContactPersonEvent extends OrganisationEditEvent
         this.contactPerson = contactPerson;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public ContactPerson getContactPerson() {
+        return contactPerson;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.addContactPerson(index, contactPerson);
     }
+
 }

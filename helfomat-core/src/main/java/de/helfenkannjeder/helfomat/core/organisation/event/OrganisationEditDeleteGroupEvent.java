@@ -19,6 +19,10 @@ public class OrganisationEditDeleteGroupEvent extends OrganisationEditEvent {
         this.group = group;
     }
 
+    public Group getGroup() {
+        return group;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.removeGroup(group);

@@ -19,6 +19,10 @@ public class OrganisationEditDeleteAddressEvent extends OrganisationEditEvent {
         this.address = address;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.removeAddress(address);

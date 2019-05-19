@@ -21,8 +21,17 @@ public class OrganisationEditAddGroupEvent extends OrganisationEditEvent {
         this.group = group;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.addGroup(index, group);
     }
+
 }

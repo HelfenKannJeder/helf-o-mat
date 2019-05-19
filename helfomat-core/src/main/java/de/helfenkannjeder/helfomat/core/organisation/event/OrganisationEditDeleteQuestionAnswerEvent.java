@@ -19,6 +19,10 @@ public class OrganisationEditDeleteQuestionAnswerEvent extends OrganisationEditE
         this.questionAnswer = questionAnswer;
     }
 
+    public QuestionAnswer getQuestionAnswer() {
+        return questionAnswer;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.removeQuestionAnswer(questionAnswer);

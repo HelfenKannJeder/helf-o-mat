@@ -19,6 +19,10 @@ public class OrganisationEditDeleteContactPersonEvent extends OrganisationEditEv
         this.contactPerson = contactPerson;
     }
 
+    public ContactPerson getContactPerson() {
+        return contactPerson;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.removeContactPerson(contactPerson);

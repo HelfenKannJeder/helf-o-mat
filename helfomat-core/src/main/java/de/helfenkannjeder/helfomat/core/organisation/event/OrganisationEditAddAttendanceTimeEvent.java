@@ -21,8 +21,17 @@ public class OrganisationEditAddAttendanceTimeEvent extends OrganisationEditEven
         this.attendanceTime = attendanceTime;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public AttendanceTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.addAttendanceTime(index, attendanceTime);
     }
+
 }

@@ -19,6 +19,10 @@ public class OrganisationEditDeleteAttendanceTimeEvent extends OrganisationEditE
         this.attendanceTime = attendanceTime;
     }
 
+    public AttendanceTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.removeAttendanceTime(attendanceTime);

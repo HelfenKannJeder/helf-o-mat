@@ -19,6 +19,10 @@ public class OrganisationEditLogoEvent extends OrganisationEditEvent {
         this.logo = logo;
     }
 
+    public PictureId getLogo() {
+        return logo;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.setLogo(logo);

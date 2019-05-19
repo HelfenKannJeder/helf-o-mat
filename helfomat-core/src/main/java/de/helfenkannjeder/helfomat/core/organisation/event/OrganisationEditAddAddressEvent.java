@@ -21,8 +21,17 @@ public class OrganisationEditAddAddressEvent extends OrganisationEditEvent {
         this.address = address;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.addAddress(index, address);
     }
+
 }

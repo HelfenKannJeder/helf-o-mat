@@ -19,6 +19,10 @@ public class OrganisationEditDeleteVolunteerEvent extends OrganisationEditEvent 
         this.volunteer = volunteer;
     }
 
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.removeVolunteer(volunteer);

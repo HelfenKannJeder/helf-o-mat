@@ -21,6 +21,14 @@ public class OrganisationEditAddQuestionAnswerEvent extends OrganisationEditEven
         this.questionAnswer = questionAnswer;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public QuestionAnswer getQuestionAnswer() {
+        return questionAnswer;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.addQuestionAnswer(index, questionAnswer);

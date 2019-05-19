@@ -18,6 +18,10 @@ public class OrganisationEditWebsiteEvent extends OrganisationEditEvent {
         this.website = website;
     }
 
+    public String getWebsite() {
+        return website;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.setWebsite(website);

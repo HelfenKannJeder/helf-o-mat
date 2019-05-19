@@ -19,6 +19,10 @@ public class OrganisationEditTeaserImageEvent extends OrganisationEditEvent {
         this.teaserImage = teaserImage;
     }
 
+    public PictureId getTeaserImage() {
+        return teaserImage;
+    }
+
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.setTeaserImage(teaserImage);
