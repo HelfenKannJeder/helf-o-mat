@@ -1,0 +1,10 @@
+kafka:
+  topic:
+    organisation-events: organisation-events
+  bootstrap-servers: localhost:12345
+
+helfomat:
+  picture-folder: pictures/
+  autoImport:
+    enabled: false
+    schedule: "0 0 3 * * *"

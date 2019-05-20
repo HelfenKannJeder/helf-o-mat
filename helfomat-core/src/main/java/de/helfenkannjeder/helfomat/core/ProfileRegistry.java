@@ -15,4 +15,6 @@ public class ProfileRegistry {
 
     public static final String DISABLE_TYPO3_IMPORT = "disable-typo3-import";
 
+    public static final String TEST = "test";
+
 }

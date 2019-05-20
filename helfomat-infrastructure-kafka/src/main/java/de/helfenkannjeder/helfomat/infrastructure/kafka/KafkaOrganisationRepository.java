@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.kafka;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,15 +27,17 @@ public class KafkaOrganisationRepository implements OrganisationRepository {
     private final static Logger LOG = LoggerFactory.getLogger(KafkaOrganisationRepository.class);
 
     private final Map<OrganisationId, Organisation.Builder> organisationBuilderMap = new HashMap<>();
-
+    private final ObjectMapper objectMapper;
     private final OrganisationRepository persistentOrganisationRepository;
 
-    public KafkaOrganisationRepository(OrganisationRepository persistentOrganisationRepository) {
+    public KafkaOrganisationRepository(ObjectMapper objectMapper, OrganisationRepository persistentOrganisationRepository) {
+        this.objectMapper = objectMapper;
         this.persistentOrganisationRepository = persistentOrganisationRepository;
     }
 
     @KafkaListener(topics = "${kafka.topic.organisation-events}")
-    public void listen(OrganisationEvent organisationEvent) {
+    public void listen(byte[] organisationEventByteArray) throws IOException {
+        OrganisationEvent organisationEvent = this.objectMapper.readValue(organisationEventByteArray, OrganisationEvent.class);
         OrganisationId organisationId = organisationEvent.getOrganisationId();
         LOG.debug("Received organisation event for organisation '{}' from kafka '{}'", organisationId, organisationEvent);
         Organisation.Builder organisationBuilder = organisationEvent.applyOnOrganisationBuilder(
