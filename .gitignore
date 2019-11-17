@@ -7,3 +7,5 @@ import/data
 pictures
 data/elasticsearch
 helfomat-api/data/elasticsearch
+pom.xml.releaseBackup
+release.properties
