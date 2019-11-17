@@ -4,7 +4,7 @@
 
     <groupId>de.helfenkannjeder.helfomat</groupId>
     <artifactId>base</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -16,7 +16,7 @@
 
     <scm>
         <developerConnection>scm:git:git@github.com:HelfenKannJeder/helf-o-mat.git</developerConnection>
-      <tag>base-0.0.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <properties>
