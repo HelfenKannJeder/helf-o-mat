@@ -179,6 +179,21 @@
         "tslib": "^1.9.0"
       }
     },
+    "@angular/cdk": {
+      "version": "7.3.7",
+      "integrity": "sha1-zhrVO6BL65yOlQrMVpHqAUN1N2Q=",
+      "requires": {
+        "parse5": "^5.0.0",
+        "tslib": "^1.7.1"
+      },
+      "dependencies": {
+        "parse5": {
+          "version": "5.1.1",
+          "integrity": "sha1-9o5OW6GFKsLK3AD0VV//bCq7YXg=",
+          "optional": true
+        }
+      }
+    },
     "@angular/cli": {
       "version": "6.2.2",
       "resolved": "https://registry.npmjs.org/@angular/cli/-/cli-6.2.2.tgz",
@@ -6528,6 +6543,13 @@
       "version": "4.0.0-beta.12",
       "resolved": "https://registry.npmjs.org/ng2-page-scroll/-/ng2-page-scroll-4.0.0-beta.12.tgz",
       "integrity": "sha1-JrTnHvmtCFnx+k5ejWznx1tzxvc="
+    },
+    "ngx-autosize": {
+      "version": "1.7.2",
+      "integrity": "sha1-FCGn5WGcMyMYHNxwvjehhkZP22g=",
+      "requires": {
+        "tslib": "^1.9.0"
+      }
     },
     "nice-try": {
       "version": "1.0.5",
