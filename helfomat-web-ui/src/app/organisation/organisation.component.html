@@ -9,87 +9,87 @@
         </div>
     </div>
 
-    <div class="col-md-8">
-        <h1>{{organisation.name}}</h1>
-        <p><a href="{{organisation.website}}">{{organisation.website}}</a></p>
-        <p>{{organisation.description}}</p>
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>{{organisation.name}}</h1>
+            <p><a href="{{organisation.website}}">{{organisation.website}}</a></p>
+            <p>{{organisation.description}}</p>
 
-        <div *ngIf="organisation.attendanceTimes.length > 0">
-            <h2>{{'organisation.attendanceTime.title' | translate}}</h2>
-            <div *ngFor="let attendanceTime of organisation.attendanceTimes">
-                <h4>
-                    {{'organisation.attendanceTime.weekday.' + attendanceTime.day | translate}},
-                    {{attendanceTime.start | time}}-{{attendanceTime.end | time}}
-                    {{'organisation.attendanceTime.clock' | translate}}
-                </h4>
-                <p>
-                    {{'organisation.attendanceTime.groups' | translate}}
-                    {{attendanceTime.groups | groupNames: organisation.groups}}
-                </p>
-                <p *ngIf="attendanceTime.note">
-                    {{'organisation.attendanceTime.note' | translate}}
-                    {{attendanceTime.note}}
-                </p>
+            <div *ngIf="organisation.attendanceTimes.length > 0">
+                <h2>{{'organisation.attendanceTime.title' | translate}}</h2>
+                <div *ngFor="let attendanceTime of organisation.attendanceTimes">
+                    <h4>
+                        {{'organisation.attendanceTime.weekday.' + attendanceTime.day | translate}},
+                        {{attendanceTime.start | time}}-{{attendanceTime.end | time}}
+                        {{'organisation.attendanceTime.clock' | translate}}
+                    </h4>
+                    <p>
+                        {{'organisation.attendanceTime.groups' | translate}}
+                        {{attendanceTime.groups | groupNames: organisation.groups}}
+                    </p>
+                    <p *ngIf="attendanceTime.note">
+                        {{'organisation.attendanceTime.note' | translate}}
+                        {{attendanceTime.note}}
+                    </p>
+                </div>
             </div>
-        </div>
 
-        <h2>{{'organisation.group.title' | translate}}</h2>
-        <div *ngFor="let group of organisation.groups">
-            <h3>{{group.name}}</h3>
-            {{group.description}}
-        </div>
+            <h2>{{'organisation.group.title' | translate}}</h2>
+            <div *ngFor="let group of organisation.groups">
+                <h3>{{group.name}}</h3>
+                {{group.description}}
+            </div>
 
-        <div *ngIf="organisation.volunteers.length > 0">
-            <h2>{{'organisation.persons.title' | translate}}</h2>
-            <div class="row" *ngFor="let volunteer of organisation.volunteers">
-                <div class="col-md-12">
-                    <div class="thumbnail clearfix">
-                        <div class="col-md-4" *ngIf="volunteer.picture">
-                            <img src="api/picture/{{volunteer.picture.value}}/medium" alt="{{volunteer.firstname}}"
-                                 style="width:100%">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="caption">
-                                <h3>{{volunteer.firstname}}</h3>
-                                <p>{{volunteer.motivation}}</p>
+            <div *ngIf="organisation.volunteers.length > 0">
+                <h2>{{'organisation.persons.title' | translate}}</h2>
+                <div class="card" *ngFor="let volunteer of organisation.volunteers">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4" *ngIf="volunteer.picture">
+                                <img src="api/picture/{{volunteer.picture.value}}/medium" alt="{{volunteer.firstname}}"
+                                     style="width:100%">
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="caption">
+                                    <h3>{{volunteer.firstname}}</h3>
+                                    <p>{{volunteer.motivation}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div *ngIf="userAnswers | async; let userAnswers">
-            <h2 id="compare">{{'organisation.questionsAndAnswers.title' | translate}}</h2>
-            <div class="panel panel-default">
-                <table class="table">
-                    <tr>
-                        <th>{{'organisation.questionsAndAnswers.question' | translate}}</th>
-                        <th>{{'organisation.questionsAndAnswers.organisation' | translate}}</th>
-                        <th>{{'organisation.questionsAndAnswers.you' | translate}}</th>
-                        <th>{{'organisation.questionsAndAnswers.compare.title' | translate}}</th>
-                    </tr>
-                    <tr *ngFor="let question of organisation.questions; let i = index;">
-                        <td>{{question.question}}</td>
-                        <td><img src="{{question.answer | answerImage}}" class="thumb"/></td>
-                        <td><img *ngIf="userAnswers[i]" src="{{userAnswers[i] | answerImage}}" class="thumb"/></td>
-                        <td class="text-right">
-                            <span *ngIf="userAnswers[i]">{{'organisation.questionsAndAnswers.compare.match' + (question.answer |
-                                compareAnswer:userAnswers[i]) | translate}}</span>
-                        </td>
-                    </tr>
-                </table>
+            <div *ngIf="userAnswers | async; let userAnswers">
+                <h2 id="compare">{{'organisation.questionsAndAnswers.title' | translate}}</h2>
+                <div class="card card-default">
+                    <table class="table">
+                        <tr>
+                            <th>{{'organisation.questionsAndAnswers.question' | translate}}</th>
+                            <th>{{'organisation.questionsAndAnswers.organisation' | translate}}</th>
+                            <th>{{'organisation.questionsAndAnswers.you' | translate}}</th>
+                            <th>{{'organisation.questionsAndAnswers.compare.title' | translate}}</th>
+                        </tr>
+                        <tr *ngFor="let question of organisation.questions; let i = index;">
+                            <td>{{question.question}}</td>
+                            <td><img src="{{question.answer | answerImage}}" class="thumb"/></td>
+                            <td><img *ngIf="userAnswers[i]" src="{{userAnswers[i] | answerImage}}" class="thumb"/></td>
+                            <td class="text-right">
+                                <span *ngIf="userAnswers[i]">{{'organisation.questionsAndAnswers.compare.match' + (question.answer |
+                                    compareAnswer:userAnswers[i]) | translate}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="row">
-            <div class="panel panel-default" *ngIf="organisation.addresses.length > 0">
-                <div class="panel-heading">
+        <div class="col-lg-4">
+            <div class="card card-default" *ngIf="organisation.addresses.length > 0">
+                <div class="card-header">
                     {{organisation.addresses.length | i18nPlural: {
                     '=1': 'organisation.address.title',
-                    'other':'organisation.address.titlePlural'
-                    } | translate}}
+                    'other': 'organisation.address.titlePlural'
+                } | translate}}
                 </div>
                 <helfomat-map
                     [organisations]="organisations"
@@ -108,65 +108,65 @@
                             *ngIf="address.telephone">{{'organisation.address.telephone' | translate}}: {{address.telephone}}</span>
                     </li>
                 </ul>
+                <br class="clearfix"/>
             </div>
 
-            <div class="panel panel-default" *ngIf="organisation.contactPersons.length > 0">
-                <div class="panel-heading">
+            <div class="card card-default" *ngIf="organisation.contactPersons.length > 0">
+                <div class="card-header">
                     {{'organisation.contact.title' | translate}}
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <div *ngFor="let contactPerson of organisation.contactPersons" class="row">
-                        <div class="col-sm-2" *ngIf="contactPerson.picture">
-                            <div class="row">
-                                <img src="api/picture/{{contactPerson.picture.value}}/icon"
-                                     width="100%"
-                                     alt="{{contactPerson.firstname}} {{contactPerson.lastname}}"/>
-                            </div>
+                        <div class="col-md-4" *ngIf="contactPerson.picture">
+                            <img src="api/picture/{{contactPerson.picture.value}}/icon"
+                                 width="100%"
+                                 alt="{{contactPerson.firstname}} {{contactPerson.lastname}}"/>
                         </div>
-                        <div class="col-sm-10">
+                        <div class="col">
                             <h4>{{contactPerson.firstname}} {{contactPerson.lastname}}</h4>
                             <p>
                                 <span *ngIf="contactPerson.rank">({{contactPerson.rank}})<br/></span>
                                 <span *ngIf="contactPerson.telephone">{{'organisation.contact.telephone' | translate}}
-                                {{contactPerson.telephone}}<br/></span>
+                                    {{contactPerson.telephone}}<br/></span>
                                 <span *ngIf="contactPerson.mail">{{'organisation.contact.mail' | translate}}
-                                {{contactPerson.mail}}<br/></span>
+                                    {{contactPerson.mail}}<br/></span>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="panel panel-default" *ngIf="scoreNorm | async; else backLink">
-                <div class="panel-heading">
+            <div class="card card-default" *ngIf="scoreNorm | async; else backLink">
+                <div class="card-header">
                     {{'organisation.facts.helfomatResult.title' | translate}}
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <organisation-score [scoreNorm]="scoreNorm | async"></organisation-score>
-                    <div class="btn-group" role="group" aria-label="...">
-                        <a pageScroll class="btn btn-default" href="#compare">
+                    <br class="clearfix"/>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="...">
+                        <a pageScroll class="btn btn-secondary" href="#compare">
                             {{'organisation.facts.helfomatResult.compare' | translate}}
                         </a>
-                        <button class="btn btn-default" (click)="_back$.next()">
+                        <button class="btn btn-secondary" (click)="_back$.next()">
                             {{'organisation.facts.helfomatResult.back' | translate}}
                         </button>
                     </div>
                 </div>
             </div>
             <ng-template #backLink>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                <div class="card card-default">
+                    <div class="card-header">
                         {{'organisation.facts.helfomatResult.backToOverviewTitle' | translate}}
                     </div>
-                    <div class="panel-body">
-                        <button class="btn btn-default" (click)="_back$.next()">
+                    <div class="card-body">
+                        <button class="btn btn-secondary" (click)="_back$.next()">
                             {{'organisation.facts.helfomatResult.back' | translate}}
                         </button>
                     </div>
                 </div>
             </ng-template>
-            <div class="panel panel-default" *ngIf="travelDistances | async; let travelDistances">
-                <div class="panel-heading">
+            <div class="card card-default" *ngIf="travelDistances | async; let travelDistances">
+                <div class="card-header">
                     {{'organisation.facts.distance.title' | translate}}
                 </div>
                 <table class="table">
@@ -189,8 +189,8 @@
                 </table>
             </div>
 
-            <div class="panel panel-default" *ngIf="organisation.pictures.length > 1">
-                <div class="panel-heading">
+            <div class="card card-default" *ngIf="organisation.pictures.length > 1">
+                <div class="card-header">
                     {{'organisation.pictures.title' | translate}}
                 </div>
                 <img src="api/picture/{{picture.value}}/medium" width="100%"
@@ -198,8 +198,8 @@
             </div>
 
         </div>
-    </div>
 
+    </div>
 </div>
 
 <ng-template #loading>{{'organisation.dataLoading' | translate}}</ng-template>

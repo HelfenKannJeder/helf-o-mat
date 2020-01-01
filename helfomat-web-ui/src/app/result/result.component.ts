@@ -12,12 +12,12 @@ import {debounceTime, distinctUntilChanged, filter, first, flatMap, map} from "r
 @Component({
     selector: 'app-result',
     templateUrl: './result.component.html',
-    styleUrls: ['./result.component.less'],
+    styleUrls: ['./result.component.scss'],
     providers: [OrganisationService],
     animations: [
         trigger('slide', [
             state('question', style({
-                transform: 'translate3d(0, 0, 0)'
+                transform: 'translate3d(15px, 0, 0)'
             })),
             state('list', style({
                 transform: 'translate3d(-50%, 0, 0)'

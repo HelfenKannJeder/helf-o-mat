@@ -1,17 +1,17 @@
-<div class="panel panel-default" *ngFor="let organisation of currentOrganisations">
-    <div class="panel-heading pointer" (click)="openOrganisation.emit(organisation)">{{organisation.name}}</div>
-    <div class="panel-body pointer" (click)="openOrganisation.emit(organisation)">
-        <div class="media">
-            <div class="media-left media-top media-logo" *ngIf="organisation.logo">
+<div class="card card-default" *ngFor="let organisation of currentOrganisations">
+    <div class="card-header pointer" (click)="openOrganisation.emit(organisation)">{{organisation.name}}</div>
+    <div class="card-body pointer" (click)="openOrganisation.emit(organisation)">
+        <div class="row">
+            <div class="col-4" *ngIf="organisation.logo">
                 <img class="media-object" [attr.src]="getImagePath(organisation.logo)"
                      [attr.alt]="organisation.name">
             </div>
-            <div class="media-body">
+            <div class="col-8">
                 <div class="row" *ngIf="organisation.scoreNorm">
-                    <div class="col-xs-10 col-sm-10">
+                    <div class="col-sm-10 col-md-10">
                         <organisation-score [scoreNorm]="organisation.scoreNorm"></organisation-score>
                     </div>
-                    <div class="col-xs-2 col-sm-2"><a
+                    <div class="col-sm-2 col-md-2"><a
                         (click)="openOrganisationScoreExplanation.emit(organisation)"
                         [title]="'result.list.hoverResultExplain' | translate:{'organisationName': organisation.name}"><span
                         class="glyphicon glyphicon-question-sign"></span></a></div>
@@ -26,7 +26,7 @@
                 <p>
                     <a [attr.href]="organisation.website">{{organisation.website}}</a>
                 </p>
-                <p><a class="pull-right" (click)="openOrganisation.emit(organisation)">{{'result.list.more' | translate}}</a></p>
+                <p><a class="float-right" (click)="openOrganisation.emit(organisation)" (keyup.enter)="openOrganisation.emit(organisation)" tabindex="50">{{'result.list.more' | translate}}</a></p>
             </div>
         </div>
     </div>

@@ -1,15 +1,13 @@
-<div class="row">
-    <ul class="list-group">
-        <li class="list-group-item" *ngFor="let questionWithUserAnswer of questionWithUserAnswers | async">
-        <span class="badge">
-            <a role="button" (click)="answerQuestion('YES', questionWithUserAnswer.question);"><img
-                src="{{ 'YES' | answerImage:!questionWithUserAnswer.isCurrentAnswer('YES')}}" class="thumb"/></a>
-            <a role="button" (click)="answerQuestion('MAYBE', questionWithUserAnswer.question);"><img
-                src="{{ 'MAYBE' | answerImage:!questionWithUserAnswer.isCurrentAnswer('MAYBE')}}" class="thumb"/></a>
-            <a role="button" (click)="answerQuestion('NO', questionWithUserAnswer.question);"><img
-                src="{{ 'NO' | answerImage:!questionWithUserAnswer.isCurrentAnswer('NO')}}" class="thumb"/></a>
-        </span>
-            {{questionWithUserAnswer.question.question}}
-        </li>
-    </ul>
-</div>
+<ul class="list-group">
+    <li class="list-group-item" *ngFor="let questionWithUserAnswer of questionWithUserAnswers | async">
+    <span class="badge">
+        <a role="button" (click)="answerQuestion('YES', questionWithUserAnswer.question);"><img
+            src="{{ 'YES' | answerImage:!questionWithUserAnswer.isCurrentAnswer('YES')}}" class="thumb"/></a>
+        <a role="button" (click)="answerQuestion('MAYBE', questionWithUserAnswer.question);"><img
+            src="{{ 'MAYBE' | answerImage:!questionWithUserAnswer.isCurrentAnswer('MAYBE')}}" class="thumb"/></a>
+        <a role="button" (click)="answerQuestion('NO', questionWithUserAnswer.question);"><img
+            src="{{ 'NO' | answerImage:!questionWithUserAnswer.isCurrentAnswer('NO')}}" class="thumb"/></a>
+    </span>
+        {{questionWithUserAnswer.question.question}}
+    </li>
+</ul>

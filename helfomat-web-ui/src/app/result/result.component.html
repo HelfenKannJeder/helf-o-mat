@@ -14,24 +14,27 @@
         (openOrganisation)="openOrganisation($event)"
         (mapResize)="continueWithoutLocation($event)">
         <div class="addressSearchContainer row" *ngIf="!hasPosition">
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+            <div class="col-lg-4">
+                <div class="card card-default">
+                    <div class="card-header card-default">
                         {{ 'location.headline' | translate }}
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                         <p>{{ 'location.contentStart' | translate }}</p>
                         <p>
                             <input
                                 class="addressInput form-control"
                                 type="text"
+                                tabindex="1"
                                 placeholder="{{ 'map.address' | translate }}"/>
                         </p>
                         <p>{{ 'location.contentEnd1' | translate }}<a
                             (click)="continueWithoutLocation()">{{
                             'location.contentEnd2Link' | translate }}</a>{{
                             'location.contentEnd3' | translate }}</p>
-                        <p><a (click)="continueWithoutLocation()" class="btn btn-xs btn-default">{{
+                        <p><a
+                            (click)="continueWithoutLocation()" (keyup.enter)="continueWithoutLocation()"
+                            tabindex="2" class="btn btn-sm btn-secondary">{{
                             'location.buttonContinueWithoutAddress' | translate}}</a></p>
                     </div>
                 </div>
@@ -42,27 +45,35 @@
 
 <div class="slide">
     <div class="slide-holder" [@slide]="visibleComponent">
-        <div class="col-xs-6">
-            <div class="hidden-lg clearfix">
-                <button class="btn btn-default pull-right" (click)="visibleComponent = 'list'">
-                    {{'result.mobile.swipe.list' | translate}}
-                </button>
+        <div class="row">
+            <div class="col-6">
+                <div class="d-md-none clearfix">
+                    <button class="btn btn-secondary float-right" (click)="visibleComponent = 'list'">
+                        {{'result.mobile.swipe.list' | translate}}
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="card-header">{{ 'result.header.questions' | translate }}</div>
+                </div>
+                <br class="clearfix"/>
+                <app-question-overview
+                    [currentAnswers]="answers"
+                    (questionUserAnswers)="updateOrganisations($event)"
+                    (newAnswers)="_newAnswers$.next($event)"></app-question-overview>
             </div>
-            <div class="well">{{ 'result.header.questions' | translate }}</div>
-            <app-question-overview
-                [currentAnswers]="answers"
-                (questionUserAnswers)="updateOrganisations($event)"
-                (newAnswers)="_newAnswers$.next($event)"></app-question-overview>
-        </div>
-        <div class="col-xs-6">
-            <button class="btn btn-default hidden-lg" (click)="visibleComponent = 'question'">
-                {{'result.mobile.swipe.questions' | translate}}
-            </button>
-            <div class="well">{{ 'result.header.list' | translate }}</div>
-            <helfomat-list
-                [organisations]="organisations"
-                (openOrganisation)="openOrganisation($event)"
-                (openOrganisationScoreExplanation)="openOrganisation($event, true)"></helfomat-list>
+            <div class="col-6">
+                <button class="btn btn-secondary d-md-none" (click)="visibleComponent = 'question'">
+                    {{'result.mobile.swipe.questions' | translate}}
+                </button>
+                <div class="card">
+                    <div class="card-header">{{ 'result.header.list' | translate }}</div>
+                </div>
+                <br class="clearfix"/>
+                <helfomat-list
+                    [organisations]="organisations"
+                    (openOrganisation)="openOrganisation($event)"
+                    (openOrganisationScoreExplanation)="openOrganisation($event, true)"></helfomat-list>
+            </div>
         </div>
     </div>
 </div>
