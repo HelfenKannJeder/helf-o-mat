@@ -1,4 +1,4 @@
-<div class="col-md-12">
+<div class="col-lg-12">
     <div class="jumbotron" *ngFor="let questionWithUserAnswer of questionWithUserAnswersSync; let i = index"
          [hidden]="getLastAnsweredQuestion(questionWithUserAnswersSync) !== i">
         <div class="fix-height">
@@ -6,15 +6,27 @@
             <p class="description">{{questionWithUserAnswer.question.description}}</p>
         </div>
         <p class="text-center clearfix">
-            <a class="btn btn-lg btn-yes" role="button" (click)="answerQuestion('YES', questionWithUserAnswer.question);">
+            <a class="btn btn-lg btn-yes"
+               role="button"
+               (click)="answerQuestion('YES', questionWithUserAnswer.question);"
+               (keyup.enter)="answerQuestion('YES', questionWithUserAnswer.question);"
+               tabindex="1">
                 <img src="{{ 'YES' | answerImage}}"/><br/>
                 {{ 'question.yes' | translate }}
             </a>
-            <a class="btn btn-lg btn-maybe" role="button" (click)="answerQuestion('MAYBE', questionWithUserAnswer.question);">
+            <a class="btn btn-lg btn-maybe"
+               role="button"
+               (click)="answerQuestion('MAYBE', questionWithUserAnswer.question);"
+               (keyup.enter)="answerQuestion('MAYBE', questionWithUserAnswer.question);"
+               tabindex="2">
                 <img src="{{ 'MAYBE' | answerImage}}"/><br/>
                 {{ 'question.maybe' | translate }}
             </a>
-            <a class="btn btn-lg btn-no" role="button" (click)="answerQuestion('NO', questionWithUserAnswer.question);">
+            <a class="btn btn-lg btn-no"
+               role="button"
+               (click)="answerQuestion('NO', questionWithUserAnswer.question);"
+               (keyup.enter)="answerQuestion('NO', questionWithUserAnswer.question);"
+               tabindex="3">
                 <img src="{{ 'NO' | answerImage}}"/><br/>
                 {{ 'question.no' | translate }}
             </a>
@@ -26,16 +38,16 @@
         </p>
     </div>
 </div>
-<div class="col-md-3 pull-right">
+<div class="col-lg-3 float-right">
     <div class="row">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card card-default">
+            <div class="card-header">
                 {{ 'question.skip.headline' | translate }}
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <p>{{ 'question.skip.contentEnd1' | translate }} <a (click)="continueWithoutQuestions()">{{
                     'question.skip.contentEnd2Link' | translate }}</a> {{ 'question.skip.contentEnd3' | translate }}</p>
-                <p><a (click)="continueWithoutQuestions()" class="btn btn-xs btn-default">{{
+                <p><a (click)="continueWithoutQuestions()" (keyup.enter)="continueWithoutQuestions()" class="btn btn-sm btn-secondary" tabindex="4">{{
                     'question.skip.buttonContinueWithoutQuestions' | translate}}</a></p>
             </div>
         </div>
