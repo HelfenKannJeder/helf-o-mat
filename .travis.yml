@@ -1,5 +1,5 @@
 language: java
-jdk: oraclejdk12
+jdk: openjdk8
 install: true
 script: ./mvnw clean install
 cache:
