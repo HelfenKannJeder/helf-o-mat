@@ -1,0 +1,21 @@
+@import '~bootstrap/scss/functions', '~bootstrap/scss/variables', '~bootstrap/scss/mixins';
+
+.addressSearchContainer {
+  margin-top: 5em;
+}
+
+@include media-breakpoint-down('sm') {
+  .slide {
+    overflow: hidden;
+
+    .slide-holder {
+      width: calc(200% - 30px);
+    }
+  }
+}
+
+@include media-breakpoint-up('md') {
+  div {
+    transform: none !important;
+  }
+}

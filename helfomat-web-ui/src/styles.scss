@@ -219,6 +219,16 @@ body {
       }
     }
 
+    .content {
+      h2:not(:first-child) {
+        margin-top: 3rem;
+      }
+
+      h3 {
+        margin-top: 1.5rem;
+      }
+    }
+
     #sponsors {
       padding: 3px 30px;
       border-top: 1px solid $darkgray;
@@ -243,15 +253,15 @@ body {
   border-radius: 0;
 }
 
-.panel {
+.card {
   border-radius: 0;
 }
 
-.panel-default {
+.card-default {
   border: none;
 }
 
-.panel-default > .panel-heading {
+.card-default > .card-header {
   color: $darkgray;
   background-color: $lightgray;
   border-color: $darkblue;
@@ -260,6 +270,8 @@ body {
 
 .custom-content {
   margin-bottom: 20px;
+  margin-left: -15px;
+  margin-right: -15px;
 }
 
 .progress {

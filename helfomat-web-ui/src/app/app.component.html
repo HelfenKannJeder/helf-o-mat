@@ -28,18 +28,24 @@
             <h2>{{ 'header.title2' | translate }}</h2>
         </div>
         <div class="content clearfix">
-            <router-outlet></router-outlet>
+            <div class="container-fluid">
+                <router-outlet></router-outlet>
+            </div>
         </div>
         <div>
-            <ul class="nav nav-pills">
-                <li><a href="//helfenkannjeder.de/neues/">Neues</a></li>
-                <li><a href="https://www.instagram.com/helfenkannjeder/">{{ 'navigation.instagram' | translate }}</a></li>
-                <li><a href="https://www.facebook.com/HelfenKannJeder/">{{ 'navigation.facebook' | translate }}</a></li>
-                <li class="pull-right"><a href="//helfenkannjeder.de/impressum/">{{ 'navigation.imprint' | translate }}</a></li>
-                <li class="pull-right"><a href="//helfenkannjeder.de/datenschutz/">{{ 'navigation.privacy' | translate }}</a></li>
-                <li class="pull-right"><a href="//helfenkannjeder.de/faq/">{{ 'navigation.faq' | translate }}</a></li>
-                <li class="pull-right"><a href="//helfenkannjeder.de/kontakt/">{{ 'navigation.contact' | translate }}</a></li>
-            </ul>
+            <nav class="navbar">
+                <ul class="nav nav-pills mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="//helfenkannjeder.de/neues/">Neues</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://www.instagram.com/helfenkannjeder/">{{ 'navigation.instagram' | translate }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://www.facebook.com/HelfenKannJeder/">{{ 'navigation.facebook' | translate }}</a></li>
+                </ul>
+                <ul class="nav nav-pills">
+                    <li class="nav-item"><a class="nav-link" href="//helfenkannjeder.de/kontakt/">{{ 'navigation.contact' | translate }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="//helfenkannjeder.de/faq/">{{ 'navigation.faq' | translate }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="//helfenkannjeder.de/datenschutz/">{{ 'navigation.privacy' | translate }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="//helfenkannjeder.de/impressum/">{{ 'navigation.imprint' | translate }}</a></li>
+                </ul>
+            </nav>
         </div>
         <div id="sponsors">
             <div>
