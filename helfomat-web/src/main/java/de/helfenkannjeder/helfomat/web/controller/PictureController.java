@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.web.controller;
 
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
+import org.apache.tika.Tika;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.nio.file.Path;
 @RequestMapping("/api")
 public class PictureController {
 
+    private static final Tika TIKA = new Tika();
     private final PictureRepository pictureRepository;
 
     public PictureController(PictureRepository pictureRepository) {
@@ -43,7 +45,7 @@ public class PictureController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(Files.probeContentType(picture)));
+        headers.setContentType(MediaType.parseMediaType(TIKA.detect(picture)));
         InputStream inputStream = Files.newInputStream(picture);
         return new ResponseEntity<>(new InputStreamResource(inputStream), headers, HttpStatus.OK);
     }
