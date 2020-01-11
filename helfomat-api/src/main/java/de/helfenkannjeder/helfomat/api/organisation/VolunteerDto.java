@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
 public class VolunteerDto {
     private String firstname;
     private String motivation;

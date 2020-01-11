@@ -5,6 +5,7 @@ import java.util.Objects;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class GeoPoint {
     private double lat;
     private double lon;

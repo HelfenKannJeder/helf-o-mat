@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class OrganisationDto {
     private String id;
     private String name;

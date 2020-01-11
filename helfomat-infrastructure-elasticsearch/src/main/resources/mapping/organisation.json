@@ -1,98 +1,107 @@
 {
+  "dynamic": true,
   "properties": {
     "addresses": {
       "type": "nested",
       "properties": {
         "addressAppendix": {
-          "type": "string"
+          "type": "text"
         },
         "city": {
-          "type": "string"
+          "type": "text"
         },
         "location": {
           "type": "geo_point"
         },
         "street": {
-          "type": "string"
+          "type": "text"
         },
         "telephone": {
-          "type": "string"
+          "type": "text"
         },
         "website": {
-          "type": "string"
+          "type": "text"
         },
         "zipcode": {
-          "type": "string"
+          "type": "text"
         }
       }
     },
     "defaultAddress": {
       "properties": {
         "addressAppendix": {
-          "type": "string"
+          "type": "text"
         },
         "city": {
-          "type": "string"
+          "type": "text"
         },
         "location": {
           "type": "geo_point"
         },
         "street": {
-          "type": "string"
+          "type": "text"
         },
         "telephone": {
-          "type": "string"
+          "type": "text"
         },
         "website": {
-          "type": "string"
+          "type": "text"
         },
         "zipcode": {
-          "type": "string"
+          "type": "text"
         }
       }
     },
     "description": {
-      "type": "string"
+      "type": "text"
     },
     "id": {
-      "type": "string"
+      "properties": {
+        "value": {
+          "type": "text"
+        }
+      }
     },
     "logo": {
-      "type": "string"
+      "properties": {
+        "value": {
+          "type": "text"
+        }
+      }
     },
     "name": {
-      "type": "string"
+      "type": "text"
     },
     "urlName": {
-      "type": "string",
-      "index": "not_analyzed"
+      "type": "keyword"
     },
     "pictures": {
-      "type": "string"
+      "type": "nested",
+      "properties": {
+        "value": {
+          "type": "text"
+        }
+      }
     },
     "organisationType": {
-      "type": "string",
-      "index": "not_analyzed"
+      "type": "keyword"
     },
     "questions": {
       "type": "nested",
       "properties": {
         "answer": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "description": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "question": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         }
       }
     },
     "website": {
-      "type": "string"
+      "type": "text"
     }
   }
 }

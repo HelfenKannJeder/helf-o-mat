@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class ContactPersonDto {
     private String firstname;
     private String lastname;

@@ -1,13 +1,14 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch;
 
 import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ImportScheduler {
-    private static final Logger LOGGER = Logger.getLogger(ImportScheduler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImportScheduler.class);
 
     private final ImportJobRunnerService importJobRunnerService;
     private final HelfomatConfiguration helfomatConfiguration;

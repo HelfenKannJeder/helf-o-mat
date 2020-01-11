@@ -30,7 +30,7 @@ class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    static OrganisationDto toOrganisationDto(ScoredOrganisation scoredOrganisation) {
+    private static OrganisationDto toOrganisationDto(ScoredOrganisation scoredOrganisation) {
         Organisation organisation = scoredOrganisation.getOrganisation();
         return new OrganisationDto(
             organisation.getId().getValue(),
@@ -53,7 +53,7 @@ class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    static OrganisationDto toOrganisationDto(Organisation organisation) {
+    private static OrganisationDto toOrganisationDto(Organisation organisation) {
         return new OrganisationDto(
             organisation.getId().getValue(),
             organisation.getName(),

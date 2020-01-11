@@ -68,7 +68,7 @@ public class FileSystemPictureRepository implements PictureRepository {
         }
     }
 
-    public Path getPicture(PictureId pictureId) throws IOException {
+    public Path getPicture(PictureId pictureId) {
         return Paths.get(this.helfomatConfiguration.getPictureFolder(), "helfomat", pictureId.getValue());
     }
 
@@ -77,9 +77,16 @@ public class FileSystemPictureRepository implements PictureRepository {
         return Paths.get(this.helfomatConfiguration.getPictureFolder(), "helfomat", size, pictureId.getValue());
     }
 
+    @Override
+    public boolean existPicture(PictureId pictureId) {
+        return Files.exists(getPicture(pictureId));
+    }
+
     private Path createPath(String... folder) throws IOException {
         Path path = Paths.get(helfomatConfiguration.getPictureFolder(), folder);
-        Files.createDirectories(path.getParent());
+        if (!path.getParent().toFile().exists()) {
+            Files.createDirectories(path.getParent());
+        }
         return path;
     }
 }

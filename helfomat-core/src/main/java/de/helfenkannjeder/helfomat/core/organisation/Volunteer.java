@@ -2,6 +2,8 @@ package de.helfenkannjeder.helfomat.core.organisation;
 
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 
+import java.util.Objects;
+
 /**
  * @author Valentin Zickner
  */
@@ -35,6 +37,22 @@ public class Volunteer {
 
     public PictureId getPicture() {
         return picture;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Volunteer volunteer = (Volunteer) o;
+        return Objects.equals(firstname, volunteer.firstname) &&
+            Objects.equals(lastname, volunteer.lastname) &&
+            Objects.equals(motivation, volunteer.motivation) &&
+            Objects.equals(picture, volunteer.picture);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstname, lastname, motivation, picture);
     }
 
     public static class Builder {

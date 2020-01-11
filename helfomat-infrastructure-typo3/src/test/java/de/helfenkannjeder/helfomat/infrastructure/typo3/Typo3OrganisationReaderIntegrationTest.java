@@ -163,7 +163,7 @@ public class Typo3OrganisationReaderIntegrationTest {
         assertThat(organisation).isNotNull();
     }
 
-    private Organisation readByName(String name) throws Exception {
+    private Organisation readByName(String name) {
         Organisation read;
         do {
             read = typo3OrganisationReader.read();

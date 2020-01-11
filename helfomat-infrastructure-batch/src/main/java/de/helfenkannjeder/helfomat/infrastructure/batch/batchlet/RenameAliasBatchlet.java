@@ -27,7 +27,7 @@ public class RenameAliasBatchlet extends AbstractBatchlet {
     }
 
     @Override
-    public String process() throws Exception {
+    public String process() {
         this.organisationRepository.updateAlias(this.indexManager.getAlias());
 
         return COMPLETED.toString();

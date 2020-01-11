@@ -2,10 +2,10 @@ package de.helfenkannjeder.helfomat.web.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.ByteStreams;
 import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest;
 import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,9 +18,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -34,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class SearchControllerTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private MockMvc mockMvc;
 
@@ -58,18 +60,19 @@ public class SearchControllerTest {
     private Resource template;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
 
     private String getTemplate() throws IOException {
-        return new String(ByteStreams.toByteArray(template.getInputStream()), "UTF-8");
+        return StreamUtils.copyToString(template.getInputStream(), Charset.defaultCharset());
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void createTemplate(String templateName) throws IOException {
         PutIndexTemplateResponse response = client.admin().indices().putTemplate(
-                new PutIndexTemplateRequest(templateName).source(getTemplate())).actionGet();
+                new PutIndexTemplateRequest(templateName).source(getTemplate(), XContentType.JSON)).actionGet();
         if (!response.isAcknowledged()) {
             throw new RuntimeException("Error creating template");
         }
@@ -87,7 +90,7 @@ public class SearchControllerTest {
                     .setIndex(index)
                     .setType(typeOrganisation)
                     .setId(organisation.get("id").asText())
-                    .setSource(objectMapper.writeValueAsString(organisation))
+                    .setSource(objectMapper.writeValueAsString(organisation), XContentType.JSON)
                     .execute()
                     .actionGet();
         }

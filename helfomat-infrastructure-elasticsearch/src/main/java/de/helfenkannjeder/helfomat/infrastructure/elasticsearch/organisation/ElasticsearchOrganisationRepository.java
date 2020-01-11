@@ -10,12 +10,13 @@ import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
 import de.helfenkannjeder.helfomat.core.question.QuestionId;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoBoundingBoxQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.rest.action.admin.indices.alias.delete.AliasesNotFoundException;
+import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.AliasQuery;
@@ -55,24 +56,34 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         this.indexName = indexName;
     }
 
+    @Override
     public boolean existsOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters) {
         Address address = organisation.getDefaultAddress();
         if (address == null) {
             return false;
         }
-        GeoPoint locationToCheck = address.getLocation();
-
-        GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("defaultAddress.location")
-            .point(locationToCheck.getLat(), locationToCheck.getLon())
-            .distance(distanceInMeters, DistanceUnit.METERS);
-
-        BoolQueryBuilder organisationListQuery = boolQuery()
-            .must(termQuery("organisationType", organisation.getOrganisationType().name()))
-            .must(geoDistanceQuery);
+        BoolQueryBuilder organisationListQuery = buildQueryForOrganisationWithSameTypeInDistance(organisation, distanceInMeters);
         NativeSearchQuery query = new NativeSearchQuery(organisationListQuery);
         query.addIndices(indexName);
         query.addTypes(elasticsearchConfiguration.getType().getOrganisation());
         return this.elasticsearchTemplate.count(query) > 0;
+    }
+
+    @Override
+    public Organisation findOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters) {
+        BoolQueryBuilder nativeSearchQuery = buildQueryForOrganisationWithSameTypeInDistance(organisation, distanceInMeters);
+        List<Organisation> organisations = search(nativeSearchQuery).collect(Collectors.toList());
+        if (organisations.size() == 1) {
+            return organisations.get(0);
+        } else if (organisations.size() == 0) {
+            return null;
+        } else {
+            return organisations
+                .stream()
+                .filter(o -> o.getUrlName().equals(organisation.getUrlName()))
+                .findFirst()
+                .orElse(null);
+        }
     }
 
     @Override
@@ -85,7 +96,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
     @Override
     public Organisation findOne(String id) {
-        return search(idsQuery(this.elasticsearchConfiguration.getType().getOrganisation()).ids(id))
+        return search(idsQuery(this.elasticsearchConfiguration.getType().getOrganisation()).addIds(id))
             .findFirst()
             .orElse(null);
     }
@@ -175,8 +186,10 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
     @Override
     public void createIndex(String mapping) {
-        this.elasticsearchTemplate.createIndex(indexName);
-        this.elasticsearchTemplate.putMapping(indexName, this.elasticsearchConfiguration.getType().getOrganisation(), mapping);
+        if (!this.elasticsearchTemplate.indexExists(indexName)) {
+            this.elasticsearchTemplate.createIndex(indexName);
+            this.elasticsearchTemplate.putMapping(indexName, this.elasticsearchConfiguration.getType().getOrganisation(), mapping);
+        }
     }
 
     @Override
@@ -199,6 +212,24 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         aliasQuery.setAliasName(alias);
         aliasQuery.setIndexName(indexName);
         elasticsearchTemplate.addAlias(aliasQuery);
+    }
+
+    private BoolQueryBuilder buildQueryForOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters) {
+        BoolQueryBuilder organisationListQuery = boolQuery();
+        organisationListQuery.must(termQuery("organisationType", organisation.getOrganisationType().name()));
+
+        Address address = organisation.getDefaultAddress();
+        if (address == null) {
+            organisationListQuery.mustNot(existsQuery("defaultAddress"));
+        } else {
+            GeoPoint locationToCheck = address.getLocation();
+
+            GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("defaultAddress.location")
+                .point(locationToCheck.getLat(), locationToCheck.getLon())
+                .distance(distanceInMeters, DistanceUnit.METERS);
+            organisationListQuery.must(geoDistanceQuery);
+        }
+        return organisationListQuery;
     }
 
     private Stream<ScoredOrganisation> findOrganisationsWithQuestionsAndFilter(List<QuestionAnswer> questionAnswers,
@@ -240,7 +271,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
 
     private QueryBuilder buildQuestionQuery(QuestionAnswer questionAnswer) {
         BoolQueryBuilder questionQuery = boolQuery()
-            .minimumNumberShouldMatch(1)
+            .minimumShouldMatch(1)
             .must(termQuery("questions.questionId", questionAnswer.getQuestionId().getValue()))
             .should(termQuery("questions.answer", questionAnswer.getAnswer().toString()).boost(2.0f));
 
@@ -248,7 +279,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             questionQuery.should(termQuery("questions.answer", neighbour.toString()).boost(1.0f));
         }
 
-        return nestedQuery("questions", questionQuery);
+        return nestedQuery("questions", questionQuery, ScoreMode.Max);
     }
 
     private GeoBoundingBoxQueryBuilder filterBox(BoundingBox boundingBoxDto) {
@@ -256,8 +287,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         GeoPoint bottomLeft = boundingBoxDto.getSouthWest();
 
         return geoBoundingBoxQuery("defaultAddress.location")
-            .topRight(topRight.getLat(), topRight.getLon())
-            .bottomLeft(bottomLeft.getLat(), bottomLeft.getLon());
+            .setCornersOGC(toElasticsearchGeoPoint(bottomLeft), toElasticsearchGeoPoint(topRight));
     }
 
     private GeoDistanceQueryBuilder filterDistance(GeoPoint position, double distance) {
@@ -265,9 +295,13 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
             return null;
         }
         return geoDistanceQuery("defaultAddress.location")
-            .lat(position.getLat())
-            .lon(position.getLon())
+            .point(toElasticsearchGeoPoint(position))
             .distance(distance, DistanceUnit.KILOMETERS);
+    }
+
+    private static org.elasticsearch.common.geo.GeoPoint toElasticsearchGeoPoint(GeoPoint geoPoint) {
+        return new org.elasticsearch.common.geo.GeoPoint(geoPoint.getLat(), geoPoint.getLon()
+        );
     }
 
     private Stream<ScoredOrganisation> extractOrganisations(List<QuestionAnswer> questionAnswers, Stream<Organisation> resultOrganisations) {
@@ -310,7 +344,7 @@ public class ElasticsearchOrganisationRepository implements OrganisationReposito
         NativeSearchQuery nativeSearchQuery = new NativeSearchQuery(query);
         nativeSearchQuery.addIndices(indexName);
         nativeSearchQuery.addTypes(elasticsearchConfiguration.getType().getOrganisation());
-        nativeSearchQuery.setPageable(new PageRequest(0, DEFAULT_MAX_RESULT_SIZE));
+        nativeSearchQuery.setPageable(PageRequest.of(0, DEFAULT_MAX_RESULT_SIZE));
         return StreamUtils.createStreamFromIterator(
             this.elasticsearchTemplate.stream(nativeSearchQuery, Organisation.class)
         );

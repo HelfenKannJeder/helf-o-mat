@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.typo3;
 
-public class UrlUnifier {
-    public static String unifyOrganisationWebsiteUrl(String urlToImport) {
+class UrlUnifier {
+    static String unifyOrganisationWebsiteUrl(String urlToImport) {
         if (urlToImport == null || urlToImport.equals("")) {
             return null;
         }

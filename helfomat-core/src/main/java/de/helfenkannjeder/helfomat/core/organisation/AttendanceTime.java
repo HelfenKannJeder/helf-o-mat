@@ -3,10 +3,12 @@ package de.helfenkannjeder.helfomat.core.organisation;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class AttendanceTime {
     private DayOfWeek day;
     private LocalTime start;
@@ -43,6 +45,23 @@ public class AttendanceTime {
 
     public List<Group> getGroups() {
         return groups;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AttendanceTime that = (AttendanceTime) o;
+        return day == that.day &&
+            Objects.equals(start, that.start) &&
+            Objects.equals(end, that.end) &&
+            Objects.equals(note, that.note) &&
+            Objects.equals(groups, that.groups);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(day, start, end, note, groups);
     }
 
     public static class Builder {

@@ -14,8 +14,8 @@ import java.util.Date;
 @JobScope
 public class BatchIndexManager implements IndexManager {
 
-    private String index;
-    private Date date;
+    private final String index;
+    private final Date date;
 
     public BatchIndexManager(@Value("#{jobParameters[date]}") Date date,
                              @Value("${elasticsearch.index}") String index) {

@@ -6,6 +6,7 @@ import java.util.Objects;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class Group {
     private String name;
     private String description;

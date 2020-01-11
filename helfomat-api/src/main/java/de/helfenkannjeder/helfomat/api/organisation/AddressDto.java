@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class AddressDto {
     private String street;
     private String addressAppendix;

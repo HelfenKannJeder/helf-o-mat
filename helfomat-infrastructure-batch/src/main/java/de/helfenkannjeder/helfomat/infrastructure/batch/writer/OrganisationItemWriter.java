@@ -2,7 +2,8 @@ package de.helfenkannjeder.helfomat.infrastructure.batch.writer;
 
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,7 +18,7 @@ import java.util.List;
 @JobScope
 public class OrganisationItemWriter implements ItemWriter<Organisation> {
 
-    private static final Logger LOGGER = Logger.getLogger(OrganisationItemWriter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrganisationItemWriter.class);
 
     private final OrganisationRepository organisationRepository;
 
@@ -26,7 +27,7 @@ public class OrganisationItemWriter implements ItemWriter<Organisation> {
     }
 
     @Override
-    public void write(List<? extends Organisation> items) throws Exception {
+    public void write(List<? extends Organisation> items) {
         items.forEach(organisation -> LOGGER.debug("Write organisation '" + organisation.getName() + "'"));
 
         this.organisationRepository.save(items);
