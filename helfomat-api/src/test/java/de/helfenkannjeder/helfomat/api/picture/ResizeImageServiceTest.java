@@ -21,13 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ResizeImageServiceTest {
 
-    private Resource inputImage = new ClassPathResource("de/helfenkannjeder/picture/test.png");
-    private Resource transparentImage = new ClassPathResource("de/helfenkannjeder/picture/transparent.png");
+    private final Resource inputImage = new ClassPathResource("de/helfenkannjeder/picture/test.png");
+    private final Resource transparentImage = new ClassPathResource("de/helfenkannjeder/picture/transparent.png");
 
     private ResizeImageService resizeImageService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.resizeImageService = new ResizeImageService();
     }
 

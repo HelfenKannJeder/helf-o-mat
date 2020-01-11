@@ -21,8 +21,8 @@ public class ImportJobRunnerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportJobRunnerService.class);
 
-    private JobLauncher jobLauncher;
-    private Job job;
+    private final JobLauncher jobLauncher;
+    private final Job job;
 
     public ImportJobRunnerService(JobLauncher jobLauncher, Job job) {
         this.jobLauncher = jobLauncher;

@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.core.picture;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -12,8 +11,9 @@ public interface PictureRepository {
 
     PictureId savePicture(byte[] bytes, String folder, PictureId pictureId) throws DownloadFailedException;
 
-    Path getPicture(PictureId pictureId) throws IOException;
+    Path getPicture(PictureId pictureId);
 
     Path getPicture(PictureId pictureId, String size);
 
+    boolean existPicture(PictureId pictureId);
 }

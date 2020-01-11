@@ -13,6 +13,7 @@ import java.util.List;
  */
 @Component
 @ConfigurationProperties(prefix = "helfomat")
+@SuppressWarnings("unused")
 public class HelfomatConfiguration {
 
     private static final String DEFAULT_PICTURE_FOLDER = "pictures";

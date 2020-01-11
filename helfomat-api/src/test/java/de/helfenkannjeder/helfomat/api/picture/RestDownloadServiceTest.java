@@ -36,12 +36,12 @@ public class RestDownloadServiceTest {
     }
 
     @AfterClass
-    public static void tearDownServer() throws Exception {
+    public static void tearDownServer() {
         EmbeddedHttpServer.stop();
     }
 
     @Test
-    public void downloadPicture_withCorrectUrl_returnsByteArray() throws Exception {
+    public void downloadPicture_withCorrectUrl_returnsByteArray() {
         // Act
         byte[] bytes = downloadService.download(getUrl("Radlader_2124_5x2.jpg"));
 
@@ -53,7 +53,7 @@ public class RestDownloadServiceTest {
     }
 
     @Test
-    public void downloadPicture_withIncorrectUrl_throwsHttpClientErrorException() throws Exception {
+    public void downloadPicture_withIncorrectUrl_throwsHttpClientErrorException() {
         // Act
         ThrowableAssert.ThrowingCallable throwable = () ->
             downloadService.download(getUrl("test.jpg"));

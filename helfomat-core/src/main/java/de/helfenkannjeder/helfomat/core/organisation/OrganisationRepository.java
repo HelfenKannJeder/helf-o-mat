@@ -12,6 +12,8 @@ public interface OrganisationRepository {
 
     boolean existsOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters);
 
+    Organisation findOrganisationWithSameTypeInDistance(Organisation organisation, Long distanceInMeters);
+
     Organisation findByUrlName(String urlName);
 
     Organisation findOne(String id);

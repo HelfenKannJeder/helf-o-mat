@@ -2,9 +2,12 @@ package de.helfenkannjeder.helfomat.core.organisation;
 
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 
+import java.util.Objects;
+
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class ContactPerson {
     private String firstname;
     private String lastname;
@@ -47,6 +50,36 @@ public class ContactPerson {
 
     public PictureId getPicture() {
         return picture;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContactPerson that = (ContactPerson) o;
+        return Objects.equals(firstname, that.firstname) &&
+            Objects.equals(lastname, that.lastname) &&
+            Objects.equals(rank, that.rank) &&
+            Objects.equals(telephone, that.telephone) &&
+            Objects.equals(mail, that.mail) &&
+            Objects.equals(picture, that.picture);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstname, lastname, rank, telephone, mail, picture);
+    }
+
+    @Override
+    public String toString() {
+        return "ContactPerson{" +
+            "firstname='" + firstname + '\'' +
+            ", lastname='" + lastname + '\'' +
+            ", rank='" + rank + '\'' +
+            ", telephone='" + telephone + '\'' +
+            ", mail='" + mail + '\'' +
+            ", picture=" + picture +
+            '}';
     }
 
     public static class Builder {

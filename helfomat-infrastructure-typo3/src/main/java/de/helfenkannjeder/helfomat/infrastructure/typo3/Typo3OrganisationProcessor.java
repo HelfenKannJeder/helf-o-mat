@@ -26,12 +26,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.Charset;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -134,20 +136,30 @@ public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, 
             .collect(Collectors.toList());
     }
 
-    private PictureId toPicture(String picture) {
+    PictureId toPicture(String picture) {
         if (picture == null || picture.equals("")) {
             return null;
         }
         try {
-            return this.pictureRepository.savePicture(
-                "https://helfenkannjeder.de/uploads/pics/" + picture,
-                this.indexManager.getCurrentIndex(),
-                new PictureId()
+            String url = "https://helfenkannjeder.de/uploads/pics/" + picture;
+            PictureId pictureId = toPictureId(url);
+            if (this.pictureRepository.existPicture(pictureId)) {
+                return pictureId;
+            }
+            this.pictureRepository.savePicture(
+                url,
+                this.indexManager.getAlias(),
+                pictureId
             );
+            return pictureId;
         } catch (DownloadFailedException e) {
             LOGGER.warn("Failed to download picture", e);
             return null;
         }
+    }
+
+    private PictureId toPictureId(String url) {
+        return new PictureId(UUID.nameUUIDFromBytes(url.getBytes(Charset.defaultCharset())).toString());
     }
 
     private List<ContactPerson> toContactPersons(List<TEmployee> employees) {

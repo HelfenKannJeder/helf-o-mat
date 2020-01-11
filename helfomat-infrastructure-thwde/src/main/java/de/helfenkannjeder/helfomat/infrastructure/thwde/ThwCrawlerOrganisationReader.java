@@ -31,8 +31,10 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -72,6 +74,11 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
         this.indexManager = indexManager;
         this.logoPictureid = toPictureIdFromClasspathResource("thwde/logo.png");
         this.teaserPictureId = toPictureIdFromClasspathResource("thwde/teaser.jpg");
+    }
+
+    @Override
+    public String getName() {
+        return "thw-crawler";
     }
 
     @Override
@@ -144,7 +151,7 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
         return organisation;
     }
 
-    private ContactPerson toContactPerson(Document oeDetailsDocument, Elements contactDataDiv) throws IOException {
+    private ContactPerson toContactPerson(Document oeDetailsDocument, Elements contactDataDiv) {
         PictureId pictureId = null;
         String imageSrc = oeDetailsDocument
             .select(".personenBox")
@@ -164,9 +171,14 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
             .build();
     }
 
-    private PictureId toPicture(String picture) throws IOException {
+    private PictureId toPicture(String picture) {
         try {
-            return this.pictureRepository.savePicture(picture, this.indexManager.getCurrentIndex(), new PictureId());
+            PictureId pictureId = toPictureId(picture);
+            if (this.pictureRepository.existPicture(pictureId)) {
+                return pictureId;
+            }
+            this.pictureRepository.savePicture(picture, this.indexManager.getAlias(), pictureId);
+            return pictureId;
         } catch (DownloadFailedException e) {
             LOGGER.warn("Failed to download picture", e);
             return null;
@@ -174,13 +186,20 @@ public class ThwCrawlerOrganisationReader implements ItemReader<Organisation>, O
     }
 
     private PictureId toPictureIdFromClasspathResource(String imagePath) throws IOException, DownloadFailedException {
-        PictureId pictureId = new PictureId();
+        PictureId pictureId = toPictureId("classpath:" + imagePath);
+        if (this.pictureRepository.existPicture(pictureId)) {
+            return pictureId;
+        }
         byte[] imageByteArray = StreamUtils.copyToByteArray(new ClassPathResource(imagePath).getInputStream());
-        this.pictureRepository.savePicture(imageByteArray, this.indexManager.getCurrentIndex(), pictureId);
+        this.pictureRepository.savePicture(imageByteArray, this.indexManager.getAlias(), pictureId);
         return pictureId;
     }
 
-    private List<Group> extractDistinctGroups(Document oeDetailsDocument) throws IOException {
+    PictureId toPictureId(String url) {
+        return new PictureId(UUID.nameUUIDFromBytes(url.getBytes(Charset.defaultCharset())).toString());
+    }
+
+    private List<Group> extractDistinctGroups(Document oeDetailsDocument) {
         Elements groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4");
         return groupElements
             .stream()

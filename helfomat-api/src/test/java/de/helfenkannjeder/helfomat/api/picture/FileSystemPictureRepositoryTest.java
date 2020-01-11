@@ -9,9 +9,9 @@ import org.assertj.core.api.ThrowableAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.nio.file.Files;
@@ -51,7 +51,7 @@ public class FileSystemPictureRepositoryTest {
     private PictureRepository fileSystemPictureRepository;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.fileSystemPictureRepository = new FileSystemPictureRepository(downloadService, resizeImageService, helfomatConfiguration);
     }
 
@@ -79,26 +79,25 @@ public class FileSystemPictureRepositoryTest {
     }
 
     @Test
-    public void savePicture_withInvalidUrl_expectDownloadFailedException() throws Exception {
+    public void savePicture_withInvalidUrl_expectDownloadFailedException() {
         // Arrange
         PictureId pictureId = new PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44adde");
-        when(this.downloadService.download(Matchers.anyString())).thenThrow(HttpClientErrorException.class);
-        when(this.helfomatConfiguration.getPictureFolder()).thenReturn(CONF_FOLDER);
+        when(this.downloadService.download(ArgumentMatchers.anyString())).thenThrow(HttpClientErrorException.class);
 
         // Act
-        ThrowableAssert.ThrowingCallable throwedException = () ->
+        ThrowableAssert.ThrowingCallable thrownException = () ->
             this.fileSystemPictureRepository.savePicture("http://does.not.exist", FOLDER, pictureId);
 
         // Assert
         Path pathOfOutput = Paths.get(CONF_FOLDER, FOLDER, pictureId.getValue());
         assertThat(Files.exists(pathOfOutput))
             .isFalse();
-        assertThatThrownBy(throwedException)
+        assertThatThrownBy(thrownException)
             .isInstanceOf(DownloadFailedException.class);
     }
 
     @Test
-    public void savePicture_withFileWriteException_expectDownloadFailedException() throws Exception {
+    public void savePicture_withFileWriteException_expectDownloadFailedException() {
         // Arrange
         PictureId pictureId = new PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44adda");
         String configuredFolder = "/*";
@@ -107,11 +106,11 @@ public class FileSystemPictureRepositoryTest {
         when(this.helfomatConfiguration.getPictureFolder()).thenReturn(configuredFolder);
 
         // Act
-        ThrowableAssert.ThrowingCallable throwedException = () ->
+        ThrowableAssert.ThrowingCallable thrownException = () ->
             this.fileSystemPictureRepository.savePicture(PICTURE_URL, FOLDER, pictureId);
 
         // Assert
-        assertThatThrownBy(throwedException)
+        assertThatThrownBy(thrownException)
             .isInstanceOf(DownloadFailedException.class);
     }
 
@@ -145,9 +144,8 @@ public class FileSystemPictureRepositoryTest {
         Files.delete(output);
     }
 
-
     @Test
-    public void getPicture_withValidName_returnsNotNull() throws Exception {
+    public void getPicture_withValidName_returnsNotNull() {
         // Act
         Path picture = this.fileSystemPictureRepository.getPicture(new PictureId(), "test-size");
 
@@ -156,7 +154,7 @@ public class FileSystemPictureRepositoryTest {
     }
 
     @Test
-    public void getPicture_withInvalidName_throwsIllegalArgumentException() throws Exception {
+    public void getPicture_withInvalidName_throwsIllegalArgumentException() {
         // Act
         ThrowableAssert.ThrowingCallable runnable = () -> this.fileSystemPictureRepository.getPicture(new PictureId(), "../test");
 

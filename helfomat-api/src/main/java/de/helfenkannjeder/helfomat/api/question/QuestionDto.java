@@ -3,6 +3,7 @@ package de.helfenkannjeder.helfomat.api.question;
 /**
  * @author Valentin Zickner
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class QuestionDto {
     private String id;
     private String question;

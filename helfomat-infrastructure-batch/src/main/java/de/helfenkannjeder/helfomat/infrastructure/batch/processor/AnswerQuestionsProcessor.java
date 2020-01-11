@@ -26,7 +26,7 @@ public class AnswerQuestionsProcessor implements ItemProcessor<Organisation, Org
     }
 
     @Override
-    public Organisation process(Organisation organisation) throws Exception {
+    public Organisation process(Organisation organisation) {
         if (organisation == null) {
             return null;
         }
