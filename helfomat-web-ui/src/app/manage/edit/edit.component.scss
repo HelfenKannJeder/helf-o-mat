@@ -1,3 +1,5 @@
+@import "../../../colors";
+
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
@@ -21,8 +23,55 @@
 
 .dragable {
   cursor: move;
+  position: relative;
+}
+
+.position-top-right {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 a.glyphicon {
   text-decoration: none;
+}
+
+img.thumb {
+  width: 2em;
+  height: 2.32em;
+}
+
+.teaser-image {
+  width: 100%;
+}
+
+.logo-container {
+  position: relative;
+
+  .logo {
+    position: absolute;
+    right: 0;
+    bottom: 10%;
+    padding: 1em 1em 1em 1.2em;
+    background-color: white;
+  }
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+.upload-file-container {
+  padding-top: 0.5em;
+  padding-bottom: 0.4em;
+  font-size: 6em;
+  cursor: pointer;
+  text-align: center;
+  background-color: $lightgray;
+  color: $darkblue;
+}
+
+.navbar.sticky-top {
+  margin-right: -15px;
+  margin-left: -15px;
 }

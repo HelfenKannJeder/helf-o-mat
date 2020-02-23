@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.helfenkannjeder.helfomat.core.event.DomainEvent;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
+import de.helfenkannjeder.helfomat.core.organisation.OrganizationEventVisitor;
 
 /**
  * @author Valentin Zickner
@@ -28,5 +29,7 @@ public abstract class OrganisationEvent extends DomainEvent {
     }
 
     public abstract Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation);
+
+    public abstract <T> T visit(OrganizationEventVisitor<T> visitor);
 
 }

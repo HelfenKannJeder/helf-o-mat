@@ -1,0 +1,19 @@
+<div class="list-group">
+    <div *ngIf="organizationEvents.length == 0" class="list-group-item flex-column align-items-start">
+        <h5 class="mb-1">{{ 'edit.organisation.changes.noChanges.title' | translate }}</h5>
+        {{ 'edit.organisation.changes.noChanges.content' | translate }}
+    </div>
+    <ng-container *ngFor="let organizationEvent of organizationEvents">
+        <div [ngSwitch]="organizationEvent.type" class="list-group-item flex-column align-items-start">
+            <ng-container *ngSwitchCase="'.OrganizationEditNameEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.nameChanged' | translate }}</h5>
+                <text-diff [text1]="organization.name" [text2]="organizationEvent.name"></text-diff>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditDescriptionEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.descriptionChanged' | translate }}</h5>
+                <text-diff [text1]="organization.description" [text2]="organizationEvent.description"></text-diff>
+            </ng-container>
+            <ng-container *ngSwitchDefault>UNKNOWN EVENT {{ organizationEvent.type }}</ng-container>
+        </div>
+    </ng-container>
+</div>

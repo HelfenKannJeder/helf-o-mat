@@ -1,11 +1,13 @@
 package de.helfenkannjeder.helfomat.web.controller;
 
 import de.helfenkannjeder.helfomat.api.geopoint.TravelDistanceDto;
+import de.helfenkannjeder.helfomat.api.organisation.CompareOrganizationDto;
 import de.helfenkannjeder.helfomat.api.organisation.OrganisationApplicationService;
 import de.helfenkannjeder.helfomat.api.organisation.OrganisationDetailDto;
 import de.helfenkannjeder.helfomat.api.organisation.OrganisationDto;
 import de.helfenkannjeder.helfomat.api.organisation.QuestionAnswerDto;
 import de.helfenkannjeder.helfomat.api.organisation.TravelDistanceApplicationService;
+import de.helfenkannjeder.helfomat.api.organisation.event.OrganizationEventDto;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
@@ -79,6 +81,11 @@ public class OrganisationController {
     @GetMapping("/organisation/{id}/travelDistances")
     public List<TravelDistanceDto> getTravelDistances(@PathVariable String id, @RequestParam("lat") Double lat, @RequestParam("lon") Double lon) {
         return travelDistanceApplicationService.requestTravelDistances(new OrganisationId(id), new GeoPoint(lat, lon));
+    }
+
+    @PostMapping("/organization/compare")
+    public List<OrganizationEventDto> compareOrganizations(@RequestBody CompareOrganizationDto compareOrganizationDto) {
+        return this.organisationApplicationService.compareOrganizations(compareOrganizationDto);
     }
 
     @SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})

@@ -1,5 +1,7 @@
 package de.helfenkannjeder.helfomat.api.organisation;
 
+import de.helfenkannjeder.helfomat.api.organisation.event.OrganizationEventAssembler;
+import de.helfenkannjeder.helfomat.api.organisation.event.OrganizationEventDto;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
@@ -66,6 +68,13 @@ public class OrganisationApplicationService {
         return this.organisationRepository.findGeoPointsOfOrganisationsInsideBoundingBox(position,
             distance,
             boundingBox);
+    }
+
+    public List<OrganizationEventDto> compareOrganizations(CompareOrganizationDto compareOrganizationDto) {
+        Organisation original = OrganisationAssembler.toOrganization(compareOrganizationDto.getOriginal());
+        Organisation updated = OrganisationAssembler.toOrganization(compareOrganizationDto.getUpdated());
+        List<Question> questions = this.questionRepository.findQuestions();
+        return OrganizationEventAssembler.toOrganizationEventDto(updated.compareTo(original), questions);
     }
 
 }

@@ -3,6 +3,7 @@ package de.helfenkannjeder.helfomat.core.organisation.event;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
+import de.helfenkannjeder.helfomat.core.organisation.OrganizationEventVisitor;
 
 /**
  * @author Valentin Zickner
@@ -26,5 +27,10 @@ public class OrganisationEditDeleteGroupEvent extends OrganisationEditEvent {
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.removeGroup(group);
+    }
+
+    @Override
+    public <T> T visit(OrganizationEventVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 }

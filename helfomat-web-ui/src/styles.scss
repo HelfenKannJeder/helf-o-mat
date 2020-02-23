@@ -1,10 +1,10 @@
-/* colors */
-$darkblue: #182282;
-$lightblue: #3579db;
-$white: #ffffff;
-$lightgray: #eeeeee;
-$gray: #9b9b9b;
-$darkgray: #535353;
+@import "~material-design-icons/iconfont/material-icons.css";
+
+.material-icons {
+  font-size: inherit;
+}
+
+@import "colors";
 
 /* mixins */
 @mixin transform($p1) {
@@ -266,6 +266,10 @@ body {
   background-color: $lightgray;
   border-color: $darkblue;
   font-weight: bold;
+}
+
+.bg-lightblue {
+  background-color: $lightblue;
 }
 
 .custom-content {

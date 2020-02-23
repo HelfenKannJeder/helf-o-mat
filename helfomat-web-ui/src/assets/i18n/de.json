@@ -27,6 +27,7 @@
     "facts": {
       "title": "Fakten",
       "helfomatResult": {
+        "action": "Aktionen",
         "title": "Helf-O-Mat-Ergebnis",
         "compare": "Vergleichen",
         "backToOverviewTitle": "Zurück",
@@ -100,6 +101,48 @@
     },
     "pictures": {
       "title": "Bilder"
+    }
+  },
+  "edit": {
+    "organisation": {
+      "title": "'{{name}}' bearbeiten",
+      "name": "Name:",
+      "website": "Webseite:",
+      "description": "Beschreibung:",
+      "groups": {
+        "newGroupName": "Neue Gruppe",
+        "groupName": "{{groupName}}",
+        "name": "Name:",
+        "description": "Beschreibung:"
+      },
+      "attendanceTime": {
+        "weekday": "Wochentag:",
+        "time": "Zeit:",
+        "new": "Neuer Termin"
+      },
+      "error": {
+        "nameIsRequired": "Der Name der Organisation ist ein Pflichtfeld, dieser dient zur leichteren Identifikation der Organisation."
+      },
+      "changes": {
+        "noChanges": {
+          "title": "Keine Änderungen",
+          "content": "Bisher wurden keine Änderungen vorgenommen."
+        },
+        "nameChanged": "Name geändert",
+        "descriptionChanged": "Beschreibung geändert"
+      },
+      "publish": {
+        "review": "Review",
+        "publishChangesHeadline": "Änderungen Veröffentlichen: {{organisationName}}",
+        "reviewChanges": "Überprüfe Deine Änderungen",
+        "describeChanges": "Zusammenfassung der Änderungen (Beschreibe kurz deine Änderungen)",
+        "publishChanges": "Änderungen Veröffentlichen"
+      },
+      "changesSentForReview": {
+        "title": "Änderungen für '{{organisationName}}' beantragt",
+        "content": "Die Änderungen für die Organisation '{{organisationName}}' wurden in unserem System hinterlegt. Diese werden in den nächsten Tagen von unser Team überprüft und veröffentlicht. Sollten die Änderungen innerhalb drei Werktagen nicht veröffentlicht sein, ist vermutlich das Wetter in Karlsruhe gut und jeder kauft bei Carsten ein Motorrad. Wenn das nach einer Woche immer noch so ist, schreibe doch bitte eine Erinnerungs-E-Mail an info@helfenkannjeder.de. Vielen Dank!",
+        "confirm": "Und weiter geht's!"
+      }
     }
   },
   "question": {

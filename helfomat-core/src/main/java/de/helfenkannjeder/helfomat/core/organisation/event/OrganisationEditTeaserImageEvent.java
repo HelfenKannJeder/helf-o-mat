@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.core.organisation.event;
 
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
+import de.helfenkannjeder.helfomat.core.organisation.OrganizationEventVisitor;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 
 /**
@@ -26,5 +27,10 @@ public class OrganisationEditTeaserImageEvent extends OrganisationEditEvent {
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.setTeaserImage(teaserImage);
+    }
+
+    @Override
+    public <T> T visit(OrganizationEventVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 }

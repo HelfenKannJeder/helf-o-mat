@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.core.organisation.event;
 
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
+import de.helfenkannjeder.helfomat.core.organisation.OrganizationEventVisitor;
 import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
 
 /**
@@ -32,5 +33,10 @@ public class OrganisationEditAddVolunteerEvent extends OrganisationEditEvent {
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.addVolunteer(index, volunteer);
+    }
+
+    @Override
+    public <T> T visit(OrganizationEventVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 }
