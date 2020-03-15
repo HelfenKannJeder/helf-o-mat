@@ -1,6 +1,7 @@
 kafka:
   topic:
-    organisation-events: organisation-events
+    organization-events: organization-events
+    replication-factor: 1
   bootstrap-servers: localhost:12345
 
 helfomat:
