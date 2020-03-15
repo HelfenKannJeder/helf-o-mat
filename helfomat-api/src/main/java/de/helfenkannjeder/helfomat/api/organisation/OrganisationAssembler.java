@@ -255,7 +255,7 @@ public class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static Volunteer toVolunteer(VolunteerDto volunteerDto) {
+    public static Volunteer toVolunteer(VolunteerDto volunteerDto) {
         return new Volunteer.Builder()
             .setFirstname(volunteerDto.getFirstname())
             .setMotivation(volunteerDto.getMotivation())
@@ -283,7 +283,7 @@ public class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static QuestionAnswer toQuestionAnswer(AnsweredQuestionDto answeredQuestionDto) {
+    public static QuestionAnswer toQuestionAnswer(AnsweredQuestionDto answeredQuestionDto) {
         return new QuestionAnswer(answeredQuestionDto.getQuestionId(), answeredQuestionDto.getAnswer());
     }
 
@@ -297,7 +297,7 @@ public class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static <R> ContactPerson toContactPerson(ContactPersonDto contactPersonDto) {
+    public static ContactPerson toContactPerson(ContactPersonDto contactPersonDto) {
         return new ContactPerson.Builder()
             .setFirstname(contactPersonDto.getFirstname())
             .setLastname(contactPersonDto.getLastname())
@@ -318,7 +318,7 @@ public class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static AttendanceTime toAttendanceTime(AttendanceTimeDto attendanceTimeDto) {
+    public static AttendanceTime toAttendanceTime(AttendanceTimeDto attendanceTimeDto) {
         return new AttendanceTime.Builder()
             .setDay(attendanceTimeDto.getDay())
             .setStart(attendanceTimeDto.getStart())
@@ -338,7 +338,7 @@ public class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static Group toGroup(GroupDto groupDto) {
+    public static Group toGroup(GroupDto groupDto) {
         return new Group.Builder()
             .setName(groupDto.getName())
             .setDescription(groupDto.getDescription())
@@ -355,7 +355,10 @@ public class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static Address toAddress(AddressDto addressDto) {
+    public static Address toAddress(AddressDto addressDto) {
+        if (addressDto == null) {
+            return null;
+        }
         return new Address.Builder()
             .setLocation(addressDto.getLocation())
             .setCity(addressDto.getCity())

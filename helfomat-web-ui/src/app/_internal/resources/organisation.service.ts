@@ -66,6 +66,14 @@ export class OrganisationService {
             updated
         });
     }
+
+    submitOrganizationEvents(organizationId: OrganizationId, sources: string, events: OrganizationEvent[]): Observable<void> {
+        return this.httpClient.post<void>('api/organization/submit', {
+            organizationId,
+            sources,
+            events
+        });
+    }
 }
 
 export class Organisation {

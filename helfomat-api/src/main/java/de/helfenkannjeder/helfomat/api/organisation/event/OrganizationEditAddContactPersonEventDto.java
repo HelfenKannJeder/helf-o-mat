@@ -26,4 +26,10 @@ public class OrganizationEditAddContactPersonEventDto extends OrganizationEventD
     public ContactPersonDto getContactPerson() {
         return contactPerson;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

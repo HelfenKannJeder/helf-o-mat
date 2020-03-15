@@ -20,4 +20,10 @@ public class OrganizationEditDeleteGroupEventDto extends OrganizationEventDto {
     public GroupDto getGroup() {
         return group;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

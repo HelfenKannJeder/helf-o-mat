@@ -124,19 +124,57 @@
         "nameIsRequired": "Der Name der Organisation ist ein Pflichtfeld, dieser dient zur leichteren Identifikation der Organisation."
       },
       "changes": {
+        "message": {
+          "title": "Fehler beim Speichern",
+          "description": "Es ist ein Fehler beim Speichern aufgetretten. Bitte versuche es später noch einmal."
+        },
         "noChanges": {
           "title": "Keine Änderungen",
           "content": "Bisher wurden keine Änderungen vorgenommen."
         },
         "nameChanged": "Name geändert",
-        "descriptionChanged": "Beschreibung geändert"
+        "descriptionChanged": "Beschreibung geändert",
+        "address": {
+          "add.title": "Adresse hinzugefügt",
+          "default.title": "Hauptadresse geändert",
+          "delete.title": "Adresse gelöscht"
+        },
+        "attendanceTime": {
+          "add.title": "Termin hinzugefügt",
+          "delete.title": "Termin gelöscht"
+        },
+        "contactPerson": {
+          "add.title": "Ansprechpartner hinzugefügt",
+          "delete.title": "Ansprechpartner gelöscht"
+        },
+        "group": {
+          "add.title": "Einheit hinzugefügt",
+          "delete.title": "Einheit gelöscht"
+        },
+        "picture": {
+          "add.title": "Bild hinzugefügt",
+          "delete.title": "Bild gelöscht"
+        },
+        "questionAnswer": {
+          "add.title": "Helf-O-Mat Frage hinzugefügt",
+          "delete.title": "Helf-O-Mat Frage gelöscht"
+        },
+        "volunteer": {
+          "add.title": "Mitmacher hinzugefügt",
+          "delete.title": "Mitmacher gelöscht"
+        },
+        "logoChanged": "Logo gändert",
+        "teaserImageChanged": "Titelbild geändert",
+        "urlNameChanged": "URL geändert",
+        "websiteChanged": "Webseite geändert",
+        "unknownEvent": "Unbekannte Änderung"
       },
       "publish": {
         "review": "Review",
-        "publishChangesHeadline": "Änderungen Veröffentlichen: {{organisationName}}",
+        "publishChangesHeadline": "Änderungen veröffentlichen: {{organisationName}}",
         "reviewChanges": "Überprüfe Deine Änderungen",
-        "describeChanges": "Zusammenfassung der Änderungen (Beschreibe kurz deine Änderungen)",
-        "publishChanges": "Änderungen Veröffentlichen"
+        "describeSources": "Quellen für diese Änderungen zur schnelleren Verifizierung",
+        "publishChanges": "Änderungen veröffentlichen"
       },
       "changesSentForReview": {
         "title": "Änderungen für '{{organisationName}}' beantragt",

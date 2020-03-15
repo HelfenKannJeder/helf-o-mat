@@ -19,4 +19,10 @@ public class OrganizationEditDescriptionEventDto extends OrganizationEventDto {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

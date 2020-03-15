@@ -24,6 +24,6 @@ export class PublishChangesConfirmationComponent {
 
 export interface PublishContent {
     organization: Organisation;
-    describeChanges: string;
+    describeSources: string;
     changes: Array<OrganizationEvent>;
 }

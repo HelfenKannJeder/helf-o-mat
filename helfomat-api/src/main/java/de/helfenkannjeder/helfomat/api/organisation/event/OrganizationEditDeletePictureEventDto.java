@@ -20,4 +20,10 @@ public class OrganizationEditDeletePictureEventDto extends OrganizationEventDto 
     public PictureId getPictureId() {
         return pictureId;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

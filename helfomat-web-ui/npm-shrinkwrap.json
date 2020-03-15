@@ -6588,6 +6588,13 @@
       "version": "5.0.1",
       "integrity": "sha1-6EOe+EaU6RD8/3CYLOO12LSUxaY="
     },
+    "ngx-toastr": {
+      "version": "10.2.0",
+      "integrity": "sha1-inkAjeCxwBP5ASClPgNVr1di6Wk=",
+      "requires": {
+        "tslib": "^1.9.0"
+      }
+    },
     "nice-try": {
       "version": "1.0.5",
       "resolved": "https://registry.npmjs.org/nice-try/-/nice-try-1.0.5.tgz",

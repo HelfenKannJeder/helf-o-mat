@@ -26,4 +26,10 @@ public class OrganizationEditAddAttendanceTimeEventDto extends OrganizationEvent
     public AttendanceTimeDto getAttendanceTime() {
         return attendanceTime;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

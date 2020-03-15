@@ -5,15 +5,81 @@
     </div>
     <ng-container *ngFor="let organizationEvent of organizationEvents">
         <div [ngSwitch]="organizationEvent.type" class="list-group-item flex-column align-items-start">
-            <ng-container *ngSwitchCase="'.OrganizationEditNameEventDto'">
-                <h5 class="mb-1">{{ 'edit.organisation.changes.nameChanged' | translate }}</h5>
-                <text-diff [text1]="organization.name" [text2]="organizationEvent.name"></text-diff>
+            <ng-container *ngSwitchCase="'.OrganizationCreateEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.created.title' | translate }}</h5>
+                {{ 'edit.organisation.changes.created.description' | translate: {name: organizationEvent.name, urlName: organizationEvent.urlName, organisationType: organizationEvent.organizationType } }}
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationDeleteEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.deleted.title' | translate }}</h5>
+                {{ 'edit.organisation.changes.deleted.description' | translate: {name: organization.name} }}
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditAddAddressEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.address.add.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditDefaultAddressEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.address.default.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditDeleteAddressEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.address.delete.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditAddAttendanceTimeEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.attendanceTime.add.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditDeleteAttendanceTimeEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.attendanceTime.delete.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditAddContactPersonEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.contactPerson.add.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditDeleteContactPersonEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.contactPerson.delete.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditAddGroupEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.group.add.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditDeleteGroupEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.group.delete.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditAddPictureEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.picture.add.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditDeletePictureEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.picture.delete.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditAddQuestionAnswerEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.questionAnswer.add.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditDeleteQuestionAnswerEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.questionAnswer.delete.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditAddVolunteerEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.volunteer.add.title' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditDeleteVolunteerEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.volunteer.delete.title' | translate }}</h5>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDescriptionEventDto'">
                 <h5 class="mb-1">{{ 'edit.organisation.changes.descriptionChanged' | translate }}</h5>
                 <text-diff [text1]="organization.description" [text2]="organizationEvent.description"></text-diff>
             </ng-container>
-            <ng-container *ngSwitchDefault>UNKNOWN EVENT {{ organizationEvent.type }}</ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditLogoEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.logoChanged' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditNameEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.nameChanged' | translate }}</h5>
+                <text-diff [text1]="organization.name" [text2]="organizationEvent.name"></text-diff>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditTeaserImageEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.teaserImageChanged' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditUrlNameEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.urlNameChanged' | translate }}</h5>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditWebsiteEventDto'">
+                <h5 class="mb-1">{{ 'edit.organisation.changes.websiteChanged' | translate }}</h5>
+                <text-diff [text1]="organization.website" [text2]="organizationEvent.website"></text-diff>
+            </ng-container>
+            <ng-container *ngSwitchDefault>{{ 'edit.organisation.changes.unknownEvent' | translate: {eventName: organizationEvent.type} }}</ng-container>
         </div>
     </ng-container>
 </div>

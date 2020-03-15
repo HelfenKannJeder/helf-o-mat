@@ -24,6 +24,8 @@ import {TimepickerAdapterService} from "./_internal/timepicker-adapter.service";
 import {NgModel} from "@angular/forms";
 import {PublishChangesConfirmationComponent, PublishContent} from "./_internal/publish-changes-confirmation.component";
 import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review.component";
+import {ToastrService} from 'ngx-toastr';
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
     selector: 'organisation-edit',
@@ -62,6 +64,8 @@ export class EditComponent implements OnInit {
         private pageScrollService: PageScrollService,
         private modalService: NgbModal,
         private router: Router,
+        private toastr: ToastrService,
+        private translateService: TranslateService,
         @Inject(DOCUMENT) private document: Document
     ) {
         this.organisation = ObservableUtil.extractObjectMember(this.route.params, 'organisation')
@@ -174,13 +178,25 @@ export class EditComponent implements OnInit {
             modalRef.componentInstance.activeTab = tab;
             modalRef.componentInstance.publish.organization = this.originalOrganization;
             modalRef.componentInstance.publish.changes = changes;
-            modalRef.componentInstance.publish.describeChanges = this.publishContent.describeChanges;
+            modalRef.componentInstance.publish.describeSources = this.publishContent.describeSources;
             modalRef.result
                 .then((result) => {
                     this.publishContent = result;
 
-                    // TODO: publish changes
-
+                    return this.organisationService.submitOrganizationEvents(
+                        {value: this.originalOrganization.id},
+                        this.publishContent.describeSources,
+                        this.publishContent.changes
+                    )
+                        .toPromise()
+                        .catch((result) => {
+                            const title = this.translateService.instant('edit.organisation.changes.message.title');
+                            const description = this.translateService.instant('edit.organisation.changes.message.description');
+                            this.toastr.error(description, title);
+                            return Promise.reject(result);
+                        })
+                })
+                .then(() => {
                     const navigate = () => {
                         this.router.navigate(['/organisation/' + this.originalOrganization.urlName]);
                     };

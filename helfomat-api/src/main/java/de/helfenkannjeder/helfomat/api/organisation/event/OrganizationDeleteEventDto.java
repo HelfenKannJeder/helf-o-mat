@@ -14,4 +14,9 @@ public class OrganizationDeleteEventDto extends OrganizationEventDto {
         super(organisationId);
     }
 
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

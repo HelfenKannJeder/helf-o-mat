@@ -20,4 +20,10 @@ public class OrganizationEditLogoEventDto extends OrganizationEventDto {
     public PictureId getLogo() {
         return logo;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

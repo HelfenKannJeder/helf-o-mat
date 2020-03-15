@@ -1,5 +1,10 @@
 @import "~material-design-icons/iconfont/material-icons.css";
 
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import '~ngx-toastr/toastr-bs4-alert';
+
 .material-icons {
   font-size: inherit;
 }

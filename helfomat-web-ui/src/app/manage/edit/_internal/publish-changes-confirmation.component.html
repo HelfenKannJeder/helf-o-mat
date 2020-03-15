@@ -6,8 +6,8 @@
 </div>
 <div class="modal-body text-left">
     <div class="form-group" *ngIf="activeTab == 0">
-        <label for="description">{{ 'edit.organisation.publish.describeChanges' | translate }}</label>
-        <textarea class="form-control" id="description" name="description" autosize [(ngModel)]="publish.describeChanges"></textarea>
+        <label for="description">{{ 'edit.organisation.publish.describeSources' | translate }}</label>
+        <textarea class="form-control" id="description" name="description" autosize [(ngModel)]="publish.describeSources"></textarea>
     </div>
     <div *ngIf="activeTab == 1">
         <organization-event [organization]="publish.organization" [organizationEvents]="publish.changes"></organization-event>

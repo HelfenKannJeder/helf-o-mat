@@ -33,4 +33,9 @@ public class OrganizationCreateEventDto extends OrganizationEventDto {
     public OrganisationType getOrganisationType() {
         return organisationType;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
 }

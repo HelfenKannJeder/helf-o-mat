@@ -26,4 +26,10 @@ public class OrganizationEditAddQuestionAnswerEventDto extends OrganizationEvent
     public AnsweredQuestionDto getAnsweredQuestion() {
         return answeredQuestion;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

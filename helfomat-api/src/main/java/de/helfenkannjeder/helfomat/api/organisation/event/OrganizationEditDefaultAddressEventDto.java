@@ -20,4 +20,10 @@ public class OrganizationEditDefaultAddressEventDto extends OrganizationEventDto
     public AddressDto getAddress() {
         return address;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

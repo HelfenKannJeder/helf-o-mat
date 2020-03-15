@@ -25,4 +25,6 @@ public abstract class OrganizationEventDto {
         return organisationId;
     }
 
+    public abstract <T> T visit(OrganizationEventDtoVisitor<T> visitor);
+
 }

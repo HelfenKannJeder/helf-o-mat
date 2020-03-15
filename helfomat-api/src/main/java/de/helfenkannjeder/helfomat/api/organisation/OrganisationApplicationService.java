@@ -2,13 +2,16 @@ package de.helfenkannjeder.helfomat.api.organisation;
 
 import de.helfenkannjeder.helfomat.api.organisation.event.OrganizationEventAssembler;
 import de.helfenkannjeder.helfomat.api.organisation.event.OrganizationEventDto;
+import de.helfenkannjeder.helfomat.api.organisation.event.OrganizationEventDtoAssembler;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
 import de.helfenkannjeder.helfomat.core.question.Question;
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +24,13 @@ public class OrganisationApplicationService {
 
     private final OrganisationRepository organisationRepository;
     private final QuestionRepository questionRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public OrganisationApplicationService(OrganisationRepository organisationRepository, QuestionRepository questionRepository) {
+    public OrganisationApplicationService(OrganisationRepository organisationRepository, QuestionRepository questionRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.organisationRepository = organisationRepository;
         this.questionRepository = questionRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public OrganisationDetailDto findOrganisationDetails(String urlName) {
@@ -77,4 +82,8 @@ public class OrganisationApplicationService {
         return OrganizationEventAssembler.toOrganizationEventDto(updated.compareTo(original), questions);
     }
 
+    public void submitOrganization(OrganizationSubmitEventDto organizationSubmitEventDto) {
+        List<OrganisationEvent> organisationEvents = OrganizationEventDtoAssembler.toOrganizationEvent(organizationSubmitEventDto.getEvents());
+        organisationEvents.forEach(applicationEventPublisher::publishEvent);
+    }
 }

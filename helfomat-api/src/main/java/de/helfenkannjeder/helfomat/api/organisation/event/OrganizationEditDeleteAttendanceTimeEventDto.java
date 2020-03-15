@@ -20,4 +20,10 @@ public class OrganizationEditDeleteAttendanceTimeEventDto extends OrganizationEv
     public AttendanceTimeDto getAttendanceTime() {
         return attendanceTime;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

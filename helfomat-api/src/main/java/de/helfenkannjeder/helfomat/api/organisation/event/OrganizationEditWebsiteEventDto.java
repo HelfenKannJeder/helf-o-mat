@@ -19,4 +19,10 @@ public class OrganizationEditWebsiteEventDto extends OrganizationEventDto {
     public String getWebsite() {
         return website;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

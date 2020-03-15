@@ -20,4 +20,10 @@ public class OrganizationEditDeleteVolunteerEventDto extends OrganizationEventDt
     public VolunteerDto getVolunteer() {
         return volunteer;
     }
+
+    @Override
+    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }

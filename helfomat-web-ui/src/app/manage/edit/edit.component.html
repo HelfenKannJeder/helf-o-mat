@@ -2,9 +2,9 @@
     <form class="needs-validation" novalidate (ngSubmit)="openPublishChangesConfirmation(organisation)" (change)="calculateChanges(organisation)">
         <nav class="navbar sticky-top navbar-dark bg-lightblue">
             <span class="navbar-brand">{{organisation.name}}</span>
-            <div class="btn-group">
-                <button *ngIf="changes | async; let changes" class="btn btn-outline-light" type="button" (click)="openPublishChangesConfirmation(organisation, 1)">{{'edit.organisation.publish.review' | translate}} <span class="badge badge-secondary">{{changes.length}}</span></button>
-                <button class="btn btn-warning" type="submit">{{'edit.organisation.publish.publishChanges' | translate}}</button>
+            <div class="btn-group" *ngIf="changes | async; let changes">
+                <button class="btn btn-outline-light" type="button" [disabled]="changes.length == 0" (click)="openPublishChangesConfirmation(organisation, 1)">{{'edit.organisation.publish.review' | translate}} <span class="badge badge-secondary">{{changes.length}}</span></button>
+                <button class="btn btn-warning" type="submit" [disabled]="changes.length == 0">{{'edit.organisation.publish.publishChanges' | translate}}</button>
             </div>
         </nav>
         <div class="custom-content">
