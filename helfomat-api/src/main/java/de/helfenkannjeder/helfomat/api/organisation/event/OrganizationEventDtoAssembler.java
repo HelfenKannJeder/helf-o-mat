@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.api.organisation.event;
 
 import de.helfenkannjeder.helfomat.api.organisation.OrganisationAssembler;
+import de.helfenkannjeder.helfomat.core.organisation.event.ConfirmedChangeOrganizationEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationCreateEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationDeleteEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditAddAddressEvent;
@@ -24,6 +25,7 @@ import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditTease
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditUrlNameEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditWebsiteEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
+import de.helfenkannjeder.helfomat.core.organisation.event.ProposedChangeOrganizationEvent;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -231,4 +233,32 @@ public class OrganizationEventDtoAssembler implements OrganizationEventDtoVisito
             organizationEditWebsiteEventDto.getWebsite()
         );
     }
+
+    @Override
+    public OrganisationEvent visit(ProposedChangeOrganizationEventDto proposedChangeOrganizationEventDto) {
+        return new ProposedChangeOrganizationEvent(
+            proposedChangeOrganizationEventDto.getOrganisationId(),
+            proposedChangeOrganizationEventDto.getAuthor(),
+            proposedChangeOrganizationEventDto.getSources(),
+            proposedChangeOrganizationEventDto.getChanges()
+                .stream()
+                .map(organizationEventDto -> organizationEventDto.visit(this))
+                .collect(Collectors.toList())
+        );
+    }
+
+    @Override
+    public OrganisationEvent visit(ConfirmedChangeOrganizationEventDto confirmedChangeOrganizationEventDto) {
+        return new ConfirmedChangeOrganizationEvent(
+            confirmedChangeOrganizationEventDto.getOrganisationId(),
+            confirmedChangeOrganizationEventDto.getApprovedBy(),
+            confirmedChangeOrganizationEventDto.getAuthor(),
+            confirmedChangeOrganizationEventDto.getSources(),
+            confirmedChangeOrganizationEventDto.getChanges()
+                .stream()
+                .map(organizationEventDto -> organizationEventDto.visit(this))
+                .collect(Collectors.toList())
+        );
+    }
+
 }

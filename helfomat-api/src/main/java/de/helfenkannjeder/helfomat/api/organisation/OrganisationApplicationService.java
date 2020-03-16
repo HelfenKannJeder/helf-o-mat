@@ -7,11 +7,14 @@ import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.organisation.event.ConfirmedChangeOrganizationEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
+import de.helfenkannjeder.helfomat.core.organisation.event.ProposedChangeOrganizationEvent;
 import de.helfenkannjeder.helfomat.core.question.Question;
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -84,6 +87,25 @@ public class OrganisationApplicationService {
 
     public void submitOrganization(OrganizationSubmitEventDto organizationSubmitEventDto) {
         List<OrganisationEvent> organisationEvents = OrganizationEventDtoAssembler.toOrganizationEvent(organizationSubmitEventDto.getEvents());
-        organisationEvents.forEach(applicationEventPublisher::publishEvent);
+        ProposedChangeOrganizationEvent proposedChangeOrganizationEvent = new ProposedChangeOrganizationEvent(
+            organizationSubmitEventDto.getOrganizationId(),
+            "current-user", // TODO current user id
+            organizationSubmitEventDto.getSources(),
+            organisationEvents
+        );
+        applicationEventPublisher.publishEvent(proposedChangeOrganizationEvent);
     }
+
+    @EventListener // TODO: should be based on an actual approval
+    public void confirmOrganizationEvent(ProposedChangeOrganizationEvent proposedChangeOrganizationEvent) {
+        ConfirmedChangeOrganizationEvent confirmedChangeOrganizationEvent = new ConfirmedChangeOrganizationEvent(
+            proposedChangeOrganizationEvent.getOrganisationId(),
+            "current-user", // TODO
+            proposedChangeOrganizationEvent.getAuthor(),
+            proposedChangeOrganizationEvent.getSources(),
+            proposedChangeOrganizationEvent.getChanges()
+        );
+        applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent);
+    }
+
 }

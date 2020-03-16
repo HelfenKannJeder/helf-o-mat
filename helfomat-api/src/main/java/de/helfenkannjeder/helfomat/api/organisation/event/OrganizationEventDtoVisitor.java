@@ -50,4 +50,9 @@ public interface OrganizationEventDtoVisitor<T> {
     T visit(OrganizationEditUrlNameEventDto organizationEditUrlNameEventDto);
 
     T visit(OrganizationEditWebsiteEventDto organizationEditWebsiteEventDto);
+
+    T visit(ProposedChangeOrganizationEventDto proposedChangeOrganizationEventDto);
+
+    T visit(ConfirmedChangeOrganizationEventDto confirmedChangeOrganizationEventDto);
+
 }

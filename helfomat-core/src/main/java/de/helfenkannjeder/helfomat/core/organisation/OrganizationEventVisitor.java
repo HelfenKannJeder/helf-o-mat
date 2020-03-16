@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.core.organisation;
 
+import de.helfenkannjeder.helfomat.core.organisation.event.ConfirmedChangeOrganizationEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationCreateEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationDeleteEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditAddAddressEvent;
@@ -23,6 +24,7 @@ import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditNameE
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditTeaserImageEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditUrlNameEvent;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEditWebsiteEvent;
+import de.helfenkannjeder.helfomat.core.organisation.event.ProposedChangeOrganizationEvent;
 
 public interface OrganizationEventVisitor<T> {
 
@@ -71,4 +73,8 @@ public interface OrganizationEventVisitor<T> {
     T visit(OrganisationEditUrlNameEvent organisationEditUrlNameEvent);
 
     T visit(OrganisationEditWebsiteEvent organisationEditWebsiteEvent);
+
+    T visit(ProposedChangeOrganizationEvent proposedChangeOrganizationEvent);
+
+    T visit(ConfirmedChangeOrganizationEvent confirmedChangeOrganizationEvent);
 }
