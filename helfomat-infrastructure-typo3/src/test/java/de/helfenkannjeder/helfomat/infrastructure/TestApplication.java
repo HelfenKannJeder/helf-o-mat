@@ -6,13 +6,11 @@ import org.springframework.batch.core.scope.JobScope;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * @author Valentin Zickner
  */
 @SpringBootApplication
-@EnableJpaRepositories
 public class TestApplication {
 
     @MockBean

@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class
 })
-@Transactional
+@Transactional(transactionManager = "legacyTransactionManager")
 public class Typo3OrganisationReaderIntegrationTest {
 
     @Autowired
@@ -46,7 +46,7 @@ public class Typo3OrganisationReaderIntegrationTest {
 
     @Test
     @DirtiesContext
-    public void read_withThwKarlsruhe_returnsBasicInformation() throws Exception {
+    public void read_withThwKarlsruhe_returnsBasicInformation() {
         // Arrange
 
         // Act
@@ -153,7 +153,7 @@ public class Typo3OrganisationReaderIntegrationTest {
 
     @Test
     @DirtiesContext
-    public void read_withAsbkarlsruhe_returnsBasicInformation() throws Exception {
+    public void read_withAsbKarlsruhe_returnsBasicInformation() throws Exception {
         // Arrange
 
         // Act

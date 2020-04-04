@@ -39,6 +39,11 @@
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
             <artifactId>helfomat-infrastructure-kafka</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.helfenkannjeder.helfomat</groupId>
+            <artifactId>helfomat-infrastructure-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
