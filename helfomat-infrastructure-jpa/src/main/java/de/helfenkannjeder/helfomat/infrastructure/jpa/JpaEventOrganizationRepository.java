@@ -7,7 +7,9 @@ import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
 import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
 import org.springframework.context.event.EventListener;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Valentin Zickner
@@ -29,12 +31,14 @@ public class JpaEventOrganizationRepository extends EventBasedCachingOrganizatio
     @Override
     protected void processDomainEvent(OrganisationEvent organisationEvent) {
         OrganisationId organisationId = organisationEvent.getOrganisationId();
+        List<OrganisationEvent> events = new ArrayList<>();
         if (!organisationBuilderMap.containsKey(organisationId)) {
-            List<Event> events = this.eventRepository.findByOrganizationId(organisationId);
-            for (Event event : events) {
-                super.processDomainEvent(event.getDomainEvent());
-            }
+            events = this.eventRepository.findByOrganizationId(organisationId)
+                .stream()
+                .map(Event::getDomainEvent)
+                .collect(Collectors.toList());
         }
-        super.processDomainEvent(organisationEvent);
+        events.add(organisationEvent);
+        super.processDomainEvents(organisationId, events);
     }
 }

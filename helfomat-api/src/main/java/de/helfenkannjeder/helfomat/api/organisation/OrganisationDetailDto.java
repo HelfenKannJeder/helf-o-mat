@@ -29,6 +29,9 @@ public class OrganisationDetailDto {
     private List<AttendanceTimeDto> attendanceTimes;
     private List<VolunteerDto> volunteers;
 
+    private OrganisationDetailDto() {
+    }
+
     public OrganisationDetailDto(
         String id,
         String name,
