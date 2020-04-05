@@ -12,9 +12,9 @@ import java.util.List;
  */
 public interface EventRepository extends JpaRepository<Event, EventId> {
 
-    @Query("SELECT EP FROM Event EP ORDER BY EP.createdDate")
+    @Query("SELECT E FROM Event E ORDER BY E.createdDate")
     List<Event> findAll();
 
-    @Query("SELECT EP FROM Event EP WHERE EP.organizationId = :organizationId ORDER BY EP.createdDate")
+    @Query("SELECT E FROM Event E WHERE E.organizationId = :organizationId ORDER BY E.createdDate")
     List<Event> findByOrganizationId(@Param("organizationId") OrganisationId organizationId);
 }

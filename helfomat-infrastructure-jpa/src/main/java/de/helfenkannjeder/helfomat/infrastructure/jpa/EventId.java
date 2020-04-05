@@ -15,18 +15,18 @@ import java.util.UUID;
 @AccessType(AccessType.Type.FIELD)
 public class EventId implements Serializable {
 
-    @Column(name = "event_id")
-    private String value;
+    @Column(name = "eventId")
+    private UUID value;
 
     public EventId() {
-        this(UUID.randomUUID().toString());
+        this(UUID.randomUUID());
     }
 
-    public EventId(String value) {
+    public EventId(UUID value) {
         this.value = value;
     }
 
-    public String getValue() {
+    public UUID getValue() {
         return value;
     }
 

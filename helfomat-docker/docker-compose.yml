@@ -27,19 +27,22 @@ services:
         soft: -1
         hard: -1
     volumes:
-    - ./data/elasticsearch/data:/usr/share/elasticsearch/data
+    - elastic:/usr/share/elasticsearch/data
     ports:
     - 9200:9200
     - 9300:9300
 
   postgres:
-    image: postgres:10
+    image: postgres:12-alpine
     container_name: helfomat-postgres
     environment:
       POSTGRES_USER: helfenkannjeder
       POSTGRES_PASSWORD: helfenkannjeder
       POSTGRES_DB: helfenkannjeder
     volumes:
-    - ./data/postgres:/var/lib/postgresql/data
+    - postgres:/var/lib/postgresql/data
     ports:
     - 5432:5432
+volumes:
+  elastic:
+  postgres:
