@@ -1,7 +1,17 @@
 language: java
 jdk: openjdk8
+services:
+  - docker
 install: true
-script: ./mvnw clean install
 cache:
   directories:
   - $HOME/.m2
+
+jobs:
+  include:
+    - stage: build
+      script: ./mvnw clean install
+    - stage: build docker
+      script: ./mvnw package jib:dockerBuild -D image=docker.pkg.github.com/helfenkannjeder/helf-o-mat/helfomat-web:0.0.1 -pl helfomat-web -am
+#    - stage: push docker image
+#      script: docker push docker.pkg.github.com/helfenkannjeder/helf-o-mat/helfomat-web:0.0.1
