@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
     <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}helfomat.log}"/>
 
     <appender name="ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -14,18 +16,9 @@
         </rollingPolicy>
     </appender>
 
-    <springProfile name="console-log">
-        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-        <root level="ERROR">
-            <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="ROLLING-FILE"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="!console-log">
-        <root level="ERROR">
-            <appender-ref ref="ROLLING-FILE"/>
-        </root>
-    </springProfile>
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ROLLING-FILE"/>
+    </root>
 
 </configuration>
