@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * @author Valentin Zickner
  */
 @Component
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, transactionManager = "legacyTransactionManager")
 public class Typo3OrganisationProcessor implements ItemProcessor<TOrganisation, Organisation> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Typo3OrganisationProcessor.class);

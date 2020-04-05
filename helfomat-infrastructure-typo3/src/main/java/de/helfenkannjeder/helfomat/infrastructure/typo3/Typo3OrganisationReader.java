@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Component
 @Order(100)
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, transactionManager = "legacyTransactionManager")
 @Profile("!" + ProfileRegistry.DISABLE_TYPO3_IMPORT)
 @JobScope
 public class Typo3OrganisationReader implements OrganisationReader {

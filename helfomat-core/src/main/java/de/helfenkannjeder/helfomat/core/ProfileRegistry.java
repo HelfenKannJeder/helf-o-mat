@@ -17,4 +17,5 @@ public class ProfileRegistry {
 
     public static final String TEST = "test";
 
+    public static final String KAFKA = "kafka";
 }
