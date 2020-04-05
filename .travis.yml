@@ -12,6 +12,6 @@ jobs:
     - stage: build
       script: ./mvnw clean install
     - stage: build docker
-      script: ./mvnw package jib:dockerBuild -D image=docker.pkg.github.com/helfenkannjeder/helf-o-mat/helfomat-web:0.0.1 -pl helfomat-web -am
+      script: ./mvnw package com.google.cloud.tools:jib-maven-plugin:dockerBuild -D image=docker.pkg.github.com/helfenkannjeder/helf-o-mat/helfomat-web:0.0.1 -pl helfomat-web -am
 #    - stage: push docker image
 #      script: docker push docker.pkg.github.com/helfenkannjeder/helf-o-mat/helfomat-web:0.0.1
