@@ -12,6 +12,8 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ManageModule} from "./manage/manage.module";
 import {ToastrModule} from 'ngx-toastr';
+import {OAuthModule} from "angular-oauth2-oidc";
+import {ProfileModule} from "./profile/profile.module";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -30,6 +32,7 @@ export function createTranslateLoader(http: HttpClient) {
         BrowserAnimationsModule,
         FormsModule,
         HttpClientModule,
+        ProfileModule,
         routing,
         TranslateModule.forRoot({
             loader: {
@@ -41,6 +44,12 @@ export function createTranslateLoader(http: HttpClient) {
         ToastrModule.forRoot({
             positionClass: 'toast-bottom-right',
             preventDuplicates: true
+        }),
+        OAuthModule.forRoot({
+            resourceServer: {
+                allowedUrls: ['http://localhost:8080/api', 'https://helfenkannjeder.de'],
+                sendAccessToken: true
+            }
         })
     ],
     providers: [
