@@ -15,6 +15,7 @@ import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -89,7 +90,7 @@ public class OrganisationApplicationService {
         List<OrganisationEvent> organisationEvents = OrganizationEventDtoAssembler.toOrganizationEvent(organizationSubmitEventDto.getEvents());
         ProposedChangeOrganizationEvent proposedChangeOrganizationEvent = new ProposedChangeOrganizationEvent(
             organizationSubmitEventDto.getOrganizationId(),
-            "current-user", // TODO current user id
+            getCurrentUser(),
             organizationSubmitEventDto.getSources(),
             organisationEvents
         );
@@ -100,12 +101,16 @@ public class OrganisationApplicationService {
     public void confirmOrganizationEvent(ProposedChangeOrganizationEvent proposedChangeOrganizationEvent) {
         ConfirmedChangeOrganizationEvent confirmedChangeOrganizationEvent = new ConfirmedChangeOrganizationEvent(
             proposedChangeOrganizationEvent.getOrganisationId(),
-            "current-user", // TODO
+            getCurrentUser(),
             proposedChangeOrganizationEvent.getAuthor(),
             proposedChangeOrganizationEvent.getSources(),
             proposedChangeOrganizationEvent.getChanges()
         );
         applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent);
+    }
+
+    private String getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 }
