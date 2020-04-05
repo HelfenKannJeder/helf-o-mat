@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.helfenkannjeder.helfomat</groupId>
-    <artifactId>base</artifactId>
+    <artifactId>helfomat-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
