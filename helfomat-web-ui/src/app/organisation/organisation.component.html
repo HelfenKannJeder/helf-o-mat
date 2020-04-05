@@ -156,12 +156,16 @@
             <ng-template #backLink>
                 <div class="card card-default">
                     <div class="card-header">
-                        {{'organisation.facts.helfomatResult.backToOverviewTitle' | translate}}
+                        {{'organisation.facts.helfomatResult.action' | translate}}
                     </div>
                     <div class="card-body">
-                        <button class="btn btn-secondary" (click)="_back$.next()">
-                            {{'organisation.facts.helfomatResult.back' | translate}}
-                        </button>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button class="btn btn-secondary" (click)="_back$.next()" [title]="'organisation.facts.helfomatResult.back' | translate">
+                                <i class="material-icons">backspace</i>
+                            </button>
+                            <a href="#" class="btn btn-secondary"><i class="material-icons">history</i></a>
+                            <a class="btn btn-secondary" [href]="'organisation/' + organisation.urlName + '/edit'"><i class="material-icons">edit</i></a>
+                        </div>
                     </div>
                 </div>
             </ng-template>

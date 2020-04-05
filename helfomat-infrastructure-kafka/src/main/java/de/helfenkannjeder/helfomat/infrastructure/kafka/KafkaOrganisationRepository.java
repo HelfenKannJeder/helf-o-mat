@@ -17,7 +17,7 @@ public class KafkaOrganisationRepository extends EventBasedCachingOrganizationRe
         super(objectMapper, persistentOrganisationRepository);
     }
 
-    @KafkaListener(topics = "${kafka.topic.organisation-events}")
+    @KafkaListener(topics = "${kafka.topic.organization-events}")
     public void listen(byte[] organisationEventByteArray) throws IOException {
         OrganisationEvent organisationEvent = this.objectMapper.readValue(organisationEventByteArray, OrganisationEvent.class);
         processDomainEvent(organisationEvent);

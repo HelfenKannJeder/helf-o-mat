@@ -33,6 +33,16 @@ public class EventBasedCachingOrganizationRepository implements OrganisationRepo
         this.persistentOrganisationRepository = persistentOrganisationRepository;
     }
 
+    protected void processDomainEvents(OrganisationId organisationId, List<OrganisationEvent> organizationEvents) {
+        LOG.debug("Received organisation events for organisation '{}' from event storage '{}'", organisationId, organizationEvents);
+        Organisation.Builder organizationBuilder = organisationBuilderMap.getOrDefault(organisationId, new Organisation.Builder());
+        for (OrganisationEvent organizationEvent : organizationEvents) {
+            organizationBuilder = organizationEvent.applyOnOrganisationBuilder(organizationBuilder);
+        }
+        organisationBuilderMap.put(organisationId, organizationBuilder);
+        this.persistentOrganisationRepository.save(Collections.singletonList(organizationBuilder.build()));
+    }
+
     protected void processDomainEvent(OrganisationEvent organisationEvent) {
         OrganisationId organisationId = organisationEvent.getOrganisationId();
         LOG.debug("Received organisation event for organisation '{}' from event storage '{}'", organisationId, organisationEvent);

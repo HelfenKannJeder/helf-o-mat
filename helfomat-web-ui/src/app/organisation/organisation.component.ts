@@ -126,14 +126,7 @@ export class OrganisationComponent implements OnInit, AfterViewInit {
     }
 
     public areAddressesEqual(address1: Address, address2: Address): boolean {
-        return address1.location.lon == address2.location.lon
-            && address1.location.lat == address2.location.lat
-            && address1.addressAppendix == address2.addressAppendix
-            && address1.city == address2.city
-            && address1.street == address2.street
-            && address1.telephone == address2.telephone
-            && address1.zipcode == address2.zipcode
-            && address1.website == address2.website;
+        return Address.isEqual(address1, address2);
     }
 
     private static calculateZoomLevel(position1: GeoPoint, position2: GeoPoint): number {

@@ -60,12 +60,27 @@ export class OrganisationService {
         });
     }
 
+    compareOrganization(original: Organisation, updated: Organisation): Observable<Array<OrganizationEvent>> {
+        return this.httpClient.post<Array<OrganizationEvent>>('api/organization/compare', {
+            original,
+            updated
+        });
+    }
+
+    submitOrganizationEvents(organizationId: OrganizationId, sources: string, events: OrganizationEvent[]): Observable<void> {
+        return this.httpClient.post<void>('api/organization/submit', {
+            organizationId,
+            sources,
+            events
+        });
+    }
 }
 
 export class Organisation {
     public id: string;
     public name: string;
     public urlName: string;
+    public organizationType: string;
     public description: string;
     public website: string;
     public scoreNorm: number;
@@ -136,6 +151,17 @@ export class Address {
     public location: GeoPoint;
     public telephone: string;
     public website: string;
+
+    static isEqual(address1: Address, address2: Address): boolean {
+        return address1.location.lon == address2.location.lon
+            && address1.location.lat == address2.location.lat
+            && address1.addressAppendix == address2.addressAppendix
+            && address1.city == address2.city
+            && address1.street == address2.street
+            && address1.telephone == address2.telephone
+            && address1.zipcode == address2.zipcode
+            && address1.website == address2.website;
+    }
 }
 
 export class AnsweredQuestion {
@@ -168,4 +194,13 @@ export enum DayOfWeek {
 export class Group {
     public name: string;
     public description: string;
+}
+
+export class OrganizationEvent {
+    public organizationId: OrganizationId;
+    public type: string;
+}
+
+export class OrganizationId {
+    public value: string;
 }

@@ -3,6 +3,7 @@ package de.helfenkannjeder.helfomat.core.organisation.event;
 import de.helfenkannjeder.helfomat.core.organisation.AttendanceTime;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
+import de.helfenkannjeder.helfomat.core.organisation.OrganizationEventVisitor;
 
 /**
  * @author Valentin Zickner
@@ -32,6 +33,11 @@ public class OrganisationEditAddAttendanceTimeEvent extends OrganisationEditEven
     @Override
     public Organisation.Builder applyOnOrganisationBuilder(Organisation.Builder organisation) {
         return organisation.addAttendanceTime(index, attendanceTime);
+    }
+
+    @Override
+    public <T> T visit(OrganizationEventVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 
 }

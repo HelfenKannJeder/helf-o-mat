@@ -15,7 +15,7 @@ public class AddressDto {
     private String telephone;
     private String website;
 
-    public AddressDto() {
+    private AddressDto() {
     }
 
     AddressDto(String street, String addressAppendix, String city, String zipcode, GeoPoint location, String

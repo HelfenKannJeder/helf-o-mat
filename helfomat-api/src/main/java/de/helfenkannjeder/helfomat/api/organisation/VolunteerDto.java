@@ -11,6 +11,9 @@ public class VolunteerDto {
     private String motivation;
     private PictureId picture;
 
+    private VolunteerDto() {
+    }
+
     VolunteerDto(String firstname, String motivation, PictureId picture) {
         this.firstname = firstname;
         this.motivation = motivation;

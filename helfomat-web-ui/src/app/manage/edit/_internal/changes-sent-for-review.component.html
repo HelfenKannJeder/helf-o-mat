@@ -1,0 +1,9 @@
+<div class="modal-header bg-lightblue text-white">
+    <h4 class="modal-title" id="modal-title">{{'edit.organisation.changesSentForReview.title' | translate: {organisationName: organizationName} }}</h4>
+</div>
+<div class="modal-body text-left">
+    {{'edit.organisation.changesSentForReview.content' | translate: {organisationName: organizationName} }}
+</div>
+<div class="modal-footer">
+    <button type="button" ngbAutofocus class="btn btn-primary" (click)="modal.close()">{{'edit.organisation.changesSentForReview.confirm' | translate}}</button>
+</div>

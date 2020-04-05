@@ -20,7 +20,7 @@ public class OrganisationDto {
     private List<ContactPersonDto> contactPersons;
     private PictureId logo;
 
-    public OrganisationDto() {
+    private OrganisationDto() {
     }
 
     public OrganisationDto(String id, String name, String urlName, String description, String website, String mapPin, List<AddressDto> addresses, List

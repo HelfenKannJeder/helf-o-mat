@@ -9,8 +9,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.EntityMapper;
+import org.springframework.data.mapping.MappingException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class ElasticsearchConfig {
@@ -20,6 +23,9 @@ public class ElasticsearchConfig {
         return new ElasticsearchTemplate(client, new CustomEntityMapper());
     }
 
+    /**
+     * based on spring data elasticsearch DefaultEntityMapper
+     */
     static class CustomEntityMapper implements EntityMapper {
 
         private final ObjectMapper objectMapper;
@@ -37,11 +43,29 @@ public class ElasticsearchConfig {
             return objectMapper.writeValueAsString(object);
         }
 
+        @SuppressWarnings("unchecked")
+        @Override
+        public Map<String, Object> mapObject(Object source) {
+            try {
+                return objectMapper.readValue(mapToString(source), HashMap.class);
+            } catch (IOException e) {
+                throw new MappingException(e.getMessage(), e);
+            }
+        }
+
         @Override
         public <T> T mapToObject(String source, Class<T> clazz) throws IOException {
             return objectMapper.readValue(source, clazz);
         }
 
+        @Override
+        public <T> T readObject(Map<String, Object> source, Class<T> targetType) {
+            try {
+                return this.mapToObject(this.mapToString(source), targetType);
+            } catch (IOException var4) {
+                throw new MappingException(var4.getMessage(), var4);
+            }
+        }
     }
 
 }

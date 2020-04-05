@@ -10,6 +10,19 @@ img.thumb {
 .logo-container {
   position: relative;
 
+  .edit {
+    position: absolute;
+    right: 0.5em;
+    top: 0.5em;
+    opacity: 0.5;
+    font-size: 2em;
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+  }
+
   .logo {
     position: absolute;
     right: 0;

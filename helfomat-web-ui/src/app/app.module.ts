@@ -10,6 +10,8 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ManageModule} from "./manage/manage.module";
+import {ToastrModule} from 'ngx-toastr';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -23,6 +25,7 @@ export function createTranslateLoader(http: HttpClient) {
         QuestionModule,
         ResultModule,
         OrganisationModule,
+        ManageModule,
         BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
@@ -34,6 +37,10 @@ export function createTranslateLoader(http: HttpClient) {
                 useFactory: createTranslateLoader,
                 deps: [HttpClient]
             }
+        }),
+        ToastrModule.forRoot({
+            positionClass: 'toast-bottom-right',
+            preventDuplicates: true
         })
     ],
     providers: [

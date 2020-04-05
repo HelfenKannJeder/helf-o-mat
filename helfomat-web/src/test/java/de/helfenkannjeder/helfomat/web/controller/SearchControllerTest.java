@@ -3,7 +3,7 @@ package de.helfenkannjeder.helfomat.web.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest;
-import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.junit.Before;
@@ -71,8 +71,8 @@ public class SearchControllerTest {
 
     @SuppressWarnings("SameParameterValue")
     private void createTemplate(String templateName) throws IOException {
-        PutIndexTemplateResponse response = client.admin().indices().putTemplate(
-                new PutIndexTemplateRequest(templateName).source(getTemplate(), XContentType.JSON)).actionGet();
+        AcknowledgedResponse response = client.admin().indices().putTemplate(
+            new PutIndexTemplateRequest(templateName).source(getTemplate(), XContentType.JSON)).actionGet();
         if (!response.isAcknowledged()) {
             throw new RuntimeException("Error creating template");
         }
@@ -106,7 +106,7 @@ public class SearchControllerTest {
         // Act
         mockMvc.perform(get("/questions"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(18))
                 .andExpect(jsonPath("$[0]").isMap())

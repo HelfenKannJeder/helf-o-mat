@@ -8,6 +8,9 @@ public class GroupDto {
     private String name;
     private String description;
 
+    private GroupDto() {
+    }
+
     GroupDto(String name, String description) {
         this.name = name;
         this.description = description;

@@ -3,6 +3,7 @@ package de.helfenkannjeder.helfomat.core.organisation.event;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
+import de.helfenkannjeder.helfomat.core.organisation.OrganizationEventVisitor;
 
 /**
  * @author Valentin Zickner
@@ -34,6 +35,11 @@ public class OrganisationCreateEvent extends OrganisationEvent {
             .setName(name)
             .setUrlName(urlName)
             .setOrganisationType(organisationType);
+    }
+
+    @Override
+    public <T> T visit(OrganizationEventVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 
     public String getName() {

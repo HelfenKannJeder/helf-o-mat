@@ -7,6 +7,7 @@ import de.helfenkannjeder.helfomat.core.organisation.AttendanceTime;
 import de.helfenkannjeder.helfomat.core.organisation.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organisation.Group;
 import de.helfenkannjeder.helfomat.core.organisation.Organisation;
+import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
 import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.organisation.ScoredOrganisation;
 import de.helfenkannjeder.helfomat.core.organisation.Volunteer;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * @author Valentin Zickner
  */
-class OrganisationAssembler {
+public class OrganisationAssembler {
 
     static List<OrganisationDto> toScoredOrganisationDtos(List<ScoredOrganisation> organisations) {
         return organisations
@@ -76,6 +77,7 @@ class OrganisationAssembler {
             organisation.getId().getValue(),
             organisation.getName(),
             organisation.getUrlName(),
+            organisation.getOrganisationType(),
             organisation.getDescription(),
             organisation.getWebsite(),
             organisation.getLogo(),
@@ -86,7 +88,7 @@ class OrganisationAssembler {
             toAnsweredQuestionDtos(organisation.getQuestionAnswers(), questions),
             organisation.getMapPin(),
             toGroupDtos(organisation.getGroups()),
-            toAttendenceTimeDtos(organisation.getAttendanceTimes()),
+            toAttendanceTimeDtos(organisation.getAttendanceTimes()),
             toVolunteerDtos(organisation.getVolunteers())
         );
     }
@@ -101,7 +103,7 @@ class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static VolunteerDto toVolunteerDto(Volunteer volunteer) {
+    public static VolunteerDto toVolunteerDto(Volunteer volunteer) {
         return new VolunteerDto(
             volunteer.getFirstname(),
             volunteer.getMotivation(),
@@ -109,7 +111,7 @@ class OrganisationAssembler {
         );
     }
 
-    private static List<AttendanceTimeDto> toAttendenceTimeDtos(List<AttendanceTime> attendanceTimes) {
+    private static List<AttendanceTimeDto> toAttendanceTimeDtos(List<AttendanceTime> attendanceTimes) {
         if (attendanceTimes == null) {
             return Collections.emptyList();
         }
@@ -119,7 +121,7 @@ class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static AttendanceTimeDto toAttendanceTimeDto(AttendanceTime attendanceTime) {
+    public static AttendanceTimeDto toAttendanceTimeDto(AttendanceTime attendanceTime) {
         return new AttendanceTimeDto(
             attendanceTime.getDay(),
             attendanceTime.getStart(),
@@ -145,7 +147,7 @@ class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static AnsweredQuestionDto toAnsweredQuestionDto(QuestionAnswer questionAnswer, String question) {
+    public static AnsweredQuestionDto toAnsweredQuestionDto(QuestionAnswer questionAnswer, String question) {
         return new AnsweredQuestionDto(
             questionAnswer.getQuestionId(),
             question,
@@ -153,7 +155,7 @@ class OrganisationAssembler {
         );
     }
 
-    private static String determineQuestionText(List<Question> questions, QuestionId id) {
+    public static String determineQuestionText(List<Question> questions, QuestionId id) {
         return questions.stream()
             .filter(question -> Objects.equal(question.getId(), id))
             .map(Question::getQuestion)
@@ -168,7 +170,7 @@ class OrganisationAssembler {
         return groups.stream().map(OrganisationAssembler::toGroupDto).collect(Collectors.toList());
     }
 
-    private static GroupDto toGroupDto(Group group) {
+    public static GroupDto toGroupDto(Group group) {
         return new GroupDto(
             group.getName(),
             group.getDescription()
@@ -185,7 +187,7 @@ class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static ContactPersonDto toContactPersonDto(ContactPerson contactPerson) {
+    public static ContactPersonDto toContactPersonDto(ContactPerson contactPerson) {
         return new ContactPersonDto(
             contactPerson.getFirstname(),
             contactPerson.getLastname(),
@@ -206,7 +208,7 @@ class OrganisationAssembler {
             .collect(Collectors.toList());
     }
 
-    private static AddressDto toAddressDto(Address address) {
+    public static AddressDto toAddressDto(Address address) {
         if (address == null) {
             return null;
         }
@@ -219,6 +221,153 @@ class OrganisationAssembler {
             address.getTelephone(),
             address.getWebsite()
         );
+    }
+
+    public static Organisation toOrganization(OrganisationDetailDto organisationDetailDto) {
+        return new Organisation.Builder()
+            .setId(new OrganisationId(organisationDetailDto.getId()))
+            .setName(organisationDetailDto.getName())
+            .setUrlName(organisationDetailDto.getUrlName())
+            .setDescription(organisationDetailDto.getDescription())
+            .setWebsite(organisationDetailDto.getWebsite())
+            .setLogo(organisationDetailDto.getLogo())
+            .setGroups(toGroups(organisationDetailDto.getGroups()))
+            .setPictures(organisationDetailDto.getPictures())
+            .setDefaultAddress(toAddress(organisationDetailDto.getDefaultAddress()))
+            .setAddresses(toAddresses(organisationDetailDto.getAddresses()))
+            .setOrganisationType(organisationDetailDto.getOrganizationType())
+            .setAttendanceTimes(toAttendanceTimes(organisationDetailDto.getAttendanceTimes()))
+            .setMapPin(organisationDetailDto.getMapPin())
+            .setContactPersons(toContactPersons(organisationDetailDto.getContactPersons()))
+            .setQuestionAnswers(toQuestionAnswers(organisationDetailDto.getQuestions()))
+            .setTeaserImage(toTeaserImage(organisationDetailDto.getPictures()))
+            .setVolunteers(toVolunteers(organisationDetailDto.getVolunteers()))
+            .build();
+    }
+
+    private static List<Volunteer> toVolunteers(List<VolunteerDto> volunteers) {
+        if (volunteers == null) {
+            return null;
+        }
+        return volunteers
+            .stream()
+            .map(OrganisationAssembler::toVolunteer)
+            .collect(Collectors.toList());
+    }
+
+    public static Volunteer toVolunteer(VolunteerDto volunteerDto) {
+        return new Volunteer.Builder()
+            .setFirstname(volunteerDto.getFirstname())
+            .setMotivation(volunteerDto.getMotivation())
+            .setPicture(volunteerDto.getPicture())
+            .build();
+    }
+
+    private static PictureId toTeaserImage(List<PictureId> pictures) {
+        if (pictures == null) {
+            return null;
+        }
+        return pictures
+            .stream()
+            .findFirst()
+            .orElse(null);
+    }
+
+    private static List<QuestionAnswer> toQuestionAnswers(List<AnsweredQuestionDto> questions) {
+        if (questions == null) {
+            return null;
+        }
+        return questions
+            .stream()
+            .map(OrganisationAssembler::toQuestionAnswer)
+            .collect(Collectors.toList());
+    }
+
+    public static QuestionAnswer toQuestionAnswer(AnsweredQuestionDto answeredQuestionDto) {
+        return new QuestionAnswer(answeredQuestionDto.getQuestionId(), answeredQuestionDto.getAnswer());
+    }
+
+    private static List<ContactPerson> toContactPersons(List<ContactPersonDto> contactPersons) {
+        if (contactPersons == null) {
+            return null;
+        }
+        return contactPersons
+            .stream()
+            .map(OrganisationAssembler::toContactPerson)
+            .collect(Collectors.toList());
+    }
+
+    public static ContactPerson toContactPerson(ContactPersonDto contactPersonDto) {
+        return new ContactPerson.Builder()
+            .setFirstname(contactPersonDto.getFirstname())
+            .setLastname(contactPersonDto.getLastname())
+            .setPicture(contactPersonDto.getPicture())
+            .setRank(contactPersonDto.getRank())
+            .setTelephone(contactPersonDto.getTelephone())
+            .setMail(contactPersonDto.getMail())
+            .build();
+    }
+
+    private static List<AttendanceTime> toAttendanceTimes(List<AttendanceTimeDto> attendanceTimes) {
+        if (attendanceTimes == null) {
+            return null;
+        }
+        return attendanceTimes
+            .stream()
+            .map(OrganisationAssembler::toAttendanceTime)
+            .collect(Collectors.toList());
+    }
+
+    public static AttendanceTime toAttendanceTime(AttendanceTimeDto attendanceTimeDto) {
+        return new AttendanceTime.Builder()
+            .setDay(attendanceTimeDto.getDay())
+            .setStart(attendanceTimeDto.getStart())
+            .setEnd(attendanceTimeDto.getEnd())
+            .setNote(attendanceTimeDto.getNote())
+            .setGroups(toGroups(attendanceTimeDto.getGroups()))
+            .build();
+    }
+
+    private static List<Group> toGroups(List<GroupDto> groups) {
+        if (groups == null) {
+            return null;
+        }
+        return groups
+            .stream()
+            .map(OrganisationAssembler::toGroup)
+            .collect(Collectors.toList());
+    }
+
+    public static Group toGroup(GroupDto groupDto) {
+        return new Group.Builder()
+            .setName(groupDto.getName())
+            .setDescription(groupDto.getDescription())
+            .build();
+    }
+
+    private static List<Address> toAddresses(List<AddressDto> addresses) {
+        if (addresses == null) {
+            return null;
+        }
+        return addresses
+            .stream()
+            .map(OrganisationAssembler::toAddress)
+            .collect(Collectors.toList());
+    }
+
+    public static Address toAddress(AddressDto addressDto) {
+        if (addressDto == null) {
+            return null;
+        }
+        return new Address.Builder()
+            .setLocation(addressDto.getLocation())
+            .setCity(addressDto.getCity())
+            .setStreet(addressDto.getStreet())
+            .setZipcode(addressDto.getZipcode())
+            .setAddressAppendix(addressDto.getAddressAppendix())
+            .setTelephone(addressDto.getTelephone())
+            .setWebsite(addressDto.getWebsite())
+            .build();
     }
 
 }

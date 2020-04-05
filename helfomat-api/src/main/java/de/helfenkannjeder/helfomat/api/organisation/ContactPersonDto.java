@@ -14,6 +14,9 @@ public class ContactPersonDto {
     private String mail;
     private PictureId picture;
 
+    private ContactPersonDto() {
+    }
+
     ContactPersonDto(String firstname, String lastname, String rank, String telephone, String mail, PictureId picture) {
         this.firstname = firstname;
         this.lastname = lastname;

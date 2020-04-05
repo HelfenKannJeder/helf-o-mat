@@ -1,0 +1,77 @@
+@import "../../../colors";
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  text-align: left;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging :not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.dragable {
+  cursor: move;
+  position: relative;
+}
+
+.position-top-right {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+a.glyphicon {
+  text-decoration: none;
+}
+
+img.thumb {
+  width: 2em;
+  height: 2.32em;
+}
+
+.teaser-image {
+  width: 100%;
+}
+
+.logo-container {
+  position: relative;
+
+  .logo {
+    position: absolute;
+    right: 0;
+    bottom: 10%;
+    padding: 1em 1em 1em 1.2em;
+    background-color: white;
+  }
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+.upload-file-container {
+  padding-top: 0.5em;
+  padding-bottom: 0.4em;
+  font-size: 6em;
+  cursor: pointer;
+  text-align: center;
+  background-color: $lightgray;
+  color: $darkblue;
+}
+
+.navbar.sticky-top {
+  margin-right: -15px;
+  margin-left: -15px;
+}

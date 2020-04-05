@@ -15,6 +15,9 @@ public class AttendanceTimeDto {
     private String note;
     private List<GroupDto> groups;
 
+    private AttendanceTimeDto() {
+    }
+
     public AttendanceTimeDto(DayOfWeek day, LocalTime start, LocalTime end, String note, List<GroupDto> groups) {
         this.day = day;
         this.start = start;
