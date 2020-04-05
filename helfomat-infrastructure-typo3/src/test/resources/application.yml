@@ -1,9 +1,4 @@
 spring:
-  jpa:
-    database: h2
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-
-  datasource:
-    url: jdbc:h2:mem:test
+  legacy:
+    datasource:
+      url: jdbc:h2:mem:test

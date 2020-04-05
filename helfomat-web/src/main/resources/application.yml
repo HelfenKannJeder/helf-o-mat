@@ -11,16 +11,17 @@ server:
     context-path: /helf-o-mat
 
 spring:
-  jpa:
-    database: MYSQL
-    hibernate:
-      ddl-auto: none
-    show-sql: true
+  legacy:
+    datasource:
+      url: jdbc:mysql://127.0.0.1:3306/helfenkannjeder
+      username: helfenkannjeder
+      password: helfenkannjeder
 
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/helfenkannjeder
-    username: helfenkannjeder
-    password: helfenkannjeder
+  event:
+    datasource:
+      url: jdbc:postgresql://localhost/helfenkannjeder
+      username: helfenkannjeder
+      password: helfenkannjeder
 
   data:
     elasticsearch:

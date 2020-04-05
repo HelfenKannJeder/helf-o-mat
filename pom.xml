@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.helfenkannjeder.helfomat</groupId>
-    <artifactId>base</artifactId>
+    <artifactId>helfomat-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -42,6 +42,7 @@
         <module>helfomat-infrastructure-google-maps</module>
         <module>helfomat-infrastructure-elasticsearch</module>
         <module>helfomat-infrastructure-kafka</module>
+        <module>helfomat-infrastructure-jpa</module>
         <module>helfomat-web</module>
         <module>helfomat-web-ui</module>
     </modules>
@@ -93,6 +94,11 @@
             <dependency>
                 <groupId>de.helfenkannjeder.helfomat</groupId>
                 <artifactId>helfomat-infrastructure-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-jpa</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -1,11 +1,14 @@
-kafka:
-  topic:
-    organization-events: organization-events
-    replication-factor: 1
-  bootstrap-servers: localhost:12345
-
 helfomat:
   picture-folder: pictures/
   autoImport:
     enabled: false
     schedule: "0 0 3 * * *"
+
+spring:
+  legacy:
+    datasource:
+      url: jdbc:h2:mem:legacy_test
+
+  event:
+    datasource:
+      url: jdbc:h2:mem:event_test

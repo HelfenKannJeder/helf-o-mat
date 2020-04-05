@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>de.helfenkannjeder.helfomat</groupId>
-        <artifactId>base</artifactId>
+        <artifactId>helfomat-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 

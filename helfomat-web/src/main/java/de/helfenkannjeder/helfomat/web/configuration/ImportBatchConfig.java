@@ -22,10 +22,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.util.Pair;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,7 +46,8 @@ public class ImportBatchConfig {
                                   ElasticsearchTemplate elasticsearchTemplate,
                                   ApplicationEventPublisher applicationEventPublisher,
                                   OrganisationRepository organisationRepository,
-                                  @Value("classpath:/mapping/organisation.json") Resource organisationMapping) {
+                                  @Value("classpath:/mapping/organisation.json") Resource organisationMapping,
+                                  @Qualifier("legacyTransactionManager") PlatformTransactionManager transactionManager) {
         return organisationReaders.stream()
             .map((OrganisationReader organisationReader) -> {
                 UniqueOrganisationUrlNameOrganisationProcessor uniqueOrganisationUrlNameOrganisationProcessor = new UniqueOrganisationUrlNameOrganisationProcessor();
@@ -63,6 +65,7 @@ public class ImportBatchConfig {
                     })
                     .listener(organisationStepExecutionListener)
                     .listener(uniqueOrganisationUrlNameOrganisationProcessor)
+                    .transactionManager(transactionManager)
                     .build();
             })
             .collect(Collectors.toList());
@@ -97,7 +100,7 @@ public class ImportBatchConfig {
                 index
             );
             try {
-                String mapping = StreamUtils.copyToString(organisationMapping.getInputStream(), Charset.forName("UTF8"));
+                String mapping = StreamUtils.copyToString(organisationMapping.getInputStream(), StandardCharsets.UTF_8);
                 organisationRepository.createIndex(mapping);
             } catch (IOException e) {
                 throw new RuntimeException(e);
