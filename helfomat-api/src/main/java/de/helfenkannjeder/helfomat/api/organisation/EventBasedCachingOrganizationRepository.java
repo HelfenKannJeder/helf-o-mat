@@ -23,6 +23,7 @@ import java.util.Map;
 public class EventBasedCachingOrganizationRepository implements OrganisationRepository {
 
     private final static Logger LOG = LoggerFactory.getLogger(EventBasedCachingOrganizationRepository.class);
+
     protected final Map<OrganisationId, Organisation.Builder> organisationBuilderMap = new HashMap<>();
     protected final ObjectMapper objectMapper;
     protected final OrganisationRepository persistentOrganisationRepository;
