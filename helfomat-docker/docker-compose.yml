@@ -71,6 +71,7 @@ services:
       DB_PASSWORD: keycloak
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: secret # initial pw
+      KEYCLOAK_IMPORT: /realm-export.json
       JDBC_PARAMS: "useSSL=false"
     ports:
       - 8085:8080
@@ -78,6 +79,8 @@ services:
       - keycloak-postgres
     networks:
       - keycloak
+    volumes:
+      - ./realm-export.json:/realm-export.json
 
 volumes:
   elastic:
