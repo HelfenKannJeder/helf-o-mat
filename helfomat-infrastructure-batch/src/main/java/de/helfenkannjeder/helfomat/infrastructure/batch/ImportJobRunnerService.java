@@ -18,7 +18,7 @@ import java.util.Date;
  * @author Valentin Zickner
  */
 @Service
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('helfomat_admin')")
 public class ImportJobRunnerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportJobRunnerService.class);
