@@ -4,7 +4,7 @@ import {OAuthService} from "angular-oauth2-oidc";
 import {BaseAuthenticationGuard} from "./base-authentication.guard";
 
 @Injectable({providedIn: 'root'})
-export class IsLoggedInGuard extends BaseAuthenticationGuard implements CanActivate {
+export class NoAuthGuard extends BaseAuthenticationGuard implements CanActivate {
 
     constructor(private router: Router,
                 oAuthService: OAuthService) {
@@ -15,17 +15,11 @@ export class IsLoggedInGuard extends BaseAuthenticationGuard implements CanActiv
         this.setupOAuthContext(state);
         return this.oAuthService.loadDiscoveryDocumentAndTryLogin()
             .then(() => {
-                let withoutUrlParams = BaseAuthenticationGuard.removeOAuthUrlParams(state.url);
-                if (withoutUrlParams !== state.url) {
-                    this.router.navigateByUrl(withoutUrlParams);
-                    return false;
+                if (!this.oAuthService.hasValidAccessToken()) {
+                    // Ensure no tokens are left to avoid unauthenticated
+                    this.oAuthService.logOut(true);
                 }
-                let authenticated = this.oAuthService.hasValidAccessToken();
-                if (!authenticated) {
-                    this.oAuthService.initLoginFlow();
-                    return false;
-                }
-                return authenticated;
+                return true;
             });
     }
 }

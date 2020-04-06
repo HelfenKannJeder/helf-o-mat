@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    include: console-log
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8085/auth/realms/helfomat/protocol/openid-connect/certs

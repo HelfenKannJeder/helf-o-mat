@@ -47,7 +47,6 @@ export function createTranslateLoader(http: HttpClient) {
         }),
         OAuthModule.forRoot({
             resourceServer: {
-                allowedUrls: ['http://localhost:8080/api', 'https://helfenkannjeder.de'],
                 sendAccessToken: true
             }
         })

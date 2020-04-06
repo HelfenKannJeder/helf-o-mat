@@ -22,7 +22,7 @@ export const environment: Environment = {
     auth: {
         issuer: '/auth/realms/helfomat',
         clientId: 'helfomat-web-ui',
-        scope: 'profile email',
+        scope: 'openid profile email offline_access',
         responseType: 'code',
         // at_hash is not present in JWT token
         disableAtHashCheck: true,
