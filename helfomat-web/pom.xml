@@ -43,6 +43,10 @@
         </dependency>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
+            <artifactId>helfomat-infrastructure-keycloak</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.helfenkannjeder.helfomat</groupId>
             <artifactId>helfomat-infrastructure-jpa</artifactId>
         </dependency>
         <dependency>
