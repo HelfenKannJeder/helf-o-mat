@@ -12,4 +12,5 @@ jobs:
     - stage: build
       script: ./mvnw clean install
     - stage: build and push docker image
+      if: branch IN (master, develop)
       script: ./travis/helfomat-web_dockerBuildAndPublish.sh
