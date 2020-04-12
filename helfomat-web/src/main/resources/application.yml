@@ -290,8 +290,6 @@ helfomat:
     print-password: true
 
 logging:
-  path: /var/log
-  file: ${logging.path:${LOG_TEMP:${java.io.tmpdir:/tmp}}}/helfomat.log
-
   level:
+    root: ERROR
     de.helfenkannjeder: DEBUG

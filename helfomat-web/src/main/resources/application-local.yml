@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    include: console-log
   security:
     oauth2:
       resourceserver:

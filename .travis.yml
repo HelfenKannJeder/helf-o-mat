@@ -1,7 +1,16 @@
 language: java
 jdk: openjdk8
+services:
+  - docker
 install: true
-script: ./mvnw clean install
 cache:
   directories:
   - $HOME/.m2
+
+jobs:
+  include:
+    - stage: build
+      script: ./mvnw clean install
+    - stage: build and push docker image
+      if: branch IN (master, develop) AND type=push
+      script: ./travis/helfomat-web_dockerBuildAndPublish.sh
