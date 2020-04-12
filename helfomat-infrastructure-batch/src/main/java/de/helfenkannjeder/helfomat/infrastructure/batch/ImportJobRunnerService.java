@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch;
 
+import de.helfenkannjeder.helfomat.api.Roles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -9,6 +10,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,6 +19,7 @@ import java.util.Date;
  * @author Valentin Zickner
  */
 @Service
+@Secured(Roles.ADMIN)
 public class ImportJobRunnerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportJobRunnerService.class);

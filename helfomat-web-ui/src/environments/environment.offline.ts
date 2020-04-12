@@ -1,6 +1,7 @@
 import {GeoPoint} from '../_internal/geopoint';
+import {Environment} from "../_internal/environment.interface";
 
-export const environment = {
+export const environment: Environment = {
     offline: true,
     production: false,
     defaults: {
@@ -10,5 +11,15 @@ export const environment = {
             withoutPosition: 6,
             withPosition: 12
         }
+    },
+    useHttps: false,
+    auth: {
+        issuer: '/auth/realms/helfomat',
+        clientId: 'helfomat-web-ui',
+        scope: 'profile email',
+        responseType: 'code',
+        // at_hash is not present in JWT token
+        disableAtHashCheck: true,
+        showDebugInformation: true
     }
 };

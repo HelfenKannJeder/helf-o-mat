@@ -1,5 +1,8 @@
 version: '2.2'
 
+networks:
+  keycloak:
+
 services:
   mysql:
     image: mysql:latest
@@ -43,6 +46,43 @@ services:
     - postgres:/var/lib/postgresql/data
     ports:
     - 5432:5432
+
+  keycloak-postgres:
+    image: postgres:12-alpine
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+      POSTGRES_DB: keycloak
+    volumes:
+      - postgres-keycloak:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    networks:
+      - keycloak
+
+  keycloak:
+    image: jboss/keycloak
+    environment:
+      DB_VENDOR: postgres
+      DB_ADDR: keycloak-postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: keycloak
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: secret # initial pw
+      KEYCLOAK_IMPORT: /realm-export.json
+      JDBC_PARAMS: "useSSL=false"
+    ports:
+      - 8085:8080
+    depends_on:
+      - keycloak-postgres
+    networks:
+      - keycloak
+    volumes:
+      - ./realm-export.json:/realm-export.json
+
 volumes:
   elastic:
   postgres:
+  postgres-keycloak:

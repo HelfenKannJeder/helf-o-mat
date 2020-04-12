@@ -4,8 +4,9 @@
 // The list of which env maps to which file can be found in `angular-cli.json`.
 
 import {GeoPoint} from '../_internal/geopoint';
+import {Environment} from "../_internal/environment.interface";
 
-export const environment = {
+export const environment: Environment = {
     offline: false,
     production: false,
     defaults: {
@@ -15,5 +16,16 @@ export const environment = {
             withoutPosition: 6,
             withPosition: 12
         }
+    },
+    useHttps: false,
+
+    auth: {
+        issuer: '/auth/realms/helfomat',
+        clientId: 'helfomat-web-ui',
+        scope: 'openid profile email offline_access',
+        responseType: 'code',
+        // at_hash is not present in JWT token
+        disableAtHashCheck: true,
+        showDebugInformation: true
     }
 };

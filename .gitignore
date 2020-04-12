@@ -7,3 +7,4 @@ import/data
 pictures
 data/elasticsearch
 helfomat-api/data/elasticsearch
+.DS_Store

@@ -15,6 +15,7 @@ import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -86,6 +87,7 @@ public class OrganisationApplicationService {
         return OrganizationEventAssembler.toOrganizationEventDto(updated.compareTo(original), questions);
     }
 
+    @PreAuthorize("isAuthenticated()")
     public void submitOrganization(OrganizationSubmitEventDto organizationSubmitEventDto) {
         List<OrganisationEvent> organisationEvents = OrganizationEventDtoAssembler.toOrganizationEvent(organizationSubmitEventDto.getEvents());
         ProposedChangeOrganizationEvent proposedChangeOrganizationEvent = new ProposedChangeOrganizationEvent(
