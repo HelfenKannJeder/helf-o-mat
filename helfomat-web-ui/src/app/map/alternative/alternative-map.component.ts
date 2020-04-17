@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Observable} from 'rxjs';
-import {BoundingBox, Organisation} from '../../_internal/resources/organisation.service';
+import {BoundingBox, Organization} from '../../_internal/resources/organization.service';
 import {GeoPoint} from '../../../_internal/geopoint';
 
 @Component({
@@ -9,12 +9,12 @@ import {GeoPoint} from '../../../_internal/geopoint';
 })
 export class AlternativeMapComponent {
 
-    @Input() organisations: Observable<Organisation[]>;
+    @Input() organizations: Observable<Organization[]>;
     @Input() center: Observable<GeoPoint>;
     @Input() position: Observable<GeoPoint>;
     @Input() distance: Observable<number>;
     @Input() zoom: Observable<number>;
-    @Input() clusteredOrganisations: Observable<GeoPoint[]>;
+    @Input() clusteredOrganizations: Observable<GeoPoint[]>;
     @Input() allowUpdatePosition: boolean = true;
     @Input() mapSize = 'normal';
     @Input() showMapResizeButton: boolean = true;
@@ -23,7 +23,7 @@ export class AlternativeMapComponent {
     @Output() updatePosition: EventEmitter<GeoPoint> = new EventEmitter<GeoPoint>();
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();
     @Output() updateZoom: EventEmitter<number> = new EventEmitter<number>();
-    @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
+    @Output() openOrganization: EventEmitter<Organization> = new EventEmitter<Organization>();
     @Output() mapResize: EventEmitter<string> = new EventEmitter<string>();
 
     public doUpdatePosition(): void {

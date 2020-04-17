@@ -1,12 +1,12 @@
 package de.helfenkannjeder.helfomat.core.template;
 
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
 
 /**
  * @author Valentin Zickner
  */
 public interface OrganizationTemplateRepository {
 
-    OrganizationTemplate findByOrganizationType(OrganisationType organizationType);
+    OrganizationTemplate findByOrganizationType(OrganizationType organizationType);
 
 }

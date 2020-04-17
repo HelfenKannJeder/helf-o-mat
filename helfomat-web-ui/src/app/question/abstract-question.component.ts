@@ -3,7 +3,7 @@ import {Question} from './question.model';
 import {EventEmitter, OnDestroy, OnInit} from '@angular/core';
 import {combineLatest, merge, Observable, of, Subject, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
-import {UserAnswer} from '../_internal/resources/organisation.service';
+import {UserAnswer} from '../_internal/resources/organization.service';
 import {distinctUntilChanged, map} from "rxjs/operators";
 
 export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {

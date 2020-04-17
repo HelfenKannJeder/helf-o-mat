@@ -3,7 +3,7 @@ package de.helfenkannjeder.helfomat.infrastructure.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.helfenkannjeder.helfomat.core.ProfileRegistry;
-import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -26,9 +26,9 @@ public class DomainEventToKafkaListener {
     }
 
     @EventListener
-    public void listen(OrganisationEvent organisationEvent) throws JsonProcessingException {
-        LOG.debug("Received domain event {}", organisationEvent);
-        byte[] bytes = this.objectMapper.writeValueAsBytes(organisationEvent);
-        this.kafkaTemplate.sendDefault(organisationEvent.getOrganisationId().getValue(), bytes);
+    public void listen(OrganizationEvent organizationEvent) throws JsonProcessingException {
+        LOG.debug("Received domain event {}", organizationEvent);
+        byte[] bytes = this.objectMapper.writeValueAsBytes(organizationEvent);
+        this.kafkaTemplate.sendDefault(organizationEvent.getOrganizationId().getValue(), bytes);
     }
 }

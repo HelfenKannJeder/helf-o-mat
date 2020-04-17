@@ -4,11 +4,11 @@ import {debounceTime, distinctUntilChanged, first, map, mergeMap, switchMap} fro
 import {
     Address,
     Group,
-    Organisation,
-    OrganisationService,
+    Organization,
     OrganizationEvent,
+    OrganizationService,
     PictureId
-} from "../../_internal/resources/organisation.service";
+} from "../../_internal/resources/organization.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -28,7 +28,7 @@ import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from "@ngx-translate/core";
 
 @Component({
-    selector: 'organisation-edit',
+    selector: 'organization-edit',
     templateUrl: './edit.component.html',
     styleUrls: [
         './edit.component.scss'
@@ -39,10 +39,10 @@ import {TranslateService} from "@ngx-translate/core";
 })
 export class EditComponent implements OnInit {
 
-    public organisation: Observable<Organisation>;
+    public organization: Observable<Organization>;
     public changes: Subject<Array<OrganizationEvent>> = new BehaviorSubject([]);
-    public newOrganization: Subject<Organisation> = new EventEmitter<Organisation>();
-    public originalOrganization: Organisation;
+    public newOrganization: Subject<Organization> = new EventEmitter<Organization>();
+    public originalOrganization: Organization;
     public organizationTemplate: OrganizationTemplate;
     public files: UploadedFile[] = [];
     public publishContent: PublishContent = {} as PublishContent;
@@ -59,7 +59,7 @@ export class EditComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private organisationService: OrganisationService,
+        private organizationService: OrganizationService,
         organizationTemplateService: OrganizationTemplateService,
         private pageScrollService: PageScrollService,
         private modalService: NgbModal,
@@ -68,13 +68,13 @@ export class EditComponent implements OnInit {
         private translateService: TranslateService,
         @Inject(DOCUMENT) private document: Document
     ) {
-        this.organisation = ObservableUtil.extractObjectMember(this.route.params, 'organisation')
+        this.organization = ObservableUtil.extractObjectMember(this.route.params, 'organization')
             .pipe(
-                switchMap((organisationName: string) => this.organisationService.getOrganisation(organisationName))
+                switchMap((organizationName: string) => this.organizationService.getOrganization(organizationName))
             );
-        this.organisation.pipe(first()).subscribe(organization => this.originalOrganization = organization as Organisation);
+        this.organization.pipe(first()).subscribe(organization => this.originalOrganization = organization as Organization);
 
-        this.organisation
+        this.organization
             .pipe(
                 map(organization => organization.organizationType),
                 switchMap(organizationType => organizationTemplateService.getOrganizationTemplateByOrganizationType(organizationType))
@@ -83,7 +83,7 @@ export class EditComponent implements OnInit {
 
         this.newOrganization
             .pipe(
-                mergeMap(organization => this.organisationService.compareOrganization(this.originalOrganization, organization))
+                mergeMap(organization => this.organizationService.compareOrganization(this.originalOrganization, organization))
             )
             .subscribe(changes => this.changes.next(changes));
     }
@@ -91,7 +91,7 @@ export class EditComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    add<T>(items: T[], organisation: Organisation) {
+    add<T>(items: T[], organization: Organization) {
         let documentId = 'newItem' + Math.random();
         items.push({
             __expanded: true,
@@ -103,18 +103,18 @@ export class EditComponent implements OnInit {
                 scrollTarget: '#' + documentId
             }))
         }, 0);
-        this.calculateChanges(organisation);
+        this.calculateChanges(organization);
     }
 
-    drop<T>(list: T[], event: CdkDragDrop<string[]>, organisation: Organisation) {
+    drop<T>(list: T[], event: CdkDragDrop<string[]>, organization: Organization) {
         moveItemInArray(list, event.previousIndex, event.currentIndex);
-        this.calculateChanges(organisation);
+        this.calculateChanges(organization);
     }
 
-    remove<T>(list: T[], itemToRemove: T, organisation: Organisation) {
+    remove<T>(list: T[], itemToRemove: T, organization: Organization) {
         let index = list.indexOf(itemToRemove);
         list.splice(index, 1);
-        this.calculateChanges(organisation);
+        this.calculateChanges(organization);
     }
 
     public searchGroup(selectedGroups: Group[]) {
@@ -166,11 +166,11 @@ export class EditComponent implements OnInit {
         }
     }
 
-    calculateChanges(organization: Organisation) {
+    calculateChanges(organization: Organization) {
         this.newOrganization.next(organization);
     }
 
-    openPublishChangesConfirmation(organization: Organisation, tab: number = 0) {
+    openPublishChangesConfirmation(organization: Organization, tab: number = 0) {
         this.changes.pipe(first()).subscribe((changes) => {
             let modalRef = this.modalService.open(PublishChangesConfirmationComponent, {
                 size: 'lg',
@@ -183,22 +183,22 @@ export class EditComponent implements OnInit {
                 .then((result) => {
                     this.publishContent = result;
 
-                    return this.organisationService.submitOrganizationEvents(
+                    return this.organizationService.submitOrganizationEvents(
                         {value: this.originalOrganization.id},
                         this.publishContent.describeSources,
                         this.publishContent.changes
                     )
                         .toPromise()
                         .catch((result) => {
-                            const title = this.translateService.instant('edit.organisation.changes.message.title');
-                            const description = this.translateService.instant('edit.organisation.changes.message.description');
+                            const title = this.translateService.instant('edit.organization.changes.message.title');
+                            const description = this.translateService.instant('edit.organization.changes.message.description');
                             this.toastr.error(description, title);
                             return Promise.reject(result);
                         })
                 })
                 .then(() => {
                     const navigate = () => {
-                        this.router.navigate(['/organisation/' + this.originalOrganization.urlName]);
+                        this.router.navigate(['/organization/' + this.originalOrganization.urlName]);
                     };
 
                     let confirmedRef = this.modalService.open(ChangesSentForReviewComponent);

@@ -3,8 +3,8 @@ package de.helfenkannjeder.helfomat.web.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.helfenkannjeder.helfomat.core.ProfileRegistry;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
-import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organisation.ElasticsearchOrganisationRepository;
-import de.helfenkannjeder.helfomat.infrastructure.kafka.KafkaOrganisationRepository;
+import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization.ElasticsearchOrganizationRepository;
+import de.helfenkannjeder.helfomat.infrastructure.kafka.KafkaOrganizationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -24,20 +24,20 @@ import java.nio.charset.Charset;
 public class KafkaCacheConfig {
 
     @Bean
-    public KafkaOrganisationRepository kafkaOrganisationRepository(
+    public KafkaOrganizationRepository kafkaOrganizationRepository(
         ElasticsearchConfiguration elasticsearchConfiguration,
         ElasticsearchTemplate elasticsearchTemplate,
-        @Value("classpath:/mapping/organisation.json") Resource organisationMapping,
+        @Value("classpath:/mapping/organization.json") Resource organizationMapping,
         ObjectMapper objectMapper
     ) throws IOException {
-        ElasticsearchOrganisationRepository elasticsearchOrganisationRepository = new ElasticsearchOrganisationRepository(
+        ElasticsearchOrganizationRepository elasticsearchOrganizationRepository = new ElasticsearchOrganizationRepository(
             elasticsearchConfiguration,
             elasticsearchTemplate,
             elasticsearchConfiguration.getIndex() + "-kafka-cache"
         );
-        String mapping = StreamUtils.copyToString(organisationMapping.getInputStream(), Charset.forName("UTF8"));
-        elasticsearchOrganisationRepository.createIndex(mapping);
-        return new KafkaOrganisationRepository(objectMapper, elasticsearchOrganisationRepository);
+        String mapping = StreamUtils.copyToString(organizationMapping.getInputStream(), Charset.forName("UTF8"));
+        elasticsearchOrganizationRepository.createIndex(mapping);
+        return new KafkaOrganizationRepository(objectMapper, elasticsearchOrganizationRepository);
     }
 
 }

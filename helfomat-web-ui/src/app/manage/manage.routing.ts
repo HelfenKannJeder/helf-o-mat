@@ -10,7 +10,7 @@ export const manageRoutes: Routes = [
         canActivate: [IsLoggedInGuard]
     },
     {
-        path: 'organisation/:organisation/edit',
+        path: 'organization/:organization/edit',
         component: EditComponent,
         canActivate: [IsLoggedInGuard]
     }

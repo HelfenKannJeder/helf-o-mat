@@ -1,11 +1,11 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
 
 import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
-import de.helfenkannjeder.helfomat.core.organisation.Answer;
-import de.helfenkannjeder.helfomat.core.organisation.Group;
-import de.helfenkannjeder.helfomat.core.organisation.Organisation;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
-import de.helfenkannjeder.helfomat.core.organisation.QuestionAnswer;
+import de.helfenkannjeder.helfomat.core.organization.Answer;
+import de.helfenkannjeder.helfomat.core.organization.Group;
+import de.helfenkannjeder.helfomat.core.organization.Organization;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
+import de.helfenkannjeder.helfomat.core.organization.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.question.QuestionId;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * @author Valentin Zickner
  */
 @Component
-public class AnswerQuestionsProcessor implements ItemProcessor<Organisation, Organisation> {
+public class AnswerQuestionsProcessor implements ItemProcessor<Organization, Organization> {
 
     private final HelfomatConfiguration helfomatConfiguration;
 
@@ -26,44 +26,44 @@ public class AnswerQuestionsProcessor implements ItemProcessor<Organisation, Org
     }
 
     @Override
-    public Organisation process(Organisation organisation) {
-        if (organisation == null) {
+    public Organization process(Organization organization) {
+        if (organization == null) {
             return null;
         }
 
-        return new Organisation.Builder(organisation)
-            .setQuestionAnswers(answerAllQuestionsForOrganisation(organisation))
+        return new Organization.Builder(organization)
+            .setQuestionAnswers(answerAllQuestionsForOrganization(organization))
             .build();
     }
 
-    private List<QuestionAnswer> answerAllQuestionsForOrganisation(Organisation organisation) {
+    private List<QuestionAnswer> answerAllQuestionsForOrganization(Organization organization) {
         return helfomatConfiguration.getQuestions()
             .stream()
             .map(questionMapping -> new QuestionAnswer(
                 new QuestionId(questionMapping.getId()),
-                answerQuestionForOrganisation(questionMapping, organisation)
+                answerQuestionForOrganization(questionMapping, organization)
             ))
             .collect(Collectors.toList());
     }
 
-    private Answer answerQuestionForOrganisation(HelfomatConfiguration.QuestionMapping question, Organisation organisation) {
+    private Answer answerQuestionForOrganization(HelfomatConfiguration.QuestionMapping question, Organization organization) {
         return question.getGroups()
             .stream()
-            .filter(group -> organisationGroupConfigurationApplies(organisation.getOrganisationType(), organisation.getGroups(), group))
+            .filter(group -> organizationGroupConfigurationApplies(organization.getOrganizationType(), organization.getGroups(), group))
             .findFirst()
-            .map(HelfomatConfiguration.QuestionMapping.QuestionOrganisationGroupMapping::getAnswer)
+            .map(HelfomatConfiguration.QuestionMapping.QuestionOrganizationGroupMapping::getAnswer)
             .orElse(question.getDefaultAnswer());
     }
 
-    private boolean organisationGroupConfigurationApplies(OrganisationType organisationType,
+    private boolean organizationGroupConfigurationApplies(OrganizationType organizationType,
                                                           List<Group> groups,
-                                                          HelfomatConfiguration.QuestionMapping.QuestionOrganisationGroupMapping questionMapping) {
-        return hasSameOrganisationType(organisationType, questionMapping.getOrganisationType())
+                                                          HelfomatConfiguration.QuestionMapping.QuestionOrganizationGroupMapping questionMapping) {
+        return hasSameOrganizationType(organizationType, questionMapping.getOrganizationType())
             && groupExistsWithPhrase(groups, questionMapping.getPhrase());
     }
 
-    private boolean hasSameOrganisationType(OrganisationType organisationType, OrganisationType configurationOrganisationType) {
-        return configurationOrganisationType == null || configurationOrganisationType.equals(organisationType);
+    private boolean hasSameOrganizationType(OrganizationType organizationType, OrganizationType configurationOrganizationType) {
+        return configurationOrganizationType == null || configurationOrganizationType.equals(organizationType);
     }
 
     private boolean groupExistsWithPhrase(List<Group> groups, String phrase) {

@@ -1,7 +1,7 @@
 <div class="custom-content">
     <helfomat-map
-        [organisations]="organisations"
-        [clusteredOrganisations]="clusteredOrganisations"
+        [organizations]="organizations"
+        [clusteredOrganizations]="clusteredOrganizations"
         [position]="position"
         [distance]="distance"
         [center]="center"
@@ -11,7 +11,7 @@
         (updatePosition)="_position$.next($event)"
         (updateBoundingBox)="_boundingBox$.next($event)"
         (updateZoom)="_zoom$.next($event)"
-        (openOrganisation)="openOrganisation($event)"
+        (openOrganization)="openOrganization($event)"
         (mapResize)="continueWithoutLocation($event)">
         <div class="addressSearchContainer row" *ngIf="!hasPosition">
             <div class="col-lg-4">
@@ -58,7 +58,7 @@
                 <br class="clearfix"/>
                 <app-question-overview
                     [currentAnswers]="answers"
-                    (questionUserAnswers)="updateOrganisations($event)"
+                    (questionUserAnswers)="updateOrganizations($event)"
                     (newAnswers)="_newAnswers$.next($event)"></app-question-overview>
             </div>
             <div class="col-6">
@@ -70,9 +70,9 @@
                 </div>
                 <br class="clearfix"/>
                 <helfomat-list
-                    [organisations]="organisations"
-                    (openOrganisation)="openOrganisation($event)"
-                    (openOrganisationScoreExplanation)="openOrganisation($event, true)"></helfomat-list>
+                    [organizations]="organizations"
+                    (openOrganization)="openOrganization($event)"
+                    (openOrganizationScoreExplanation)="openOrganization($event, true)"></helfomat-list>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.web;
 
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
 import org.elasticsearch.client.Client;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,7 @@ public class TestConfiguration {
     Client client;
 
     @MockBean
-    OrganisationRepository organisationRepository;
+    OrganizationRepository organizationRepository;
 
     @MockBean
     JwtDecoder jwtDecoder;

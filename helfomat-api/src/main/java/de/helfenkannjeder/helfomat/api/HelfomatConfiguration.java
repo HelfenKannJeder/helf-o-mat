@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.api;
 
-import de.helfenkannjeder.helfomat.core.organisation.Answer;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
+import de.helfenkannjeder.helfomat.core.organization.Answer;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -89,7 +89,7 @@ public class HelfomatConfiguration {
 
         private Answer defaultAnswer;
 
-        private List<QuestionOrganisationGroupMapping> groups = new ArrayList<>();
+        private List<QuestionOrganizationGroupMapping> groups = new ArrayList<>();
 
         public String getId() {
             return id;
@@ -107,11 +107,11 @@ public class HelfomatConfiguration {
             this.defaultAnswer = defaultAnswer;
         }
 
-        public List<QuestionOrganisationGroupMapping> getGroups() {
+        public List<QuestionOrganizationGroupMapping> getGroups() {
             return groups;
         }
 
-        public void setGroups(List<QuestionOrganisationGroupMapping> groups) {
+        public void setGroups(List<QuestionOrganizationGroupMapping> groups) {
             this.groups = groups;
         }
 
@@ -131,17 +131,17 @@ public class HelfomatConfiguration {
             this.description = description;
         }
 
-        public static class QuestionOrganisationGroupMapping {
-            private OrganisationType organisationType;
+        public static class QuestionOrganizationGroupMapping {
+            private OrganizationType organizationType;
             private String phrase;
             private Answer answer;
 
-            public OrganisationType getOrganisationType() {
-                return organisationType;
+            public OrganizationType getOrganizationType() {
+                return organizationType;
             }
 
-            public void setOrganisationType(OrganisationType organisationType) {
-                this.organisationType = organisationType;
+            public void setOrganizationType(OrganizationType organizationType) {
+                this.organizationType = organizationType;
             }
 
             public String getPhrase() {

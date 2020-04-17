@@ -1,6 +1,6 @@
 import {Component, Input} from "@angular/core";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
-import {Organisation, OrganizationEvent} from "../../../_internal/resources/organisation.service";
+import {Organization, OrganizationEvent} from "../../../_internal/resources/organization.service";
 
 @Component({
     selector: 'publish-changes-confirmation',
@@ -23,7 +23,7 @@ export class PublishChangesConfirmationComponent {
 }
 
 export interface PublishContent {
-    organization: Organisation;
+    organization: Organization;
     describeSources: string;
     changes: Array<OrganizationEvent>;
 }

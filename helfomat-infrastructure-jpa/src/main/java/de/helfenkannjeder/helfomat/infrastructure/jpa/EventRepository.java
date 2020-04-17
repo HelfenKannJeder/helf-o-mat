@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.jpa;
 
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +16,5 @@ public interface EventRepository extends JpaRepository<Event, EventId> {
     List<Event> findAll();
 
     @Query("SELECT E FROM Event E WHERE E.organizationId = :organizationId ORDER BY E.createdDate")
-    List<Event> findByOrganizationId(@Param("organizationId") OrganisationId organizationId);
+    List<Event> findByOrganizationId(@Param("organizationId") OrganizationId organizationId);
 }

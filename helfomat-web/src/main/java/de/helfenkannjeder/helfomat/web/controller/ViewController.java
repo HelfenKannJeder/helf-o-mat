@@ -12,7 +12,7 @@ public class ViewController {
 
     @RequestMapping({
         "result",
-        "organisation/{organisation}",
+        "organization/{organization}",
         "question",
         "location",
         "",

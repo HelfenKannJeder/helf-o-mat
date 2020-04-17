@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.web.controller;
 
-import de.helfenkannjeder.helfomat.api.organisation.OrganisationApplicationService;
-import de.helfenkannjeder.helfomat.api.organisation.OrganizationSubmitEventDto;
+import de.helfenkannjeder.helfomat.api.organization.OrganizationApplicationService;
+import de.helfenkannjeder.helfomat.api.organization.OrganizationSubmitEventDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OrganizationEditController {
 
-    private final OrganisationApplicationService organizationApplicationService;
+    private final OrganizationApplicationService organizationApplicationService;
 
-    public OrganizationEditController(OrganisationApplicationService organizationApplicationService) {
+    public OrganizationEditController(OrganizationApplicationService organizationApplicationService) {
         this.organizationApplicationService = organizationApplicationService;
     }
 

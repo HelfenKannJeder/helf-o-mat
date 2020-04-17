@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {BoundingBox, Organisation, OrganisationService, UserAnswer} from '../_internal/resources/organisation.service';
+import {BoundingBox, Organization, OrganizationService, UserAnswer} from '../_internal/resources/organization.service';
 import {BehaviorSubject, combineLatest, from, Observable, Subject} from 'rxjs';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {UrlParamBuilder} from '../url-param.builder';
@@ -13,7 +13,7 @@ import {debounceTime, distinctUntilChanged, filter, first, flatMap, map} from "r
     selector: 'app-result',
     templateUrl: './result.component.html',
     styleUrls: ['./result.component.scss'],
-    providers: [OrganisationService],
+    providers: [OrganizationService],
     animations: [
         trigger('slide', [
             state('question', style({
@@ -34,7 +34,7 @@ export class ResultComponent implements OnInit {
     public _position$: Subject<GeoPoint> = new BehaviorSubject<GeoPoint>(null);
     public _boundingBox$: Subject<BoundingBox> = new Subject<BoundingBox>();
     public _zoom$: Subject<number> = new BehaviorSubject<number>(environment.defaults.zoomLevel.withoutPosition);
-    public _organisation$: Subject<Organisation> = new Subject<Organisation>();
+    public _organization$: Subject<Organization> = new Subject<Organization>();
     public _newAnswers$: Subject<string> = new Subject<string>();
     public answers: Observable<string>;
     public position: Observable<GeoPoint>;
@@ -46,13 +46,13 @@ export class ResultComponent implements OnInit {
     public hasPosition: boolean = true;
 
     // Outputs
-    public organisations: Subject<Organisation[]> = new Subject<Organisation[]>();
-    public clusteredOrganisations: Subject<GeoPoint[]> = new Subject<GeoPoint[]>();
+    public organizations: Subject<Organization[]> = new Subject<Organization[]>();
+    public clusteredOrganizations: Subject<GeoPoint[]> = new Subject<GeoPoint[]>();
 
     public visibleComponent: 'list' | 'question' = 'list';
     private explainScore: boolean = false;
 
-    constructor(private organisationService: OrganisationService,
+    constructor(private organizationService: OrganizationService,
                 private router: Router,
                 private route: ActivatedRoute,
                 private changeDetectorRef: ChangeDetectorRef) {
@@ -157,18 +157,18 @@ export class ResultComponent implements OnInit {
             .pipe(
                 flatMap(([answers, position, distance]: [Array<UserAnswer>, GeoPoint, number]) => {
                     if (answers.length == 0 && position == null) {
-                        return this.organisationService.findGlobal();
+                        return this.organizationService.findGlobal();
                     } else if (answers.length == 0) {
-                        return this.organisationService.findByPosition(position, distance);
+                        return this.organizationService.findByPosition(position, distance);
                     } else if (position == null) {
-                        return this.organisationService.findGlobalByQuestionAnswers(answers);
+                        return this.organizationService.findGlobalByQuestionAnswers(answers);
                     } else {
-                        return this.organisationService.findByQuestionAnswersAndPosition(answers, position, distance);
+                        return this.organizationService.findByQuestionAnswersAndPosition(answers, position, distance);
                     }
                 })
             )
-            .subscribe((organisations) => {
-                this.organisations.next(organisations);
+            .subscribe((organizations) => {
+                this.organizations.next(organizations);
             });
 
         combineLatest(
@@ -179,31 +179,31 @@ export class ResultComponent implements OnInit {
         )
             .pipe(
                 flatMap(([position, distance, boundingBox, zoom]: [GeoPoint, number, BoundingBox, number]) => {
-                    return this.organisationService.boundingBox(position, distance, boundingBox, zoom);
+                    return this.organizationService.boundingBox(position, distance, boundingBox, zoom);
                 })
             )
-            .subscribe((clusteredOrganisations: GeoPoint[]) => {
-                this.clusteredOrganisations.next(clusteredOrganisations);
+            .subscribe((clusteredOrganizations: GeoPoint[]) => {
+                this.clusteredOrganizations.next(clusteredOrganizations);
             });
 
         combineLatest(
-            this._organisation$.asObservable(),
+            this._organization$.asObservable(),
             this._newAnswers$.asObservable(),
             this.position,
             this.zoom,
             this.distance
         )
-            .subscribe(([organisation, answers, position, zoom, distance]: [Organisation, string, GeoPoint, number, number]) => {
+            .subscribe(([organization, answers, position, zoom, distance]: [Organization, string, GeoPoint, number, number]) => {
                 let extras: NavigationExtras = {};
                 if (this.explainScore) {
                     extras.fragment = 'compare';
                 }
-                this.router.navigate(['/organisation/' + organisation.urlName, {
+                this.router.navigate(['/organization/' + organization.urlName, {
                     answers: answers,
                     position: UrlParamBuilder.buildGeoPoint(position),
                     zoom: zoom,
                     distance: distance,
-                    scoreNorm: organisation.scoreNorm
+                    scoreNorm: organization.scoreNorm
                 }], extras);
             });
     }
@@ -218,13 +218,13 @@ export class ResultComponent implements OnInit {
         }
     }
 
-    updateOrganisations(answers: UserAnswer[]) {
+    updateOrganizations(answers: UserAnswer[]) {
         this._answers$.next(answers);
     }
 
-    public openOrganisation(organisation: Organisation, explainScore: boolean = false): void {
+    public openOrganization(organization: Organization, explainScore: boolean = false): void {
         this.explainScore = explainScore;
-        this._organisation$.next(organisation);
+        this._organization$.next(organization);
     }
 
 }

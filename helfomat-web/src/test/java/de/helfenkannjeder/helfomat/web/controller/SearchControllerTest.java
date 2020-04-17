@@ -50,11 +50,11 @@ public class SearchControllerTest {
     @Value("${elasticsearch.index}")
     private String index;
 
-    @Value("${elasticsearch.type.organisation}")
-    private String typeOrganisation;
+    @Value("${elasticsearch.type.organization}")
+    private String typeOrganization;
 
-    @Value("classpath:/organisations.json")
-    private Resource organisations;
+    @Value("classpath:/organizations.json")
+    private Resource organizations;
 
     @Value("classpath:/template.json")
     private Resource template;
@@ -82,15 +82,15 @@ public class SearchControllerTest {
     @Before
     public void setUpElasticsearchContent() throws Exception {
 
-        JsonNode organisations = objectMapper.readTree(this.organisations.getFile());
+        JsonNode organizations = objectMapper.readTree(this.organizations.getFile());
         createTemplate("helfomat*");
 
-        for (JsonNode organisation : organisations) {
+        for (JsonNode organization : organizations) {
             client.prepareIndex()
                     .setIndex(index)
-                    .setType(typeOrganisation)
-                    .setId(organisation.get("id").asText())
-                    .setSource(objectMapper.writeValueAsString(organisation), XContentType.JSON)
+                    .setType(typeOrganization)
+                    .setId(organization.get("id").asText())
+                    .setSource(objectMapper.writeValueAsString(organization), XContentType.JSON)
                     .execute()
                     .actionGet();
         }

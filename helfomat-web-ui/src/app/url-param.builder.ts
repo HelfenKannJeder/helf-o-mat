@@ -1,5 +1,5 @@
 import {Answer} from './shared/answer.model';
-import {BoundingBox, UserAnswer} from './_internal/resources/organisation.service';
+import {BoundingBox, UserAnswer} from './_internal/resources/organization.service';
 import {GeoPoint} from '../_internal/geopoint';
 
 export class UrlParamBuilder {

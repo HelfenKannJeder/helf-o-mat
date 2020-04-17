@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Configuration
 @EnableJpaRepositories(
-    basePackageClasses = Typo3OrganisationRepository.class,
+    basePackageClasses = Typo3OrganizationRepository.class,
     entityManagerFactoryRef = "legacyEntityManager",
     transactionManagerRef = "legacyTransactionManager"
 )
