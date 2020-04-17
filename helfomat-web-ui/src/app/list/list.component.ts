@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Organisation, PictureId} from '../_internal/resources/organisation.service';
+import {Organization, PictureId} from '../_internal/resources/organization.service';
 
 @Component({
     selector: 'helfomat-list',
@@ -9,20 +9,20 @@ import {Organisation, PictureId} from '../_internal/resources/organisation.servi
 })
 export class ListComponent implements OnInit {
 
-    @Input() organisations: Observable<Organisation[]>;
+    @Input() organizations: Observable<Organization[]>;
 
-    @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
+    @Output() openOrganization: EventEmitter<Organization> = new EventEmitter<Organization>();
 
-    @Output() openOrganisationScoreExplanation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
+    @Output() openOrganizationScoreExplanation: EventEmitter<Organization> = new EventEmitter<Organization>();
 
-    public currentOrganisations: Organisation[] = [];
+    public currentOrganizations: Organization[] = [];
 
     constructor(private changeDetectorRef: ChangeDetectorRef) {
     }
 
     ngOnInit() {
-        this.organisations.subscribe((organisations: Organisation[]) => {
-            this.currentOrganisations = organisations;
+        this.organizations.subscribe((organizations: Organization[]) => {
+            this.currentOrganizations = organizations;
             this.changeDetectorRef.detectChanges();
         });
     }

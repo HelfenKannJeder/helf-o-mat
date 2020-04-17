@@ -13,7 +13,7 @@ import {
 import {combineLatest, Observable} from 'rxjs';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {BoundingBox, Organisation} from '../../_internal/resources/organisation.service';
+import {BoundingBox, Organization} from '../../_internal/resources/organization.service';
 import {GeoPoint} from '../../../_internal/geopoint';
 import {environment} from "../../../environments/environment";
 import Map = google.maps.Map;
@@ -50,12 +50,12 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
 
     public static readonly MAP_RESIZE_DURATION = 400;
 
-    @Input() organisations?: Observable<Organisation[]>;
+    @Input() organizations?: Observable<Organization[]>;
     @Input() center: Observable<GeoPoint>;
     @Input() position: Observable<GeoPoint>;
     @Input() distance: Observable<number>;
     @Input() zoom: Observable<number>;
-    @Input() clusteredOrganisations: Observable<GeoPoint[]>;
+    @Input() clusteredOrganizations: Observable<GeoPoint[]>;
     @Input() allowUpdatePosition: boolean = true;
     @Input() mapSize = 'normal';
     @Input() showMapResizeButton: boolean = true;
@@ -64,7 +64,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
     @Output() updatePosition: EventEmitter<GeoPoint> = new EventEmitter<GeoPoint>();
     @Output() updateBoundingBox: EventEmitter<BoundingBox> = new EventEmitter<BoundingBox>();
     @Output() updateZoom: EventEmitter<number> = new EventEmitter<number>();
-    @Output() openOrganisation: EventEmitter<Organisation> = new EventEmitter<Organisation>();
+    @Output() openOrganization: EventEmitter<Organization> = new EventEmitter<Organization>();
     @Output() mapResize: EventEmitter<string> = new EventEmitter<string>();
 
     @ViewChild('googleMaps') public googleMapsElement: any;
@@ -111,13 +111,13 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
         if (this.canChoosePosition()) {
             this.configureSearchBox();
         }
-        if (this.hasOrganisations()) {
-            this.configureDrawOrganisations();
+        if (this.hasOrganizations()) {
+            this.configureDrawOrganizations();
         }
 
         this.markerClusterer = new MarkerClusterer(this.map, [], {imagePath: 'assets/images/m'});
-        if (this.hasClusteredOrganisations()) {
-            this.drawClusteredOrganisations();
+        if (this.hasClusteredOrganizations()) {
+            this.drawClusteredOrganizations();
         }
 
         if (this.showMapResizeButton) {
@@ -237,22 +237,22 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
         });
     }
 
-    private hasOrganisations() {
-        return this.organisations !== undefined;
+    private hasOrganizations() {
+        return this.organizations !== undefined;
     }
 
-    private configureDrawOrganisations() {
-        this.organisations.subscribe((organisations) => {
+    private configureDrawOrganizations() {
+        this.organizations.subscribe((organizations) => {
             this.markers.forEach((marker: Marker) => {
                 marker.setMap(null);
             });
             this.markers = [];
 
-            organisations.forEach((organisation: Organisation) => {
-                if (organisation.addresses.length > 0 && organisation.mapPin !== undefined) {
-                    for (let address of organisation.addresses) {
+            organizations.forEach((organization: Organization) => {
+                if (organization.addresses.length > 0 && organization.mapPin !== undefined) {
+                    for (let address of organization.addresses) {
                         const icon = {
-                            url: `assets/images/pins/${organisation.mapPin}`,
+                            url: `assets/images/pins/${organization.mapPin}`,
                             size: new Size(32, 32),
                             origin: new Point(0, 0),
                             anchor: new Point(10, 32),
@@ -260,19 +260,19 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
                         };
 
                         let opacity = 1;
-                        if (organisation.scoreNorm !== null) {
-                            opacity = organisation.scoreNorm / 100;
+                        if (organization.scoreNorm !== null) {
+                            opacity = organization.scoreNorm / 100;
                         }
                         let marker = new Marker({
                             position: GoogleMapsComponent.convertGeoPointToLatLng(address.location),
                             map: this.map,
-                            title: organisation.name,
+                            title: organization.name,
                             icon,
                             opacity
                         });
                         marker.addListener('click', () => {
                             this.ngZone.run(() => {
-                                this.openOrganisation.emit(organisation);
+                                this.openOrganization.emit(organization);
                             });
                         });
                         this.markers.push(marker);
@@ -282,12 +282,12 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
         });
     }
 
-    private hasClusteredOrganisations() {
-        return this.clusteredOrganisations !== undefined;
+    private hasClusteredOrganizations() {
+        return this.clusteredOrganizations !== undefined;
     }
 
-    private drawClusteredOrganisations() {
-        this.clusteredOrganisations.subscribe((clusteredOrganisations) => {
+    private drawClusteredOrganizations() {
+        this.clusteredOrganizations.subscribe((clusteredOrganizations) => {
             const icon = {
                 url: 'assets/images/pins/gray.png',
                 size: new Size(32, 32),
@@ -296,7 +296,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
                 scaledSize: new Size(32, 32)
             };
 
-            let newMarkers = clusteredOrganisations.map((geoPoint: GeoPoint) => {
+            let newMarkers = clusteredOrganizations.map((geoPoint: GeoPoint) => {
                 return new Marker({
                     position: GoogleMapsComponent.convertGeoPointToLatLng(geoPoint),
                     icon

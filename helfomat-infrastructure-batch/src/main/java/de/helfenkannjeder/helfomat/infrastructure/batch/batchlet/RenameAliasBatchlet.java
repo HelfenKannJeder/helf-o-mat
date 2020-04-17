@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.batchlet;
 
 import de.helfenkannjeder.helfomat.core.IndexManager;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -18,17 +18,17 @@ import static org.springframework.batch.core.ExitStatus.COMPLETED;
 public class RenameAliasBatchlet extends AbstractBatchlet {
 
     private final IndexManager indexManager;
-    private final OrganisationRepository organisationRepository;
+    private final OrganizationRepository organizationRepository;
 
     public RenameAliasBatchlet(IndexManager indexManager,
-                               @Qualifier("importOrganisationRepository") OrganisationRepository importOrganisationRepository) {
+                               @Qualifier("importOrganizationRepository") OrganizationRepository importOrganizationRepository) {
         this.indexManager = indexManager;
-        this.organisationRepository = importOrganisationRepository;
+        this.organizationRepository = importOrganizationRepository;
     }
 
     @Override
     public String process() {
-        this.organisationRepository.updateAlias(this.indexManager.getAlias());
+        this.organizationRepository.updateAlias(this.indexManager.getAlias());
 
         return COMPLETED.toString();
     }

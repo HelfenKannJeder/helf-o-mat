@@ -3,7 +3,7 @@ package de.helfenkannjeder.helfomat.web.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.helfenkannjeder.helfomat.core.ProfileRegistry;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
-import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organisation.ElasticsearchOrganisationRepository;
+import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization.ElasticsearchOrganizationRepository;
 import de.helfenkannjeder.helfomat.infrastructure.jpa.EventRepository;
 import de.helfenkannjeder.helfomat.infrastructure.jpa.JpaEventOrganizationRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,18 +28,18 @@ public class JpaCacheConfig {
     public JpaEventOrganizationRepository jpaOrganizationRepository(
         ElasticsearchConfiguration elasticsearchConfiguration,
         ElasticsearchTemplate elasticsearchTemplate,
-        @Value("classpath:/mapping/organisation.json") Resource organisationMapping,
+        @Value("classpath:/mapping/organization.json") Resource organizationMapping,
         ObjectMapper objectMapper,
         EventRepository eventRepository
     ) throws IOException {
-        ElasticsearchOrganisationRepository elasticsearchOrganisationRepository = new ElasticsearchOrganisationRepository(
+        ElasticsearchOrganizationRepository elasticsearchOrganizationRepository = new ElasticsearchOrganizationRepository(
             elasticsearchConfiguration,
             elasticsearchTemplate,
             elasticsearchConfiguration.getIndex() + "-jpa-cache"
         );
-        String mapping = StreamUtils.copyToString(organisationMapping.getInputStream(), StandardCharsets.UTF_8);
-        elasticsearchOrganisationRepository.createIndex(mapping);
-        return new JpaEventOrganizationRepository(objectMapper, elasticsearchOrganisationRepository, eventRepository);
+        String mapping = StreamUtils.copyToString(organizationMapping.getInputStream(), StandardCharsets.UTF_8);
+        elasticsearchOrganizationRepository.createIndex(mapping);
+        return new JpaEventOrganizationRepository(objectMapper, elasticsearchOrganizationRepository, eventRepository);
     }
 
 }

@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.api.question;
 
-import de.helfenkannjeder.helfomat.core.organisation.Answer;
+import de.helfenkannjeder.helfomat.core.organization.Answer;
 import de.helfenkannjeder.helfomat.core.question.QuestionId;
 
 /**

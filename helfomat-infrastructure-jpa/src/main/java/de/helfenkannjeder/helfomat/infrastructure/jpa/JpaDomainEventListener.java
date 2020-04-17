@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.jpa;
 
-import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -21,12 +21,12 @@ public class JpaDomainEventListener {
     }
 
     @EventListener
-    public void listen(OrganisationEvent organisationEvent) {
-        LOG.debug("Received domain event {}", organisationEvent);
+    public void listen(OrganizationEvent organizationEvent) {
+        LOG.debug("Received domain event {}", organizationEvent);
         this.eventRepository.save(
             new Event(
                 new EventId(),
-                organisationEvent
+                organizationEvent
             )
         );
     }

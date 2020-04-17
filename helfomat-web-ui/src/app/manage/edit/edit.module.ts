@@ -2,7 +2,7 @@ import {NgModule} from "@angular/core";
 import {EditComponent} from "./edit.component";
 import {BrowserModule} from "@angular/platform-browser";
 import {TranslateModule} from "@ngx-translate/core";
-import {OrganisationService} from "../../_internal/resources/organisation.service";
+import {OrganizationService} from "../../_internal/resources/organization.service";
 import {TimeModule} from "../../shared/time.module";
 import {AnswerImageModule} from "../../shared/answer-image.module";
 import {FormsModule} from "@angular/forms";
@@ -18,7 +18,7 @@ import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review
 
 @NgModule({
     providers: [
-        OrganisationService,
+        OrganizationService,
         OrganizationTemplateService
     ],
     imports: [

@@ -1,14 +1,14 @@
 package de.helfenkannjeder.helfomat.web.configuration;
 
-import de.helfenkannjeder.helfomat.core.organisation.Organisation;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationReader;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
-import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
-import de.helfenkannjeder.helfomat.infrastructure.batch.listener.UniqueOrganisationUrlNameOrganisationProcessor;
-import de.helfenkannjeder.helfomat.infrastructure.batch.processor.OrganisationDifferenceProcessor;
-import de.helfenkannjeder.helfomat.infrastructure.batch.writer.OrganisationItemWriter;
+import de.helfenkannjeder.helfomat.core.organization.Organization;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationReader;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
+import de.helfenkannjeder.helfomat.infrastructure.batch.listener.UniqueOrganizationUrlNameOrganizationProcessor;
+import de.helfenkannjeder.helfomat.infrastructure.batch.processor.OrganizationDifferenceProcessor;
+import de.helfenkannjeder.helfomat.infrastructure.batch.writer.OrganizationItemWriter;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
-import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organisation.ElasticsearchOrganisationRepository;
+import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization.ElasticsearchOrganizationRepository;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecution;
@@ -41,72 +41,72 @@ public class ImportBatchConfig {
     @Bean
     @Qualifier("importSteps")
     public List<Step> importSteps(StepBuilderFactory stepBuilderFactory,
-                                  List<OrganisationReader> organisationReaders,
+                                  List<OrganizationReader> organizationReaders,
                                   ElasticsearchConfiguration elasticsearchConfiguration,
                                   ElasticsearchTemplate elasticsearchTemplate,
                                   ApplicationEventPublisher applicationEventPublisher,
-                                  OrganisationRepository organisationRepository,
-                                  @Value("classpath:/mapping/organisation.json") Resource organisationMapping,
+                                  OrganizationRepository organizationRepository,
+                                  @Value("classpath:/mapping/organization.json") Resource organizationMapping,
                                   @Qualifier("legacyTransactionManager") PlatformTransactionManager transactionManager) {
-        return organisationReaders.stream()
-            .map((OrganisationReader organisationReader) -> {
-                UniqueOrganisationUrlNameOrganisationProcessor uniqueOrganisationUrlNameOrganisationProcessor = new UniqueOrganisationUrlNameOrganisationProcessor();
-                OrganisationStepExecutionListener organisationStepExecutionListener = new OrganisationStepExecutionListener(organisationReader, elasticsearchConfiguration, elasticsearchTemplate, organisationMapping, organisationRepository);
-                return stepBuilderFactory.get("import" + organisationReader.getClass().getSimpleName())
-                    .<Organisation, Pair<Organisation, Stream<OrganisationEvent>>>chunk(20)
-                    .reader(organisationReader::read)
-                    .processor((Function<Organisation, Pair<Organisation, Stream<OrganisationEvent>>>) organisation -> {
-                        organisation = uniqueOrganisationUrlNameOrganisationProcessor.apply(organisation);
-                        return organisationStepExecutionListener.getOrganisationDifferenceProcessor().process(organisation);
+        return organizationReaders.stream()
+            .map((OrganizationReader organizationReader) -> {
+                UniqueOrganizationUrlNameOrganizationProcessor uniqueOrganizationUrlNameOrganizationProcessor = new UniqueOrganizationUrlNameOrganizationProcessor();
+                OrganizationStepExecutionListener organizationStepExecutionListener = new OrganizationStepExecutionListener(organizationReader, elasticsearchConfiguration, elasticsearchTemplate, organizationMapping, organizationRepository);
+                return stepBuilderFactory.get("import" + organizationReader.getClass().getSimpleName())
+                    .<Organization, Pair<Organization, Stream<OrganizationEvent>>>chunk(20)
+                    .reader(organizationReader::read)
+                    .processor((Function<Organization, Pair<Organization, Stream<OrganizationEvent>>>) organization -> {
+                        organization = uniqueOrganizationUrlNameOrganizationProcessor.apply(organization);
+                        return organizationStepExecutionListener.getOrganizationDifferenceProcessor().process(organization);
                     })
-                    .writer((List<? extends Pair<Organisation, Stream<OrganisationEvent>>> organisationInfo) -> {
-                        organisationInfo.stream().flatMap(Pair::getSecond).forEach(applicationEventPublisher::publishEvent);
-                        organisationStepExecutionListener.getOrganisationItemWriter().write(organisationInfo.stream().map(Pair::getFirst).collect(Collectors.toList()));
+                    .writer((List<? extends Pair<Organization, Stream<OrganizationEvent>>> organizationInfo) -> {
+                        organizationInfo.stream().flatMap(Pair::getSecond).forEach(applicationEventPublisher::publishEvent);
+                        organizationStepExecutionListener.getOrganizationItemWriter().write(organizationInfo.stream().map(Pair::getFirst).collect(Collectors.toList()));
                     })
-                    .listener(organisationStepExecutionListener)
-                    .listener(uniqueOrganisationUrlNameOrganisationProcessor)
+                    .listener(organizationStepExecutionListener)
+                    .listener(uniqueOrganizationUrlNameOrganizationProcessor)
                     .transactionManager(transactionManager)
                     .build();
             })
             .collect(Collectors.toList());
     }
 
-    private static class OrganisationStepExecutionListener implements StepExecutionListener {
+    private static class OrganizationStepExecutionListener implements StepExecutionListener {
 
 
-        private final OrganisationReader organisationReader;
+        private final OrganizationReader organizationReader;
         private final ElasticsearchConfiguration elasticsearchConfiguration;
         private final ElasticsearchTemplate elasticsearchTemplate;
-        private final Resource organisationMapping;
-        private final OrganisationRepository generalOrganisationRepository;
-        private OrganisationDifferenceProcessor organisationDifferenceProcessor;
-        private OrganisationItemWriter organisationItemWriter;
+        private final Resource organizationMapping;
+        private final OrganizationRepository generalOrganizationRepository;
+        private OrganizationDifferenceProcessor organizationDifferenceProcessor;
+        private OrganizationItemWriter organizationItemWriter;
 
-        OrganisationStepExecutionListener(OrganisationReader organisationReader, ElasticsearchConfiguration elasticsearchConfiguration, ElasticsearchTemplate elasticsearchTemplate, Resource organisationMapping, OrganisationRepository generalOrganisationRepository) {
-            this.organisationReader = organisationReader;
+        OrganizationStepExecutionListener(OrganizationReader organizationReader, ElasticsearchConfiguration elasticsearchConfiguration, ElasticsearchTemplate elasticsearchTemplate, Resource organizationMapping, OrganizationRepository generalOrganizationRepository) {
+            this.organizationReader = organizationReader;
             this.elasticsearchConfiguration = elasticsearchConfiguration;
             this.elasticsearchTemplate = elasticsearchTemplate;
-            this.organisationMapping = organisationMapping;
-            this.generalOrganisationRepository = generalOrganisationRepository;
+            this.organizationMapping = organizationMapping;
+            this.generalOrganizationRepository = generalOrganizationRepository;
         }
 
         @Override
         public void beforeStep(StepExecution stepExecution) {
-            String readerName = organisationReader.getName();
+            String readerName = organizationReader.getName();
             String index = elasticsearchConfiguration.getIndex() + "-" + readerName;
-            OrganisationRepository organisationRepository = new ElasticsearchOrganisationRepository(
+            OrganizationRepository organizationRepository = new ElasticsearchOrganizationRepository(
                 elasticsearchConfiguration,
                 elasticsearchTemplate,
                 index
             );
             try {
-                String mapping = StreamUtils.copyToString(organisationMapping.getInputStream(), StandardCharsets.UTF_8);
-                organisationRepository.createIndex(mapping);
+                String mapping = StreamUtils.copyToString(organizationMapping.getInputStream(), StandardCharsets.UTF_8);
+                organizationRepository.createIndex(mapping);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            organisationDifferenceProcessor = new OrganisationDifferenceProcessor(organisationRepository, generalOrganisationRepository);
-            organisationItemWriter = new OrganisationItemWriter(organisationRepository);
+            organizationDifferenceProcessor = new OrganizationDifferenceProcessor(organizationRepository, generalOrganizationRepository);
+            organizationItemWriter = new OrganizationItemWriter(organizationRepository);
         }
 
         @Override
@@ -114,12 +114,12 @@ public class ImportBatchConfig {
             return null;
         }
 
-        OrganisationDifferenceProcessor getOrganisationDifferenceProcessor() {
-            return organisationDifferenceProcessor;
+        OrganizationDifferenceProcessor getOrganizationDifferenceProcessor() {
+            return organizationDifferenceProcessor;
         }
 
-        OrganisationItemWriter getOrganisationItemWriter() {
-            return organisationItemWriter;
+        OrganizationItemWriter getOrganizationItemWriter() {
+            return organizationItemWriter;
         }
     }
 

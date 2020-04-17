@@ -1,32 +1,32 @@
-<div class="card card-default" *ngFor="let organisation of currentOrganisations">
-    <div class="card-header pointer" (click)="openOrganisation.emit(organisation)">{{organisation.name}}</div>
-    <div class="card-body pointer" (click)="openOrganisation.emit(organisation)">
+<div class="card card-default" *ngFor="let organization of currentOrganizations">
+    <div class="card-header pointer" (click)="openOrganization.emit(organization)">{{organization.name}}</div>
+    <div class="card-body pointer" (click)="openOrganization.emit(organization)">
         <div class="row">
-            <div class="col-4" *ngIf="organisation.logo">
-                <img class="media-object" [attr.src]="getImagePath(organisation.logo)"
-                     [attr.alt]="organisation.name">
+            <div class="col-4" *ngIf="organization.logo">
+                <img class="media-object" [attr.src]="getImagePath(organization.logo)"
+                     [attr.alt]="organization.name">
             </div>
             <div class="col-8">
-                <div class="row" *ngIf="organisation.scoreNorm">
+                <div class="row" *ngIf="organization.scoreNorm">
                     <div class="col-sm-10 col-md-10">
-                        <organisation-score [scoreNorm]="organisation.scoreNorm"></organisation-score>
+                        <organization-score [scoreNorm]="organization.scoreNorm"></organization-score>
                     </div>
                     <div class="col-sm-2 col-md-2"><a
-                        (click)="openOrganisationScoreExplanation.emit(organisation)"
-                        [title]="'result.list.hoverResultExplain' | translate:{'organisationName': organisation.name}"><span
+                        (click)="openOrganizationScoreExplanation.emit(organization)"
+                        [title]="'result.list.hoverResultExplain' | translate:{'organizationName': organization.name}"><span
                         class="glyphicon glyphicon-question-sign"></span></a></div>
                 </div>
                 <p>
-                    <span *ngFor="let contactPerson of organisation.contactPersons">
+                    <span *ngFor="let contactPerson of organization.contactPersons">
                         <strong>{{contactPerson.firstname}} {{contactPerson.lastname}}</strong>
                         <span *ngIf="contactPerson.rank">({{contactPerson.rank}})</span>
                         <br/>
                     </span>
                 </p>
                 <p>
-                    <a [attr.href]="organisation.website">{{organisation.website}}</a>
+                    <a [attr.href]="organization.website">{{organization.website}}</a>
                 </p>
-                <p><a class="float-right" (click)="openOrganisation.emit(organisation)" (keyup.enter)="openOrganisation.emit(organisation)" tabindex="50">{{'result.list.more' | translate}}</a></p>
+                <p><a class="float-right" (click)="openOrganization.emit(organization)" (keyup.enter)="openOrganization.emit(organization)" tabindex="50">{{'result.list.more' | translate}}</a></p>
             </div>
         </div>
     </div>

@@ -1,11 +1,11 @@
 <helfomat-google-maps
     *ngIf="!offlineMode"
-    [organisations]="organisations"
+    [organizations]="organizations"
     [center]="center"
     [position]="position"
     [distance]="distance"
     [zoom]="zoom"
-    [clusteredOrganisations]="clusteredOrganisations"
+    [clusteredOrganizations]="clusteredOrganizations"
     [allowUpdatePosition]="allowUpdatePosition"
     [mapSize]="mapSize"
     [showMapResizeButton]="showMapResizeButton"
@@ -13,17 +13,17 @@
     (updatePosition)="updatePosition.next($event)"
     (updateBoundingBox)="updateBoundingBox.next($event)"
     (updateZoom)="updateZoom.next($event)"
-    (openOrganisation)="openOrganisation.next($event)"
+    (openOrganization)="openOrganization.next($event)"
     (mapResize)="mapResize.next($event)"
 ><ng-content></ng-content></helfomat-google-maps>
 <helfomat-alternative-map
     *ngIf="offlineMode"
-    [organisations]="organisations"
+    [organizations]="organizations"
     [center]="center"
     [position]="position"
     [distance]="distance"
     [zoom]="zoom"
-    [clusteredOrganisations]="clusteredOrganisations"
+    [clusteredOrganizations]="clusteredOrganizations"
     [allowUpdatePosition]="allowUpdatePosition"
     [mapSize]="mapSize"
     [showMapResizeButton]="showMapResizeButton"
@@ -31,7 +31,7 @@
     (updatePosition)="updatePosition.next($event)"
     (updateBoundingBox)="updateBoundingBox.next($event)"
     (updateZoom)="updateZoom.next($event)"
-    (openOrganisation)="openOrganisation.next($event)"
+    (openOrganization)="openOrganization.next($event)"
     (mapResize)="mapResize.next($event)"
 ><!--
 You cannot use ng-content twice, so it is skipped here.

@@ -1,8 +1,8 @@
 package de.helfenkannjeder.helfomat.infrastructure.jpa;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationId;
-import de.helfenkannjeder.helfomat.core.organisation.event.OrganisationEvent;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -31,11 +31,11 @@ public class Event {
     private EventId eventId;
 
     @Embedded
-    private OrganisationId organizationId;
+    private OrganizationId organizationId;
 
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
-    private OrganisationEvent domainEvent;
+    private OrganizationEvent domainEvent;
 
     @CreatedDate
     @Column(columnDefinition = "TIMESTAMPTZ")
@@ -47,21 +47,21 @@ public class Event {
     protected Event() {
     }
 
-    public Event(EventId eventId, OrganisationEvent organisationEvent) {
+    public Event(EventId eventId, OrganizationEvent organizationEvent) {
         this.eventId = eventId;
-        this.organizationId = organisationEvent.getOrganisationId();
-        this.domainEvent = organisationEvent;
+        this.organizationId = organizationEvent.getOrganizationId();
+        this.domainEvent = organizationEvent;
     }
 
     public EventId getEventId() {
         return eventId;
     }
 
-    public OrganisationId getOrganizationId() {
+    public OrganizationId getOrganizationId() {
         return organizationId;
     }
 
-    public OrganisationEvent getDomainEvent() {
+    public OrganizationEvent getDomainEvent() {
         return domainEvent;
     }
 

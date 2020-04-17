@@ -3,7 +3,7 @@ import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstract-ques
 import {HelfomatService} from './helfomat.service';
 import {Router} from '@angular/router';
 import {Observable, Subscription} from 'rxjs';
-import {UserAnswer} from '../_internal/resources/organisation.service';
+import {UserAnswer} from '../_internal/resources/organization.service';
 import {map} from "rxjs/operators";
 
 @Component({

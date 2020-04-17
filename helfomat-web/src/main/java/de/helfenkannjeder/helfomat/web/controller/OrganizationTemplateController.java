@@ -2,7 +2,7 @@ package de.helfenkannjeder.helfomat.web.controller;
 
 import de.helfenkannjeder.helfomat.api.template.OrganizationTemplateApplicationService;
 import de.helfenkannjeder.helfomat.api.template.OrganizationTemplateDto;
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationType;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +20,8 @@ public class OrganizationTemplateController {
     }
 
     @GetMapping("/template/{organizationType}")
-    public OrganizationTemplateDto getTemplateByOrganizationType(@PathVariable("organizationType") OrganisationType organizationType) {
-        return this.organizationTemplateApplicationService.findOrganisationTemplateByType(organizationType);
+    public OrganizationTemplateDto getTemplateByOrganizationType(@PathVariable("organizationType") OrganizationType organizationType) {
+        return this.organizationTemplateApplicationService.findOrganizationTemplateByType(organizationType);
     }
 
 }

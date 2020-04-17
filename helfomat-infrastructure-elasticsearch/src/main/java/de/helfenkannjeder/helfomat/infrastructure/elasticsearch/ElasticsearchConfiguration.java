@@ -31,14 +31,14 @@ public class ElasticsearchConfiguration {
     }
 
     public static class TypeConfiguration {
-        private String organisation;
+        private String organization;
 
-        public String getOrganisation() {
-            return organisation;
+        public String getOrganization() {
+            return organization;
         }
 
-        public void setOrganisation(String organisation) {
-            this.organisation = organisation;
+        public void setOrganization(String organization) {
+            this.organization = organization;
         }
     }
 }

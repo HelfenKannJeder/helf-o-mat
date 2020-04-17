@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {AppComponent} from './app.component';
 import {appRoutingProviders, routing} from './app.routing';
-import {OrganisationModule} from './organisation/organisation.module';
+import {OrganizationModule} from './organization/organization.module';
 import {ResultModule} from './result/result.module';
 import {QuestionModule} from './question/question.module';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
@@ -26,7 +26,7 @@ export function createTranslateLoader(http: HttpClient) {
     imports: [
         QuestionModule,
         ResultModule,
-        OrganisationModule,
+        OrganizationModule,
         ManageModule,
         BrowserModule,
         BrowserAnimationsModule,

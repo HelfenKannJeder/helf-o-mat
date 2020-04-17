@@ -26,7 +26,7 @@ for that. To avoid that, you have two different options:
 
 - Remove the dependency to the `helfomat-infrastructure-typo3` module from the `helfomat-web`
   module. Afterwards you only need a database connection and not the content.
-  Disadvantage: You have currently only THW organisations in your repository.
+  Disadvantage: You have currently only THW organizations in your repository.
 - Ask [valentinz](mailto:valentin.zickner(at)helfenkannjeder(dot)de) for an database export
 
 ## Deployment

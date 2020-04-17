@@ -41,7 +41,7 @@ kafka:
 elasticsearch:
   index: helfomat
   type:
-    organisation: organisation
+    organization: organization
 
 crawler:
   thw:
@@ -68,7 +68,7 @@ helfomat:
       answer: "YES"
     - phrase: "Rettungsdienst" # ASB / DRK
       answer: "YES"
-    - organisationType: "BW"
+    - organizationType: "BW"
       phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
       answer: "YES"
 
@@ -77,7 +77,7 @@ helfomat:
     description: "Zum effizienten Löschen von Bränden ist überlegtes Handeln erforderlich: Erlaubt die aktuelle Situation, einen Gebäudebrand von innen unter schwerem Atemschutz zu bekämpfen oder ist ein Außenangriff zu bevorzugen?"
     defaultAnswer: "NO"
     groups:
-    - organisationType: "FF"
+    - organizationType: "FF"
       answer: "YES"
 
   - id: "35a19221-8fbf-45fb-9443-65a43aae9013"
@@ -85,7 +85,7 @@ helfomat:
     description: "Zwei Fahrzeuge sind zusammengestoßen, die Fahrzeugführer eingeklemmt und nicht ansprechbar. Hauptziel der Rettung ist es nun, die verunglückten Personen in kürzestmöglicher Zeit aus ihrem Fahrzeug zu befreien und einer intensivmedizinischen Betreuung in einem Krankenhaus zuzuführen."
     defaultAnswer: "NO"
     groups:
-    - organisationType: "FF"
+    - organizationType: "FF"
       answer: "YES"
     - phrase: "Rettungsdienst" # ASB / DRK
       answer: "MAYBE"
@@ -97,11 +97,11 @@ helfomat:
     description: "Brände oder Verkehrsunfälle erfordern schnelles Handeln. Hier solltest Du in der Lage sein, Deinen Arbeitsplatz zu verlassen. Es finden sich aber genügend Möglichkeiten, die entsprechende Vorlaufzeiten erlauben."
     defaultAnswer: "MAYBE"
     groups:
-    - organisationType: "FF"
+    - organizationType: "FF"
       answer: "YES"
     - phrase: "Schnelleinsatzgruppe" # ASB / DRK
       answer: "YES"
-    - organisationType: "BW"
+    - organizationType: "BW"
       phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
       answer: "NO"
 
@@ -136,7 +136,7 @@ helfomat:
     description: "Technisches Gerät zur Menschenrettung und Gefahrenabwehr zählt bei einigen Einsatzorganisationen zur Basisausstattung."
     defaultAnswer: "NO"
     groups:
-    - organisationType: "FF"
+    - organizationType: "FF"
       answer: "MAYBE"
     - phrase: "Bergungsgruppe" # THW
       answer: "YES"
@@ -162,12 +162,12 @@ helfomat:
     description: "Die Rettung verletzter Personen auf Skipisten oder im Bergland erfordert spezielle Kenntnisse und gute Konditionen."
     defaultAnswer: "NO"
     groups:
-    - organisationType: "BW"
+    - organizationType: "BW"
       phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
       answer: "YES"
     - phrase: "Höhenrettung" # ASB / DRK / THW
       answer: "MAYBE"
-    - organisationType: "BRH"
+    - organizationType: "BRH"
       phrase: "Staffel"
       answer: "MAYBE"
 
@@ -176,16 +176,16 @@ helfomat:
     description: "Gehst Du gerne auf Menschen zu und möchtest in Notlage geratene besonders hilfebedürftiger Personen, wie beispielsweise ältere Menschen, behinderte Personen oder Eltern mit Kleinkindern betreuen?"
     defaultAnswer: "NO"
     groups:
-    - organisationType: "FF"
+    - organizationType: "FF"
       answer: "MAYBE"
-    - organisationType: "BW"
+    - organizationType: "BW"
       phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
       answer: "MAYBE"
     - phrase: "Kriseninterventionsteam" # ASB / DRK
       answer: "YES"
     - phrase: "Betreuung" # DLRG / ASB / DRK
       answer: "MAYBE"
-    - organisationType: "BRH"
+    - organizationType: "BRH"
       phrase: "Staffel"
       answer: "MAYBE"
 
@@ -206,7 +206,7 @@ helfomat:
       answer: "YES"
     - phrase: "Technik und Sicherheit" # ASB / DRK
       answer: "MAYBE"
-    - organisationType: "FF"
+    - organizationType: "FF"
       answer: "MAYBE"
 
   - id: "18662fa9-a854-4174-9ea9-37bb08c65484"
@@ -226,10 +226,10 @@ helfomat:
     groups:
     - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
       answer: "YES"
-    - organisationType: "BW"
+    - organizationType: "BW"
       phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
       answer: "MAYBE"
-    - organisationType: "BRH"
+    - organizationType: "BRH"
       phrase: "Staffel"
       answer: "MAYBE"
 
@@ -254,7 +254,7 @@ helfomat:
       answer: "YES"
     - phrase: "Höhenrettung" # FW / THW
       answer: "YES"
-    - organisationType: "BW"
+    - organizationType: "BW"
       phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
       answer: "YES"
     - phrase: "Hubschraubergestützte Wasserrettung" # DLRG / ASB / DRK
@@ -273,7 +273,7 @@ helfomat:
       answer: "YES"
     - phrase: "Rettungshunde" # DLRG / ASB / BW / DRK
       answer: "YES"
-    - organisationType: "BRH"
+    - organizationType: "BRH"
       phrase: "Staffel"
       answer: "YES"
   picture-sizes:

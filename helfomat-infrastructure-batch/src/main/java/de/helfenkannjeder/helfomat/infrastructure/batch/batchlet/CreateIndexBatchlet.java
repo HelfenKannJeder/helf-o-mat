@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.batchlet;
 
-import de.helfenkannjeder.helfomat.core.organisation.OrganisationRepository;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,19 +19,19 @@ import java.nio.charset.StandardCharsets;
 @JobScope
 public class CreateIndexBatchlet extends AbstractBatchlet {
 
-    private final OrganisationRepository organisationRepository;
-    private final Resource organisationMapping;
+    private final OrganizationRepository organizationRepository;
+    private final Resource organizationMapping;
 
-    public CreateIndexBatchlet(@Qualifier("importOrganisationRepository") OrganisationRepository importOrganisationRepository,
-                               @Value("classpath:/mapping/organisation.json") Resource organisationMapping) {
-        this.organisationRepository = importOrganisationRepository;
-        this.organisationMapping = organisationMapping;
+    public CreateIndexBatchlet(@Qualifier("importOrganizationRepository") OrganizationRepository importOrganizationRepository,
+                               @Value("classpath:/mapping/organization.json") Resource organizationMapping) {
+        this.organizationRepository = importOrganizationRepository;
+        this.organizationMapping = organizationMapping;
     }
 
     @Override
     public String process() throws Exception {
-        String mapping = StreamUtils.copyToString(organisationMapping.getInputStream(), StandardCharsets.UTF_8);
-        this.organisationRepository.createIndex(mapping);
+        String mapping = StreamUtils.copyToString(organizationMapping.getInputStream(), StandardCharsets.UTF_8);
+        this.organizationRepository.createIndex(mapping);
         return ExitStatus.COMPLETED.toString();
     }
 }

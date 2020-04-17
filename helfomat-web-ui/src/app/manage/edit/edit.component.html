@@ -1,74 +1,74 @@
-<div *ngIf="organisation | async; let organisation; else loading">
-    <form class="needs-validation" novalidate (ngSubmit)="openPublishChangesConfirmation(organisation)" (change)="calculateChanges(organisation)">
+<div *ngIf="organization | async; let organization; else loading">
+    <form class="needs-validation" novalidate (ngSubmit)="openPublishChangesConfirmation(organization)" (change)="calculateChanges(organization)">
         <nav class="navbar sticky-top navbar-dark bg-lightblue">
-            <span class="navbar-brand">{{organisation.name}}</span>
+            <span class="navbar-brand">{{organization.name}}</span>
             <div class="btn-group" *ngIf="changes | async; let changes">
-                <button class="btn btn-outline-light" type="button" [disabled]="changes.length == 0" (click)="openPublishChangesConfirmation(organisation, 1)">{{'edit.organisation.publish.review' | translate}} <span class="badge badge-secondary">{{changes.length}}</span></button>
-                <button class="btn btn-warning" type="submit" [disabled]="changes.length == 0">{{'edit.organisation.publish.publishChanges' | translate}}</button>
+                <button class="btn btn-outline-light" type="button" [disabled]="changes.length == 0" (click)="openPublishChangesConfirmation(organization, 1)">{{'edit.organization.publish.review' | translate}} <span class="badge badge-secondary">{{changes.length}}</span></button>
+                <button class="btn btn-warning" type="submit" [disabled]="changes.length == 0">{{'edit.organization.publish.publishChanges' | translate}}</button>
             </div>
         </nav>
         <div class="custom-content">
-            <div class="logo-container" *ngIf="organisation.pictures.length > 0">
+            <div class="logo-container" *ngIf="organization.pictures.length > 0">
                 <div class="logo">
-                    <img src="api/picture/{{organisation.logo.value}}/icon"
-                         [attr.alt]="organisation.name">
+                    <img src="api/picture/{{organization.logo.value}}/icon"
+                         [attr.alt]="organization.name">
                 </div>
-                <img [src]="organisation.pictures[0].fileDataUrl || 'api/picture/' + organisation.pictures[0].value + '/teaser'" width="100%"/>
+                <img [src]="organization.pictures[0].fileDataUrl || 'api/picture/' + organization.pictures[0].value + '/teaser'" width="100%"/>
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-8">
-                <h1>{{ 'edit.organisation.title' | translate: {name: organisation.name} }}</h1>
+                <h1>{{ 'edit.organization.title' | translate: {name: organization.name} }}</h1>
                 <div class="form-group">
-                    <label for="name">{{ 'edit.organisation.name' | translate }}</label>
-                    <input type="text" id="name" name="name" class="form-control" [ngClass]="{'is-invalid': hasError(organizationName)}" required [(ngModel)]="organisation.name" #organizationName="ngModel"/>
+                    <label for="name">{{ 'edit.organization.name' | translate }}</label>
+                    <input type="text" id="name" name="name" class="form-control" [ngClass]="{'is-invalid': hasError(organizationName)}" required [(ngModel)]="organization.name" #organizationName="ngModel"/>
                     <div *ngIf="hasError(organizationName)" class="invalid-feedback">
-                        <div *ngIf="organizationName.errors.required">{{ 'edit.organisation.error.nameIsRequired' | translate }}</div>
+                        <div *ngIf="organizationName.errors.required">{{ 'edit.organization.error.nameIsRequired' | translate }}</div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="website">{{ 'edit.organisation.website' | translate }}</label>
-                    <input type="text" id="website" name="website" class="form-control" [(ngModel)]="organisation.website"/>
+                    <label for="website">{{ 'edit.organization.website' | translate }}</label>
+                    <input type="text" id="website" name="website" class="form-control" [(ngModel)]="organization.website"/>
                 </div>
                 <div class="form-group">
-                    <label for="description">{{ 'edit.organisation.description' | translate }}</label>
-                    <textarea class="form-control" id="description" name="description" autosize [(ngModel)]="organisation.description"></textarea>
+                    <label for="description">{{ 'edit.organization.description' | translate }}</label>
+                    <textarea class="form-control" id="description" name="description" autosize [(ngModel)]="organization.description"></textarea>
                 </div>
 
                 <div>
                     <h2>
-                        {{'organisation.attendanceTime.title' | translate}}
-                        <button class="btn btn-success btn-sm" (click)="add(organisation.attendanceTimes, organisation);" type="button">
+                        {{'organization.attendanceTime.title' | translate}}
+                        <button class="btn btn-success btn-sm" (click)="add(organization.attendanceTimes, organization);" type="button">
                             <i class="material-icons">add</i>
                         </button>
                     </h2>
-                    <div cdkDropList (cdkDropListDropped)="drop(organisation.attendanceTimes, $event, organisation)">
-                        <div *ngFor="let attendanceTime of organisation.attendanceTimes" class="card card-default dragable" cdkDrag>
+                    <div cdkDropList (cdkDropListDropped)="drop(organization.attendanceTimes, $event, organization)">
+                        <div *ngFor="let attendanceTime of organization.attendanceTimes" class="card card-default dragable" cdkDrag>
                             <div class="card-header" (click)="attendanceTime.__expanded = !attendanceTime.__expanded">
-                                <button class="float-right btn btn-danger btn-sm" (click)="remove(organisation.attendanceTimes, attendanceTime, organisation);" type="button">
-                                    <i class="material-icons" (click)="remove(organisation.attendanceTimes, attendanceTime, organisation);">delete</i>
+                                <button class="float-right btn btn-danger btn-sm" (click)="remove(organization.attendanceTimes, attendanceTime, organization);" type="button">
+                                    <i class="material-icons" (click)="remove(organization.attendanceTimes, attendanceTime, organization);">delete</i>
                                 </button>
                                 <h4>
                                     <i class="material-icons">{{ attendanceTime.__expanded ? 'expand_more' : 'chevron_right' }}</i>
                                     {{
                                     (attendanceTime.day
-                                        ? 'organisation.attendanceTime.weekday.' + attendanceTime.day
-                                        : 'edit.organisation.attendanceTime.new') | translate
+                                        ? 'organization.attendanceTime.weekday.' + attendanceTime.day
+                                        : 'edit.organization.attendanceTime.new') | translate
                                     }},
                                     {{attendanceTime.start | time}} - {{attendanceTime.end | time}}
-                                    {{'organisation.attendanceTime.clock' | translate}}
+                                    {{'organization.attendanceTime.clock' | translate}}
                                 </h4>
                             </div>
                             <div class="card-body" *ngIf="attendanceTime.__expanded">
                                 <div class="form-group">
-                                    <label for="weekday">{{'edit.organisation.attendanceTime.weekday' | translate}}</label>
+                                    <label for="weekday">{{'edit.organization.attendanceTime.weekday' | translate}}</label>
                                     <select class="form-control" name="weekday" id="weekday" [(ngModel)]="attendanceTime.day" required>
-                                        <option *ngFor="let weekday of weekdays" [value]="weekday">{{'organisation.attendanceTime.weekday.' + weekday | translate}}</option>
+                                        <option *ngFor="let weekday of weekdays" [value]="weekday">{{'organization.attendanceTime.weekday.' + weekday | translate}}</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="weekday">{{'edit.organisation.attendanceTime.time' | translate}}</label>
+                                    <label for="weekday">{{'edit.organization.attendanceTime.time' | translate}}</label>
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <ngb-timepicker [(ngModel)]="attendanceTime.start" [minuteStep]="15" name="start" required></ngb-timepicker>
@@ -79,7 +79,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="note">{{'organisation.attendanceTime.note' | translate}}</label>
+                                    <label for="note">{{'organization.attendanceTime.note' | translate}}</label>
                                     <textarea class="form-control" name="note" id="note" autosize [(ngModel)]="attendanceTime.note"></textarea>
                                 </div>
                             </div>
@@ -88,41 +88,41 @@
                 </div>
 
                 <h2>
-                    {{'organisation.group.title' | translate}}
-                    <button class="btn btn-success btn-sm" (click)="add(organisation.groups, organisation);" type="button">
+                    {{'organization.group.title' | translate}}
+                    <button class="btn btn-success btn-sm" (click)="add(organization.groups, organization);" type="button">
                         <i class="material-icons">add</i>
                     </button>
                 </h2>
-                <div cdkDropList (cdkDropListDropped)="drop(organisation.groups, $event, organisation)">
-                    <div *ngFor="let group of organisation.groups" class="card card-default dragable" cdkDrag [id]="group.__id">
+                <div cdkDropList (cdkDropListDropped)="drop(organization.groups, $event, organization)">
+                    <div *ngFor="let group of organization.groups" class="card card-default dragable" cdkDrag [id]="group.__id">
                         <div class="card-header" (click)="group.__expanded = !group.__expanded">
-                            <button class="float-right btn btn-danger btn-sm" (click)="remove(organisation.groups, group, organisation);" type="button">
+                            <button class="float-right btn btn-danger btn-sm" (click)="remove(organization.groups, group, organization);" type="button">
                                 <i class="material-icons">delete</i>
                             </button>
                             <h4>
                                 <i class="material-icons">{{ group.__expanded ? 'expand_more' : 'chevron_right' }}</i>
                                 {{
                                 group.name ?
-                                    ('edit.organisation.groups.groupName' | translate: {groupName: group.name}) :
-                                    ('edit.organisation.groups.newGroupName' | translate)
+                                    ('edit.organization.groups.groupName' | translate: {groupName: group.name}) :
+                                    ('edit.organization.groups.newGroupName' | translate)
                                 }}
                             </h4>
                         </div>
                         <div class="card-body" *ngIf="group.__expanded">
                             <div class="form-group">
-                                <label for="groupName">{{ 'edit.organisation.groups.name' | translate }}</label>
+                                <label for="groupName">{{ 'edit.organization.groups.name' | translate }}</label>
                                 <input type="text"
                                        id="groupName"
                                        name="groupName"
                                        class="form-control"
                                        [(ngModel)]="group.name"
-                                       [ngbTypeahead]="searchGroup(organisation.groups)"
+                                       [ngbTypeahead]="searchGroup(organization.groups)"
                                        (selectItem)="selectGroup($event, group)"
                                        required
                                 />
                             </div>
                             <div class="form-group">
-                                <label for="groupDescription">{{ 'edit.organisation.groups.description' | translate }}</label>
+                                <label for="groupDescription">{{ 'edit.organization.groups.description' | translate }}</label>
                                 <textarea class="form-control" id="groupDescription" name="groupDescription" autosize [(ngModel)]="group.description"></textarea>
                             </div>
                         </div>
@@ -131,15 +131,15 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="card card-default" *ngIf="organisation.addresses.length > 0">
+                <div class="card card-default" *ngIf="organization.addresses.length > 0">
                     <div class="card-header">
-                        {{organisation.addresses.length | i18nPlural: {
-                        '=1': 'organisation.address.title',
-                        'other': 'organisation.address.titlePlural'
+                        {{organization.addresses.length | i18nPlural: {
+                        '=1': 'organization.address.title',
+                        'other': 'organization.address.titlePlural'
                     } | translate}}
                     </div>
                     <!--                <helfomat-map-->
-                    <!--                    [organisations]="organisations"-->
+                    <!--                    [organizations]="organizations"-->
                     <!--                    [position]="position"-->
                     <!--                    [distance]="distance"-->
                     <!--                    [center]="center"-->
@@ -147,23 +147,23 @@
                     <!--                    [allowUpdatePosition]="false"-->
                     <!--                    [showMapResizeButton]="false"></helfomat-map>-->
                     <ul class="list-group">
-                        <li *ngFor="let address of organisation.addresses" class="list-group-item"
-                            [ngClass]="{'list-group-item-info': areAddressesEqual(organisation.defaultAddress, address)}">
+                        <li *ngFor="let address of organization.addresses" class="list-group-item"
+                            [ngClass]="{'list-group-item-info': areAddressesEqual(organization.defaultAddress, address)}">
                             <strong *ngIf="address.addressAppendix">{{address.addressAppendix}}<br/></strong>
                             {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
                             <span
-                                *ngIf="address.telephone">{{'organisation.address.telephone' | translate}}: {{address.telephone}}</span>
+                                *ngIf="address.telephone">{{'organization.address.telephone' | translate}}: {{address.telephone}}</span>
                         </li>
                     </ul>
                     <br class="clearfix"/>
                 </div>
 
-                <div class="card card-default" *ngIf="organisation.contactPersons.length > 0">
+                <div class="card card-default" *ngIf="organization.contactPersons.length > 0">
                     <div class="card-header">
-                        {{'organisation.contact.title' | translate}}
+                        {{'organization.contact.title' | translate}}
                     </div>
                     <div class="card-body">
-                        <div *ngFor="let contactPerson of organisation.contactPersons" class="row">
+                        <div *ngFor="let contactPerson of organization.contactPersons" class="row">
                             <div class="col-md-4" *ngIf="contactPerson.picture">
                                 <img src="api/picture/{{contactPerson.picture.value}}/icon"
                                      width="100%"
@@ -173,9 +173,9 @@
                                 <h4>{{contactPerson.firstname}} {{contactPerson.lastname}}</h4>
                                 <p>
                                     <span *ngIf="contactPerson.rank">({{contactPerson.rank}})<br/></span>
-                                    <span *ngIf="contactPerson.telephone">{{'organisation.contact.telephone' | translate}}
+                                    <span *ngIf="contactPerson.telephone">{{'organization.contact.telephone' | translate}}
                                         {{contactPerson.telephone}}<br/></span>
-                                    <span *ngIf="contactPerson.mail">{{'organisation.contact.mail' | translate}}
+                                    <span *ngIf="contactPerson.mail">{{'organization.contact.mail' | translate}}
                                         {{contactPerson.mail}}<br/></span>
                                 </p>
                             </div>
@@ -183,19 +183,19 @@
                     </div>
                 </div>
 
-                <div class="card card-default" cdkDropList (cdkDropListDropped)="drop(organisation.pictures, $event, organisation)">
+                <div class="card card-default" cdkDropList (cdkDropListDropped)="drop(organization.pictures, $event, organization)">
                     <div class="card-header">
-                        {{'organisation.pictures.title' | translate}}
+                        {{'organization.pictures.title' | translate}}
                     </div>
-                    <div class="dragable" cdkDrag *ngFor="let picture of organisation.pictures" [cdkDragData]="picture">
-                        <button class="btn btn-danger btn-sm position-top-right" (click)="remove(organisation.pictures, picture, organisation);" type="button">
-                            <i class="material-icons" (click)="remove(organisation.pictures, picture, organisation);">delete</i>
+                    <div class="dragable" cdkDrag *ngFor="let picture of organization.pictures" [cdkDragData]="picture">
+                        <button class="btn btn-danger btn-sm position-top-right" (click)="remove(organization.pictures, picture, organization);" type="button">
+                            <i class="material-icons" (click)="remove(organization.pictures, picture, organization);">delete</i>
                         </button>
                         <img [src]="picture.fileDataUrl || 'api/picture/' + picture.value + '/medium'" #myPicture style="width:100%"/>
                         <div class="cdk-drag-placeholder" *cdkDragPlaceholder style="height:200px"></div>
                     </div>
-                    <div class="upload-file-container" (click)="fileInput.click()" dragDrop (onFileDropped)="uploadFile(organisation.pictures, $event)">
-                        <input hidden type="file" #fileInput (change)="uploadFile(organisation.pictures, $event.target.files)">
+                    <div class="upload-file-container" (click)="fileInput.click()" dragDrop (onFileDropped)="uploadFile(organization.pictures, $event)">
+                        <input hidden type="file" #fileInput (change)="uploadFile(organization.pictures, $event.target.files)">
                         <i class="material-icons">cloud_upload</i>
                     </div>
                 </div>
@@ -205,4 +205,4 @@
     </form>
 </div>
 
-<ng-template #loading>{{'organisation.dataLoading' | translate}}</ng-template>
+<ng-template #loading>{{'organization.dataLoading' | translate}}</ng-template>

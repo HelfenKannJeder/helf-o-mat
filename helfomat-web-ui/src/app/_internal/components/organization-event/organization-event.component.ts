@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {Organisation, OrganizationEvent} from "../../resources/organisation.service";
+import {Organization, OrganizationEvent} from "../../resources/organization.service";
 
 @Component({
     selector: 'organization-event',
@@ -11,7 +11,7 @@ import {Organisation, OrganizationEvent} from "../../resources/organisation.serv
 export class OrganizationEventComponent {
 
     @Input()
-    public organization: Organisation;
+    public organization: Organization;
 
     @Input()
     public organizationEvents: Array<OrganizationEvent> = [];
