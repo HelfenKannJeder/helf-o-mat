@@ -10,7 +10,7 @@ import {TimeComponent} from './unit/time.component';
 import {CompareAnswerPipe} from './compare-answer.pipe';
 import {TimeModule} from '../shared/time.module';
 import {GroupNamesPipe} from './group-names.pipe';
-import {NgxPageScrollModule} from 'ngx-page-scroll';
+import {NgxPageScrollCoreModule} from 'ngx-page-scroll-core';
 import {RouterModule} from "@angular/router";
 
 @NgModule({
@@ -21,7 +21,7 @@ import {RouterModule} from "@angular/router";
         BrowserModule,
         OrganizationScoreModule,
         TimeModule,
-        NgxPageScrollModule,
+        NgxPageScrollCoreModule,
         RouterModule
     ],
     declarations: [
