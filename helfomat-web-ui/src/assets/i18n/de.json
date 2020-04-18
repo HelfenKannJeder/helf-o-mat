@@ -31,7 +31,9 @@
         "title": "Helf-O-Mat-Ergebnis",
         "compare": "Vergleichen",
         "backToOverviewTitle": "Zurück",
-        "back": "Zurück zum Ergebnis"
+        "back": "Zurück zum Ergebnis",
+        "edit": "Bearbeiten",
+        "history": "Historie"
       },
       "distance": {
         "title": "Entfernung",

@@ -1,3 +1,5 @@
+@import "../../colors";
+
 img.thumb {
   width: 2em;
   height: 2.32em;
@@ -29,5 +31,13 @@ img.thumb {
     bottom: 10%;
     padding: 1em 1em 1em 1.2em;
     background-color: white;
+  }
+}
+
+a {
+  color: $darkblue;
+
+  &:hover {
+    color: $darkblue;
   }
 }

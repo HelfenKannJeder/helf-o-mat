@@ -84,7 +84,6 @@ export class Organization {
     public description: string;
     public website: string;
     public scoreNorm: number;
-    public mapPin: string;
     public contactPersons: ContactPerson[] = [];
     public defaultAddress: Address;
     public addresses: Address[] = [];

@@ -79,13 +79,13 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
                 })
             );
 
-        combineLatest(
+        combineLatest([
             this.position,
             ObservableUtil.extractObjectMember(this.route.params, 'zoom').pipe(map(UrlParamBuilder.parseInt)),
             this.distance,
             this.userAnswers,
             this._back$.asObservable()
-        )
+        ])
             .subscribe(([position, zoom, distance, userAnswers]: [GeoPoint, number, number, Answer[], void]) => {
                 this.router.navigate(['/result', {
                     answers: UrlParamBuilder.buildAnswers(userAnswers),

@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.api.organization;
 
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class OrganizationDto {
     private String description;
     private String website;
     private Float scoreNorm;
-    private String mapPin;
+    private OrganizationType organizationType;
     private List<AddressDto> addresses;
     private List<ContactPersonDto> contactPersons;
     private PictureId logo;
@@ -23,18 +24,18 @@ public class OrganizationDto {
     private OrganizationDto() {
     }
 
-    public OrganizationDto(String id, String name, String urlName, String description, String website, String mapPin, List<AddressDto> addresses, List
-        <ContactPersonDto> contactPersons, PictureId logo, Float scoreNorm) {
+    public OrganizationDto(String id, String name, String urlName, String description, String website, List<AddressDto> addresses,
+                           List<ContactPersonDto> contactPersons, PictureId logo, Float scoreNorm, OrganizationType organizationType) {
         this.id = id;
         this.name = name;
         this.urlName = urlName;
         this.description = description;
         this.website = website;
-        this.mapPin = mapPin;
         this.addresses = addresses;
         this.contactPersons = contactPersons;
         this.logo = logo;
         this.scoreNorm = scoreNorm;
+        this.organizationType = organizationType;
     }
 
     public String getId() {
@@ -61,10 +62,6 @@ public class OrganizationDto {
         return scoreNorm;
     }
 
-    public String getMapPin() {
-        return mapPin;
-    }
-
     public List<AddressDto> getAddresses() {
         return addresses;
     }
@@ -73,15 +70,11 @@ public class OrganizationDto {
         return logo;
     }
 
-    public void setScoreNorm(Float scoreNorm) {
-        this.scoreNorm = scoreNorm;
-    }
-
     public List<ContactPersonDto> getContactPersons() {
         return contactPersons;
     }
 
-    public void setContactPersons(List<ContactPersonDto> contactPersons) {
-        this.contactPersons = contactPersons;
+    public OrganizationType getOrganizationType() {
+        return organizationType;
     }
 }

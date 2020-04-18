@@ -11,10 +11,6 @@
                     <div class="col-sm-10 col-md-10">
                         <organization-score [scoreNorm]="organization.scoreNorm"></organization-score>
                     </div>
-                    <div class="col-sm-2 col-md-2"><a
-                        (click)="openOrganizationScoreExplanation.emit(organization)"
-                        [title]="'result.list.hoverResultExplain' | translate:{'organizationName': organization.name}"><span
-                        class="glyphicon glyphicon-question-sign"></span></a></div>
                 </div>
                 <p>
                     <span *ngFor="let contactPerson of organization.contactPersons">

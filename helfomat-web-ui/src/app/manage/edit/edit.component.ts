@@ -12,7 +12,7 @@ import {
 import {ActivatedRoute, Router} from "@angular/router";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {PageScrollInstance, PageScrollService} from "ngx-page-scroll";
+import {PageScrollInstance, PageScrollService} from "ngx-page-scroll-core";
 import {DOCUMENT} from "@angular/common";
 import {
     GroupTemplate,
@@ -98,7 +98,7 @@ export class EditComponent implements OnInit {
             __id: documentId
         } as any);
         window.setTimeout(() => {
-            this.pageScrollService.start(PageScrollInstance.newInstance({
+            this.pageScrollService.start(new PageScrollInstance({
                 document: this.document,
                 scrollTarget: '#' + documentId
             }))

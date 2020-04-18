@@ -143,14 +143,32 @@
                 <div class="card-body">
                     <organization-score [scoreNorm]="scoreNorm | async"></organization-score>
                     <br class="clearfix"/>
-                    <div class="btn-group btn-group-sm" role="group" aria-label="...">
-                        <a pageScroll class="btn btn-secondary" href="#compare">
-                            {{'organization.facts.helfomatResult.compare' | translate}}
-                        </a>
-                        <button class="btn btn-secondary" (click)="_back$.next()">
-                            {{'organization.facts.helfomatResult.back' | translate}}
-                        </button>
-                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a pageScroll class="nav-link" href="#compare">
+                                <i class="material-icons">compare</i>
+                                {{'organization.facts.helfomatResult.compare' | translate}}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" (click)="_back$.next()">
+                                <i class="material-icons">backspace</i>
+                                {{'organization.facts.helfomatResult.back' | translate}}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" routerLink="/organization/{{organization.urlName}}/edit">
+                                <i class="material-icons">edit</i>
+                                {{'organization.facts.helfomatResult.edit' | translate}}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" routerLink="/organization/{{organization.urlName}}/history">
+                                <i class="material-icons">history</i>
+                                {{'organization.facts.helfomatResult.history' | translate}}
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <ng-template #backLink>
@@ -159,13 +177,26 @@
                         {{'organization.facts.helfomatResult.action' | translate}}
                     </div>
                     <div class="card-body">
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button class="btn btn-secondary" (click)="_back$.next()" [title]="'organization.facts.helfomatResult.back' | translate">
-                                <i class="material-icons">backspace</i>
-                            </button>
-                            <a href="#" class="btn btn-secondary"><i class="material-icons">history</i></a>
-                            <a class="btn btn-secondary" routerLink="/organization/{{organization.urlName}}/edit"><i class="material-icons">edit</i></a>
-                        </div>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" (click)="_back$.next()">
+                                    <i class="material-icons">backspace</i>
+                                    {{'organization.facts.helfomatResult.back' | translate}}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" routerLink="/organization/{{organization.urlName}}/edit">
+                                    <i class="material-icons">edit</i>
+                                    {{'organization.facts.helfomatResult.edit' | translate}}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" routerLink="/organization/{{organization.urlName}}/history">
+                                    <i class="material-icons">history</i>
+                                    {{'organization.facts.helfomatResult.history' | translate}}
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </ng-template>

@@ -56,7 +56,7 @@ export class QuestionPage {
 
     getNumberOfQuestions() {
         return element
-            .all(by.css('app-question .question-progress .glyphicon'))
+            .all(by.css('app-question .question-progress .material-icons'))
             .filter(QuestionPage.visible)
             .count();
     }
