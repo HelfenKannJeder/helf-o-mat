@@ -11,7 +11,7 @@ spring:
       username: helfenkannjeder
       password: helfenkannjeder
     job:
-      enabled: false
+      enabled: true
     initialize-schema: always
   main:
     web-application-type: none

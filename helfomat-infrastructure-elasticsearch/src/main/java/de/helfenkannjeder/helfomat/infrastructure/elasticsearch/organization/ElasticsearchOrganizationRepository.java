@@ -12,6 +12,7 @@ import de.helfenkannjeder.helfomat.core.question.QuestionId;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.common.unit.DistanceUnit;
+import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoBoundingBoxQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
@@ -71,18 +72,22 @@ public class ElasticsearchOrganizationRepository implements OrganizationReposito
 
     @Override
     public Organization findOrganizationWithSameTypeInDistance(Organization organization, Long distanceInMeters) {
-        BoolQueryBuilder nativeSearchQuery = buildQueryForOrganizationWithSameTypeInDistance(organization, distanceInMeters);
-        List<Organization> organizations = search(nativeSearchQuery).collect(Collectors.toList());
-        if (organizations.size() == 1) {
-            return organizations.get(0);
-        } else if (organizations.size() == 0) {
+        try {
+            BoolQueryBuilder nativeSearchQuery = buildQueryForOrganizationWithSameTypeInDistance(organization, distanceInMeters);
+            List<Organization> organizations = search(nativeSearchQuery).collect(Collectors.toList());
+            if (organizations.size() == 1) {
+                return organizations.get(0);
+            } else if (organizations.size() == 0) {
+                return null;
+            } else {
+                return organizations
+                    .stream()
+                    .filter(o -> o.getUrlName().equals(organization.getUrlName()))
+                    .findFirst()
+                    .orElse(null);
+            }
+        } catch (IndexNotFoundException ignored) {
             return null;
-        } else {
-            return organizations
-                .stream()
-                .filter(o -> o.getUrlName().equals(organization.getUrlName()))
-                .findFirst()
-                .orElse(null);
         }
     }
 
