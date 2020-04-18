@@ -33,8 +33,8 @@
         </p>
         <p class="text-center question-progress">
         <span *ngFor="let subQuestionWithUserAnswer of questionWithUserAnswersSync"
-              class="glyphicon glyphicon-stop answer"
-              [ngClass]="classOfAnswer(subQuestionWithUserAnswer.userAnswer?.answer)" aria-hidden="true"></span>
+              class="material-icons answer"
+              [ngClass]="classOfAnswer(subQuestionWithUserAnswer.userAnswer?.answer)">fiber_manual_record</span>
         </p>
     </div>
 </div>

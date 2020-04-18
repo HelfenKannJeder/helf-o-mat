@@ -8888,6 +8888,11 @@
         "tslib": "^1.9.0"
       }
     },
+    "ngx-page-scroll": {
+      "version": "7.0.1",
+      "resolved": "https://registry.npmjs.org/ngx-page-scroll/-/ngx-page-scroll-7.0.1.tgz",
+      "integrity": "sha512-8AjleaS0SMxvstYHQjiQukLoddw45ajLIyUmcXJigWVxXPoyJ0e86dYnNyVDgKh2LvZf+6eXQtfKHE1ToNjqsQ=="
+    },
     "ngx-page-scroll-core": {
       "version": "7.0.1",
       "resolved": "https://registry.npmjs.org/ngx-page-scroll-core/-/ngx-page-scroll-core-7.0.1.tgz",

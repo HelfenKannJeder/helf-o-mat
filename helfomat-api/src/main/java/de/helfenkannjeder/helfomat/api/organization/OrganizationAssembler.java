@@ -39,11 +39,11 @@ public class OrganizationAssembler {
             organization.getUrlName(),
             organization.getDescription(),
             organization.getWebsite(),
-            organization.getMapPin(),
             toAddressDtos(organization.getAddresses()),
             toContactPersonDtos(organization.getContactPersons()),
             organization.getLogo(),
-            scoredOrganization.getScore()
+            scoredOrganization.getScore(),
+            organization.getOrganizationType()
         );
     }
 
@@ -61,11 +61,11 @@ public class OrganizationAssembler {
             organization.getUrlName(),
             organization.getDescription(),
             organization.getWebsite(),
-            organization.getMapPin(),
             toAddressDtos(organization.getAddresses()),
             toContactPersonDtos(organization.getContactPersons()),
             organization.getLogo(),
-            null
+            null,
+            organization.getOrganizationType()
         );
     }
 

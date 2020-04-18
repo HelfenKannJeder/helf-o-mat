@@ -23,10 +23,10 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
                 protected helfomatService: HelfomatService) {
         super();
 
-        combineLatest(
+        combineLatest([
             this.newAnswers,
             this.questionWithUserAnswers
-        )
+        ])
             .subscribe(([answers, questionWithUserAnswers]: [string, Array<QuestionWithUserAnswer>]) => {
                 let url = QuestionComponent.getNavigateUrl(this.getLastAnsweredQuestion(questionWithUserAnswers) == questionWithUserAnswers.length);
                 this.router.navigate([url, {answers, position: null, mapSize: 'fullscreen'}]);

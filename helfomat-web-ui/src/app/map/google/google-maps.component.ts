@@ -249,10 +249,12 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
             this.markers = [];
 
             organizations.forEach((organization: Organization) => {
-                if (organization.addresses.length > 0 && organization.mapPin !== undefined) {
+                if (organization.addresses.length > 0 && organization.organizationType !== undefined) {
+                    let organizationType = organization.organizationType;
+                    let mapPin = GoogleMapsComponent.getMapPin(organizationType);
                     for (let address of organization.addresses) {
                         const icon = {
-                            url: `assets/images/pins/${organization.mapPin}`,
+                            url: `assets/images/pins/${mapPin}`,
                             size: new Size(32, 32),
                             origin: new Point(0, 0),
                             anchor: new Point(10, 32),
@@ -280,6 +282,35 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
                 }
             });
         });
+    }
+
+    private static getMapPin(organizationType: string) {
+        switch (organizationType) {
+            case "THW":
+                return "blue-pushpin.png";
+
+            case "FF":
+                return "red-pushpin.png";
+
+            case "DLRG":
+                return "ltblu-pushpin.png";
+
+            case "BW":
+                return "grn-pushpin.png";
+
+            case "ASB":
+            case "BRK":
+            case "DRK":
+            case "JUH":
+            case "MHD":
+            case "KIT":
+            case "PRIV_SAN":
+            case "BRH":
+            case "DRV":
+                return "ylw-pushpin.png";
+            default:
+                return "gray.png";
+        }
     }
 
     private hasClusteredOrganizations() {
@@ -345,13 +376,13 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
 
     private configureMapResizeButton() {
         this.controlButton = document.createElement('span');
+        this.controlButton.className = 'material-icons';
         if (this.mapSize === 'fullscreen') {
-            this.controlButton.className = 'glyphicon glyphicon-chevron-up';
+            this.controlButton.innerText = "keyboard_arrow_up"
         } else {
-            this.controlButton.className = 'glyphicon glyphicon-chevron-down';
+            this.controlButton.innerText = 'keyboard_arrow_down';
         }
-        this.controlButton.style.fontSize = '24px';
-        this.controlButton.style.marginBottom = '22px';
+        this.controlButton.style.fontSize = '48px';
         this.controlButton.style.cursor = 'pointer';
         this.controlButton.addEventListener('click', () => {
             this.ngZone.run(() => {
@@ -380,9 +411,9 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
             return;
         }
         if (this.mapSize === 'normal') {
-            this.controlButton.className = 'glyphicon glyphicon-chevron-down';
+            this.controlButton.innerText = 'keyboard_arrow_down';
         } else {
-            this.controlButton.className = 'glyphicon glyphicon-chevron-up';
+            this.controlButton.innerText = "keyboard_arrow_up"
         }
     }
 
