@@ -1,0 +1,65 @@
+spring:
+  legacy:
+    datasource:
+      url: jdbc:mysql://127.0.0.1:3306/helfenkannjeder
+      username: helfenkannjeder
+      password: helfenkannjeder
+
+  batch:
+    datasource:
+      url: jdbc:postgresql://localhost/helfenkannjeder
+      username: helfenkannjeder
+      password: helfenkannjeder
+    job:
+      enabled: true
+    initialize-schema: always
+  main:
+    web-application-type: none
+
+  event:
+    datasource:
+      url: jdbc:postgresql://localhost/helfenkannjeder
+      username: helfenkannjeder
+      password: helfenkannjeder
+
+  data:
+    elasticsearch:
+      cluster-name: application
+      cluster-nodes: localhost:9300
+
+kafka:
+  topic:
+    organization-events: organization-events
+    replication-factor: 1
+  bootstrap-servers: localhost:9092
+
+elasticsearch:
+  index: helfomat
+  type:
+    organization: organization
+
+crawler:
+  thw:
+    domain: http://thw.de/
+    results-per-page: 10
+    http-request-timeout: 60000
+    map-pin: blue-pushpin.png
+
+googlemaps:
+  api-key: ReplaceMe
+
+helfomat:
+  picture-folder: pictures/
+  picture-sizes:
+    - name: icon
+      width: 84
+    - name: teaser
+      width: 1000
+      height: 300
+    - name: medium
+      width: 300
+
+logging:
+  level:
+    root: ERROR
+    de.helfenkannjeder: DEBUG

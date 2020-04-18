@@ -7,6 +7,7 @@ import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -36,6 +37,7 @@ import java.util.Optional;
 public class EventDataSourceConfig {
 
     @Bean
+    @Primary
     public LocalContainerEntityManagerFactoryBean eventEntityManager(@Qualifier("eventDataSource") DataSource eventDataSource) {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(eventDataSource);
@@ -60,12 +62,14 @@ public class EventDataSourceConfig {
     }
 
     @Bean
+    @Primary
     @ConfigurationProperties("spring.event.datasource")
     public DataSourceProperties eventDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
+    @Primary
     public DataSource eventDataSource(@Qualifier("eventDataSourceProperties") DataSourceProperties eventDataSourceProperties) {
         return eventDataSourceProperties.initializeDataSourceBuilder().build();
     }

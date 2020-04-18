@@ -7,7 +7,6 @@ import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -30,7 +29,6 @@ import java.util.Map;
 public class LegacyDataSourceConfig {
 
     @Bean
-    @Primary
     public LocalContainerEntityManagerFactoryBean legacyEntityManager(@Qualifier("legacyDataSource") DataSource legacyDataSource) {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(legacyDataSource);
@@ -55,14 +53,12 @@ public class LegacyDataSourceConfig {
     }
 
     @Bean
-    @Primary
     @ConfigurationProperties("spring.legacy.datasource")
     public DataSourceProperties legacyDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
-    @Primary
     public DataSource legacyDataSource(@Qualifier("legacyDataSourceProperties") DataSourceProperties legacyDataSourceProperties) {
         return legacyDataSourceProperties.initializeDataSourceBuilder().build();
     }

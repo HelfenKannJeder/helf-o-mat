@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.api.picture;
 
-import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.DownloadService;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
@@ -18,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,16 +41,16 @@ public class FileSystemPictureRepositoryTest {
     private ResizeImageService resizeImageService;
 
     @Mock
-    private HelfomatConfiguration helfomatConfiguration;
+    private PictureConfiguration pictureConfiguration;
 
     @Mock
-    private HelfomatConfiguration.PictureSize pictureSize;
+    private PictureConfiguration.PictureSize pictureSize;
 
     private PictureRepository fileSystemPictureRepository;
 
     @Before
     public void setUp() {
-        this.fileSystemPictureRepository = new FileSystemPictureRepository(downloadService, resizeImageService, helfomatConfiguration);
+        this.fileSystemPictureRepository = new FileSystemPictureRepository(downloadService, resizeImageService, pictureConfiguration);
     }
 
     @Test
@@ -61,7 +59,7 @@ public class FileSystemPictureRepositoryTest {
         PictureId pictureId = new PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44addf");
         byte[] content = {'a', 'b', 'c', 'd'};
         when(this.downloadService.download(PICTURE_URL)).thenReturn(content);
-        when(this.helfomatConfiguration.getPictureFolder()).thenReturn(CONF_FOLDER);
+        when(this.pictureConfiguration.getPictureFolder()).thenReturn(CONF_FOLDER);
 
         // Act
         PictureId resultPictureId = this.fileSystemPictureRepository.savePicture(PICTURE_URL, FOLDER, pictureId);
@@ -103,7 +101,7 @@ public class FileSystemPictureRepositoryTest {
         String configuredFolder = "/*";
         byte[] content = {'a', 'b', 'c', 'd'};
         when(this.downloadService.download(PICTURE_URL)).thenReturn(content);
-        when(this.helfomatConfiguration.getPictureFolder()).thenReturn(configuredFolder);
+        when(this.pictureConfiguration.getPictureFolder()).thenReturn(configuredFolder);
 
         // Act
         ThrowableAssert.ThrowingCallable thrownException = () ->
@@ -127,8 +125,8 @@ public class FileSystemPictureRepositoryTest {
         PictureId pictureId = new PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44addf");
         byte[] content = {'a', 'b', 'c', 'd'};
         when(this.downloadService.download(PICTURE_URL)).thenReturn(content);
-        when(this.helfomatConfiguration.getPictureFolder()).thenReturn(CONF_FOLDER);
-        when(this.helfomatConfiguration.getPictureSizes()).thenReturn((List) Collections.singletonList(pictureSize));
+        when(this.pictureConfiguration.getPictureFolder()).thenReturn(CONF_FOLDER);
+        when(this.pictureConfiguration.getPictureSizes()).thenReturn(Collections.singletonList(pictureSize));
 
         // Act
         PictureId resultPictureId = this.fileSystemPictureRepository.savePicture(PICTURE_URL, FOLDER, pictureId);

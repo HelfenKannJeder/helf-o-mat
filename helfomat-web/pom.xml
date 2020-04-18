@@ -18,19 +18,7 @@
         </dependency>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
-            <artifactId>helfomat-infrastructure-batch</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.helfenkannjeder.helfomat</groupId>
             <artifactId>helfomat-infrastructure-elasticsearch</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.helfenkannjeder.helfomat</groupId>
-            <artifactId>helfomat-infrastructure-thwde</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.helfenkannjeder.helfomat</groupId>
-            <artifactId>helfomat-infrastructure-typo3</artifactId>
         </dependency>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
@@ -38,8 +26,7 @@
         </dependency>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
-            <artifactId>helfomat-infrastructure-kafka</artifactId>
-            <scope>compile</scope>
+            <artifactId>helfomat-infrastructure-config</artifactId>
         </dependency>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
@@ -52,10 +39,6 @@
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
             <artifactId>helfomat-web-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-batch</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
