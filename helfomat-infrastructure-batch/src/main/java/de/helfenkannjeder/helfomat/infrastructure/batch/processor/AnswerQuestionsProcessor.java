@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
 
-import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
+import de.helfenkannjeder.helfomat.api.QuestionConfiguration;
 import de.helfenkannjeder.helfomat.core.organization.Answer;
 import de.helfenkannjeder.helfomat.core.organization.Group;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 @Component
 public class AnswerQuestionsProcessor implements ItemProcessor<Organization, Organization> {
 
-    private final HelfomatConfiguration helfomatConfiguration;
+    private final QuestionConfiguration questionConfiguration;
 
-    public AnswerQuestionsProcessor(HelfomatConfiguration helfomatConfiguration) {
-        this.helfomatConfiguration = helfomatConfiguration;
+    public AnswerQuestionsProcessor(QuestionConfiguration questionConfiguration) {
+        this.questionConfiguration = questionConfiguration;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class AnswerQuestionsProcessor implements ItemProcessor<Organization, Org
     }
 
     private List<QuestionAnswer> answerAllQuestionsForOrganization(Organization organization) {
-        return helfomatConfiguration.getQuestions()
+        return questionConfiguration.getQuestions()
             .stream()
             .map(questionMapping -> new QuestionAnswer(
                 new QuestionId(questionMapping.getId()),
@@ -46,18 +46,18 @@ public class AnswerQuestionsProcessor implements ItemProcessor<Organization, Org
             .collect(Collectors.toList());
     }
 
-    private Answer answerQuestionForOrganization(HelfomatConfiguration.QuestionMapping question, Organization organization) {
+    private Answer answerQuestionForOrganization(QuestionConfiguration.QuestionMapping question, Organization organization) {
         return question.getGroups()
             .stream()
             .filter(group -> organizationGroupConfigurationApplies(organization.getOrganizationType(), organization.getGroups(), group))
             .findFirst()
-            .map(HelfomatConfiguration.QuestionMapping.QuestionOrganizationGroupMapping::getAnswer)
+            .map(QuestionConfiguration.QuestionMapping.QuestionOrganizationGroupMapping::getAnswer)
             .orElse(question.getDefaultAnswer());
     }
 
     private boolean organizationGroupConfigurationApplies(OrganizationType organizationType,
                                                           List<Group> groups,
-                                                          HelfomatConfiguration.QuestionMapping.QuestionOrganizationGroupMapping questionMapping) {
+                                                          QuestionConfiguration.QuestionMapping.QuestionOrganizationGroupMapping questionMapping) {
         return hasSameOrganizationType(organizationType, questionMapping.getOrganizationType())
             && groupExistsWithPhrase(groups, questionMapping.getPhrase());
     }

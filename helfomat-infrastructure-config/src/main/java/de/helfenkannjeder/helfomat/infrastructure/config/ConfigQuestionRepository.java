@@ -1,6 +1,6 @@
-package de.helfenkannjeder.helfomat.api.question;
+package de.helfenkannjeder.helfomat.infrastructure.config;
 
-import de.helfenkannjeder.helfomat.api.HelfomatConfiguration;
+import de.helfenkannjeder.helfomat.api.QuestionConfiguration;
 import de.helfenkannjeder.helfomat.core.question.Question;
 import de.helfenkannjeder.helfomat.core.question.QuestionId;
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 @Component
 public class ConfigQuestionRepository implements QuestionRepository {
 
-    private final HelfomatConfiguration helfomatConfiguration;
+    private final QuestionConfiguration questionConfiguration;
 
-    public ConfigQuestionRepository(HelfomatConfiguration helfomatConfiguration) {
-        this.helfomatConfiguration = helfomatConfiguration;
+    public ConfigQuestionRepository(QuestionConfiguration questionConfiguration) {
+        this.questionConfiguration = questionConfiguration;
     }
 
     public List<Question> findQuestions() {
-        return this.helfomatConfiguration.getQuestions()
+        return this.questionConfiguration.getQuestions()
             .stream()
             .map(questionMapping -> {
                 Question question = new Question();

@@ -3,7 +3,6 @@ package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
-import org.elasticsearch.index.IndexNotFoundException;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.data.util.Pair;
 
@@ -32,12 +31,7 @@ public class OrganizationDifferenceProcessor implements ItemProcessor<Organizati
     }
 
     private Pair<Organization, Stream<OrganizationEvent>> generateExistingOrganizationFromOtherDatasource(Organization updatedOrganization) {
-        Organization alreadyAvailableOrganization;
-        try {
-            alreadyAvailableOrganization = generalOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization, 5L);
-        } catch (IndexNotFoundException ignored) {
-            return generateCompleteNewOrganization(updatedOrganization);
-        }
+        Organization alreadyAvailableOrganization = generalOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization, 5L);
         if (alreadyAvailableOrganization == null) {
             return generateCompleteNewOrganization(updatedOrganization);
         }

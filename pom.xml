@@ -44,8 +44,10 @@
         <module>helfomat-infrastructure-kafka</module>
         <module>helfomat-infrastructure-keycloak</module>
         <module>helfomat-infrastructure-jpa</module>
+        <module>helfomat-infrastructure-config</module>
         <module>helfomat-web</module>
         <module>helfomat-web-ui</module>
+        <module>helfomat-import</module>
     </modules>
 
     <dependencyManagement>
@@ -105,6 +107,11 @@
             <dependency>
                 <groupId>de.helfenkannjeder.helfomat</groupId>
                 <artifactId>helfomat-infrastructure-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

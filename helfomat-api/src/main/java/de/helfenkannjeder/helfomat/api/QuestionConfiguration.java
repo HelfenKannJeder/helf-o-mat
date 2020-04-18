@@ -14,17 +14,9 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "helfomat")
 @SuppressWarnings("unused")
-public class HelfomatConfiguration {
-
-    private static final String DEFAULT_PICTURE_FOLDER = "pictures";
+public class QuestionConfiguration {
 
     private List<QuestionMapping> questions = new ArrayList<>();
-
-    private String pictureFolder = DEFAULT_PICTURE_FOLDER;
-
-    private List<PictureSize> pictureSizes = new ArrayList<>();
-
-    private AutoImport autoImport = new AutoImport();
 
     public List<QuestionMapping> getQuestions() {
         return questions;
@@ -32,52 +24,6 @@ public class HelfomatConfiguration {
 
     public void setQuestions(List<QuestionMapping> questions) {
         this.questions = questions;
-    }
-
-    public String getPictureFolder() {
-        return pictureFolder;
-    }
-
-    public void setPictureFolder(String pictureFolder) {
-        this.pictureFolder = pictureFolder;
-    }
-
-    public AutoImport getAutoImport() {
-        return autoImport;
-    }
-
-    public void setAutoImport(AutoImport autoImport) {
-        this.autoImport = autoImport;
-    }
-
-    public List<PictureSize> getPictureSizes() {
-        return pictureSizes;
-    }
-
-    public void setPictureSizes(List<PictureSize> pictureSizes) {
-        this.pictureSizes = pictureSizes;
-    }
-
-    public class AutoImport {
-        private boolean enabled;
-
-        private String schedule;
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public String getSchedule() {
-            return schedule;
-        }
-
-        public void setSchedule(String schedule) {
-            this.schedule = schedule;
-        }
     }
 
     public static class QuestionMapping {
@@ -162,34 +108,5 @@ public class HelfomatConfiguration {
         }
     }
 
-    public static class PictureSize {
-        private String name;
-        private Integer width;
-        private Integer height;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Integer getWidth() {
-            return width;
-        }
-
-        public void setWidth(Integer width) {
-            this.width = width;
-        }
-
-        public Integer getHeight() {
-            return height;
-        }
-
-        public void setHeight(Integer height) {
-            this.height = height;
-        }
-    }
 
 }

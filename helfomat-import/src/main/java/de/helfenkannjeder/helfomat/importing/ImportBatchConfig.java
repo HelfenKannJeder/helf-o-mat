@@ -1,10 +1,11 @@
-package de.helfenkannjeder.helfomat.web.configuration;
+package de.helfenkannjeder.helfomat.importing;
 
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationReader;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
 import de.helfenkannjeder.helfomat.infrastructure.batch.listener.UniqueOrganizationUrlNameOrganizationProcessor;
+import de.helfenkannjeder.helfomat.infrastructure.batch.processor.AnswerQuestionsProcessor;
 import de.helfenkannjeder.helfomat.infrastructure.batch.processor.OrganizationDifferenceProcessor;
 import de.helfenkannjeder.helfomat.infrastructure.batch.writer.OrganizationItemWriter;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
@@ -42,6 +43,7 @@ public class ImportBatchConfig {
     @Qualifier("importSteps")
     public List<Step> importSteps(StepBuilderFactory stepBuilderFactory,
                                   List<OrganizationReader> organizationReaders,
+                                  AnswerQuestionsProcessor answerQuestionsProcessor,
                                   ElasticsearchConfiguration elasticsearchConfiguration,
                                   ElasticsearchTemplate elasticsearchTemplate,
                                   ApplicationEventPublisher applicationEventPublisher,
@@ -57,6 +59,7 @@ public class ImportBatchConfig {
                     .reader(organizationReader::read)
                     .processor((Function<Organization, Pair<Organization, Stream<OrganizationEvent>>>) organization -> {
                         organization = uniqueOrganizationUrlNameOrganizationProcessor.apply(organization);
+                        organization = answerQuestionsProcessor.process(organization);
                         return organizationStepExecutionListener.getOrganizationDifferenceProcessor().process(organization);
                     })
                     .writer((List<? extends Pair<Organization, Stream<OrganizationEvent>>> organizationInfo) -> {
