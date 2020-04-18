@@ -11,7 +11,6 @@ import org.springframework.batch.core.jsr.step.batchlet.BatchletAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.batch.api.AbstractBatchlet;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.List;
  * @author Valentin Zickner
  */
 @Configuration
-@EnableScheduling
 public class BatchConfiguration {
 
     @Bean
