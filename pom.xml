@@ -24,6 +24,8 @@
         <jna.version>4.1.0</jna.version>
         <google-maps-services.version>0.2.2</google-maps-services.version>
         <imageio.version>3.2.1</imageio.version>
+        <hibernate-types.version>2.9.7</hibernate-types.version>
+        <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
     </properties>
 
     <distributionManagement>
@@ -36,19 +38,36 @@
     <modules>
         <module>helfomat-core</module>
         <module>helfomat-api</module>
-        <module>helfomat-infrastructure-batch</module>
-        <module>helfomat-infrastructure-typo3</module>
-        <module>helfomat-infrastructure-thwde</module>
         <module>helfomat-infrastructure-google-maps</module>
         <module>helfomat-infrastructure-elasticsearch</module>
-        <module>helfomat-infrastructure-kafka</module>
-        <module>helfomat-infrastructure-keycloak</module>
         <module>helfomat-infrastructure-jpa</module>
         <module>helfomat-infrastructure-config</module>
-        <module>helfomat-web</module>
-        <module>helfomat-web-ui</module>
-        <module>helfomat-import</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>helfomat-web</id>
+            <modules>
+                <module>helfomat-infrastructure-keycloak</module>
+                <module>helfomat-web</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>helfomat-web-ui</id>
+            <modules>
+                <module>helfomat-web-ui</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>helfomat-import</id>
+            <modules>
+                <module>helfomat-infrastructure-batch</module>
+                <module>helfomat-infrastructure-typo3</module>
+                <module>helfomat-infrastructure-thwde</module>
+                <module>helfomat-import</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
@@ -124,6 +143,11 @@
                 <artifactId>imageio-jpeg</artifactId>
                 <version>${imageio.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.vladmihalcea</groupId>
+                <artifactId>hibernate-types-5</artifactId>
+                <version>${hibernate-types.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -137,6 +161,16 @@
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib-maven-plugin.version}</version>
+                    <configuration>
+                        <container>
+                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        </container>
                     </configuration>
                 </plugin>
             </plugins>

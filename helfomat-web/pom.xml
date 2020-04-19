@@ -37,10 +37,6 @@
             <artifactId>helfomat-infrastructure-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.helfenkannjeder.helfomat</groupId>
-            <artifactId>helfomat-web-ui</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -99,15 +95,6 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>2.1.0</version>
-                <configuration>
-                    <to>
-                        <image>helfomat-web</image>
-                    </to>
-                    <container>
-                        <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-                    </container>
-                </configuration>
             </plugin>
         </plugins>
     </build>
