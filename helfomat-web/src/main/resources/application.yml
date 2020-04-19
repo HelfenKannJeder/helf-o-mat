@@ -7,32 +7,11 @@ server:
     - text/html
     - text/xml
     - text/plain
-  servlet:
-    context-path: /helf-o-mat
-
-spring:
-  event:
-    datasource:
-      url: jdbc:postgresql://localhost/helfenkannjeder
-      username: helfenkannjeder
-      password: helfenkannjeder
-
-  data:
-    elasticsearch:
-      cluster-name: application
-      cluster-nodes: localhost:9300
 
 elasticsearch:
   index: helfomat
   type:
     organization: organization
-
-crawler:
-  thw:
-    domain: http://thw.de/
-    results-per-page: 10
-    http-request-timeout: 60000
-    map-pin: blue-pushpin.png
 
 googlemaps:
   api-key: ReplaceMe
