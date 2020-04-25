@@ -10,7 +10,7 @@ cache:
 jobs:
   include:
     - stage: build
-      script: ./mvnw -P helfomat-web,helfomat-web-ui,helfomat-import clean install
+      script: ./mvnw --no-transfer-progress -P helfomat-web,helfomat-web-ui,helfomat-import clean install
     - stage: build and push docker images
       if: branch IN (master, develop) AND type=push
       script: ./travis/helfomat-web_dockerBuildAndPublish.sh
