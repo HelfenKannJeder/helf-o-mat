@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.api.picture;
+package de.helfenkannjeder.helfomat.infrastructure.filesystem;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

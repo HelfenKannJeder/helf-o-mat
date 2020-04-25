@@ -29,8 +29,8 @@ public class OrganizationCreateEvent extends OrganizationEvent {
     }
 
     @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return new Organization.Builder()
+    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organizationBuilder) {
+        return organizationBuilder
             .setId(getOrganizationId())
             .setName(name)
             .setUrlName(urlName)

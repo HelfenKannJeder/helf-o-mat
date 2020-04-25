@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.infrastructure.typo3;
 
-import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organization.Address;
 import de.helfenkannjeder.helfomat.core.organization.AttendanceTime;
@@ -12,7 +11,7 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
 import de.helfenkannjeder.helfomat.core.organization.Volunteer;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TAddress;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TEmployee;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TGroup;
@@ -45,12 +44,10 @@ public class Typo3OrganizationProcessor implements ItemProcessor<TOrganization, 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Typo3OrganizationProcessor.class);
 
-    private final PictureRepository pictureRepository;
-    private final IndexManager indexManager;
+    private final PictureStorageService pictureStorageService;
 
-    public Typo3OrganizationProcessor(PictureRepository pictureRepository, IndexManager indexManager) {
-        this.pictureRepository = pictureRepository;
-        this.indexManager = indexManager;
+    public Typo3OrganizationProcessor(PictureStorageService pictureStorageService) {
+        this.pictureStorageService = pictureStorageService;
     }
 
     @Override
@@ -143,12 +140,11 @@ public class Typo3OrganizationProcessor implements ItemProcessor<TOrganization, 
         try {
             String url = "https://helfenkannjeder.de/uploads/pics/" + picture;
             PictureId pictureId = toPictureId(url);
-            if (this.pictureRepository.existPicture(pictureId)) {
+            if (this.pictureStorageService.existPicture(pictureId)) {
                 return pictureId;
             }
-            this.pictureRepository.savePicture(
+            this.pictureStorageService.savePicture(
                 url,
-                this.indexManager.getAlias(),
                 pictureId
             );
             return pictureId;

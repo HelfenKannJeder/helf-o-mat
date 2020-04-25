@@ -18,7 +18,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <springfox-swagger2.version>2.6.1</springfox-swagger2.version>
         <jsoup.version>1.9.2</jsoup.version>
         <jna.version>4.1.0</jna.version>
@@ -26,6 +26,7 @@
         <imageio.version>3.2.1</imageio.version>
         <hibernate-types.version>2.9.7</hibernate-types.version>
         <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
+        <spring-security-oauth2.version>2.2.5.RELEASE</spring-security-oauth2.version>
     </properties>
 
     <distributionManagement>
@@ -49,6 +50,7 @@
             <id>helfomat-web</id>
             <modules>
                 <module>helfomat-infrastructure-keycloak</module>
+                <module>helfomat-infrastructure-filesystem</module>
                 <module>helfomat-web</module>
             </modules>
         </profile>
@@ -135,6 +137,11 @@
             </dependency>
             <dependency>
                 <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-filesystem</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
                 <artifactId>helfomat-web-ui</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -147,6 +154,11 @@
                 <groupId>com.vladmihalcea</groupId>
                 <artifactId>hibernate-types-5</artifactId>
                 <version>${hibernate-types.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security.oauth.boot</groupId>
+                <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+                <version>${spring-security-oauth2.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

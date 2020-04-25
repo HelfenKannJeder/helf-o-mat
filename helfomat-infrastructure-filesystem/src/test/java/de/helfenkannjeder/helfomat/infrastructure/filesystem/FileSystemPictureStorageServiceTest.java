@@ -1,9 +1,10 @@
-package de.helfenkannjeder.helfomat.api.picture;
+package de.helfenkannjeder.helfomat.infrastructure.filesystem;
 
+import de.helfenkannjeder.helfomat.api.picture.ResizeImageService;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.DownloadService;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,10 +29,9 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings("unchecked")
-public class FileSystemPictureRepositoryTest {
+public class FileSystemPictureStorageServiceTest {
 
     private static final String PICTURE_URL = "https://helfenkannjeder.de/uploads/pics.jpg";
-    private static final String FOLDER = "my_folder";
     private static final String CONF_FOLDER = "target/temp/conf_folder";
 
     @Mock
@@ -46,11 +46,12 @@ public class FileSystemPictureRepositoryTest {
     @Mock
     private PictureConfiguration.PictureSize pictureSize;
 
-    private PictureRepository fileSystemPictureRepository;
+    @Mock
+    private PictureStorageService fileSystemPictureStorageService;
 
     @Before
     public void setUp() {
-        this.fileSystemPictureRepository = new FileSystemPictureRepository(downloadService, resizeImageService, pictureConfiguration);
+        this.fileSystemPictureStorageService = new FileSystemPictureStorageService(downloadService, resizeImageService, pictureConfiguration);
     }
 
     @Test
@@ -62,14 +63,14 @@ public class FileSystemPictureRepositoryTest {
         when(this.pictureConfiguration.getPictureFolder()).thenReturn(CONF_FOLDER);
 
         // Act
-        PictureId resultPictureId = this.fileSystemPictureRepository.savePicture(PICTURE_URL, FOLDER, pictureId);
+        PictureId resultPictureId = this.fileSystemPictureStorageService.savePicture(PICTURE_URL, pictureId);
 
         // Assert
         assertThat(resultPictureId)
             .isNotNull()
             .isEqualTo(pictureId);
         verify(this.downloadService).download(PICTURE_URL);
-        Path pathOfOutput = Paths.get(CONF_FOLDER, FOLDER, pictureId.getValue());
+        Path pathOfOutput = Paths.get(CONF_FOLDER, pictureId.getValue());
         assertThat(Files.readAllBytes(pathOfOutput))
             .isNotNull()
             .isEqualTo(content);
@@ -84,10 +85,10 @@ public class FileSystemPictureRepositoryTest {
 
         // Act
         ThrowableAssert.ThrowingCallable thrownException = () ->
-            this.fileSystemPictureRepository.savePicture("http://does.not.exist", FOLDER, pictureId);
+            this.fileSystemPictureStorageService.savePicture("http://does.not.exist", pictureId);
 
         // Assert
-        Path pathOfOutput = Paths.get(CONF_FOLDER, FOLDER, pictureId.getValue());
+        Path pathOfOutput = Paths.get(CONF_FOLDER, pictureId.getValue());
         assertThat(Files.exists(pathOfOutput))
             .isFalse();
         assertThatThrownBy(thrownException)
@@ -105,7 +106,7 @@ public class FileSystemPictureRepositoryTest {
 
         // Act
         ThrowableAssert.ThrowingCallable thrownException = () ->
-            this.fileSystemPictureRepository.savePicture(PICTURE_URL, FOLDER, pictureId);
+            this.fileSystemPictureStorageService.savePicture(PICTURE_URL, pictureId);
 
         // Assert
         assertThatThrownBy(thrownException)
@@ -129,13 +130,13 @@ public class FileSystemPictureRepositoryTest {
         when(this.pictureConfiguration.getPictureSizes()).thenReturn(Collections.singletonList(pictureSize));
 
         // Act
-        PictureId resultPictureId = this.fileSystemPictureRepository.savePicture(PICTURE_URL, FOLDER, pictureId);
+        PictureId resultPictureId = this.fileSystemPictureStorageService.savePicture(PICTURE_URL, pictureId);
 
         // Assert
         assertThat(resultPictureId)
             .isNotNull();
-        Path output = Paths.get(CONF_FOLDER, FOLDER, pictureId.getValue());
-        Path outputScaled = Paths.get(CONF_FOLDER, FOLDER, folderScaled, pictureId.getValue());
+        Path output = Paths.get(CONF_FOLDER, pictureId.getValue());
+        Path outputScaled = Paths.get(CONF_FOLDER, folderScaled, pictureId.getValue());
         assertThat(output)
             .isNotNull();
         verify(this.resizeImageService).resize(output, outputScaled, width, height);
@@ -145,7 +146,7 @@ public class FileSystemPictureRepositoryTest {
     @Test
     public void getPicture_withValidName_returnsNotNull() {
         // Act
-        Path picture = this.fileSystemPictureRepository.getPicture(new PictureId(), "test-size");
+        Path picture = this.fileSystemPictureStorageService.getPicture(new PictureId(), "test-size");
 
         // Assert
         assertThat(picture).isNotNull();
@@ -154,7 +155,7 @@ public class FileSystemPictureRepositoryTest {
     @Test
     public void getPicture_withInvalidName_throwsIllegalArgumentException() {
         // Act
-        ThrowableAssert.ThrowingCallable runnable = () -> this.fileSystemPictureRepository.getPicture(new PictureId(), "../test");
+        ThrowableAssert.ThrowingCallable runnable = () -> this.fileSystemPictureStorageService.getPicture(new PictureId(), "../test");
 
         // Assert
         assertThatThrownBy(runnable)

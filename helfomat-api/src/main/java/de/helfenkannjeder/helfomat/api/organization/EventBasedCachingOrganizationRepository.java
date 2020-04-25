@@ -35,11 +35,11 @@ public class EventBasedCachingOrganizationRepository implements OrganizationRepo
 
     protected void processDomainEvents(OrganizationId organizationId, List<OrganizationEvent> organizationEvents) {
         LOG.debug("Received organization events for organization '{}' from event storage '{}'", organizationId, organizationEvents);
-        Organization.Builder organizationBuilder = organizationBuilderMap.getOrDefault(organizationId, new Organization.Builder());
+        Organization.Builder organizationBuilder = getExistingOrganizationBuilder(organizationId);
         for (OrganizationEvent organizationEvent : organizationEvents) {
             organizationBuilder = organizationEvent.applyOnOrganizationBuilder(organizationBuilder);
         }
-        organizationBuilderMap.put(organizationId, organizationBuilder);
+        saveToLocalCache(organizationId, organizationBuilder);
         this.persistentOrganizationRepository.save(Collections.singletonList(organizationBuilder.build()));
     }
 
@@ -47,10 +47,18 @@ public class EventBasedCachingOrganizationRepository implements OrganizationRepo
         OrganizationId organizationId = organizationEvent.getOrganizationId();
         LOG.debug("Received organization event for organization '{}' from event storage '{}'", organizationId, organizationEvent);
         Organization.Builder organizationBuilder = organizationEvent.applyOnOrganizationBuilder(
-            organizationBuilderMap.getOrDefault(organizationId, new Organization.Builder())
+            getExistingOrganizationBuilder(organizationId)
         );
-        organizationBuilderMap.put(organizationId, organizationBuilder);
+        saveToLocalCache(organizationId, organizationBuilder);
         this.persistentOrganizationRepository.save(Collections.singletonList(organizationBuilder.build()));
+    }
+
+    protected Organization.Builder getExistingOrganizationBuilder(OrganizationId organizationId) {
+        return organizationBuilderMap.getOrDefault(organizationId, new Organization.Builder());
+    }
+
+    protected void saveToLocalCache(OrganizationId organizationId, Organization.Builder organizationBuilder) {
+        organizationBuilderMap.put(organizationId, organizationBuilder);
     }
 
     @Override

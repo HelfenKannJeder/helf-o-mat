@@ -6,13 +6,9 @@ spring:
       password: helfenkannjeder
 
   batch:
-    datasource:
-      url: jdbc:postgresql://localhost/helfenkannjeder
-      username: helfenkannjeder
-      password: helfenkannjeder
     job:
       enabled: true
-    initialize-schema: always
+    initialize-schema: never
   main:
     web-application-type: none
 
@@ -26,12 +22,6 @@ spring:
     elasticsearch:
       cluster-name: application
       cluster-nodes: localhost:9300
-
-kafka:
-  topic:
-    organization-events: organization-events
-    replication-factor: 1
-  bootstrap-servers: localhost:9092
 
 elasticsearch:
   index: helfomat
@@ -47,17 +37,6 @@ crawler:
 
 googlemaps:
   api-key: ReplaceMe
-
-helfomat:
-  picture-folder: pictures/
-  picture-sizes:
-    - name: icon
-      width: 84
-    - name: teaser
-      width: 1000
-      height: 300
-    - name: medium
-      width: 300
 
 logging:
   level:

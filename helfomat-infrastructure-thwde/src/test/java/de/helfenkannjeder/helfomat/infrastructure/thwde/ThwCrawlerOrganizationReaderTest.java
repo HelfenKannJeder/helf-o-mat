@@ -7,7 +7,7 @@ import de.helfenkannjeder.helfomat.core.organization.ContactPerson;
 import de.helfenkannjeder.helfomat.core.organization.Group;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
 import org.assertj.core.data.Offset;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,7 +22,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -35,7 +34,7 @@ public class ThwCrawlerOrganizationReaderTest {
     private ThwCrawlerOrganizationReader thwCrawlerOrganizationReader;
 
     @Mock
-    private PictureRepository pictureRepository;
+    private PictureStorageService pictureStorageService;
 
     @Mock
     private IndexManager indexManager;
@@ -95,8 +94,7 @@ public class ThwCrawlerOrganizationReaderTest {
         thwCrawlerConfiguration.setHttpRequestTimeout(3000);
         thwCrawlerOrganizationReader = new ThwCrawlerOrganizationReader(
             thwCrawlerConfiguration,
-            pictureRepository,
-            indexManager
+            pictureStorageService
         );
     }
 
@@ -232,10 +230,9 @@ public class ThwCrawlerOrganizationReaderTest {
         assertThat(contactPerson.getRank()).isEqualTo("Ortsbeauftragter");
         assertThat(contactPerson.getTelephone()).isEqualTo("0241 9209336");
         assertThat(contactPerson.getPicture()).isNull();
-        verify(this.pictureRepository, never()).savePicture(
+        verify(this.pictureStorageService, never()).savePicture(
             eq(this.domain + "/SharedDocs/Bilder/DE/TiUe/NoElementPerson.jpg?__blob=thumbnail&v=5"),
-            anyString(),
-            any()
+                any()
         );
     }
 
@@ -245,7 +242,7 @@ public class ThwCrawlerOrganizationReaderTest {
         thwCrawlerOrganizationReader.read();
         thwCrawlerOrganizationReader.read();
         thwCrawlerOrganizationReader.read();
-        Mockito.reset(this.pictureRepository);
+        Mockito.reset(this.pictureStorageService);
 
         // Act
         Organization organization = thwCrawlerOrganizationReader.read();
@@ -254,10 +251,9 @@ public class ThwCrawlerOrganizationReaderTest {
         assertThat(organization.getContactPersons())
             .isNotNull()
             .hasSize(1);
-        verify(this.pictureRepository).savePicture(
+        verify(this.pictureStorageService).savePicture(
             eq(this.domain + "/SharedDocs/Bilder/DE/TiUe/Personen/P/probstc3.jpg?__blob=thumbnail&v=2"),
-            eq(null),
-            any()
+                any()
         );
     }
 

@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.infrastructure.thwde;
 
-import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.ProfileRegistry;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organization.Address;
@@ -12,7 +11,7 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationReader;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -51,8 +50,7 @@ public class ThwCrawlerOrganizationReader implements ItemReader<Organization>, O
     private static final Logger LOGGER = LoggerFactory.getLogger(ThwCrawlerOrganizationReader.class);
 
     private final ThwCrawlerConfiguration thwCrawlerConfiguration;
-    private final PictureRepository pictureRepository;
-    private final IndexManager indexManager;
+    private final PictureStorageService pictureStorageService;
 
     private Iterator<Element> iterator;
 
@@ -66,12 +64,10 @@ public class ThwCrawlerOrganizationReader implements ItemReader<Organization>, O
     @Autowired
     public ThwCrawlerOrganizationReader(
         ThwCrawlerConfiguration thwCrawlerConfiguration,
-        PictureRepository pictureRepository,
-        IndexManager indexManager
+        PictureStorageService pictureStorageService
     ) throws IOException, DownloadFailedException {
         this.thwCrawlerConfiguration = thwCrawlerConfiguration;
-        this.pictureRepository = pictureRepository;
-        this.indexManager = indexManager;
+        this.pictureStorageService = pictureStorageService;
         this.logoPictureid = toPictureIdFromClasspathResource("thwde/logo.png");
         this.teaserPictureId = toPictureIdFromClasspathResource("thwde/teaser.jpg");
     }
@@ -174,10 +170,10 @@ public class ThwCrawlerOrganizationReader implements ItemReader<Organization>, O
     private PictureId toPicture(String picture) {
         try {
             PictureId pictureId = toPictureId(picture);
-            if (this.pictureRepository.existPicture(pictureId)) {
+            if (this.pictureStorageService.existPicture(pictureId)) {
                 return pictureId;
             }
-            this.pictureRepository.savePicture(picture, this.indexManager.getAlias(), pictureId);
+            this.pictureStorageService.savePicture(picture, pictureId);
             return pictureId;
         } catch (DownloadFailedException e) {
             LOGGER.warn("Failed to download picture", e);
@@ -187,11 +183,11 @@ public class ThwCrawlerOrganizationReader implements ItemReader<Organization>, O
 
     private PictureId toPictureIdFromClasspathResource(String imagePath) throws IOException, DownloadFailedException {
         PictureId pictureId = toPictureId("classpath:" + imagePath);
-        if (this.pictureRepository.existPicture(pictureId)) {
+        if (this.pictureStorageService.existPicture(pictureId)) {
             return pictureId;
         }
         byte[] imageByteArray = StreamUtils.copyToByteArray(new ClassPathResource(imagePath).getInputStream());
-        this.pictureRepository.savePicture(imageByteArray, this.indexManager.getAlias(), pictureId);
+        this.pictureStorageService.savePicture(imageByteArray, pictureId);
         return pictureId;
     }
 
