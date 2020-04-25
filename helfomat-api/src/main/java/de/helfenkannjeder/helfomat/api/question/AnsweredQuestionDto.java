@@ -12,6 +12,9 @@ public class AnsweredQuestionDto {
     private String question;
     private Answer answer;
 
+    private AnsweredQuestionDto() {
+    }
+
     public AnsweredQuestionDto(QuestionId questionId, String question, Answer answer) {
         this.questionId = questionId;
         this.question = question;
