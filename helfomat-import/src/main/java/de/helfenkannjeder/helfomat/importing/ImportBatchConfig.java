@@ -10,6 +10,7 @@ import de.helfenkannjeder.helfomat.infrastructure.batch.processor.OrganizationDi
 import de.helfenkannjeder.helfomat.infrastructure.batch.writer.OrganizationItemWriter;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization.ElasticsearchOrganizationRepository;
+import de.helfenkannjeder.helfomat.rest.RestOrganizationEventPublisher;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecution;
@@ -17,7 +18,6 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -46,7 +46,7 @@ public class ImportBatchConfig {
                                   AnswerQuestionsProcessor answerQuestionsProcessor,
                                   ElasticsearchConfiguration elasticsearchConfiguration,
                                   ElasticsearchTemplate elasticsearchTemplate,
-                                  ApplicationEventPublisher applicationEventPublisher,
+                                  RestOrganizationEventPublisher restOrganizationEventPublisher,
                                   OrganizationRepository organizationRepository,
                                   @Value("classpath:/mapping/organization.json") Resource organizationMapping,
                                   @Qualifier("legacyTransactionManager") PlatformTransactionManager transactionManager) {
@@ -63,7 +63,9 @@ public class ImportBatchConfig {
                         return organizationStepExecutionListener.getOrganizationDifferenceProcessor().process(organization);
                     })
                     .writer((List<? extends Pair<Organization, Stream<OrganizationEvent>>> organizationInfo) -> {
-                        organizationInfo.stream().flatMap(Pair::getSecond).forEach(applicationEventPublisher::publishEvent);
+                        for (Pair<Organization, Stream<OrganizationEvent>> organizationStreamPair : organizationInfo) {
+                            restOrganizationEventPublisher.publishEvents(organizationStreamPair.getSecond());
+                        }
                         organizationStepExecutionListener.getOrganizationItemWriter().write(organizationInfo.stream().map(Pair::getFirst).collect(Collectors.toList()));
                     })
                     .listener(organizationStepExecutionListener)

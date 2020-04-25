@@ -1,0 +1,17 @@
+security:
+  oauth2:
+    client:
+      client-id: helfomat-import
+      client-secret: d31cc66c-f26d-44d2-b536-5ae7da42f1c5
+      access-token-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/token
+      token-info-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/token/introspect
+      scope:
+        - helfomat_admin
+
+helfomat:
+  importer:
+    web-api-url: http://localhost:8080
+
+keycloak:
+  realm: helfomat
+  auth-server-url: http://localhost:8085/auth

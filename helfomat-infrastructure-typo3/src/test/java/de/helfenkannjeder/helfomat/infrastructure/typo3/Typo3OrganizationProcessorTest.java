@@ -4,7 +4,7 @@ import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import de.helfenkannjeder.helfomat.core.picture.PictureRepository;
+import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganization;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganizationType;
 import org.junit.Before;
@@ -18,7 +18,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
@@ -28,14 +27,14 @@ public class Typo3OrganizationProcessorTest {
     private Typo3OrganizationProcessor typo3OrganizationProcessor;
 
     @Mock
-    private PictureRepository pictureRepository;
+    private PictureStorageService pictureStorageService;
 
     @Mock
     private IndexManager indexManager;
 
     @Before
     public void setUp() {
-        this.typo3OrganizationProcessor = new Typo3OrganizationProcessor(pictureRepository, indexManager);
+        this.typo3OrganizationProcessor = new Typo3OrganizationProcessor(pictureStorageService);
     }
 
     @Test
@@ -85,7 +84,7 @@ public class Typo3OrganizationProcessorTest {
 
     private List<PictureId> getPictureIdsOfLastInsert() throws DownloadFailedException {
         ArgumentCaptor<PictureId> pictureIdArgumentCaptor = ArgumentCaptor.forClass(PictureId.class);
-        verify(pictureRepository, atLeastOnce()).savePicture(anyString(), eq(null), pictureIdArgumentCaptor.capture());
+        verify(pictureStorageService, atLeastOnce()).savePicture(anyString(), pictureIdArgumentCaptor.capture());
 
         return pictureIdArgumentCaptor.getAllValues();
     }

@@ -1,4 +1,4 @@
-helfomat:
+helfomat.picture:
   picture-folder: pictures/
   autoImport:
     enabled: false

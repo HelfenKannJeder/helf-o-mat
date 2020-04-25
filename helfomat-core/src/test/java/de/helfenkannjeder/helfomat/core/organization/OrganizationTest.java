@@ -151,7 +151,7 @@ public class OrganizationTest {
         List<OrganizationEvent> domainEvents = originalOrganization.compareTo(null);
 
         // Assert
-        Organization.Builder organizationBuilder = null;
+        Organization.Builder organizationBuilder = new Organization.Builder();
         for (OrganizationEvent domainEvent : domainEvents) {
             organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder);
         }

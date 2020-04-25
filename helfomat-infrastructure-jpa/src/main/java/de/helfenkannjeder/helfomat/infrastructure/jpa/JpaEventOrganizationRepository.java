@@ -2,14 +2,13 @@ package de.helfenkannjeder.helfomat.infrastructure.jpa;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.helfenkannjeder.helfomat.api.organization.EventBasedCachingOrganizationRepository;
+import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
 import org.springframework.context.event.EventListener;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 /**
  * @author Valentin Zickner
@@ -31,14 +30,24 @@ public class JpaEventOrganizationRepository extends EventBasedCachingOrganizatio
     @Override
     protected void processDomainEvent(OrganizationEvent organizationEvent) {
         OrganizationId organizationId = organizationEvent.getOrganizationId();
-        List<OrganizationEvent> events = new ArrayList<>();
-        if (!organizationBuilderMap.containsKey(organizationId)) {
-            events = this.eventRepository.findByOrganizationId(organizationId)
-                .stream()
-                .map(Event::getDomainEvent)
-                .collect(Collectors.toList());
+        super.processDomainEvents(organizationId, Collections.singletonList(organizationEvent));
+    }
+
+    @Override
+    protected Organization.Builder getExistingOrganizationBuilder(OrganizationId organizationId) {
+        Organization.Builder organizationBuilder = this.organizationBuilderMap.get(organizationId);
+        if (organizationBuilder != null) {
+            return organizationBuilder;
         }
-        events.add(organizationEvent);
-        super.processDomainEvents(organizationId, events);
+        Organization.Builder newOrganizationBuilder = new Organization.Builder();
+        this.eventRepository.findByOrganizationId(organizationId)
+            .stream()
+            .map(Event::getDomainEvent)
+            .forEach(domainEvent -> domainEvent.applyOnOrganizationBuilder(newOrganizationBuilder));
+        return newOrganizationBuilder;
+    }
+
+    @Override
+    protected void saveToLocalCache(OrganizationId organizationId, Organization.Builder organizationBuilder) {
     }
 }

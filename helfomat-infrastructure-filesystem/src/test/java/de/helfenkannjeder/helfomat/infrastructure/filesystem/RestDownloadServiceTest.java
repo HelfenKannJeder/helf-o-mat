@@ -1,7 +1,7 @@
-package de.helfenkannjeder.helfomat.api.picture;
+package de.helfenkannjeder.helfomat.infrastructure.filesystem;
 
-import de.helfenkannjeder.helfomat.api.EmbeddedHttpServer;
 import de.helfenkannjeder.helfomat.api.geopoint.DistanceMatrixApplicationService;
+import de.helfenkannjeder.helfomat.api.picture.RestDownloadService;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
