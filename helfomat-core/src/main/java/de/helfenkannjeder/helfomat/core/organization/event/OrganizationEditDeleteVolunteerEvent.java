@@ -33,4 +33,11 @@ public class OrganizationEditDeleteVolunteerEvent extends OrganizationEditEvent 
     public <T> T visit(OrganizationEventVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "OrganizationEditDeleteVolunteerEvent{" +
+            "volunteer=" + volunteer +
+            '}';
+    }
 }

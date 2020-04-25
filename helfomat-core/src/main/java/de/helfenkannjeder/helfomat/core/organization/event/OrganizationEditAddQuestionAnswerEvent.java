@@ -39,4 +39,12 @@ public class OrganizationEditAddQuestionAnswerEvent extends OrganizationEditEven
     public <T> T visit(OrganizationEventVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "OrganizationEditAddQuestionAnswerEvent{" +
+            "index=" + index +
+            ", questionAnswer=" + questionAnswer +
+            '}';
+    }
 }

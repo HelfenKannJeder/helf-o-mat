@@ -47,4 +47,13 @@ public class ProposedChangeOrganizationEvent extends OrganizationEvent {
     public <T> T visit(OrganizationEventVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "ProposedChangeOrganizationEvent{" +
+            "author='" + author + '\'' +
+            ", sources='" + sources + '\'' +
+            ", changes=" + changes +
+            '}';
+    }
 }

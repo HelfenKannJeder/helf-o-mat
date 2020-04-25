@@ -33,4 +33,11 @@ public class OrganizationEditTeaserImageEvent extends OrganizationEditEvent {
     public <T> T visit(OrganizationEventVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "OrganizationEditTeaserImageEvent{" +
+            "teaserImage=" + teaserImage +
+            '}';
+    }
 }

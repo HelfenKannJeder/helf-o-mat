@@ -54,4 +54,12 @@ public class OrganizationCreateEvent extends OrganizationEvent {
         return organizationType;
     }
 
+    @Override
+    public String toString() {
+        return "OrganizationCreateEvent{" +
+            "name='" + name + '\'' +
+            ", urlName='" + urlName + '\'' +
+            ", organizationType=" + organizationType +
+            '}';
+    }
 }

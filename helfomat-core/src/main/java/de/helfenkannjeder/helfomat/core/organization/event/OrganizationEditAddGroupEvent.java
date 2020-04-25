@@ -40,4 +40,11 @@ public class OrganizationEditAddGroupEvent extends OrganizationEditEvent {
         return visitor.visit(this);
     }
 
+    @Override
+    public String toString() {
+        return "OrganizationEditAddGroupEvent{" +
+            "index=" + index +
+            ", group=" + group +
+            '}';
+    }
 }

@@ -39,4 +39,12 @@ public class OrganizationEditAddPictureEvent extends OrganizationEditEvent {
     public <T> T visit(OrganizationEventVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "OrganizationEditAddPictureEvent{" +
+            "index=" + index +
+            ", pictureId=" + pictureId +
+            '}';
+    }
 }

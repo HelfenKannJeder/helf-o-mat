@@ -57,4 +57,14 @@ public class ConfirmedChangeOrganizationEvent extends OrganizationEvent {
     public <T> T visit(OrganizationEventVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "ConfirmedChangeOrganizationEvent{" +
+            "approvedBy='" + approvedBy + '\'' +
+            ", author='" + author + '\'' +
+            ", sources='" + sources + '\'' +
+            ", changes=" + changes +
+            '}';
+    }
 }

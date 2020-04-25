@@ -40,4 +40,11 @@ public class OrganizationEditAddContactPersonEvent extends OrganizationEditEvent
         return visitor.visit(this);
     }
 
+    @Override
+    public String toString() {
+        return "OrganizationEditAddContactPersonEvent{" +
+            "index=" + index +
+            ", contactPerson=" + contactPerson +
+            '}';
+    }
 }

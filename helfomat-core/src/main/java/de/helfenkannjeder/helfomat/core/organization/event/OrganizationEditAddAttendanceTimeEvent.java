@@ -40,4 +40,11 @@ public class OrganizationEditAddAttendanceTimeEvent extends OrganizationEditEven
         return visitor.visit(this);
     }
 
+    @Override
+    public String toString() {
+        return "OrganizationEditAddAttendanceTimeEvent{" +
+            "index=" + index +
+            ", attendanceTime=" + attendanceTime +
+            '}';
+    }
 }

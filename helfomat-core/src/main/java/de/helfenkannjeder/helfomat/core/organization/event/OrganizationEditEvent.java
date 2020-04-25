@@ -15,4 +15,8 @@ public abstract class OrganizationEditEvent extends OrganizationEvent {
         super(organizationId);
     }
 
+    @Override
+    public String toString() {
+        return "OrganizationEditEvent{}";
+    }
 }

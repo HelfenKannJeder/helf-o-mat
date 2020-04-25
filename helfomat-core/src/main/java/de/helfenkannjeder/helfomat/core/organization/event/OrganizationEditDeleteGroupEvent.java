@@ -33,4 +33,11 @@ public class OrganizationEditDeleteGroupEvent extends OrganizationEditEvent {
     public <T> T visit(OrganizationEventVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "OrganizationEditDeleteGroupEvent{" +
+            "group=" + group +
+            '}';
+    }
 }

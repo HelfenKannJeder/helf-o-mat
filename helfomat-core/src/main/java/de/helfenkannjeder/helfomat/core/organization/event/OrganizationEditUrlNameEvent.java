@@ -32,4 +32,11 @@ public class OrganizationEditUrlNameEvent extends OrganizationEditEvent {
     public <T> T visit(OrganizationEventVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "OrganizationEditUrlNameEvent{" +
+            "urlName='" + urlName + '\'' +
+            '}';
+    }
 }
