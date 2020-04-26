@@ -1,7 +1,7 @@
-package de.helfenkannjeder.helfomat.api.geopoint;
+package de.helfenkannjeder.helfomat.api.geopoint
 
-import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
+import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
 
-public interface DistanceMatrixApplicationService {
-    TravelDistanceDto getTravelDistanceFor(TravelModeDto travelMode, GeoPoint origin, GeoPoint destination) throws InvalidTravelModeException;
+interface DistanceMatrixApplicationService {
+    fun getTravelDistanceFor(travelMode: TravelModeDto, origin: GeoPoint, destination: GeoPoint): TravelDistanceDto?
 }
