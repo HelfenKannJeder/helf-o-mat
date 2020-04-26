@@ -3,14 +3,14 @@ package de.helfenkannjeder.helfomat.core.organization.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrganizationEventTest {
+class OrganizationEventTest {
 
     @Test
-    public void objectMapper_serializeOrganizationEvent_ensureDeserializationWorksAndContainsSameContent() throws Exception {
+    void objectMapper_serializeOrganizationEvent_ensureDeserializationWorksAndContainsSameContent() throws Exception {
         // Arrange
         ObjectMapper objectMapper = new ObjectMapper();
         OrganizationCreateEvent organizationCreateEvent = new OrganizationCreateEvent(

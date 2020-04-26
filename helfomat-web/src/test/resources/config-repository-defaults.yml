@@ -1,0 +1,66 @@
+helfomat:
+  questions:
+    - id: "8dd070ed-a9de-42af-a017-57a096cf8ec1"
+      question: "Möchtest Du Dich in medizinischer Hilfe ausbilden lassen und diese leisten?"
+      description: "Wenn in Folge z. B. eines Unfalls Menschen ernsthafte Verletzungen erlitten haben, benötigen sie Deine Hilfe. Du bist für das Erkennen von Gefahren für den Betroffenen sowie die Durchführung der richtigen Maßnahmen verantwortlich."
+      defaultAnswer: "MAYBE"
+      groups:
+        - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
+          answer: "YES"
+        - phrase: "Rettungsdienst" # ASB / DRK
+          answer: "YES"
+        - organizationType: "BW"
+          phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
+          answer: "YES"
+
+    - id: "6487dd30-8d1a-4421-b424-2d822cb13e32"
+      question: "Du hast keine Angst vor Feuer, nur Respekt. Möchtest Du lernen, wie man es löscht?"
+      description: "Zum effizienten Löschen von Bränden ist überlegtes Handeln erforderlich: Erlaubt die aktuelle Situation, einen Gebäudebrand von innen unter schwerem Atemschutz zu bekämpfen oder ist ein Außenangriff zu bevorzugen?"
+      defaultAnswer: "NO"
+      groups:
+        - organizationType: "FF"
+          answer: "YES"
+
+    - id: "35a19221-8fbf-45fb-9443-65a43aae9013"
+      question: "Hast Du Interesse daran, Menschen bei Verkehrsunfällen aus Fahrzeugen zu retten?"
+      description: "Zwei Fahrzeuge sind zusammengestoßen, die Fahrzeugführer eingeklemmt und nicht ansprechbar. Hauptziel der Rettung ist es nun, die verunglückten Personen in kürzestmöglicher Zeit aus ihrem Fahrzeug zu befreien und einer intensivmedizinischen Betreuung in einem Krankenhaus zuzuführen."
+      defaultAnswer: "NO"
+      groups:
+        - organizationType: "FF"
+          answer: "YES"
+        - phrase: "Rettungsdienst" # ASB / DRK
+          answer: "MAYBE"
+        - phrase: "Bergungsgruppe" # THW
+          answer: "MAYBE"
+
+    - id: "58aca3fe-1783-42ff-81d6-43212d76ce04"
+      question: "Kannst Du sehr kurzfristig, ggf. auch innerhalb Deiner Arbeitszeiten, für Einsätze zur Verfügung stehen?"
+      description: "Brände oder Verkehrsunfälle erfordern schnelles Handeln. Hier solltest Du in der Lage sein, Deinen Arbeitsplatz zu verlassen. Es finden sich aber genügend Möglichkeiten, die entsprechende Vorlaufzeiten erlauben."
+      defaultAnswer: "MAYBE"
+      groups:
+        - organizationType: "FF"
+          answer: "YES"
+        - phrase: "Schnelleinsatzgruppe" # ASB / DRK
+          answer: "YES"
+        - organizationType: "BW"
+          phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
+          answer: "NO"
+
+    - id: "89342f97-4a0e-457b-994b-5a4851618acc"
+      question: "Ist Kochen eine Deiner Leidenschaften?"
+      description: "Könntest Du Dir vorstellen, die Verpflegung von wenigen bis einigen hundert Einsatzkräften zu verantworten, ohne dass dabei der Feldkochherd ruiniert wird?"
+      defaultAnswer: "NO"
+      groups:
+        - phrase: "Feldkochherd"
+          answer: "YES"
+        - phrase: "Logistik-Verpflegungstrupp"
+          answer: "YES"
+        - phrase: "Betreuung" # DLRG / ASB / DRK
+          answer: "MAYBE"
+
+  organization-templates:
+    - name: Technisches Hilfswerk
+      acronym: THW
+      groups:
+        - name: OV-Stab
+          description: "Der OV-Stab bildet die Verwaltungseinheit eines Ortsverbands und dient der Führung und Organisation. Alle Mitglieder einschließlich des Leiters eines THW-Ortsverbandes (Ortsbeauftragte), sind rein ehrenamtlich tägig."

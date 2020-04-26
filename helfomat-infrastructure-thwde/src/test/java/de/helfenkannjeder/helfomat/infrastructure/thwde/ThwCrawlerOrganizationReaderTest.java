@@ -9,14 +9,14 @@ import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
 import org.assertj.core.data.Offset;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ThwCrawlerOrganizationReaderTest {
 
     private static final String OVERVIEW_URL = "/DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html";
@@ -41,8 +41,8 @@ public class ThwCrawlerOrganizationReaderTest {
 
     private String domain;
 
-    @BeforeClass
-    public static void setUpServer() throws Exception {
+    @BeforeAll
+    static void setUpServer() throws Exception {
         EmbeddedHttpServer.start();
         EmbeddedHttpServer.setContent(OVERVIEW_URL, null, "de/thw/overview/a_3.html"); // Default
         EmbeddedHttpServer.setContent(OVERVIEW_URL, getOverviewParameter("A", 1), "de/thw/overview/a_1.html");
@@ -79,13 +79,13 @@ public class ThwCrawlerOrganizationReaderTest {
         EmbeddedHttpServer.setContent(MAPVIEW_URL, "oeId=2000041", "de/thw/map/thw-ov-backnang.html");
     }
 
-    @AfterClass
-    public static void tearDownServer() {
+    @AfterAll
+    static void tearDownServer() {
         EmbeddedHttpServer.stop();
     }
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         ThwCrawlerConfiguration thwCrawlerConfiguration = new ThwCrawlerConfiguration();
         this.domain = "http://localhost:" + EmbeddedHttpServer.PORT + "/";
         thwCrawlerConfiguration.setDomain(this.domain);
@@ -113,7 +113,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void organizationCanBeRead() throws Exception {
+    void organizationCanBeRead() throws Exception {
         Organization organization = thwCrawlerOrganizationReader.read();
         assertThat(organization.getAddresses())
             .isNotNull()
@@ -123,7 +123,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void organizationCanBeRead_withCoordinatesOfOrganization_returnsOrganizationWithCoordinates() throws Exception {
+    void organizationCanBeRead_withCoordinatesOfOrganization_returnsOrganizationWithCoordinates() throws Exception {
         // Arrange
 
 
@@ -144,7 +144,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void read_executeTwice_verifyOrganizationCorrect() throws Exception {
+    void read_executeTwice_verifyOrganizationCorrect() throws Exception {
         // Act
         Organization organization1 = thwCrawlerOrganizationReader.read();
         Organization organization2 = thwCrawlerOrganizationReader.read();
@@ -157,7 +157,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void lastReadOvIsBacknang() throws Exception {
+    void lastReadOvIsBacknang() throws Exception {
         Organization nextOrganization = null;
         Organization organization;
         do {
@@ -170,7 +170,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void read_withGroupsOfAalen_returnsCorrectListOfOrganizations() throws Exception {
+    void read_withGroupsOfAalen_returnsCorrectListOfOrganizations() throws Exception {
         // Arrange
         // Start with the second one, less complexity in group structure
         thwCrawlerOrganizationReader.read();
@@ -193,7 +193,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void read_withGroupDescriptionsOfAalen_returnsCorrectListOfOrganizations() throws Exception {
+    void read_withGroupDescriptionsOfAalen_returnsCorrectListOfOrganizations() throws Exception {
         // Arrange
         // Start with the second one, less complexity in group structure
         thwCrawlerOrganizationReader.read();
@@ -214,7 +214,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void read_withContactPerson_returnsContactPersonWithoutPicture() throws Exception {
+    void read_withContactPerson_returnsContactPersonWithoutPicture() throws Exception {
         // Arrange
 
         // Act
@@ -237,7 +237,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void read_withContactPersonOfPicture_verifyPictureDownloaded() throws Exception {
+    void read_withContactPersonOfPicture_verifyPictureDownloaded() throws Exception {
         // Arrange
         thwCrawlerOrganizationReader.read();
         thwCrawlerOrganizationReader.read();
@@ -258,7 +258,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void duplicateGroupsAreNotImported() throws Exception {
+    void duplicateGroupsAreNotImported() throws Exception {
         // e.g. zugtrupp is only imported once even if there is a zugtrupp for each TZ
 
         // Arrange
@@ -273,7 +273,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void toPicture_withSameUrls_ensureThatUuidIsStatic() {
+    void toPicture_withSameUrls_ensureThatUuidIsStatic() {
         // Arrange
 
         // Act
@@ -285,7 +285,7 @@ public class ThwCrawlerOrganizationReaderTest {
     }
 
     @Test
-    public void toPicture_withDifferentUrls_ensureThatUuidIsStatic() {
+    void toPicture_withDifferentUrls_ensureThatUuidIsStatic() {
         // Arrange
 
         // Act

@@ -7,12 +7,12 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganization;
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.TOrganizationType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class Typo3OrganizationProcessorTest {
 
     private Typo3OrganizationProcessor typo3OrganizationProcessor;
@@ -32,13 +32,13 @@ public class Typo3OrganizationProcessorTest {
     @Mock
     private IndexManager indexManager;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.typo3OrganizationProcessor = new Typo3OrganizationProcessor(pictureStorageService);
     }
 
     @Test
-    public void organizationsWithoutTypeAreIgnored() {
+    void organizationsWithoutTypeAreIgnored() {
         TOrganization tOrganization = new TOrganization();
         Organization processedOrganization = typo3OrganizationProcessor.process(tOrganization);
 
@@ -46,7 +46,7 @@ public class Typo3OrganizationProcessorTest {
     }
 
     @Test
-    public void organizationsOfTypeAktivbueroAreIgnored() {
+    void organizationsOfTypeAktivbueroAreIgnored() {
         TOrganization tOrganization = new TOrganization();
         TOrganizationType tOrganizationType = new TOrganizationType();
         tOrganizationType.setName("Aktivbüro");
@@ -57,7 +57,7 @@ public class Typo3OrganizationProcessorTest {
     }
 
     @Test
-    public void toPicture_withSameUrls_ensureThatUuidIsStatic() throws DownloadFailedException {
+    void toPicture_withSameUrls_ensureThatUuidIsStatic() throws DownloadFailedException {
         // Arrange
 
         // Act
@@ -70,7 +70,7 @@ public class Typo3OrganizationProcessorTest {
     }
 
     @Test
-    public void toPicture_withDifferentUrls_ensureThatUuidIsStatic() throws DownloadFailedException {
+    void toPicture_withDifferentUrls_ensureThatUuidIsStatic() throws DownloadFailedException {
         // Arrange
 
         // Act

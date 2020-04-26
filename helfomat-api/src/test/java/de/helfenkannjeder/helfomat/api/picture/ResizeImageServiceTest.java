@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.api.picture;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -19,15 +19,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Valentin Zickner
  */
-public class ResizeImageServiceTest {
+class ResizeImageServiceTest {
 
     private final Resource inputImage = new ClassPathResource("de/helfenkannjeder/picture/test.png");
     private final Resource transparentImage = new ClassPathResource("de/helfenkannjeder/picture/transparent.png");
 
     private ResizeImageService resizeImageService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.resizeImageService = new ResizeImageService();
     }
 
