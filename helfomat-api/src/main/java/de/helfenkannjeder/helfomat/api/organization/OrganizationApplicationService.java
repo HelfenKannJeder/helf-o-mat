@@ -1,11 +1,13 @@
 package de.helfenkannjeder.helfomat.api.organization;
 
+import de.helfenkannjeder.helfomat.api.organization.event.OrganizationCreateEventDto;
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventAssembler;
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto;
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
 import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent;
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
@@ -90,8 +92,12 @@ public class OrganizationApplicationService {
     @PreAuthorize("isAuthenticated()")
     public void submitOrganization(OrganizationSubmitEventDto organizationSubmitEventDto) {
         List<OrganizationEvent> organizationEvents = OrganizationEventDtoAssembler.toOrganizationEvent(organizationSubmitEventDto.getEvents());
+        OrganizationId organizationId = organizationSubmitEventDto.getOrganizationId();
+        if (!isOrganizationSubmitValid(organizationId, organizationSubmitEventDto.getEvents())) {
+            throw new OrganizationNotFoundException(organizationId);
+        }
         ProposedChangeOrganizationEvent proposedChangeOrganizationEvent = new ProposedChangeOrganizationEvent(
-            organizationSubmitEventDto.getOrganizationId(),
+            organizationId,
             getCurrentUser(),
             organizationSubmitEventDto.getSources(),
             organizationEvents
@@ -109,6 +115,14 @@ public class OrganizationApplicationService {
             proposedChangeOrganizationEvent.getChanges()
         );
         applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent);
+    }
+
+    private boolean isOrganizationSubmitValid(OrganizationId organizationId, List<OrganizationEventDto> events) {
+        boolean isNewOrganization = this.organizationRepository.findOne(organizationId.getValue()) == null;
+        boolean isCreate = events.stream()
+            .map(OrganizationEventDto::getClass)
+            .anyMatch(OrganizationCreateEventDto.class::equals);
+        return (isNewOrganization && isCreate) || (!isNewOrganization && !isCreate);
     }
 
     private String getCurrentUser() {

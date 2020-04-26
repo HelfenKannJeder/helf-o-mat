@@ -45,6 +45,7 @@ public class OrganizationEditAddGroupEvent extends OrganizationEditEvent {
         return "OrganizationEditAddGroupEvent{" +
             "index=" + index +
             ", group=" + group +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

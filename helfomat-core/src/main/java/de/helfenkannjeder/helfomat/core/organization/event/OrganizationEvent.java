@@ -15,7 +15,7 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
     property = "type"
 )
 public abstract class OrganizationEvent extends DomainEvent {
-    private OrganizationId organizationId;
+    protected OrganizationId organizationId;
 
     protected OrganizationEvent() {
     }

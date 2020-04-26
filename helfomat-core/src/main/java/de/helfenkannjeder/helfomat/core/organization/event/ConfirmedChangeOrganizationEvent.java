@@ -65,6 +65,7 @@ public class ConfirmedChangeOrganizationEvent extends OrganizationEvent {
             ", author='" + author + '\'' +
             ", sources='" + sources + '\'' +
             ", changes=" + changes +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

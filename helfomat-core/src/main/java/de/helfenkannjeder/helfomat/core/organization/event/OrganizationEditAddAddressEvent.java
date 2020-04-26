@@ -45,6 +45,7 @@ public class OrganizationEditAddAddressEvent extends OrganizationEditEvent {
         return "OrganizationEditAddAddressEvent{" +
             "index=" + index +
             ", address=" + address +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

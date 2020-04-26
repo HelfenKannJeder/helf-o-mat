@@ -29,6 +29,8 @@ public class OrganizationDeleteEvent extends OrganizationEditEvent {
 
     @Override
     public String toString() {
-        return "OrganizationDeleteEvent{}";
+        return "OrganizationDeleteEvent{" +
+            "organizationId=" + organizationId +
+            '}';
     }
 }

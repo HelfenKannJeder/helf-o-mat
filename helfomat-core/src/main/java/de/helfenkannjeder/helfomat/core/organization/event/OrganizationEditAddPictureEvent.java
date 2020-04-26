@@ -45,6 +45,7 @@ public class OrganizationEditAddPictureEvent extends OrganizationEditEvent {
         return "OrganizationEditAddPictureEvent{" +
             "index=" + index +
             ", pictureId=" + pictureId +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

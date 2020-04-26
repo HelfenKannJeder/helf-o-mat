@@ -45,6 +45,7 @@ public class OrganizationEditAddAttendanceTimeEvent extends OrganizationEditEven
         return "OrganizationEditAddAttendanceTimeEvent{" +
             "index=" + index +
             ", attendanceTime=" + attendanceTime +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.web.exception;
 
+import de.helfenkannjeder.helfomat.api.organization.OrganizationNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +22,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDetails> handleIllegalArgumentException(IllegalArgumentException e) {
         LOGGER.error("Handle IllegalArgumentException", e);
         return createErrorResponse(HttpStatus.BAD_REQUEST, e);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDetails> handleOrganizationNotFoundException(OrganizationNotFoundException organizationNotFoundException) {
+        return createErrorResponse(HttpStatus.NOT_FOUND, organizationNotFoundException);
     }
 
     @SuppressWarnings("SameParameterValue")

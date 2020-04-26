@@ -38,6 +38,7 @@ public class OrganizationEditDeleteQuestionAnswerEvent extends OrganizationEditE
     public String toString() {
         return "OrganizationEditDeleteQuestionAnswerEvent{" +
             "questionAnswer=" + questionAnswer +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

@@ -37,6 +37,7 @@ public class OrganizationEditWebsiteEvent extends OrganizationEditEvent {
     public String toString() {
         return "OrganizationEditWebsiteEvent{" +
             "website='" + website + '\'' +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

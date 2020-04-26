@@ -28,6 +28,7 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,10 +64,11 @@ public class ImportBatchConfig {
                         return organizationStepExecutionListener.getOrganizationDifferenceProcessor().process(organization);
                     })
                     .writer((List<? extends Pair<Organization, Stream<OrganizationEvent>>> organizationInfo) -> {
+                        OrganizationItemWriter organizationItemWriter = organizationStepExecutionListener.getOrganizationItemWriter();
                         for (Pair<Organization, Stream<OrganizationEvent>> organizationStreamPair : organizationInfo) {
-                            restOrganizationEventPublisher.publishEvents(organizationStreamPair.getSecond());
+                            restOrganizationEventPublisher.publishEvents(organizationStreamPair.getFirst(), organizationStreamPair.getSecond());
+                            organizationItemWriter.write(Collections.singletonList(organizationStreamPair.getFirst()));
                         }
-                        organizationStepExecutionListener.getOrganizationItemWriter().write(organizationInfo.stream().map(Pair::getFirst).collect(Collectors.toList()));
                     })
                     .listener(organizationStepExecutionListener)
                     .listener(uniqueOrganizationUrlNameOrganizationProcessor)

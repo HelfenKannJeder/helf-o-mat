@@ -38,6 +38,7 @@ public class OrganizationEditTeaserImageEvent extends OrganizationEditEvent {
     public String toString() {
         return "OrganizationEditTeaserImageEvent{" +
             "teaserImage=" + teaserImage +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

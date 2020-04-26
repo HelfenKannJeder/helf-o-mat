@@ -45,6 +45,7 @@ public class OrganizationEditAddQuestionAnswerEvent extends OrganizationEditEven
         return "OrganizationEditAddQuestionAnswerEvent{" +
             "index=" + index +
             ", questionAnswer=" + questionAnswer +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

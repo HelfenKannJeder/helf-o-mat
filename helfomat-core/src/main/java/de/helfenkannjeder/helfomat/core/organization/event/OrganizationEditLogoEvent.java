@@ -38,6 +38,7 @@ public class OrganizationEditLogoEvent extends OrganizationEditEvent {
     public String toString() {
         return "OrganizationEditLogoEvent{" +
             "logo=" + logo +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

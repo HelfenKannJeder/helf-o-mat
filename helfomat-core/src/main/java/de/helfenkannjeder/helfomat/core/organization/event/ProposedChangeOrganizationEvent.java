@@ -54,6 +54,7 @@ public class ProposedChangeOrganizationEvent extends OrganizationEvent {
             "author='" + author + '\'' +
             ", sources='" + sources + '\'' +
             ", changes=" + changes +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

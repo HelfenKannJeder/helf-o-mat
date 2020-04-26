@@ -37,6 +37,7 @@ public class OrganizationEditNameEvent extends OrganizationEditEvent {
     public String toString() {
         return "OrganizationEditNameEvent{" +
             "name='" + name + '\'' +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

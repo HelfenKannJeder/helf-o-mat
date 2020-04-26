@@ -45,6 +45,7 @@ public class OrganizationEditAddContactPersonEvent extends OrganizationEditEvent
         return "OrganizationEditAddContactPersonEvent{" +
             "index=" + index +
             ", contactPerson=" + contactPerson +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

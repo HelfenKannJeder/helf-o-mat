@@ -60,6 +60,7 @@ public class OrganizationCreateEvent extends OrganizationEvent {
             "name='" + name + '\'' +
             ", urlName='" + urlName + '\'' +
             ", organizationType=" + organizationType +
+            ", organizationId=" + organizationId +
             '}';
     }
 }

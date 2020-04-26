@@ -17,6 +17,8 @@ public abstract class OrganizationEditEvent extends OrganizationEvent {
 
     @Override
     public String toString() {
-        return "OrganizationEditEvent{}";
+        return "OrganizationEditEvent{" +
+            "organizationId=" + organizationId +
+            '}';
     }
 }
