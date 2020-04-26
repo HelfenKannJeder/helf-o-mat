@@ -1,7 +1,5 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.configuration;
 
-import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.CreateIndexBatchlet;
-import de.helfenkannjeder.helfomat.infrastructure.batch.batchlet.RenameAliasBatchlet;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -22,14 +20,6 @@ import java.util.List;
 public class BatchConfiguration {
 
     @Bean
-    public Step createIndexStep(StepBuilderFactory stepBuilderFactory,
-                                CreateIndexBatchlet createIndexBatchlet) {
-        return stepBuilderFactory.get("createIndexStep")
-            .tasklet(new BatchletAdapter(createIndexBatchlet))
-            .build();
-    }
-
-    @Bean
     public Step noopStep(StepBuilderFactory stepBuilderFactory) {
         return stepBuilderFactory.get("noopStep")
             .tasklet(new BatchletAdapter(new AbstractBatchlet() {
@@ -38,14 +28,6 @@ public class BatchConfiguration {
                     return null;
                 }
             }))
-            .build();
-    }
-
-    @Bean
-    public Step renameAliasStep(StepBuilderFactory stepBuilderFactory,
-                                RenameAliasBatchlet renameAliasBatchlet) {
-        return stepBuilderFactory.get("renameAliasStep")
-            .tasklet(new BatchletAdapter(renameAliasBatchlet))
             .build();
     }
 

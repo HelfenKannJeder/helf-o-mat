@@ -101,7 +101,7 @@ public class ImportBatchConfig {
         public void beforeStep(StepExecution stepExecution) {
             String readerName = organizationReader.getName();
             String index = elasticsearchConfiguration.getIndex() + "-" + readerName;
-            OrganizationRepository organizationRepository = new ElasticsearchOrganizationRepository(
+            ElasticsearchOrganizationRepository organizationRepository = new ElasticsearchOrganizationRepository(
                 elasticsearchConfiguration,
                 elasticsearchTemplate,
                 index

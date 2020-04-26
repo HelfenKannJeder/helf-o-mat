@@ -69,6 +69,12 @@ public class OrganizationAssembler {
         );
     }
 
+    static List<OrganizationDetailDto> toOrganizationDetailsDto(List<Organization> organizations, List<Question> questions) {
+        return organizations.stream()
+            .map(organization -> toOrganizationDetailDto(organization, questions))
+            .collect(Collectors.toList());
+    }
+
     static OrganizationDetailDto toOrganizationDetailDto(Organization organization, List<Question> questions) {
         if (organization == null) {
             return null;
@@ -221,6 +227,14 @@ public class OrganizationAssembler {
             address.getTelephone(),
             address.getWebsite()
         );
+    }
+
+    public static List<Organization> toOrganizations(List<OrganizationDetailDto> organizations) {
+        return organizations
+            .stream()
+            .map(OrganizationAssembler::toOrganization)
+            .collect(Collectors.toList());
+
     }
 
     public static Organization toOrganization(OrganizationDetailDto organizationDetailDto) {

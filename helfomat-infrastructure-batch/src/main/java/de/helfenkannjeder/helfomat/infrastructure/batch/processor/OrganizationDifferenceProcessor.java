@@ -6,6 +6,7 @@ import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.data.util.Pair;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -23,7 +24,10 @@ public class OrganizationDifferenceProcessor implements ItemProcessor<Organizati
 
     @Override
     public Pair<Organization, Stream<OrganizationEvent>> process(Organization updatedOrganization) {
-        Organization originalOrganization = specificOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization, 5L);
+        Organization originalOrganization = findClosestMatch(
+            specificOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization.getDefaultAddress(), updatedOrganization.getOrganizationType(), 5L),
+            updatedOrganization.getUrlName()
+        );
         if (originalOrganization == null) {
             return generateExistingOrganizationFromOtherDatasource(updatedOrganization);
         }
@@ -31,7 +35,10 @@ public class OrganizationDifferenceProcessor implements ItemProcessor<Organizati
     }
 
     private Pair<Organization, Stream<OrganizationEvent>> generateExistingOrganizationFromOtherDatasource(Organization updatedOrganization) {
-        Organization alreadyAvailableOrganization = generalOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization, 5L);
+        Organization alreadyAvailableOrganization = findClosestMatch(
+            generalOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization.getDefaultAddress(), updatedOrganization.getOrganizationType(), 5L),
+            updatedOrganization.getUrlName()
+        );
         if (alreadyAvailableOrganization == null) {
             return generateCompleteNewOrganization(updatedOrganization);
         }
@@ -41,6 +48,20 @@ public class OrganizationDifferenceProcessor implements ItemProcessor<Organizati
                 .build(),
             Stream.empty()
         );
+    }
+
+    private Organization findClosestMatch(List<Organization> organizations, String urlName) {
+        if (organizations.size() == 1) {
+            return organizations.get(0);
+        } else if (organizations.size() == 0) {
+            return null;
+        } else {
+            return organizations
+                .stream()
+                .filter(o -> o.getUrlName().equals(urlName))
+                .findFirst()
+                .orElse(null);
+        }
     }
 
     private Pair<Organization, Stream<OrganizationEvent>> generateCompleteNewOrganization(Organization updatedOrganization) {

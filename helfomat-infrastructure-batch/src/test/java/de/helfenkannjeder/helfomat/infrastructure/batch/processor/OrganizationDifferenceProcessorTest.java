@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.util.Pair;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,7 +52,7 @@ public class OrganizationDifferenceProcessorTest {
             .setName("Old Organization Name")
             .setDescription("Same Description")
             .build();
-        when(organizationRepository.findOrganizationWithSameTypeInDistance(eq(organization1), anyLong())).thenReturn(organization2);
+        when(organizationRepository.findOrganizationWithSameTypeInDistance(eq(organization1.getDefaultAddress()), eq(organization1.getOrganizationType()), anyLong())).thenReturn(Collections.singletonList(organization2));
 
         // Act
         Pair<Organization, Stream<OrganizationEvent>> organizationDifferenceResult = this.organizationDifferenceProcessor.process(organization1);
@@ -84,7 +85,7 @@ public class OrganizationDifferenceProcessorTest {
             .setName("Old Organization Name")
             .setDescription("Same Description")
             .build();
-        when(generalOrganizationRepository.findOrganizationWithSameTypeInDistance(eq(organization1), anyLong())).thenReturn(organization2);
+        when(generalOrganizationRepository.findOrganizationWithSameTypeInDistance(eq(organization1.getDefaultAddress()), eq(organization1.getOrganizationType()), anyLong())).thenReturn(Collections.singletonList(organization2));
 
         // Act
         Pair<Organization, Stream<OrganizationEvent>> organizationDifferenceResult = this.organizationDifferenceProcessor.process(organization1);

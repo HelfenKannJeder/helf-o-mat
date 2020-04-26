@@ -3,9 +3,11 @@ package de.helfenkannjeder.helfomat.api.organization;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
+import de.helfenkannjeder.helfomat.core.organization.Address;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
 import de.helfenkannjeder.helfomat.core.organization.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.organization.ScoredOrganization;
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
@@ -62,13 +64,8 @@ public class EventBasedCachingOrganizationRepository implements OrganizationRepo
     }
 
     @Override
-    public boolean existsOrganizationWithSameTypeInDistance(Organization organization, Long distanceInMeters) {
-        return this.persistentOrganizationRepository.existsOrganizationWithSameTypeInDistance(organization, distanceInMeters);
-    }
-
-    @Override
-    public Organization findOrganizationWithSameTypeInDistance(Organization organization, Long distanceInMeters) {
-        return this.persistentOrganizationRepository.findOrganizationWithSameTypeInDistance(organization, distanceInMeters);
+    public List<Organization> findOrganizationWithSameTypeInDistance(Address defaultAddress, OrganizationType organizationType, Long distanceInMeters) {
+        return this.persistentOrganizationRepository.findOrganizationWithSameTypeInDistance(defaultAddress, organizationType, distanceInMeters);
     }
 
     @Override
@@ -111,18 +108,4 @@ public class EventBasedCachingOrganizationRepository implements OrganizationRepo
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void createIndex(String mapping) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void deleteIndex() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void updateAlias(String alias) {
-        throw new UnsupportedOperationException();
-    }
 }

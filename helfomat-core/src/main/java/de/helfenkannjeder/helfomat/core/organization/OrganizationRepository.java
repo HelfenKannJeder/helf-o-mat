@@ -10,9 +10,7 @@ import java.util.List;
  */
 public interface OrganizationRepository {
 
-    boolean existsOrganizationWithSameTypeInDistance(Organization organization, Long distanceInMeters);
-
-    Organization findOrganizationWithSameTypeInDistance(Organization organization, Long distanceInMeters);
+    List<Organization> findOrganizationWithSameTypeInDistance(Address defaultAddress, OrganizationType organizationType, Long distanceInMeters);
 
     Organization findByUrlName(String urlName);
 
@@ -30,9 +28,4 @@ public interface OrganizationRepository {
 
     void save(List<? extends Organization> organizations);
 
-    void createIndex(String mapping);
-
-    void deleteIndex();
-
-    void updateAlias(String alias);
 }

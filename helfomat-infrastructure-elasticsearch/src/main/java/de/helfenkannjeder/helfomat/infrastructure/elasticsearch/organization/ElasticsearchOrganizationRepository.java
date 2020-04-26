@@ -6,6 +6,7 @@ import de.helfenkannjeder.helfomat.core.organization.Address;
 import de.helfenkannjeder.helfomat.core.organization.Answer;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
 import de.helfenkannjeder.helfomat.core.organization.QuestionAnswer;
 import de.helfenkannjeder.helfomat.core.organization.ScoredOrganization;
 import de.helfenkannjeder.helfomat.core.question.QuestionId;
@@ -17,10 +18,8 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoBoundingBoxQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.AliasQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
@@ -58,36 +57,12 @@ public class ElasticsearchOrganizationRepository implements OrganizationReposito
     }
 
     @Override
-    public boolean existsOrganizationWithSameTypeInDistance(Organization organization, Long distanceInMeters) {
-        Address address = organization.getDefaultAddress();
-        if (address == null) {
-            return false;
-        }
-        BoolQueryBuilder organizationListQuery = buildQueryForOrganizationWithSameTypeInDistance(organization, distanceInMeters);
-        NativeSearchQuery query = new NativeSearchQuery(organizationListQuery);
-        query.addIndices(indexName);
-        query.addTypes(elasticsearchConfiguration.getType().getOrganization());
-        return this.elasticsearchTemplate.count(query) > 0;
-    }
-
-    @Override
-    public Organization findOrganizationWithSameTypeInDistance(Organization organization, Long distanceInMeters) {
+    public List<Organization> findOrganizationWithSameTypeInDistance(Address defaultAddress, OrganizationType organizationType, Long distanceInMeters) {
         try {
-            BoolQueryBuilder nativeSearchQuery = buildQueryForOrganizationWithSameTypeInDistance(organization, distanceInMeters);
-            List<Organization> organizations = search(nativeSearchQuery).collect(Collectors.toList());
-            if (organizations.size() == 1) {
-                return organizations.get(0);
-            } else if (organizations.size() == 0) {
-                return null;
-            } else {
-                return organizations
-                    .stream()
-                    .filter(o -> o.getUrlName().equals(organization.getUrlName()))
-                    .findFirst()
-                    .orElse(null);
-            }
+            BoolQueryBuilder nativeSearchQuery = buildQueryForOrganizationWithSameTypeInDistance(defaultAddress, organizationType, distanceInMeters);
+            return search(nativeSearchQuery).collect(Collectors.toList());
         } catch (IndexNotFoundException ignored) {
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -189,7 +164,6 @@ public class ElasticsearchOrganizationRepository implements OrganizationReposito
         this.elasticsearchTemplate.bulkIndex(indexQueries);
     }
 
-    @Override
     public void createIndex(String mapping) {
         if (!this.elasticsearchTemplate.indexExists(indexName)) {
             this.elasticsearchTemplate.createIndex(indexName);
@@ -197,37 +171,14 @@ public class ElasticsearchOrganizationRepository implements OrganizationReposito
         }
     }
 
-    @Override
-    public void deleteIndex() {
-        this.elasticsearchTemplate.deleteIndex(indexName);
-    }
-
-    @Override
-    public void updateAlias(String alias) {
-        try {
-            AliasQuery removeAliasQuery = new AliasQuery();
-            removeAliasQuery.setAliasName(alias);
-            removeAliasQuery.setIndexName(alias + "-*");
-            elasticsearchTemplate.removeAlias(removeAliasQuery);
-        } catch (AliasesNotFoundException exception) {
-            // Ignore
-        }
-
-        AliasQuery aliasQuery = new AliasQuery();
-        aliasQuery.setAliasName(alias);
-        aliasQuery.setIndexName(indexName);
-        elasticsearchTemplate.addAlias(aliasQuery);
-    }
-
-    private BoolQueryBuilder buildQueryForOrganizationWithSameTypeInDistance(Organization organization, Long distanceInMeters) {
+    private BoolQueryBuilder buildQueryForOrganizationWithSameTypeInDistance(Address defaultAddress, OrganizationType organizationType, Long distanceInMeters) {
         BoolQueryBuilder organizationListQuery = boolQuery();
-        organizationListQuery.must(termQuery("organizationType", organization.getOrganizationType().name()));
+        organizationListQuery.must(termQuery("organizationType", organizationType.name()));
 
-        Address address = organization.getDefaultAddress();
-        if (address == null) {
+        if (defaultAddress == null) {
             organizationListQuery.mustNot(existsQuery("defaultAddress"));
         } else {
-            GeoPoint locationToCheck = address.getLocation();
+            GeoPoint locationToCheck = defaultAddress.getLocation();
 
             GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("defaultAddress.location")
                 .point(locationToCheck.getLat(), locationToCheck.getLon())

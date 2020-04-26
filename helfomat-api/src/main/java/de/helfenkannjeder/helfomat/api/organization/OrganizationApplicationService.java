@@ -1,14 +1,17 @@
 package de.helfenkannjeder.helfomat.api.organization;
 
+import de.helfenkannjeder.helfomat.api.Roles;
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationCreateEventDto;
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventAssembler;
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto;
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler;
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
+import de.helfenkannjeder.helfomat.core.organization.Address;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
 import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent;
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
 import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent;
@@ -17,6 +20,7 @@ import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -117,6 +121,16 @@ public class OrganizationApplicationService {
         applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent);
     }
 
+    @Secured(Roles.ADMIN)
+    public List<OrganizationDetailDto> findSimilarOrganizations(SearchSimilarOrganizationDto searchSimilarOrganizationDto) {
+        Address address = OrganizationAssembler.toAddress(searchSimilarOrganizationDto.getAddress());
+        OrganizationType organizationType = searchSimilarOrganizationDto.getOrganizationType();
+        Long distance = searchSimilarOrganizationDto.getDistanceInMeters();
+        List<Organization> organizations = this.organizationRepository.findOrganizationWithSameTypeInDistance(address, organizationType, distance);
+        List<Question> questions = this.questionRepository.findQuestions();
+        return OrganizationAssembler.toOrganizationDetailsDto(organizations, questions);
+    }
+
     private boolean isOrganizationSubmitValid(OrganizationId organizationId, List<OrganizationEventDto> events) {
         boolean isNewOrganization = this.organizationRepository.findOne(organizationId.getValue()) == null;
         boolean isCreate = events.stream()
@@ -128,5 +142,4 @@ public class OrganizationApplicationService {
     private String getCurrentUser() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
-
 }
