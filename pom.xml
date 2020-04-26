@@ -117,11 +117,6 @@
             </dependency>
             <dependency>
                 <groupId>de.helfenkannjeder.helfomat</groupId>
-                <artifactId>helfomat-infrastructure-kafka</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.helfenkannjeder.helfomat</groupId>
                 <artifactId>helfomat-infrastructure-keycloak</artifactId>
                 <version>${project.version}</version>
             </dependency>

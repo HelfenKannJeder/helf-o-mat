@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
  * @author Valentin Zickner
  */
 @Configuration
-@Profile("!" + ProfileRegistry.KAFKA + " && !" + ProfileRegistry.TEST)
+@Profile("!" + ProfileRegistry.TEST)
 public class JpaCacheConfig {
 
     @Bean

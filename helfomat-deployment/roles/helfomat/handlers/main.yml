@@ -1,4 +1,0 @@
-- name: restart helfomat
-  service:
-    name: "{{ helfomat.serviceName }}"
-    state: restarted
