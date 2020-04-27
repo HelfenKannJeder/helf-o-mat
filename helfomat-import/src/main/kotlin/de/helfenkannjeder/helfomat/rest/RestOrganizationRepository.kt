@@ -19,7 +19,8 @@ import org.springframework.web.client.exchange
  * @author Valentin Zickner
  */
 @Component
-class RestOrganizationRepository(private val restTemplate: RestTemplate, private val importerConfiguration: ImporterConfiguration) : OrganizationRepository {
+class RestOrganizationRepository(private val restTemplate: RestTemplate,
+                                 private val importerConfiguration: ImporterConfiguration) : OrganizationRepository {
 
     override fun findOrganizationWithSameTypeInDistance(defaultAddress: Address?, organizationType: OrganizationType, distanceInMeters: Long): List<Organization> {
         val searchSimilarOrganizationDto = SearchSimilarOrganizationDto(
@@ -58,7 +59,7 @@ class RestOrganizationRepository(private val restTemplate: RestTemplate, private
         throw UnsupportedOperationException()
     }
 
-    override fun findGeoPointsOfOrganizationsInsideBoundingBox(position: GeoPoint, distance: Double, boundingBox: BoundingBox): List<GeoPoint> {
+    override fun findGeoPointsOfOrganizationsInsideBoundingBox(position: GeoPoint?, distance: Double, boundingBox: BoundingBox): List<GeoPoint> {
         throw UnsupportedOperationException()
     }
 
