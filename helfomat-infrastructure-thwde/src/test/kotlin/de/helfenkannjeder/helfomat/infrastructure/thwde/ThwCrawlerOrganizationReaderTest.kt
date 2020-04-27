@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.infrastructure.thwde
 
-import de.helfenkannjeder.helfomat.core.IndexManager
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
 import de.helfenkannjeder.helfomat.infrastructure.thwde.EmbeddedHttpServer.setContent
@@ -25,8 +24,6 @@ class ThwCrawlerOrganizationReaderTest {
     @Mock
     private val pictureStorageService: PictureStorageService? = null
 
-    @Mock
-    private val indexManager: IndexManager? = null
     private var domain: String? = null
 
     @BeforeEach
