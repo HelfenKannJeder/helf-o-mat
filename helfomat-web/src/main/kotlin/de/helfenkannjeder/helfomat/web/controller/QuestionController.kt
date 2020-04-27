@@ -1,30 +1,20 @@
-package de.helfenkannjeder.helfomat.web.controller;
+package de.helfenkannjeder.helfomat.web.controller
 
-import de.helfenkannjeder.helfomat.api.question.QuestionApplicationService;
-import de.helfenkannjeder.helfomat.api.question.QuestionDto;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import de.helfenkannjeder.helfomat.api.question.QuestionApplicationService
+import de.helfenkannjeder.helfomat.api.question.QuestionDto
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 /**
  * @author Valentin Zickner
  */
 @RestController
-@RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
-public class QuestionController {
-
-    private final QuestionApplicationService questionApplicationService;
-
-    public QuestionController(QuestionApplicationService questionApplicationService) {
-        this.questionApplicationService = questionApplicationService;
-    }
+@RequestMapping(path = ["/api"], produces = [MediaType.APPLICATION_JSON_VALUE])
+class QuestionController(private val questionApplicationService: QuestionApplicationService) {
 
     @GetMapping("/questions")
-    public List<QuestionDto> findQuestions() {
-        return this.questionApplicationService.findQuestions();
-    }
+    fun findQuestions(): List<QuestionDto> = questionApplicationService.findQuestions()
 
 }

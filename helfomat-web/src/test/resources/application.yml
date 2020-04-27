@@ -1,8 +1,5 @@
 helfomat.picture:
   picture-folder: pictures/
-  autoImport:
-    enabled: false
-    schedule: "0 0 3 * * *"
 
 spring:
   legacy:
@@ -12,3 +9,11 @@ spring:
   event:
     datasource:
       url: jdbc:h2:mem:event_test
+
+keycloak:
+  realm: helfomat
+  resource: helfenkannjeder-web-ui
+  auth-server-url: http://localhost:8085/auth
+  ssl-required: external
+  public-client: true
+  principal-attribute: preferred_username

@@ -1,38 +1,26 @@
-package de.helfenkannjeder.helfomat.web.controller;
+package de.helfenkannjeder.helfomat.web.controller
 
-import de.helfenkannjeder.helfomat.api.organization.OrganizationApplicationService;
-import de.helfenkannjeder.helfomat.api.organization.OrganizationDetailDto;
-import de.helfenkannjeder.helfomat.api.organization.OrganizationSubmitEventDto;
-import de.helfenkannjeder.helfomat.api.organization.SearchSimilarOrganizationDto;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import de.helfenkannjeder.helfomat.api.organization.OrganizationApplicationService
+import de.helfenkannjeder.helfomat.api.organization.OrganizationSubmitEventDto
+import de.helfenkannjeder.helfomat.api.organization.SearchSimilarOrganizationDto
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.*
 
 /**
  * @author Valentin Zickner
  */
 @RestController
-public class OrganizationEditController {
+@RequestMapping(path = ["/api"], produces = [MediaType.APPLICATION_JSON_VALUE])
+class OrganizationEditController(private val organizationApplicationService: OrganizationApplicationService) {
 
-    private final OrganizationApplicationService organizationApplicationService;
+    @PostMapping("/organization/search-similar")
+    fun similarOrganizations(@RequestBody searchSimilarOrganizationDto: SearchSimilarOrganizationDto) =
+        organizationApplicationService.findSimilarOrganizations(searchSimilarOrganizationDto)
 
-    public OrganizationEditController(OrganizationApplicationService organizationApplicationService) {
-        this.organizationApplicationService = organizationApplicationService;
-    }
-
-    @PostMapping("api/organization/search-similar")
-    public List<OrganizationDetailDto> similarOrganizations(@RequestBody SearchSimilarOrganizationDto searchSimilarOrganizationDto) {
-        return this.organizationApplicationService.findSimilarOrganizations(searchSimilarOrganizationDto);
-    }
-
-
-    @PostMapping("api/organization/submit")
+    @PostMapping("/organization/submit")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void submitOrganization(@RequestBody OrganizationSubmitEventDto organizationSubmitEventDto) {
-        this.organizationApplicationService.submitOrganization(organizationSubmitEventDto);
-    }
+    fun submitOrganization(@RequestBody organizationSubmitEventDto: OrganizationSubmitEventDto) =
+        organizationApplicationService.submitOrganization(organizationSubmitEventDto)
+
 }
