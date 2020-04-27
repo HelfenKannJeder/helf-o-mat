@@ -1,59 +1,51 @@
-package de.helfenkannjeder.helfomat.infrastructure.elasticsearch;
+package de.helfenkannjeder.helfomat.infrastructure.elasticsearch
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.kotlin.KotlinModule;
-import org.springframework.data.elasticsearch.core.EntityMapper;
-import org.springframework.data.mapping.MappingException;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
+import org.springframework.data.elasticsearch.core.EntityMapper
+import org.springframework.data.mapping.MappingException
+import java.io.IOException
+import java.util.*
 
 /**
  * based on spring data elasticsearch DefaultEntityMapper
  */
-class CustomEntityMapper implements EntityMapper {
+internal class CustomEntityMapper : EntityMapper {
+    private val objectMapper: ObjectMapper = ObjectMapper()
 
-    private final ObjectMapper objectMapper;
-
-    CustomEntityMapper() {
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new KotlinModule());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.registerModule(new Jdk8Module());
+    init {
+        objectMapper.registerModule(KotlinModule())
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+        objectMapper.registerModule(JavaTimeModule())
+        objectMapper.registerModule(Jdk8Module())
     }
 
-    @Override
-    public String mapToString(Object object) throws IOException {
-        return objectMapper.writeValueAsString(object);
+    override fun mapToString(`object`: Any): String {
+        return objectMapper.writeValueAsString(`object`)
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Map<String, Object> mapObject(Object source) {
-        try {
-            return objectMapper.readValue(mapToString(source), HashMap.class);
-        } catch (IOException e) {
-            throw new MappingException(e.getMessage(), e);
+    override fun mapObject(source: Any): Map<String, Any> {
+        return try {
+            objectMapper.readValue<HashMap<String, Any>>(mapToString(source))
+        } catch (e: IOException) {
+            throw MappingException(e.message, e)
         }
     }
 
-    @Override
-    public <T> T mapToObject(String source, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(source, clazz);
+    override fun <T> mapToObject(source: String, clazz: Class<T>): T {
+        return objectMapper.readValue(source, clazz)
     }
 
-    @Override
-    public <T> T readObject(Map<String, Object> source, Class<T> targetType) {
-        try {
-            return this.mapToObject(this.mapToString(source), targetType);
-        } catch (IOException var4) {
-            throw new MappingException(var4.getMessage(), var4);
+    override fun <T> readObject(source: Map<String, Any>, targetType: Class<T>): T {
+        return try {
+            mapToObject(mapToString(source), targetType)
+        } catch (var4: IOException) {
+            throw MappingException(var4.message, var4)
         }
     }
 }
