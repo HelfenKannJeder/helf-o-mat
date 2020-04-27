@@ -1,67 +1,23 @@
-package de.helfenkannjeder.helfomat.core.geopoint;
-
-import java.util.Objects;
+package de.helfenkannjeder.helfomat.core.geopoint
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
-public class GeoPoint {
-    private double lat;
-    private double lon;
+data class GeoPoint(val lat: Double,
+                    val lon: Double) {
 
-    GeoPoint() {
+    fun distanceInKm(second: GeoPoint): Double {
+        val R_earth = 6371.0
+        val dLat = deg2rad(second.lat - this.lat)
+        val dLon = deg2rad(second.lon - this.lon)
+        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(this.lat)) * Math.cos(deg2rad(second.lat)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        return R_earth * c
     }
 
-    public GeoPoint(double lat, double lon) {
-        this.lat = lat;
-        this.lon = lon;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GeoPoint geoPoint = (GeoPoint) o;
-        return Double.compare(geoPoint.lat, lat) == 0 &&
-            Double.compare(geoPoint.lon, lon) == 0;
-    }
-
-    public static double distanceInKm(GeoPoint first, GeoPoint second) {
-        double R_earth = 6371;
-        double dLat = deg2rad(second.getLat() - first.getLat());
-        double dLon = deg2rad(second.getLon() - first.getLon());
-        double a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(deg2rad(first.getLat())) * Math.cos(deg2rad(second.getLat())) *
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R_earth * c;
-    }
-
-    private static double deg2rad(double deg) {
-        return deg * (Math.PI / 180);
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(lat, lon);
-    }
-
-    @Override
-    public String toString() {
-        return "GeoPoint{" +
-            "lat=" + lat +
-            ", lon=" + lon +
-            '}';
+    private fun deg2rad(deg: Double): Double {
+        return deg * (Math.PI / 180)
     }
 }

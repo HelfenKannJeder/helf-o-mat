@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.mapping.MappingException;
 
@@ -20,6 +21,7 @@ class CustomEntityMapper implements EntityMapper {
 
     CustomEntityMapper() {
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new KotlinModule());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         objectMapper.registerModule(new JavaTimeModule());

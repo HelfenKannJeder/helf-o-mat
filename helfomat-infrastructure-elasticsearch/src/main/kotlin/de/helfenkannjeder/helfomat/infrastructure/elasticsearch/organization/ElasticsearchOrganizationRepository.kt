@@ -44,12 +44,13 @@ class ElasticsearchOrganizationRepository(
             questionAnswers,
             filterDistance(position, distance)
         )
-            .sortedWith(compareBy<ScoredOrganization> { it.score }.thenComparingDouble { GeoPoint.distanceInKm(it.organization.defaultAddress.location, position) })
+            .sortedWith(compareBy<ScoredOrganization> { it.score }
+                .thenComparingDouble { it.organization.defaultAddress.location.distanceInKm(position) })
     }
 
     override fun findOrganizationsByDistanceSortByDistance(position: GeoPoint, distance: Double): List<Organization> {
         return search(filterDistance(position, distance))
-            .sortedWith(compareBy { GeoPoint.distanceInKm(it.defaultAddress.location, position) })
+            .sortedWith(compareBy { it.defaultAddress.location.distanceInKm(position) })
     }
 
     override fun findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(
