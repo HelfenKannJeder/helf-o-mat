@@ -1,309 +1,208 @@
-package de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization;
+package de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization
 
-import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
-import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
-import de.helfenkannjeder.helfomat.core.organization.Address;
-import de.helfenkannjeder.helfomat.core.organization.Answer;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
-import de.helfenkannjeder.helfomat.core.organization.QuestionAnswer;
-import de.helfenkannjeder.helfomat.core.organization.ScoredOrganization;
-import de.helfenkannjeder.helfomat.core.question.QuestionId;
-import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
-import org.apache.lucene.search.join.ScoreMode;
-import org.elasticsearch.common.unit.DistanceUnit;
-import org.elasticsearch.index.IndexNotFoundException;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.GeoBoundingBoxQueryBuilder;
-import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.IndexQuery;
-import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.util.StreamUtils;
+import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox
+import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
+import de.helfenkannjeder.helfomat.core.organization.*
+import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration
+import org.apache.lucene.search.join.ScoreMode
+import org.elasticsearch.common.unit.DistanceUnit
+import org.elasticsearch.index.IndexNotFoundException
+import org.elasticsearch.index.query.*
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery
+import org.springframework.data.elasticsearch.core.query.Query
+import java.util.*
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+class ElasticsearchOrganizationRepository(
+    private val elasticsearchConfiguration: ElasticsearchConfiguration,
+    private val elasticsearchTemplate: ElasticsearchTemplate,
+    private val indexName: String) : OrganizationRepository {
 
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.existsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.geoBoundingBoxQuery;
-import static org.elasticsearch.index.query.QueryBuilders.geoDistanceQuery;
-import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-
-public class ElasticsearchOrganizationRepository implements OrganizationRepository {
-
-    private static final int DEFAULT_MAX_RESULT_SIZE = 10000;
-
-    private final ElasticsearchConfiguration elasticsearchConfiguration;
-    private final ElasticsearchTemplate elasticsearchTemplate;
-    private final String indexName;
-
-    public ElasticsearchOrganizationRepository(ElasticsearchConfiguration elasticsearchConfiguration,
-                                               ElasticsearchTemplate elasticsearchTemplate,
-                                               String indexName) {
-        this.elasticsearchConfiguration = elasticsearchConfiguration;
-        this.elasticsearchTemplate = elasticsearchTemplate;
-        this.indexName = indexName;
-    }
-
-    @Override
-    public List<Organization> findOrganizationWithSameTypeInDistance(Address defaultAddress, OrganizationType organizationType, Long distanceInMeters) {
-        try {
-            BoolQueryBuilder nativeSearchQuery = buildQueryForOrganizationWithSameTypeInDistance(defaultAddress, organizationType, distanceInMeters);
-            return search(nativeSearchQuery).collect(Collectors.toList());
-        } catch (IndexNotFoundException ignored) {
-            return Collections.emptyList();
+    override fun findOrganizationWithSameTypeInDistance(defaultAddress: Address?, organizationType: OrganizationType, distanceInMeters: Long): List<Organization> {
+        return try {
+            val nativeSearchQuery = buildQueryForOrganizationWithSameTypeInDistance(defaultAddress, organizationType, distanceInMeters)
+            search(nativeSearchQuery)
+        } catch (ignored: IndexNotFoundException) {
+            emptyList()
         }
     }
 
-    @Override
-    public Organization findByUrlName(String urlName) {
-        return search(termQuery("urlName", urlName))
-            .findFirst()
-            .orElse(null);
+    override fun findByUrlName(urlName: String): Organization? {
+        return search(QueryBuilders.termQuery("urlName", urlName)).firstOrNull()
     }
 
-
-    @Override
-    public Organization findOne(String id) {
-        return search(idsQuery(this.elasticsearchConfiguration.getType().getOrganization()).addIds(id))
-            .findFirst()
-            .orElse(null);
+    override fun findOne(id: String): Organization? {
+        return search(QueryBuilders.idsQuery(elasticsearchConfiguration.type.organization).addIds(id)).firstOrNull()
     }
 
-    @Override
-    public List<ScoredOrganization> findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
-        List<QuestionAnswer> questionAnswers, GeoPoint position, double distance
-    ) {
+    override fun findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+        questionAnswers: List<QuestionAnswer>, position: GeoPoint, distance: Double
+    ): List<ScoredOrganization> {
         return findOrganizationsWithQuestionsAndFilter(
             questionAnswers,
             filterDistance(position, distance)
         )
-            .sorted((organization1, organization2) -> compareOrganizationsBasedOnScoreAndDistance(organization1, organization2, position))
-            .collect(Collectors.toList());
+            .sortedWith(compareBy<ScoredOrganization> { it.score }.thenComparingDouble { GeoPoint.distanceInKm(it.organization.defaultAddress.location, position) })
     }
 
-    @Override
-    public List<Organization> findOrganizationsByDistanceSortByDistance(GeoPoint position, double distance) {
-        return
-            search(filterDistance(position, distance))
-                .sorted((organization1, organization2) -> compareOrganizationsBasedOnDistance(organization1, organization2, position))
-                .collect(Collectors.toList());
+    override fun findOrganizationsByDistanceSortByDistance(position: GeoPoint, distance: Double): List<Organization> {
+        return search(filterDistance(position, distance))
+            .sortedWith(compareBy { GeoPoint.distanceInKm(it.defaultAddress.location, position) })
     }
 
-    @Override
-    public List<ScoredOrganization> findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(
-        List<QuestionAnswer> questionAnswers
-    ) {
+    override fun findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(
+        questionAnswers: List<QuestionAnswer>
+    ): List<ScoredOrganization> {
         return findOrganizationsWithQuestionsAndFilter(
             questionAnswers,
-            boolQuery()
-                .mustNot(existsQuery("defaultAddress"))
+            QueryBuilders.boolQuery()
+                .mustNot(QueryBuilders.existsQuery("defaultAddress"))
         )
-            .sorted((organization1, organization2) -> compareOrganizationsBasedOnScoreAndDistance(organization1, organization2, null))
-            .collect(Collectors.toList());
+            .sortedBy { it.score }
+
     }
 
-    @Override
-    public List<Organization> findGlobalOrganizations() {
-        return
-            search(
-                boolQuery()
-                    .mustNot(existsQuery("defaultAddress"))
-            )
-                .sorted(Comparator.comparing(Organization::getName))
-                .collect(Collectors.toList());
+    override fun findGlobalOrganizations(): List<Organization> {
+        return search(
+            QueryBuilders.boolQuery()
+                .mustNot(QueryBuilders.existsQuery("defaultAddress"))
+        )
+            .sortedBy { it.name }
     }
 
-    @Override
-    public List<GeoPoint> findGeoPointsOfOrganizationsInsideBoundingBox(
-        GeoPoint position, double distance, BoundingBox boundingBox
-    ) {
-        BoolQueryBuilder boolQueryBuilder = boolQuery();
-        BoolQueryBuilder positionQuery = boolQuery()
-            .must(filterBox(boundingBox));
-
-        GeoDistanceQueryBuilder distanceFilterToPosition = filterDistance(position, distance);
-        if (distanceFilterToPosition != null) {
-            positionQuery
-                .mustNot(distanceFilterToPosition);
-        }
-
-        boolQueryBuilder.filter(positionQuery);
-
-        Stream<Organization> organizations = search(boolQueryBuilder);
-        return extractOrganizations(Collections.emptyList(), organizations)
-            .map(ScoredOrganization::getOrganization)
-            .map(Organization::getDefaultAddress)
-            .filter(Objects::nonNull)
-            .map(Address::getLocation)
-            .collect(Collectors.toList());
+    override fun findGeoPointsOfOrganizationsInsideBoundingBox(position: GeoPoint?, distance: Double, boundingBox: BoundingBox): List<GeoPoint> {
+        val boolQueryBuilder = QueryBuilders.boolQuery()
+        val positionQuery = QueryBuilders.boolQuery()
+            .must(filterBox(boundingBox))
+        if (position != null)
+            positionQuery.mustNot(filterDistance(position, distance))
+        boolQueryBuilder.filter(positionQuery)
+        val organizations = search(boolQueryBuilder)
+        return extractOrganizations(emptyList(), organizations)
+            .map { obj: ScoredOrganization -> obj.organization }
+            .map { obj: Organization -> obj.defaultAddress }
+            .filter { obj: Address? -> Objects.nonNull(obj) }
+            .map { obj: Address -> obj.location }
     }
 
-    @Override
-    public void save(List<? extends Organization> organizations) {
-        List<IndexQuery> indexQueries = organizations.stream()
-            .map(item -> new IndexQueryBuilder()
-                .withId(item.getId().getValue())
-                .withObject(item))
-            .map(builder -> builder.withType(this.elasticsearchConfiguration.getType().getOrganization()))
-            .map(builder -> builder.withIndexName(indexName))
-            .map(IndexQueryBuilder::build)
-            .collect(Collectors.toList());
-
-        this.elasticsearchTemplate.bulkIndex(indexQueries);
+    override fun save(organizations: List<Organization>) {
+        val indexQueries = organizations
+            .map { item: Organization ->
+                IndexQueryBuilder()
+                    .withId(item.id.value)
+                    .withObject(item)
+            }
+            .map { builder: IndexQueryBuilder -> builder.withType(elasticsearchConfiguration.type.organization) }
+            .map { builder: IndexQueryBuilder -> builder.withIndexName(indexName) }
+            .map { obj: IndexQueryBuilder -> obj.build() }
+        elasticsearchTemplate.bulkIndex(indexQueries)
     }
 
-    public void createIndex(String mapping) {
-        if (!this.elasticsearchTemplate.indexExists(indexName)) {
-            this.elasticsearchTemplate.createIndex(indexName);
-            this.elasticsearchTemplate.putMapping(indexName, this.elasticsearchConfiguration.getType().getOrganization(), mapping);
+    fun createIndex(mapping: String?) {
+        if (!elasticsearchTemplate.indexExists(indexName)) {
+            elasticsearchTemplate.createIndex(indexName)
+            elasticsearchTemplate.putMapping(indexName, elasticsearchConfiguration.type.organization, mapping)
         }
     }
 
-    private BoolQueryBuilder buildQueryForOrganizationWithSameTypeInDistance(Address defaultAddress, OrganizationType organizationType, Long distanceInMeters) {
-        BoolQueryBuilder organizationListQuery = boolQuery();
-        organizationListQuery.must(termQuery("organizationType", organizationType.name()));
-
+    private fun buildQueryForOrganizationWithSameTypeInDistance(defaultAddress: Address?, organizationType: OrganizationType, distanceInMeters: Long): BoolQueryBuilder {
+        val organizationListQuery = QueryBuilders.boolQuery()
+        organizationListQuery.must(QueryBuilders.termQuery("organizationType", organizationType.name))
         if (defaultAddress == null) {
-            organizationListQuery.mustNot(existsQuery("defaultAddress"));
+            organizationListQuery.mustNot(QueryBuilders.existsQuery("defaultAddress"))
         } else {
-            GeoPoint locationToCheck = defaultAddress.getLocation();
-
-            GeoDistanceQueryBuilder geoDistanceQuery = geoDistanceQuery("defaultAddress.location")
-                .point(locationToCheck.getLat(), locationToCheck.getLon())
-                .distance(distanceInMeters, DistanceUnit.METERS);
-            organizationListQuery.must(geoDistanceQuery);
+            val locationToCheck = defaultAddress.location
+            val geoDistanceQuery = QueryBuilders.geoDistanceQuery("defaultAddress.location")
+                .point(locationToCheck.lat, locationToCheck.lon)
+                .distance(distanceInMeters.toDouble(), DistanceUnit.METERS)
+            organizationListQuery.must(geoDistanceQuery)
         }
-        return organizationListQuery;
+        return organizationListQuery
     }
 
-    private Stream<ScoredOrganization> findOrganizationsWithQuestionsAndFilter(List<QuestionAnswer> questionAnswers,
-                                                                               QueryBuilder filter) {
-        BoolQueryBuilder boolQueryBuilder = boolQuery();
+    private fun findOrganizationsWithQuestionsAndFilter(questionAnswers: List<QuestionAnswer>, filter: QueryBuilder): List<ScoredOrganization> {
+        val boolQueryBuilder = QueryBuilders.boolQuery()
         questionAnswers
-            .stream()
-            .filter(questionAnswer -> Objects.nonNull(questionAnswer.getAnswer()))
-            .map(this::buildQuestionQuery)
-            .forEach(boolQueryBuilder::should);
-        boolQueryBuilder.filter(filter);
-
+            .filter { questionAnswer: QuestionAnswer -> Objects.nonNull(questionAnswer.answer) }
+            .map { questionAnswer: QuestionAnswer -> buildQuestionQuery(questionAnswer) }
+            .forEach { queryBuilder: QueryBuilder? -> boolQueryBuilder.should(queryBuilder) }
+        boolQueryBuilder.filter(filter)
         return extractOrganizations(
             questionAnswers,
             search(boolQueryBuilder)
-        );
+        )
     }
 
-    private int compareOrganizationsBasedOnScoreAndDistance(ScoredOrganization organization1, ScoredOrganization organization2, GeoPoint position) {
-        float score1 = organization1.getScore();
-        float score2 = organization2.getScore();
-
-        if (score1 < score2) {
-            return 1;
-        } else if (score1 > score2) {
-            return -1;
-        } else if (position != null) {
-            return compareOrganizationsBasedOnDistance(organization1.getOrganization(), organization2.getOrganization(), position);
-        } else {
-            return 1;
-        }
-    }
-
-    private int compareOrganizationsBasedOnDistance(Organization organization1, Organization organization2, GeoPoint position) {
-        double distance1 = GeoPoint.distanceInKm(organization1.getDefaultAddress().getLocation(), position);
-        double distance2 = GeoPoint.distanceInKm(organization2.getDefaultAddress().getLocation(), position);
-        return distance1 > distance2 ? 1 : -1;
-    }
-
-    private QueryBuilder buildQuestionQuery(QuestionAnswer questionAnswer) {
-        BoolQueryBuilder questionQuery = boolQuery()
+    private fun buildQuestionQuery(questionAnswer: QuestionAnswer): QueryBuilder {
+        val questionQuery = QueryBuilders.boolQuery()
             .minimumShouldMatch(1)
-            .must(termQuery("questions.questionId", questionAnswer.getQuestionId().getValue()))
-            .should(termQuery("questions.answer", questionAnswer.getAnswer().toString()).boost(2.0f));
-
-        for (Answer neighbour : questionAnswer.getAnswer().getNeighbours()) {
-            questionQuery.should(termQuery("questions.answer", neighbour.toString()).boost(1.0f));
+            .must(QueryBuilders.termQuery("questions.questionId", questionAnswer.questionId.value))
+            .should(QueryBuilders.termQuery("questions.answer", questionAnswer.answer.toString()).boost(2.0f))
+        for (neighbour in questionAnswer.answer.neighbours) {
+            questionQuery.should(QueryBuilders.termQuery("questions.answer", neighbour.toString()).boost(1.0f))
         }
-
-        return nestedQuery("questions", questionQuery, ScoreMode.Max);
+        return QueryBuilders.nestedQuery("questions", questionQuery, ScoreMode.Max)
     }
 
-    private GeoBoundingBoxQueryBuilder filterBox(BoundingBox boundingBoxDto) {
-        GeoPoint topRight = boundingBoxDto.getNorthEast();
-        GeoPoint bottomLeft = boundingBoxDto.getSouthWest();
-
-        return geoBoundingBoxQuery("defaultAddress.location")
-            .setCornersOGC(toElasticsearchGeoPoint(bottomLeft), toElasticsearchGeoPoint(topRight));
+    private fun filterBox(boundingBoxDto: BoundingBox): GeoBoundingBoxQueryBuilder {
+        val topRight = boundingBoxDto.northEast
+        val bottomLeft = boundingBoxDto.southWest
+        return QueryBuilders.geoBoundingBoxQuery("defaultAddress.location")
+            .setCornersOGC(toElasticsearchGeoPoint(bottomLeft), toElasticsearchGeoPoint(topRight))
     }
 
-    private GeoDistanceQueryBuilder filterDistance(GeoPoint position, double distance) {
-        if (position == null) {
-            return null;
-        }
-        return geoDistanceQuery("defaultAddress.location")
+    private fun filterDistance(position: GeoPoint, distance: Double): GeoDistanceQueryBuilder {
+        return QueryBuilders.geoDistanceQuery("defaultAddress.location")
             .point(toElasticsearchGeoPoint(position))
-            .distance(distance, DistanceUnit.KILOMETERS);
+            .distance(distance, DistanceUnit.KILOMETERS)
     }
 
-    private static org.elasticsearch.common.geo.GeoPoint toElasticsearchGeoPoint(GeoPoint geoPoint) {
-        return new org.elasticsearch.common.geo.GeoPoint(geoPoint.getLat(), geoPoint.getLon()
-        );
-    }
-
-    private Stream<ScoredOrganization> extractOrganizations(List<QuestionAnswer> questionAnswers, Stream<Organization> resultOrganizations) {
+    private fun extractOrganizations(questionAnswers: List<QuestionAnswer>, resultOrganizations: List<Organization>): List<ScoredOrganization> {
         return resultOrganizations
-            .map(organization -> new ScoredOrganization(
-                organization,
-                calculateScore(organization.getQuestionAnswers(), questionAnswers)
-            ));
+            .map { organization -> ScoredOrganization(organization, calculateScore(organization.questionAnswers, questionAnswers)) }
     }
 
-    private float calculateScore(List<QuestionAnswer> organizationQuestions, List<QuestionAnswer> questionAnswers) {
+    private fun calculateScore(organizationQuestions: List<QuestionAnswer>, questionAnswers: List<QuestionAnswer>): Double {
         return organizationQuestions
-            .stream()
-            .map((question) -> {
-                QuestionId questionId = question.getQuestionId();
-                Answer organizationAnswer = question.getAnswer();
-                Answer userAnswer = questionAnswers.stream()
-                    .filter(questionAnswer -> questionAnswer.getQuestionId().equals(questionId))
-                    .map(QuestionAnswer::getAnswer)
-                    .filter(Objects::nonNull)
-                    .findFirst()
-                    .orElse(null);
-                if (userAnswer == null) {
-                    return null;
+            .map { question: QuestionAnswer ->
+                val questionId = question.questionId
+                val organizationAnswer = question.answer
+                val userAnswer = questionAnswers
+                    .filter { questionAnswer: QuestionAnswer -> questionAnswer.questionId == questionId }
+                    .map { it.answer }
+                    .firstOrNull { Objects.nonNull(it) }
+                        ?: return@map null
+                if (organizationAnswer == userAnswer) {
+                    return@map 100.0
+                } else if (organizationAnswer.neighbours.contains(userAnswer)) {
+                    return@map 50.0
                 }
-
-                if (Objects.equals(organizationAnswer, userAnswer)) {
-                    return 100;
-                } else if (organizationAnswer.getNeighbours().contains(userAnswer)) {
-                    return 50;
-                }
-                return 0;
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.averagingDouble(value -> value))
-            .floatValue();
+                0.0
+            }
+            .filter { obj: Double? -> Objects.nonNull(obj) }
+            .map { it!! }
+            .average()
     }
 
-    private Stream<Organization> search(QueryBuilder query) {
-        NativeSearchQuery nativeSearchQuery = new NativeSearchQuery(query);
-        nativeSearchQuery.addIndices(indexName);
-        nativeSearchQuery.addTypes(elasticsearchConfiguration.getType().getOrganization());
-        nativeSearchQuery.setPageable(PageRequest.of(0, DEFAULT_MAX_RESULT_SIZE));
-        return StreamUtils.createStreamFromIterator(
-            this.elasticsearchTemplate.stream(nativeSearchQuery, Organization.class)
-        );
+    private fun search(query: QueryBuilder): List<Organization> {
+        val nativeSearchQuery = NativeSearchQuery(query)
+        nativeSearchQuery.addIndices(indexName)
+        nativeSearchQuery.addTypes(elasticsearchConfiguration.type.organization)
+        nativeSearchQuery.setPageable<Query>(PageRequest.of(0, DEFAULT_MAX_RESULT_SIZE))
+        val result = arrayListOf<Organization>()
+        for (organization in elasticsearchTemplate.stream(nativeSearchQuery, Organization::class.java)) {
+            result.add(organization)
+        }
+        return result
+    }
+
+    companion object {
+        private const val DEFAULT_MAX_RESULT_SIZE = 10000
+        private fun toElasticsearchGeoPoint(geoPoint: GeoPoint): org.elasticsearch.common.geo.GeoPoint {
+            return org.elasticsearch.common.geo.GeoPoint(geoPoint.lat, geoPoint.lon)
+        }
     }
 
 }

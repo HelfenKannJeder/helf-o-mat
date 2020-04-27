@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.web.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.helfenkannjeder.helfomat.core.ProfileRegistry;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization.ElasticsearchOrganizationRepository;
@@ -26,11 +25,10 @@ public class JpaCacheConfig {
 
     @Bean
     public JpaEventOrganizationRepository jpaOrganizationRepository(
-        ElasticsearchConfiguration elasticsearchConfiguration,
-        ElasticsearchTemplate elasticsearchTemplate,
-        @Value("classpath:/mapping/organization.json") Resource organizationMapping,
-        ObjectMapper objectMapper,
-        EventRepository eventRepository
+            ElasticsearchConfiguration elasticsearchConfiguration,
+            ElasticsearchTemplate elasticsearchTemplate,
+            @Value("classpath:/mapping/organization.json") Resource organizationMapping,
+            EventRepository eventRepository
     ) throws IOException {
         ElasticsearchOrganizationRepository elasticsearchOrganizationRepository = new ElasticsearchOrganizationRepository(
             elasticsearchConfiguration,
@@ -39,7 +37,7 @@ public class JpaCacheConfig {
         );
         String mapping = StreamUtils.copyToString(organizationMapping.getInputStream(), StandardCharsets.UTF_8);
         elasticsearchOrganizationRepository.createIndex(mapping);
-        return new JpaEventOrganizationRepository(objectMapper, elasticsearchOrganizationRepository, eventRepository);
+        return new JpaEventOrganizationRepository(elasticsearchOrganizationRepository, eventRepository);
     }
 
 }

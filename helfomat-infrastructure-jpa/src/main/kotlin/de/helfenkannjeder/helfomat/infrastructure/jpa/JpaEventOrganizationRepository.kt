@@ -1,53 +1,39 @@
-package de.helfenkannjeder.helfomat.infrastructure.jpa;
+package de.helfenkannjeder.helfomat.infrastructure.jpa
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.helfenkannjeder.helfomat.api.organization.EventBasedCachingOrganizationRepository;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
-import org.springframework.context.event.EventListener;
-
-import java.util.Collections;
+import de.helfenkannjeder.helfomat.api.organization.EventBasedCachingOrganizationRepository
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
+import org.springframework.context.event.EventListener
 
 /**
  * @author Valentin Zickner
  */
-public class JpaEventOrganizationRepository extends EventBasedCachingOrganizationRepository {
-
-    private EventRepository eventRepository;
-
-    public JpaEventOrganizationRepository(ObjectMapper objectMapper, OrganizationRepository persistentOrganizationRepository, EventRepository eventRepository) {
-        super(objectMapper, persistentOrganizationRepository);
-        this.eventRepository = eventRepository;
-    }
+class JpaEventOrganizationRepository(persistentOrganizationRepository: OrganizationRepository,
+                                     private val eventRepository: EventRepository) : EventBasedCachingOrganizationRepository(persistentOrganizationRepository) {
 
     @EventListener
-    public void listen(OrganizationEvent organizationEvent) {
-        processDomainEvent(organizationEvent);
+    fun listen(organizationEvent: OrganizationEvent) {
+        processDomainEvent(organizationEvent)
     }
 
-    @Override
-    protected void processDomainEvent(OrganizationEvent organizationEvent) {
-        OrganizationId organizationId = organizationEvent.getOrganizationId();
-        super.processDomainEvents(organizationId, Collections.singletonList(organizationEvent));
+    override fun processDomainEvent(organizationEvent: OrganizationEvent) {
+        val organizationId = organizationEvent.organizationId
+        super.processDomainEvents(organizationId, listOf(organizationEvent))
     }
 
-    @Override
-    protected Organization.Builder getExistingOrganizationBuilder(OrganizationId organizationId) {
-        Organization.Builder organizationBuilder = this.organizationBuilderMap.get(organizationId);
-        if (organizationBuilder != null) {
-            return organizationBuilder;
-        }
-        Organization.Builder newOrganizationBuilder = new Organization.Builder();
-        this.eventRepository.findByOrganizationId(organizationId)
+    override fun getExistingOrganizationBuilder(organizationId: OrganizationId): Organization.Builder {
+        val organizationBuilder = organizationBuilderMap[organizationId]
+        if (organizationBuilder != null) return organizationBuilder
+        val newOrganizationBuilder = Organization.Builder()
+        eventRepository.findByOrganizationId(organizationId)
             .stream()
-            .map(Event::getDomainEvent)
-            .forEach(domainEvent -> domainEvent.applyOnOrganizationBuilder(newOrganizationBuilder));
-        return newOrganizationBuilder;
+            .map { obj: Event -> obj.domainEvent }
+            .forEach { domainEvent: OrganizationEvent -> domainEvent.applyOnOrganizationBuilder(newOrganizationBuilder) }
+        return newOrganizationBuilder
     }
 
-    @Override
-    protected void saveToLocalCache(OrganizationId organizationId, Organization.Builder organizationBuilder) {
-    }
+    override fun saveToLocalCache(organizationId: OrganizationId, organizationBuilder: Organization.Builder) {}
+
 }

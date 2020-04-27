@@ -15,7 +15,7 @@ public class OrganizationDto {
     private String urlName;
     private String description;
     private String website;
-    private Float scoreNorm;
+    private Double scoreNorm;
     private OrganizationType organizationType;
     private List<AddressDto> addresses;
     private List<ContactPersonDto> contactPersons;
@@ -25,7 +25,7 @@ public class OrganizationDto {
     }
 
     public OrganizationDto(String id, String name, String urlName, String description, String website, List<AddressDto> addresses,
-                           List<ContactPersonDto> contactPersons, PictureId logo, Float scoreNorm, OrganizationType organizationType) {
+                           List<ContactPersonDto> contactPersons, PictureId logo, Double scoreNorm, OrganizationType organizationType) {
         this.id = id;
         this.name = name;
         this.urlName = urlName;
@@ -58,7 +58,7 @@ public class OrganizationDto {
         return website;
     }
 
-    public Float getScoreNorm() {
+    public Double getScoreNorm() {
         return scoreNorm;
     }
 

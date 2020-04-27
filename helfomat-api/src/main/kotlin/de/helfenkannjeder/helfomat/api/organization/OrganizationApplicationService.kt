@@ -1,145 +1,122 @@
-package de.helfenkannjeder.helfomat.api.organization;
+package de.helfenkannjeder.helfomat.api.organization
 
-import de.helfenkannjeder.helfomat.api.Roles;
-import de.helfenkannjeder.helfomat.api.organization.event.OrganizationCreateEventDto;
-import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventAssembler;
-import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto;
-import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler;
-import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox;
-import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint;
-import de.helfenkannjeder.helfomat.core.organization.Address;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
-import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent;
-import de.helfenkannjeder.helfomat.core.question.Question;
-import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import de.helfenkannjeder.helfomat.api.Roles
+import de.helfenkannjeder.helfomat.api.organization.event.OrganizationCreateEventDto
+import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventAssembler
+import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto
+import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler
+import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox
+import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
+import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent
+import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent
+import de.helfenkannjeder.helfomat.core.question.QuestionRepository
+import org.springframework.context.ApplicationEventPublisher
+import org.springframework.context.event.EventListener
+import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Service
 
 /**
  * @author Valentin Zickner
  */
 @Service
-public class OrganizationApplicationService {
+open class OrganizationApplicationService(
+    private var organizationRepository: OrganizationRepository,
+    private var questionRepository: QuestionRepository,
+    private var applicationEventPublisher: ApplicationEventPublisher) {
 
-    private final OrganizationRepository organizationRepository;
-    private final QuestionRepository questionRepository;
-    private final ApplicationEventPublisher applicationEventPublisher;
-
-    @Autowired
-    public OrganizationApplicationService(OrganizationRepository organizationRepository, QuestionRepository questionRepository, ApplicationEventPublisher applicationEventPublisher) {
-        this.organizationRepository = organizationRepository;
-        this.questionRepository = questionRepository;
-        this.applicationEventPublisher = applicationEventPublisher;
+    open fun findOrganizationDetails(urlName: String): OrganizationDetailDto {
+        val organization = organizationRepository.findByUrlName(urlName)
+        val questions = questionRepository.findQuestions()
+        return OrganizationAssembler.toOrganizationDetailDto(organization, questions)
     }
 
-    public OrganizationDetailDto findOrganizationDetails(String urlName) {
-        Organization organization = this.organizationRepository.findByUrlName(urlName);
-        List<Question> questions = this.questionRepository.findQuestions();
-        return OrganizationAssembler.toOrganizationDetailDto(organization, questions);
+    open fun findGlobalOrganizations(): List<OrganizationDto> {
+        return OrganizationAssembler.toOrganizationDtos(organizationRepository.findGlobalOrganizations())
     }
 
-    public List<OrganizationDto> findGlobalOrganizations() {
-        return OrganizationAssembler.toOrganizationDtos(
-            this.organizationRepository.findGlobalOrganizations()
-        );
-    }
-
-    public List<OrganizationDto> findGlobalOrganizationsWith(List<QuestionAnswerDto> questionAnswerDtos) {
+    open fun findGlobalOrganizationsWith(questionAnswerDtos: List<QuestionAnswerDto>): List<OrganizationDto> {
         return OrganizationAssembler.toScoredOrganizationDtos(
-            this.organizationRepository.findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos))
-        );
+            organizationRepository.findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos))
+        )
     }
 
-    public List<OrganizationDto> findOrganizationsWith(GeoPoint position, double distance) {
+    open fun findOrganizationsWith(position: GeoPoint, distance: Double): List<OrganizationDto> {
         return OrganizationAssembler.toOrganizationDtos(
-            this.organizationRepository.findOrganizationsByDistanceSortByDistance(position, distance)
-        );
+            organizationRepository.findOrganizationsByDistanceSortByDistance(position, distance)
+        )
     }
 
-    public List<OrganizationDto> findOrganizationsWith(List<QuestionAnswerDto> questionAnswerDtos, GeoPoint position, double distance) {
+    open fun findOrganizationsWith(questionAnswerDtos: List<QuestionAnswerDto>, position: GeoPoint, distance: Double): List<OrganizationDto> {
         return OrganizationAssembler.toScoredOrganizationDtos(
-            this.organizationRepository.findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+            organizationRepository.findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
                 QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos),
                 position,
                 distance
             )
-        );
+        )
     }
 
-    public List<GeoPoint> findClusteredGeoPoints(GeoPoint position,
-                                                 double distance,
-                                                 BoundingBox boundingBox) {
-        return this.organizationRepository.findGeoPointsOfOrganizationsInsideBoundingBox(position,
-            distance,
-            boundingBox);
+    open fun findClusteredGeoPoints(position: GeoPoint?, distance: Double, boundingBox: BoundingBox): List<GeoPoint> {
+        return organizationRepository.findGeoPointsOfOrganizationsInsideBoundingBox(position, distance, boundingBox)
     }
 
-    public List<OrganizationEventDto> compareOrganizations(CompareOrganizationDto compareOrganizationDto) {
-        Organization original = OrganizationAssembler.toOrganization(compareOrganizationDto.getOriginal());
-        Organization updated = OrganizationAssembler.toOrganization(compareOrganizationDto.getUpdated());
-        List<Question> questions = this.questionRepository.findQuestions();
-        return OrganizationEventAssembler.toOrganizationEventDto(updated.compareTo(original), questions);
+    open fun compareOrganizations(compareOrganizationDto: CompareOrganizationDto): List<OrganizationEventDto> {
+        val original = OrganizationAssembler.toOrganization(compareOrganizationDto.original)
+        val updated = OrganizationAssembler.toOrganization(compareOrganizationDto.updated)
+        val questions = questionRepository.findQuestions()
+        return OrganizationEventAssembler.toOrganizationEventDto(updated.compareTo(original), questions)
     }
 
     @PreAuthorize("isAuthenticated()")
-    public void submitOrganization(OrganizationSubmitEventDto organizationSubmitEventDto) {
-        List<OrganizationEvent> organizationEvents = OrganizationEventDtoAssembler.toOrganizationEvent(organizationSubmitEventDto.getEvents());
-        OrganizationId organizationId = organizationSubmitEventDto.getOrganizationId();
-        if (!isOrganizationSubmitValid(organizationId, organizationSubmitEventDto.getEvents())) {
-            throw new OrganizationNotFoundException(organizationId);
+    open fun submitOrganization(organizationSubmitEventDto: OrganizationSubmitEventDto) {
+        val organizationEvents = OrganizationEventDtoAssembler.toOrganizationEvent(organizationSubmitEventDto.events)
+        val organizationId = organizationSubmitEventDto.organizationId
+        if (!isOrganizationSubmitValid(organizationId, organizationSubmitEventDto.events)) {
+            throw OrganizationNotFoundException(organizationId)
         }
-        ProposedChangeOrganizationEvent proposedChangeOrganizationEvent = new ProposedChangeOrganizationEvent(
+        val proposedChangeOrganizationEvent = ProposedChangeOrganizationEvent(
             organizationId,
-            getCurrentUser(),
-            organizationSubmitEventDto.getSources(),
+            currentUser,
+            organizationSubmitEventDto.sources,
             organizationEvents
-        );
-        applicationEventPublisher.publishEvent(proposedChangeOrganizationEvent);
+        )
+        applicationEventPublisher.publishEvent(proposedChangeOrganizationEvent)
     }
 
     @EventListener // TODO: should be based on an actual approval
-    public void confirmOrganizationEvent(ProposedChangeOrganizationEvent proposedChangeOrganizationEvent) {
-        ConfirmedChangeOrganizationEvent confirmedChangeOrganizationEvent = new ConfirmedChangeOrganizationEvent(
-            proposedChangeOrganizationEvent.getOrganizationId(),
-            getCurrentUser(),
-            proposedChangeOrganizationEvent.getAuthor(),
-            proposedChangeOrganizationEvent.getSources(),
-            proposedChangeOrganizationEvent.getChanges()
-        );
-        applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent);
+    open fun confirmOrganizationEvent(proposedChangeOrganizationEvent: ProposedChangeOrganizationEvent) {
+        val confirmedChangeOrganizationEvent = ConfirmedChangeOrganizationEvent(
+            proposedChangeOrganizationEvent.organizationId,
+            currentUser,
+            proposedChangeOrganizationEvent.author,
+            proposedChangeOrganizationEvent.sources,
+            proposedChangeOrganizationEvent.changes
+        )
+        applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent)
     }
 
     @Secured(Roles.ADMIN)
-    public List<OrganizationDetailDto> findSimilarOrganizations(SearchSimilarOrganizationDto searchSimilarOrganizationDto) {
-        Address address = OrganizationAssembler.toAddress(searchSimilarOrganizationDto.getAddress());
-        OrganizationType organizationType = searchSimilarOrganizationDto.getOrganizationType();
-        Long distance = searchSimilarOrganizationDto.getDistanceInMeters();
-        List<Organization> organizations = this.organizationRepository.findOrganizationWithSameTypeInDistance(address, organizationType, distance);
-        List<Question> questions = this.questionRepository.findQuestions();
-        return OrganizationAssembler.toOrganizationDetailsDto(organizations, questions);
+    open fun findSimilarOrganizations(searchSimilarOrganizationDto: SearchSimilarOrganizationDto): List<OrganizationDetailDto> {
+        val address = OrganizationAssembler.toAddress(searchSimilarOrganizationDto.address)
+        val organizationType = searchSimilarOrganizationDto.organizationType
+        val distance = searchSimilarOrganizationDto.distanceInMeters
+        val organizations = organizationRepository.findOrganizationWithSameTypeInDistance(address, organizationType, distance)
+        val questions = questionRepository.findQuestions()
+        return OrganizationAssembler.toOrganizationDetailsDto(organizations, questions)
     }
 
-    private boolean isOrganizationSubmitValid(OrganizationId organizationId, List<OrganizationEventDto> events) {
-        boolean isNewOrganization = this.organizationRepository.findOne(organizationId.getValue()) == null;
-        boolean isCreate = events.stream()
-            .map(OrganizationEventDto::getClass)
-            .anyMatch(OrganizationCreateEventDto.class::equals);
-        return (isNewOrganization && isCreate) || (!isNewOrganization && !isCreate);
+    private fun isOrganizationSubmitValid(organizationId: OrganizationId, events: List<OrganizationEventDto>): Boolean {
+        val isNewOrganization = organizationRepository.findOne(organizationId.value) == null
+        val isCreate = events.stream()
+            .map { obj: OrganizationEventDto -> obj.javaClass }
+            .anyMatch { obj -> OrganizationCreateEventDto::class == obj }
+        return isNewOrganization && isCreate || !isNewOrganization && !isCreate
     }
 
-    private String getCurrentUser() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
-    }
+    private val currentUser get() = SecurityContextHolder.getContext().authentication.name
+
 }
