@@ -54,8 +54,8 @@ class OrganizationController(
     }
 
     @GetMapping("/organization/{organizationName}")
-    fun getOrganization(@PathVariable organizationName: String?): OrganizationDetailDto {
-        return organizationApplicationService.findOrganizationDetails(organizationName!!)
+    fun getOrganization(@PathVariable organizationName: String): OrganizationDetailDto? {
+        return organizationApplicationService.findOrganizationDetails(organizationName)
     }
 
     @GetMapping("/organization/{id}/travelDistances")

@@ -28,10 +28,13 @@ open class OrganizationApplicationService(
     private var questionRepository: QuestionRepository,
     private var applicationEventPublisher: ApplicationEventPublisher) {
 
-    open fun findOrganizationDetails(urlName: String): OrganizationDetailDto {
+    open fun findOrganizationDetails(urlName: String): OrganizationDetailDto? {
         val organization = organizationRepository.findByUrlName(urlName)
         val questions = questionRepository.findQuestions()
-        return OrganizationAssembler.toOrganizationDetailDto(organization, questions)
+        return when (organization) {
+            null -> null
+            else -> OrganizationAssembler.toOrganizationDetailDto(organization, questions)
+        }
     }
 
     open fun findGlobalOrganizations(): List<OrganizationDto> {
