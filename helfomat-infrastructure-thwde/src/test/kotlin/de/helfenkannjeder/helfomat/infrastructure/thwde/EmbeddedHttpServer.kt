@@ -1,75 +1,60 @@
-package de.helfenkannjeder.helfomat.infrastructure.thwde;
+package de.helfenkannjeder.helfomat.infrastructure.thwde
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.SocketUtils;
+import com.sun.net.httpserver.HttpExchange
+import com.sun.net.httpserver.HttpHandler
+import com.sun.net.httpserver.HttpServer
+import org.springframework.core.io.ClassPathResource
+import org.springframework.util.FileCopyUtils
+import org.springframework.util.SocketUtils
+import java.net.InetSocketAddress
+import java.util.*
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
+object EmbeddedHttpServer {
 
-@SuppressWarnings({"WeakerAccess", "Duplicates"})
-public class EmbeddedHttpServer {
+    val PORT = SocketUtils.findAvailableTcpPort()
+    private var server: HttpServer? = null
+    private val RESOURCES: MutableMap<String, FileContentHandler> = HashMap()
 
-	public static final int PORT = SocketUtils.findAvailableTcpPort();
-	private static HttpServer server;
-	private static final Map<String, FileContentHandler> RESOURCES = new HashMap<>();
-
-	public static void start() throws IOException {
-		server = HttpServer.create(new InetSocketAddress(PORT), 0);
-		server.setExecutor(null); // creates a default executor
-		server.start();
-	}
-
-    public static void stop() {
-        server.stop(0);
-        server = null;
+    fun start() {
+        val newServer = HttpServer.create(InetSocketAddress(PORT), 0)
+        newServer.setExecutor(null) // creates a default executor
+        newServer.start()
+        server = newServer
     }
 
-	public static void setContent(String url, String parameters, String resource) {
-        ClassPathResource classPathResource = new ClassPathResource(resource);
+    fun stop() {
+        server!!.stop(0)
+        server = null
+    }
+
+    fun setContent(url: String, parameters: String?, resource: String) {
+        val classPathResource = ClassPathResource(resource)
         if (!RESOURCES.containsKey(url)) {
-            FileContentHandler httpHandler = new FileContentHandler(classPathResource);
-            RESOURCES.put(url, httpHandler);
-            server.createContext(url, httpHandler);
-		}
-
-		RESOURCES.get(url).addParameters(parameters, classPathResource);
-	}
-
-    private static class FileContentHandler implements HttpHandler {
-
-        private final Map<String, ClassPathResource> resources = new HashMap<>();
-        private final ClassPathResource defaultResource;
-
-        public FileContentHandler(ClassPathResource defaultResource) {
-            this.defaultResource = defaultResource;
+            val httpHandler = FileContentHandler(classPathResource)
+            RESOURCES[url] = httpHandler
+            server!!.createContext(url, httpHandler)
         }
+        RESOURCES[url]!!.addParameters(parameters, classPathResource)
+    }
 
+    private class FileContentHandler(private val defaultResource: ClassPathResource) : HttpHandler {
+        private val resources: MutableMap<String?, ClassPathResource> = HashMap()
 
-        @Override
-		public void handle(HttpExchange httpExchange) throws IOException {
-            ClassPathResource resource = this.defaultResource;
-            String query = httpExchange.getRequestURI().getQuery();
+        override fun handle(httpExchange: HttpExchange) {
+            var resource: ClassPathResource? = defaultResource
+            val query = httpExchange.requestURI.query
             if (resources.containsKey(query)) {
-                resource = resources.get(query);
+                resource = resources[query]
             }
-
-            httpExchange.sendResponseHeaders(200, resource.contentLength());
-
-			OutputStream outputStream = httpExchange.getResponseBody();
-			FileCopyUtils.copy(resource.getInputStream(), outputStream);
-			outputStream.close();
-		}
-
-
-        public void addParameters(String parameters, ClassPathResource classPathResource) {
-            this.resources.put(parameters, classPathResource);
+            httpExchange.sendResponseHeaders(200, resource!!.contentLength())
+            val outputStream = httpExchange.responseBody
+            FileCopyUtils.copy(resource.inputStream, outputStream)
+            outputStream.close()
         }
+
+        fun addParameters(parameters: String?, classPathResource: ClassPathResource) {
+            resources[parameters] = classPathResource
+        }
+
     }
 }
