@@ -25,8 +25,8 @@ internal class CustomEntityMapper : EntityMapper {
         objectMapper.registerModule(Jdk8Module())
     }
 
-    override fun mapToString(`object`: Any): String {
-        return objectMapper.writeValueAsString(`object`)
+    override fun mapToString(o: Any): String {
+        return objectMapper.writeValueAsString(o)
     }
 
     override fun mapObject(source: Any): Map<String, Any> {

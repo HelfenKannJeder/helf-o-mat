@@ -23,12 +23,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 class SearchControllerTest {
 
     @Autowired
-    private var mockMvc: MockMvc? = null
+    private lateinit var mockMvc: MockMvc
 
     @Test
     @Throws(Exception::class)
     fun searchQuestions_withNoMoreInformation_returnsListOfQuestions() {
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/api/questions"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/questions"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.jsonPath("$").isArray)

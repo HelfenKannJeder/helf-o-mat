@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service
 import java.io.IOException
 
 @Service
-class GoogleMapsDistanceMatrixApplicationService(googleMapsConfiguration: GoogleMapsConfiguration) : DistanceMatrixApplicationService {
+class GoogleMapsDistanceMatrixApplicationService(
+    googleMapsConfiguration: GoogleMapsConfiguration
+) : DistanceMatrixApplicationService {
 
     private val geoApiContext: GeoApiContext = GeoApiContext.Builder()
         .apiKey(googleMapsConfiguration.apiKey)

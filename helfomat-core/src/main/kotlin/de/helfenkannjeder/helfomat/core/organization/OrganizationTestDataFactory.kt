@@ -143,41 +143,41 @@ object OrganizationTestDataFactory {
                 .build()
         ))
         .setVolunteers(Arrays.asList(
-            Volunteer.Builder()
-                .setFirstname("Carolin")
-                .setMotivation("Das THW ist nur für Männer... von wegen. ...")
-                .setPicture(PictureId("e37d8e15-eedf-48ad-b98f-64165d144347"))
-                .build(),
-            Volunteer.Builder()
-                .setFirstname("David")
-                .setMotivation("Viele Menschen, die mein Leben bereichern, hätte ich ohne das THW nie ...")
-                .setPicture(PictureId("b2c915dd-c9c4-4559-9e9a-1265e775949f"))
-                .build(),
-            Volunteer.Builder()
-                .setFirstname("Ilona")
-                .setMotivation("Unimog fahren, Rettungsgeräte einsetzen, bei interessanten Übungen mitmachen, im Einsatz ...")
-                .setPicture(PictureId("d52afe09-9303-47e3-b18a-d5575d39fd91"))
-                .build(),
-            Volunteer.Builder()
-                .setFirstname("Lisa")
-                .setMotivation("Seit 2006 bin ich beim THW und habe hier schon viele nette Leute kennengelernt. Schön ...")
-                .setPicture(PictureId("251aa6b3-f844-444b-9c87-8eceb6dbea34"))
-                .build(),
-            Volunteer.Builder()
-                .setFirstname("Steffen")
-                .setMotivation("Verantwortung übernehmen zu können, technisches Rettungsgerät einzusetzen und ab und an unter ...")
-                .setPicture(PictureId("c9213d2a-4498-43f8-af18-07cede4b3714"))
-                .build(),
-            Volunteer.Builder()
-                .setFirstname("Thilo")
-                .setMotivation("Ich bin seit 2006 beim THW dabei. Hier habe ich ein neues Hobby und viele neue Freunde gefunden, ...")
-                .setPicture(PictureId("5858ef6e-a580-4e00-9867-255889fe24b1"))
-                .build(),
-            Volunteer.Builder()
-                .setFirstname("Timo")
-                .setMotivation("Der Zusammenhalt und die Kameradschaft sind die Hauptgründe, warum ich im THW bin. Außerdem gibt ...")
-                .setPicture(PictureId("1d86181a-b5c1-4951-8f33-7477cd835e18"))
-                .build()
+            Volunteer(
+                firstname = "Carolin",
+                motivation = "Das THW ist nur für Männer... von wegen. ...",
+                picture = PictureId("e37d8e15-eedf-48ad-b98f-64165d144347")
+            ),
+            Volunteer(
+                firstname = "David",
+                motivation = "Viele Menschen, die mein Leben bereichern, hätte ich ohne das THW nie ...",
+                picture = PictureId("b2c915dd-c9c4-4559-9e9a-1265e775949f")
+            ),
+            Volunteer(
+                firstname = "Ilona",
+                motivation = "Unimog fahren, Rettungsgeräte einsetzen, bei interessanten Übungen mitmachen, im Einsatz ...",
+                picture = PictureId("d52afe09-9303-47e3-b18a-d5575d39fd91")
+            ),
+            Volunteer(
+                firstname = "Lisa",
+                motivation = "Seit 2006 bin ich beim THW und habe hier schon viele nette Leute kennengelernt. Schön ...",
+                picture = PictureId("251aa6b3-f844-444b-9c87-8eceb6dbea34")
+            ),
+            Volunteer(
+                firstname = "Steffen",
+                motivation = "Verantwortung übernehmen zu können, technisches Rettungsgerät einzusetzen und ab und an unter ...",
+                picture = PictureId("c9213d2a-4498-43f8-af18-07cede4b3714")
+            ),
+            Volunteer(
+                firstname = "Thilo",
+                motivation = "Ich bin seit 2006 beim THW dabei. Hier habe ich ein neues Hobby und viele neue Freunde gefunden, ...",
+                picture = PictureId("5858ef6e-a580-4e00-9867-255889fe24b1")
+            ),
+            Volunteer(
+                firstname = "Timo",
+                motivation = "Der Zusammenhalt und die Kameradschaft sind die Hauptgründe, warum ich im THW bin. Außerdem gibt ...",
+                picture = PictureId("1d86181a-b5c1-4951-8f33-7477cd835e18")
+            )
         ))
         .build()
 }

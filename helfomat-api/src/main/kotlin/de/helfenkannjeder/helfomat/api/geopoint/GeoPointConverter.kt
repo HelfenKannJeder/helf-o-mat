@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class GeoPointConverter : Converter<String, GeoPoint> {
 
     override fun convert(string: String): GeoPoint? {
-        val geoPointParts = string.split(",".toRegex()).toTypedArray()
+        val geoPointParts = string.split(",")
         return if (geoPointParts.size == 2) {
             GeoPoint(geoPointParts[0].toDouble(), geoPointParts[1].toDouble())
         } else {

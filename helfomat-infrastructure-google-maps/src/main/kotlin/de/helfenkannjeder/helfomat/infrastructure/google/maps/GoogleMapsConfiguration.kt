@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component
  */
 @Component
 @ConfigurationProperties("googlemaps")
-class GoogleMapsConfiguration {
+data class GoogleMapsConfiguration (
     var apiKey: String? = null
-}
+)

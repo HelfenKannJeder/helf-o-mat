@@ -3,8 +3,10 @@ package de.helfenkannjeder.helfomat.core.geopoint
 /**
  * @author Valentin Zickner
  */
-data class GeoPoint(val lat: Double,
-                    val lon: Double) {
+data class GeoPoint(
+    val lat: Double,
+    val lon: Double
+) {
 
     fun distanceInKm(second: GeoPoint): Double {
         val R_earth = 6371.0

@@ -5,22 +5,21 @@ import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
 import de.helfenkannjeder.helfomat.core.organization.*
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
 import org.slf4j.LoggerFactory
-import java.util.*
 
 /**
  * @author Valentin Zickner
  */
-open class EventBasedCachingOrganizationRepository(protected val persistentOrganizationRepository: OrganizationRepository) : OrganizationRepository {
+open class EventBasedCachingOrganizationRepository(
+    protected val persistentOrganizationRepository: OrganizationRepository
+) : OrganizationRepository {
 
     @JvmField
-    protected val organizationBuilderMap: MutableMap<OrganizationId, Organization.Builder> = HashMap()
+    protected val organizationBuilderMap: MutableMap<OrganizationId, Organization.Builder> = mutableMapOf()
 
     protected fun processDomainEvents(organizationId: OrganizationId, organizationEvents: List<OrganizationEvent>) {
         LOG.debug("Received organization events for organization '{}' from event storage '{}'", organizationId, organizationEvents)
-        var organizationBuilder = getExistingOrganizationBuilder(organizationId)
-        for (organizationEvent in organizationEvents) {
-            organizationBuilder = organizationEvent.applyOnOrganizationBuilder(organizationBuilder)
-        }
+        val organizationBuilder = getExistingOrganizationBuilder(organizationId)
+        organizationEvents.forEach { it.applyOnOrganizationBuilder(organizationBuilder) }
         saveToLocalCache(organizationId, organizationBuilder)
         persistentOrganizationRepository.save(listOf(organizationBuilder.build()))
     }

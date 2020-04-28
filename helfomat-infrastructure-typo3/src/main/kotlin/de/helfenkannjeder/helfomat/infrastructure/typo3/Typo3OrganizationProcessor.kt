@@ -22,7 +22,9 @@ import java.util.stream.Collectors
  */
 @Component
 @Transactional(propagation = Propagation.REQUIRED, transactionManager = "legacyTransactionManager")
-open class Typo3OrganizationProcessor(private val pictureStorageService: PictureStorageService) : ItemProcessor<TOrganization, Organization?> {
+open class Typo3OrganizationProcessor(
+    private val pictureStorageService: PictureStorageService
+) : ItemProcessor<TOrganization, Organization?> {
     open override fun process(tOrganization: TOrganization): Organization? {
         if (organizationIsNoCandidateToImport(tOrganization)) {
             LOGGER.info("Ignore TYPO3 organization '" + tOrganization.name + "'")
@@ -49,12 +51,12 @@ open class Typo3OrganizationProcessor(private val pictureStorageService: Picture
     }
 
     private fun toVolunteer(tEmployee: TEmployee): Volunteer {
-        return Volunteer.Builder()
-            .setFirstname(tEmployee.prename)
-            .setLastname(tEmployee.surname)
-            .setMotivation(tEmployee.motivation)
-            .setPicture(toPicture(tEmployee.pictures))
-            .build()
+        return Volunteer(
+            firstname = tEmployee.prename,
+            lastname = tEmployee.surname,
+            motivation = tEmployee.motivation,
+            picture = toPicture(tEmployee.pictures)
+        )
     }
 
     private fun toGroup(tGroup: TGroup): Group {
@@ -84,8 +86,7 @@ open class Typo3OrganizationProcessor(private val pictureStorageService: Picture
     private fun toPictures(pictures: List<String>): List<PictureId> {
         return pictures
             .map { picture: String -> toPicture(picture) }
-            .filter({ Objects.nonNull(it) })
-            .map({it!!})
+            .filterNotNull()
     }
 
     fun toPicture(picture: String?): PictureId? {

@@ -34,9 +34,6 @@ open class ThwCrawlerOrganizationReader constructor(
     private val thwCrawlerConfiguration: ThwCrawlerConfiguration,
     private val pictureStorageService: PictureStorageService
 ) : ItemReader<Organization>, OrganizationReader {
-    private val logger = LoggerFactory.getLogger(ThwCrawlerOrganizationReader::class.java)
-    private val latitudePattern = Pattern.compile("lat = parseFloat\\((\\d+\\.\\d+)\\)")
-    private val longitudePattern = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)")
 
     private var iterator: Iterator<Element>? = null
     private var currentLetter = 'A'
@@ -51,31 +48,31 @@ open class ThwCrawlerOrganizationReader constructor(
 
     @Throws(Exception::class)
     override fun read(): Organization? {
-        if (iterator == null || !iterator!!.hasNext()) {
-            requestOverviewPage(currentLetter, currentPage++)
-            if (!iterator!!.hasNext() && currentLetter <= 'Z') {
+        if (iterator == null || iterator?.hasNext() != true) {
+            iterator = requestOverviewPage(currentLetter, currentPage++)
+            while (iterator?.hasNext() != true && currentLetter <= 'Z') {
                 currentLetter++
                 currentPage = 1
-                logger.debug("Next letter: $currentLetter")
-                requestOverviewPage(currentLetter, currentPage++)
+                LOGGER.debug("Next letter: $currentLetter")
+                iterator = requestOverviewPage(currentLetter, currentPage++)
             }
         }
-        if (!iterator!!.hasNext()) {
+        if (iterator?.hasNext() != true) {
             return null
         }
         val organization = readNextOrganizationItem()
-        logger.debug("Got organization '" + organization.name + "' from thw.de website.")
+        LOGGER.debug("Got organization '" + organization?.name + "' from thw.de website.")
         return organization
     }
 
-    private fun readNextOrganizationItem(): Organization {
-        val oeLink = iterator!!.next()
+    private fun readNextOrganizationItem(): Organization? {
+        val oeLink = iterator?.next() ?: return null
         val url = thwCrawlerConfiguration.domain + oeLink.attr("href")
         val oeDetailsDocument = Jsoup.connect(url).timeout(thwCrawlerConfiguration.httpRequestTimeout).get()
         return extractOrganization(oeDetailsDocument)
     }
 
-    private fun requestOverviewPage(letter: Char, page: Int) {
+    private fun requestOverviewPage(letter: Char, page: Int): Iterator<Element> {
         val document = Jsoup.connect(thwCrawlerConfiguration.domain + "DE/THW/Bundesanstalt/Dienststellen/dienststellen_node.html")
             .timeout(thwCrawlerConfiguration.httpRequestTimeout)
             .data("oe_plzort", "PLZ+oder+Ort")
@@ -86,14 +83,14 @@ open class ThwCrawlerOrganizationReader constructor(
             .data("letter", letter.toString())
             .data("page", page.toString())
             .get()
-        logger.debug("requested document: " + document.location())
+        LOGGER.debug("requested document: " + document.location())
         val oeLinks = document.select("[href*=SharedDocs/Organisationseinheiten/DE/Ortsverbaende]")
-        iterator = oeLinks.iterator()
+        return oeLinks.iterator()
     }
 
     private fun extractOrganization(oeDetailsDocument: Document): Organization {
         val organizationName = "THW " + oeDetailsDocument.select("div#main").select(".photogallery").select(".isFirstInSlot").text()
-        logger.info("Read organization: $organizationName")
+        LOGGER.info("Read organization: $organizationName")
         val contactDataDiv = oeDetailsDocument.select(".contact-data")
         val groups = extractDistinctGroups(oeDetailsDocument)
         val address = extractAddressFromDocument(oeDetailsDocument)
@@ -110,7 +107,7 @@ open class ThwCrawlerOrganizationReader constructor(
             .setGroups(groups)
             .setContactPersons(listOf(toContactPerson(oeDetailsDocument, contactDataDiv)))
             .build()
-        logger.trace("New organization: $organization")
+        LOGGER.trace("New organization: $organization")
         return organization
     }
 
@@ -142,7 +139,7 @@ open class ThwCrawlerOrganizationReader constructor(
             pictureStorageService.savePicture(picture, pictureId)
             pictureId
         } catch (e: DownloadFailedException) {
-            logger.warn("Failed to download picture", e)
+            LOGGER.warn("Failed to download picture", e)
             null
         }
     }
@@ -219,10 +216,10 @@ open class ThwCrawlerOrganizationReader constructor(
         val document = Jsoup.connect(mapLink)
             .timeout(thwCrawlerConfiguration.httpRequestTimeout)
             .get()
-        logger.debug("Requested document: " + document.location())
+        LOGGER.debug("Requested document: " + document.location())
         val javascriptContent = document.select("script[type=text/javascript]:not(script[src])").html()
-        val latitude = extractCoordinateFromJavascript(javascriptContent, latitudePattern)
-        val longitude = extractCoordinateFromJavascript(javascriptContent, longitudePattern)
+        val latitude = extractCoordinateFromJavascript(javascriptContent, LATITUDE_PATTERN)
+        val longitude = extractCoordinateFromJavascript(javascriptContent, LONGITUDE_PATTERN)
         return GeoPoint(latitude, longitude)
     }
 
@@ -232,6 +229,12 @@ open class ThwCrawlerOrganizationReader constructor(
             return matcher.group(1).toDouble()
         }
         throw ParseException("Cannot find coordinate inside of javascript, used $pattern")
+    }
+
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(ThwCrawlerOrganizationReader::class.java)
+        private val LATITUDE_PATTERN = Pattern.compile("lat = parseFloat\\((\\d+\\.\\d+)\\)")
+        private val LONGITUDE_PATTERN = Pattern.compile("lng = parseFloat\\((\\d+\\.\\d+)\\)")
     }
 
 }

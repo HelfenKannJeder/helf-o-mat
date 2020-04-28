@@ -6,6 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  * @author Valentin Zickner
  */
 @ConfigurationProperties("helfomat.importer")
-class ImporterConfiguration {
+class ImporterConfiguration (
     var webApiUrl: String? = null
-}
+)

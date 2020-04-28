@@ -6,7 +6,9 @@ import org.springframework.format.FormatterRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-open class WebApplicationConfig(private val geoPointConverter: GeoPointConverter) : WebMvcConfigurer {
+open class WebApplicationConfig(
+    private val geoPointConverter: GeoPointConverter
+) : WebMvcConfigurer {
 
     override fun addFormatters(registry: FormatterRegistry) {
         registry.addConverter(geoPointConverter)

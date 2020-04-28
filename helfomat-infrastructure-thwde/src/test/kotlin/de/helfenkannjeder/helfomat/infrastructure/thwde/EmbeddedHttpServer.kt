@@ -9,21 +9,21 @@ import org.springframework.util.SocketUtils
 import java.net.InetSocketAddress
 import java.util.*
 
-object EmbeddedHttpServer {
+class EmbeddedHttpServer {
 
-    val PORT = SocketUtils.findAvailableTcpPort()
+    val port = SocketUtils.findAvailableTcpPort()
     private var server: HttpServer? = null
     private val RESOURCES: MutableMap<String, FileContentHandler> = HashMap()
 
     fun start() {
-        val newServer = HttpServer.create(InetSocketAddress(PORT), 0)
+        val newServer = HttpServer.create(InetSocketAddress(port), 0)
         newServer.setExecutor(null) // creates a default executor
         newServer.start()
         server = newServer
     }
 
     fun stop() {
-        server!!.stop(0)
+        server?.stop(0)
         server = null
     }
 
@@ -32,9 +32,9 @@ object EmbeddedHttpServer {
         if (!RESOURCES.containsKey(url)) {
             val httpHandler = FileContentHandler(classPathResource)
             RESOURCES[url] = httpHandler
-            server!!.createContext(url, httpHandler)
+            server?.createContext(url, httpHandler)
         }
-        RESOURCES[url]!!.addParameters(parameters, classPathResource)
+        RESOURCES[url]?.addParameters(parameters, classPathResource)
     }
 
     private class FileContentHandler(private val defaultResource: ClassPathResource) : HttpHandler {
@@ -46,9 +46,11 @@ object EmbeddedHttpServer {
             if (resources.containsKey(query)) {
                 resource = resources[query]
             }
-            httpExchange.sendResponseHeaders(200, resource!!.contentLength())
+            httpExchange.sendResponseHeaders(200, resource?.contentLength() ?: 0)
             val outputStream = httpExchange.responseBody
-            FileCopyUtils.copy(resource.inputStream, outputStream)
+            if (resource != null) {
+                FileCopyUtils.copy(resource.inputStream, outputStream)
+            }
             outputStream.close()
         }
 

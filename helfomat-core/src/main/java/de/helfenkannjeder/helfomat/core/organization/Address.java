@@ -21,7 +21,7 @@ public class Address {
     Address() {
     }
 
-    Address(String street, String addressAppendix, String city, String zipcode, GeoPoint location, String telephone, String website) {
+    public Address(String street, String addressAppendix, String city, String zipcode, GeoPoint location, String telephone, String website) {
         this.street = street;
         this.addressAppendix = addressAppendix;
         this.city = city;

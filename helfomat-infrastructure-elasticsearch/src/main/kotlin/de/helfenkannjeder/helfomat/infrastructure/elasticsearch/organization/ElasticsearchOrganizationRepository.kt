@@ -18,7 +18,8 @@ import java.util.*
 class ElasticsearchOrganizationRepository(
     private val elasticsearchConfiguration: ElasticsearchConfiguration,
     private val elasticsearchTemplate: ElasticsearchTemplate,
-    private val indexName: String) : OrganizationRepository {
+    private val indexName: String
+) : OrganizationRepository {
 
     override fun findOrganizationWithSameTypeInDistance(defaultAddress: Address?, organizationType: OrganizationType, distanceInMeters: Long): List<Organization> {
         return try {
@@ -29,56 +30,41 @@ class ElasticsearchOrganizationRepository(
         }
     }
 
-    override fun findByUrlName(urlName: String): Organization? {
-        return search(QueryBuilders.termQuery("urlName", urlName)).firstOrNull()
-    }
+    override fun findByUrlName(urlName: String) = search(QueryBuilders.termQuery("urlName", urlName)).firstOrNull()
 
-    override fun findOne(id: String): Organization? {
-        return search(QueryBuilders.idsQuery(elasticsearchConfiguration.type.organization).addIds(id)).firstOrNull()
-    }
+    override fun findOne(id: String) = search(QueryBuilders.idsQuery(elasticsearchConfiguration.type.organization).addIds(id)).firstOrNull()
 
     override fun findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
         questionAnswers: List<QuestionAnswer>, position: GeoPoint, distance: Double
-    ): List<ScoredOrganization> {
-        return findOrganizationsWithQuestionsAndFilter(
-            questionAnswers,
-            filterDistance(position, distance)
-        )
-            .sortedWith(compareBy<ScoredOrganization> { it.score }
-                .thenComparingDouble { it.organization.defaultAddress.location.distanceInKm(position) })
-    }
+    ) = findOrganizationsWithQuestionsAndFilter(
+        questionAnswers,
+        filterDistance(position, distance)
+    )
+        .sortedWith(compareBy<ScoredOrganization> { it.score }.thenComparingDouble { it.organization.defaultAddress.location.distanceInKm(position) })
 
-    override fun findOrganizationsByDistanceSortByDistance(position: GeoPoint, distance: Double): List<Organization> {
-        return search(filterDistance(position, distance))
-            .sortedWith(compareBy { it.defaultAddress.location.distanceInKm(position) })
-    }
+    override fun findOrganizationsByDistanceSortByDistance(position: GeoPoint, distance: Double) = search(filterDistance(position, distance))
+        .sortedWith(compareBy { it.defaultAddress.location.distanceInKm(position) })
 
-    override fun findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(
-        questionAnswers: List<QuestionAnswer>
-    ): List<ScoredOrganization> {
-        return findOrganizationsWithQuestionsAndFilter(
-            questionAnswers,
-            QueryBuilders.boolQuery()
-                .mustNot(QueryBuilders.existsQuery("defaultAddress"))
-        )
-            .sortedBy { it.score }
+    override fun findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(questionAnswers: List<QuestionAnswer>) = findOrganizationsWithQuestionsAndFilter(
+        questionAnswers,
+        QueryBuilders.boolQuery()
+            .mustNot(QueryBuilders.existsQuery("defaultAddress"))
+    )
+        .sortedBy { it.score }
 
-    }
-
-    override fun findGlobalOrganizations(): List<Organization> {
-        return search(
-            QueryBuilders.boolQuery()
-                .mustNot(QueryBuilders.existsQuery("defaultAddress"))
-        )
-            .sortedBy { it.name }
-    }
+    override fun findGlobalOrganizations(): List<Organization> = search(
+        QueryBuilders.boolQuery()
+            .mustNot(QueryBuilders.existsQuery("defaultAddress"))
+    )
+        .sortedBy { it.name }
 
     override fun findGeoPointsOfOrganizationsInsideBoundingBox(position: GeoPoint?, distance: Double, boundingBox: BoundingBox): List<GeoPoint> {
         val boolQueryBuilder = QueryBuilders.boolQuery()
         val positionQuery = QueryBuilders.boolQuery()
             .must(filterBox(boundingBox))
-        if (position != null)
+        if (position != null) {
             positionQuery.mustNot(filterDistance(position, distance))
+        }
         boolQueryBuilder.filter(positionQuery)
         val organizations = search(boolQueryBuilder)
         return extractOrganizations(emptyList(), organizations)
@@ -126,9 +112,9 @@ class ElasticsearchOrganizationRepository(
     private fun findOrganizationsWithQuestionsAndFilter(questionAnswers: List<QuestionAnswer>, filter: QueryBuilder): List<ScoredOrganization> {
         val boolQueryBuilder = QueryBuilders.boolQuery()
         questionAnswers
-            .filter { questionAnswer: QuestionAnswer -> Objects.nonNull(questionAnswer.answer) }
-            .map { questionAnswer: QuestionAnswer -> buildQuestionQuery(questionAnswer) }
-            .forEach { queryBuilder: QueryBuilder? -> boolQueryBuilder.should(queryBuilder) }
+            .filter { Objects.nonNull(it.answer) }
+            .map { buildQuestionQuery(it) }
+            .forEach { boolQueryBuilder.should(it) }
         boolQueryBuilder.filter(filter)
         return extractOrganizations(
             questionAnswers,
@@ -151,39 +137,39 @@ class ElasticsearchOrganizationRepository(
         val topRight = boundingBoxDto.northEast
         val bottomLeft = boundingBoxDto.southWest
         return QueryBuilders.geoBoundingBoxQuery("defaultAddress.location")
-            .setCornersOGC(toElasticsearchGeoPoint(bottomLeft), toElasticsearchGeoPoint(topRight))
+            .setCornersOGC(bottomLeft.toElasticsearchGeoPoint(), topRight.toElasticsearchGeoPoint())
     }
 
     private fun filterDistance(position: GeoPoint, distance: Double): GeoDistanceQueryBuilder {
         return QueryBuilders.geoDistanceQuery("defaultAddress.location")
-            .point(toElasticsearchGeoPoint(position))
+            .point(position.toElasticsearchGeoPoint())
             .distance(distance, DistanceUnit.KILOMETERS)
     }
 
     private fun extractOrganizations(questionAnswers: List<QuestionAnswer>, resultOrganizations: List<Organization>): List<ScoredOrganization> {
         return resultOrganizations
-            .map { organization -> ScoredOrganization(organization, calculateScore(organization.questionAnswers, questionAnswers)) }
+            .map { ScoredOrganization(it, calculateScore(it.questionAnswers, questionAnswers)) }
     }
 
     private fun calculateScore(organizationQuestions: List<QuestionAnswer>, questionAnswers: List<QuestionAnswer>): Double {
         return organizationQuestions
-            .map { question: QuestionAnswer ->
-                val questionId = question.questionId
-                val organizationAnswer = question.answer
+            .map {
+                val questionId = it.questionId
+                val organizationAnswer = it.answer
                 val userAnswer = questionAnswers
                     .filter { questionAnswer: QuestionAnswer -> questionAnswer.questionId == questionId }
                     .map { it.answer }
                     .firstOrNull { Objects.nonNull(it) }
-                        ?: return@map null
+                    ?: return@map null
                 if (organizationAnswer == userAnswer) {
-                    return@map 100.0
+                    100.0
                 } else if (organizationAnswer.neighbours.contains(userAnswer)) {
-                    return@map 50.0
+                    50.0
+                } else {
+                    0.0
                 }
-                0.0
             }
-            .filter { obj: Double? -> Objects.nonNull(obj) }
-            .map { it!! }
+            .filterNotNull()
             .average()
     }
 
@@ -201,9 +187,8 @@ class ElasticsearchOrganizationRepository(
 
     companion object {
         private const val DEFAULT_MAX_RESULT_SIZE = 10000
-        private fun toElasticsearchGeoPoint(geoPoint: GeoPoint): org.elasticsearch.common.geo.GeoPoint {
-            return org.elasticsearch.common.geo.GeoPoint(geoPoint.lat, geoPoint.lon)
-        }
     }
 
 }
+
+fun GeoPoint.toElasticsearchGeoPoint() = org.elasticsearch.common.geo.GeoPoint(this.lat, this.lon)

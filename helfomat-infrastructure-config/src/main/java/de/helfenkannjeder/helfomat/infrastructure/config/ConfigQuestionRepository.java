@@ -21,13 +21,11 @@ public class ConfigQuestionRepository implements QuestionRepository {
     public List<Question> findQuestions() {
         return this.questionConfiguration.getQuestions()
             .stream()
-            .map(questionMapping -> {
-                Question question = new Question();
-                question.setId(new QuestionId(questionMapping.getId()));
-                question.setQuestion(questionMapping.getQuestion());
-                question.setDescription(questionMapping.getDescription());
-                return question;
-            })
+            .map(questionMapping -> new Question(
+                new QuestionId(questionMapping.getId()),
+                questionMapping.getQuestion(),
+                questionMapping.getDescription()
+            ))
             .collect(Collectors.toList());
     }
 

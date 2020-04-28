@@ -10,8 +10,10 @@ import org.springframework.context.event.EventListener
 /**
  * @author Valentin Zickner
  */
-class JpaEventOrganizationRepository(persistentOrganizationRepository: OrganizationRepository,
-                                     private val eventRepository: EventRepository) : EventBasedCachingOrganizationRepository(persistentOrganizationRepository) {
+class JpaEventOrganizationRepository(
+    persistentOrganizationRepository: OrganizationRepository,
+    private val eventRepository: EventRepository
+) : EventBasedCachingOrganizationRepository(persistentOrganizationRepository) {
 
     @EventListener
     fun listen(organizationEvent: OrganizationEvent) {
@@ -25,12 +27,13 @@ class JpaEventOrganizationRepository(persistentOrganizationRepository: Organizat
 
     override fun getExistingOrganizationBuilder(organizationId: OrganizationId): Organization.Builder {
         val organizationBuilder = organizationBuilderMap[organizationId]
-        if (organizationBuilder != null) return organizationBuilder
+        if (organizationBuilder != null) {
+            return organizationBuilder
+        }
         val newOrganizationBuilder = Organization.Builder()
         eventRepository.findByOrganizationId(organizationId)
-            .stream()
-            .map { obj: Event -> obj.domainEvent }
-            .forEach { domainEvent: OrganizationEvent -> domainEvent.applyOnOrganizationBuilder(newOrganizationBuilder) }
+            .map { it.domainEvent }
+            .forEach { it.applyOnOrganizationBuilder(newOrganizationBuilder) }
         return newOrganizationBuilder
     }
 

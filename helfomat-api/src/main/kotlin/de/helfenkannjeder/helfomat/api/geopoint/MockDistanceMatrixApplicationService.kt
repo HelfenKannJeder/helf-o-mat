@@ -12,7 +12,7 @@ import java.util.*
 @Primary
 class MockDistanceMatrixApplicationService : DistanceMatrixApplicationService {
 
-    override fun getTravelDistanceFor(travelMode: TravelModeDto, origin: GeoPoint, destination: GeoPoint): TravelDistanceDto? {
+    override fun getTravelDistanceFor(travelMode: TravelModeDto, origin: GeoPoint, destination: GeoPoint): TravelDistanceDto {
         return TravelDistanceDto(
             travelMode,
             distanceInMeters = Math.abs(RANDOM.nextLong() % 5000) + 1,

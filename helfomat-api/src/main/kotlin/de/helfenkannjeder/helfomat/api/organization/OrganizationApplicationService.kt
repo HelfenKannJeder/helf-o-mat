@@ -31,36 +31,29 @@ open class OrganizationApplicationService(
     open fun findOrganizationDetails(urlName: String): OrganizationDetailDto? {
         val organization = organizationRepository.findByUrlName(urlName)
         val questions = questionRepository.findQuestions()
-        return when (organization) {
-            null -> null
-            else -> OrganizationAssembler.toOrganizationDetailDto(organization, questions)
-        }
+        return organization?.toOrganizationDetailDto(questions)
     }
 
     open fun findGlobalOrganizations(): List<OrganizationDto> {
-        return OrganizationAssembler.toOrganizationDtos(organizationRepository.findGlobalOrganizations())
+        return organizationRepository.findGlobalOrganizations().toOrganizationDtos()
     }
 
     open fun findGlobalOrganizationsWith(questionAnswerDtos: List<QuestionAnswerDto>): List<OrganizationDto> {
-        return OrganizationAssembler.toScoredOrganizationDtos(
-            organizationRepository.findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos))
-        )
+        return organizationRepository.findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos))
+            .toScoredOrganizationDtos()
     }
 
     open fun findOrganizationsWith(position: GeoPoint, distance: Double): List<OrganizationDto> {
-        return OrganizationAssembler.toOrganizationDtos(
-            organizationRepository.findOrganizationsByDistanceSortByDistance(position, distance)
-        )
+        return organizationRepository.findOrganizationsByDistanceSortByDistance(position, distance).toOrganizationDtos()
+
     }
 
     open fun findOrganizationsWith(questionAnswerDtos: List<QuestionAnswerDto>, position: GeoPoint, distance: Double): List<OrganizationDto> {
-        return OrganizationAssembler.toScoredOrganizationDtos(
-            organizationRepository.findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
-                QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos),
-                position,
-                distance
-            )
-        )
+        return organizationRepository.findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+            QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos),
+            position,
+            distance
+        ).toScoredOrganizationDtos()
     }
 
     open fun findClusteredGeoPoints(position: GeoPoint?, distance: Double, boundingBox: BoundingBox): List<GeoPoint> {
@@ -68,8 +61,8 @@ open class OrganizationApplicationService(
     }
 
     open fun compareOrganizations(compareOrganizationDto: CompareOrganizationDto): List<OrganizationEventDto> {
-        val original = OrganizationAssembler.toOrganization(compareOrganizationDto.original)
-        val updated = OrganizationAssembler.toOrganization(compareOrganizationDto.updated)
+        val original = compareOrganizationDto.original.toOrganization()
+        val updated = compareOrganizationDto.updated.toOrganization()
         val questions = questionRepository.findQuestions()
         return OrganizationEventAssembler.toOrganizationEventDto(updated.compareTo(original), questions)
     }
@@ -109,7 +102,7 @@ open class OrganizationApplicationService(
         val distance = searchSimilarOrganizationDto.distanceInMeters
         val organizations = organizationRepository.findOrganizationWithSameTypeInDistance(address, organizationType, distance)
         val questions = questionRepository.findQuestions()
-        return OrganizationAssembler.toOrganizationDetailsDto(organizations, questions)
+        return organizations.toOrganizationDetailsDto(questions)
     }
 
     private fun isOrganizationSubmitValid(organizationId: OrganizationId, events: List<OrganizationEventDto>): Boolean {

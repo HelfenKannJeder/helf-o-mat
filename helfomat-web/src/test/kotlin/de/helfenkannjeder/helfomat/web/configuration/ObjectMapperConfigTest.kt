@@ -17,7 +17,7 @@ import java.time.LocalTime
 class ObjectMapperConfigTest {
 
     @Autowired
-    private val objectMapper: ObjectMapper? = null
+    private lateinit var objectMapper: ObjectMapper
 
     @Test
     fun serializeLocalTime_with4pm_ensureSerializationAsInt() {
@@ -25,7 +25,7 @@ class ObjectMapperConfigTest {
         val localTime = LocalTime.of(16, 0)
 
         // Act
-        val result = objectMapper!!.writeValueAsString(localTime)
+        val result = objectMapper.writeValueAsString(localTime)
 
         // Assert
         Assertions.assertThat(result).isEqualTo("\"16:00:00\"")
