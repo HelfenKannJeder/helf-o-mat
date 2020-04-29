@@ -2,61 +2,71 @@
 
 [![Build Status](https://travis-ci.org/HelfenKannJeder/helf-o-mat.svg?branch=master)](https://travis-ci.org/HelfenKannJeder/helf-o-mat)
 
-This project is the rewrite of the current [Helf-O-Mat](http://helf-o-mat.de) project of
-HelfenKannJeder. Since the old version was written in PHP with TYPO3, the new version is
-a single page application based on Spring and Angular.
+This project is the [Helf-O-Mat](http://helf-o-mat.de) project of HelfenKannJeder.
+It is a single page application based on Spring Boot and Angular.
 
 ## Build
 
-For the build everything is integrated into Maven tasks and it can be simply build with
-`mvn clean package` on the upper level. Inside a node environment is downloaded and
-installed for the frontend.
+Everything is available as maven task and the project can be build with `./mvnw -P helfomat-web,helfomat-web-ui,helfomat-import clean package` on the project root level.
+There is an embedded node environment which will build the frontend.
+
+To build only one of the different packages, please go ahead and specify the profile accordingly (`-P`):
+* `helfomat-import` is going to build the backend service, the artifact is going to be placed in `helfomat-import/target`
+* `helfomat-web` is going to build the backend service, the artifact is going to be placed in `helfomat-web/target`
+* `helfomat-web-ui` is going to build the backend service, the artifact is going to be placed in `helfomat-web-ui/target`
 
 ## Requirements
 
-For the execution there are two dependencies:
+For the execution of the web app there are two dependencies:
 
-- MySQL Database (or another JDBC database if you change the configuration)
-- Elasticsearch 2.4.x
+* PostgreSQL Database (or another JDBC database if you change the configuration)
+* Elasticsearch 6.x
 
-The MySQL Database is necessary since we would like to be compatible with the old version.
-For the basic setup you need some TYPO3 databases. Unfortunately, we are currently using
-for testing data which is similar to the production data, so we haven't published a script
-for that. To avoid that, you have two different options:
+For the execution of the import app there are three dependencies:
 
-- Remove the dependency to the `helfomat-infrastructure-typo3` module from the `helfomat-web`
-  module. Afterwards you only need a database connection and not the content.
-  Disadvantage: You have currently only THW organizations in your repository.
-- Ask [valentinz](mailto:valentin.zickner(at)helfenkannjeder(dot)de) for an database export
+* PostgreSQL Database (or another JDBC database if you change the configuration)
+* MySQL (or another JDBC database if you change the configuration)
+* Elasticsearch 6.x
+
+The MySQL Database is the legacy database which is necessary since we are importing data from the old HelfenKannJeder V1.
+For the basic setup you need the following custom TYPO3 databases tables:
+* tx_helfenkannjeder_domain_model_address
+* tx_helfenkannjeder_domain_model_employee
+* tx_helfenkannjeder_domain_model_group
+* tx_helfenkannjeder_domain_model_grouptemplate
+* tx_helfenkannjeder_domain_model_grouptemplatecategory
+* tx_helfenkannjeder_domain_model_organisation
+* tx_helfenkannjeder_domain_model_organisationtype
+* tx_helfenkannjeder_domain_model_workinghour
+* tx_helfenkannjeder_organisaton_contactperson_mm
+* tx_helfenkannjeder_group_contactperson_mm
+* tx_helfenkannjeder_workinghour_group_mm
+
+The schema can be found [in the legacy repository](https://github.com/HelfenKannJeder/TYPO3-helfen_kann_jeder/blob/master/ext_tables.sql)
+
+When you would like to have a quick start for the import, please reach out to [vzickner](mailto:valentin.zickner(at)helfenkannjeder(dot)de) for a database export including organizations.
 
 ## Deployment
 
-The deployment can be done by running the Spring services as normal applications.
-You need to setup a reverse proxy for the api.
-
-For automated deployment you can use the ansible project inside `helfomat-deployment`.
-For the execution you can call the ansible playbook inside `local.yml`.
-There are by default two inventories files, one for production and the other for development.
-A sample to execute the development:
-
-```ansible-playbook -i inventories/development/hosts.yml local.yml```
-
-For the execution of the production you must encrypt the vault values:
-
-```ansible-playbook -i inventories/production/hosts.yml --vault-id @prompt local.yml```
+For the deployment we are providing docker containers at [Docker Hub](https://hub.docker.com/u/helfenkannjeder).
+The container names are aligned to the names of the maven modules. 
 
 ## Development
 
-For development you can start `helfomat-web` like normal applications, you should use the
-spring profile `dev`, this will enable logging to the console. For the frontend
-project `helfomat-web-ui` you can execute `npm run start` to have it in development mode.
-The API is automatically redirected to the backend.
+For your convinience there is a [docker-compose.yml](helfomat-docker/docker-compose.yml) file available.
+This file is starting all required dependencies.
+For development mode you can start `helfomat-web` like any normal spring boot applications.
+You should use the spring profile `local` to enable the default connectivity to the docker containers.
+Inside the frontend project `helfomat-web-ui` you can execute `npm run start` to run it in development mode.
+This command is automatically proxying the API to the backend service.
 
-For offline usage add the parameter `--spring.profiles.active=offline`, then the backend
-will automatically mock all application which are require network.
+You can reach the API at `http://localhost:8080/`.
+The frontend is running at `http://localhost:4200/`.
 
-You can reach the application at `http://localhost:8080/helf-o-mat/` or 
-with the frontend running separate at `http://localhost:4200/`
+### Offline Usage (Unsupported)
+
+For offline usage you can start the spring boot app with the parameter `--spring.profiles.active=offline`.
+The frontend can be started with `npm run start:offline`.
 
 ## License
 

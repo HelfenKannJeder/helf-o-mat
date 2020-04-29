@@ -6,12 +6,12 @@ import de.helfenkannjeder.helfomat.core.picture.DownloadService;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
 import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
 import org.assertj.core.api.ThrowableAssert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.nio.file.Files;
@@ -27,9 +27,9 @@ import static org.mockito.Mockito.when;
 /**
  * @author Valentin Zickner
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class FileSystemPictureStorageServiceTest {
+class FileSystemPictureStorageServiceTest {
 
     private static final String PICTURE_URL = "https://helfenkannjeder.de/uploads/pics.jpg";
     private static final String CONF_FOLDER = "target/temp/conf_folder";
@@ -49,13 +49,13 @@ public class FileSystemPictureStorageServiceTest {
     @Mock
     private PictureStorageService fileSystemPictureStorageService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.fileSystemPictureStorageService = new FileSystemPictureStorageService(downloadService, resizeImageService, pictureConfiguration);
     }
 
     @Test
-    public void savePicture_withValidUrl_returnsPictureIdOfDownloadedFile() throws Exception {
+    void savePicture_withValidUrl_returnsPictureIdOfDownloadedFile() throws Exception {
         // Arrange
         PictureId pictureId = new PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44addf");
         byte[] content = {'a', 'b', 'c', 'd'};
@@ -78,7 +78,7 @@ public class FileSystemPictureStorageServiceTest {
     }
 
     @Test
-    public void savePicture_withInvalidUrl_expectDownloadFailedException() {
+    void savePicture_withInvalidUrl_expectDownloadFailedException() {
         // Arrange
         PictureId pictureId = new PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44adde");
         when(this.downloadService.download(ArgumentMatchers.anyString())).thenThrow(HttpClientErrorException.class);
@@ -96,7 +96,7 @@ public class FileSystemPictureStorageServiceTest {
     }
 
     @Test
-    public void savePicture_withFileWriteException_expectDownloadFailedException() {
+    void savePicture_withFileWriteException_expectDownloadFailedException() {
         // Arrange
         PictureId pictureId = new PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44adda");
         String configuredFolder = "/*";
@@ -114,7 +114,7 @@ public class FileSystemPictureStorageServiceTest {
     }
 
     @Test
-    public void savePicture_withValidUrl_verifyPictureIsScaled() throws Exception {
+    void savePicture_withValidUrl_verifyPictureIsScaled() throws Exception {
         // Arrange
         String folderScaled = "test-size";
         int width = 100;
@@ -144,7 +144,7 @@ public class FileSystemPictureStorageServiceTest {
     }
 
     @Test
-    public void getPicture_withValidName_returnsNotNull() {
+    void getPicture_withValidName_returnsNotNull() {
         // Act
         Path picture = this.fileSystemPictureStorageService.getPicture(new PictureId(), "test-size");
 
@@ -153,7 +153,7 @@ public class FileSystemPictureStorageServiceTest {
     }
 
     @Test
-    public void getPicture_withInvalidName_throwsIllegalArgumentException() {
+    void getPicture_withInvalidName_throwsIllegalArgumentException() {
         // Act
         ThrowableAssert.ThrowingCallable runnable = () -> this.fileSystemPictureStorageService.getPicture(new PictureId(), "../test");
 

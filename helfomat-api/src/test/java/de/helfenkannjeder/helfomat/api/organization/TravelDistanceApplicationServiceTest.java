@@ -8,11 +8,11 @@ import de.helfenkannjeder.helfomat.core.organization.Address;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +23,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class TravelDistanceApplicationServiceTest {
+@ExtendWith(MockitoExtension.class)
+class TravelDistanceApplicationServiceTest {
 
     @Mock
     private DistanceMatrixApplicationService distanceMatrixService;
@@ -34,21 +34,15 @@ public class TravelDistanceApplicationServiceTest {
 
     private TravelDistanceApplicationService travelDistanceApplicationService;
 
-    private static final TravelDistanceDto DUMMY_TRAVEL_DISTANCE = new TravelDistanceDto();
+    private static final TravelDistanceDto DUMMY_TRAVEL_DISTANCE = new TravelDistanceDto(TravelModeDto.CYCLING, 31200L, 34200L);
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         travelDistanceApplicationService = new TravelDistanceApplicationService(distanceMatrixService, organizationRepository);
     }
 
-    static {
-        DUMMY_TRAVEL_DISTANCE.setTravelMode(TravelModeDto.CYCLING);
-        DUMMY_TRAVEL_DISTANCE.setDistanceInMeters(34200L);
-        DUMMY_TRAVEL_DISTANCE.setTimeInSeconds(31200L);
-    }
-
     @Test
-    public void searchReturnsValuesForAllPossibleTravelOptions() {
+    void searchReturnsValuesForAllPossibleTravelOptions() {
         when(distanceMatrixService.getTravelDistanceFor(any(), any(), any())).thenReturn(DUMMY_TRAVEL_DISTANCE);
 
         List<TravelDistanceDto> travelOptions = testSearch();
@@ -59,7 +53,7 @@ public class TravelDistanceApplicationServiceTest {
     }
 
     @Test
-    public void onlyReturnDistancesForFoundRoutes() {
+    void onlyReturnDistancesForFoundRoutes() {
         when(distanceMatrixService.getTravelDistanceFor(eq(TravelModeDto.TRANSIT), any(), any())).thenReturn(null);
         when(distanceMatrixService.getTravelDistanceFor(not(eq(TravelModeDto.TRANSIT)), any(), any())).thenReturn(DUMMY_TRAVEL_DISTANCE);
 

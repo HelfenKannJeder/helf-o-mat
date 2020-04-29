@@ -7,7 +7,7 @@ import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDelet
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditNameEvent;
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrganizationTest {
 
     @Test
-    public void compareTo_withNull_returnsAllChanges() {
+    void compareTo_withNull_returnsAllChanges() {
         // Arrange
         OrganizationId organizationId = new OrganizationId();
         Organization organization = new Organization.Builder()
@@ -49,7 +49,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void compareTo_withWrongId_justNormalProcessingWithOriginalId() {
+    void compareTo_withWrongId_justNormalProcessingWithOriginalId() {
         // Arrange
         OrganizationId organizationId1 = new OrganizationId();
         OrganizationId organizationId2 = new OrganizationId();
@@ -73,7 +73,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void compareTo_withChangedName_returnsDifferenceObject() {
+    void compareTo_withChangedName_returnsDifferenceObject() {
         // Arrange
         OrganizationId organizationId = new OrganizationId();
         Organization organization1 = new Organization.Builder().setId(organizationId).setName("Original Name").build();
@@ -96,7 +96,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void compareTo_withOneNewPicture_returnsChangedPictureEvents() {
+    void compareTo_withOneNewPicture_returnsChangedPictureEvents() {
         // Arrange
         OrganizationId organizationId = new OrganizationId();
         PictureId deletedPicture = new PictureId("879340a4-52ff-4c98-9dcc-b05e9f4a72ee");
@@ -143,7 +143,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void compareTo_withObjectToEventsAndBackConvertion_verifyObjectsAreEquals() {
+    void compareTo_withObjectToEventsAndBackConvertion_verifyObjectsAreEquals() {
         // Arrange
         Organization originalOrganization = OrganizationTestDataFactory.ORGANIZATION_1;
 

@@ -5,11 +5,11 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditNameEvent;
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.util.Pair;
 
 import java.util.Collections;
@@ -25,8 +25,8 @@ import static org.mockito.Mockito.when;
 /**
  * @author Valentin Zickner
  */
-@RunWith(MockitoJUnitRunner.class)
-public class OrganizationDifferenceProcessorTest {
+@ExtendWith(MockitoExtension.class)
+class OrganizationDifferenceProcessorTest {
 
     @Mock
     private OrganizationRepository organizationRepository;
@@ -36,13 +36,13 @@ public class OrganizationDifferenceProcessorTest {
 
     private OrganizationDifferenceProcessor organizationDifferenceProcessor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.organizationDifferenceProcessor = new OrganizationDifferenceProcessor(this.organizationRepository, generalOrganizationRepository);
     }
 
     @Test
-    public void process_withExistingOrganization_returnsNameChangedEvent() {
+    void process_withExistingOrganization_returnsNameChangedEvent() {
         // Arrange
         Organization organization1 = new Organization.Builder()
             .setName("New Organization Name")
@@ -73,7 +73,7 @@ public class OrganizationDifferenceProcessorTest {
     }
 
     @Test
-    public void process_withOrganizationFromGeneralRepository_returnsNoEventsAndExistingUid() {
+    void process_withOrganizationFromGeneralRepository_returnsNoEventsAndExistingUid() {
         // Arrange
         OrganizationId resultOrganizationId = new OrganizationId();
         Organization organization1 = new Organization.Builder()

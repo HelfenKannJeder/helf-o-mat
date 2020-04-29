@@ -7,14 +7,14 @@ import de.helfenkannjeder.helfomat.core.organization.Group;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.organization.Volunteer;
 import org.assertj.core.data.Offset;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.test.JobScopeTestExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Valentin Zickner
  */
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestExecutionListeners({
     DependencyInjectionTestExecutionListener.class,
     JobScopeTestExecutionListener.class,
@@ -39,14 +39,14 @@ import static org.assertj.core.api.Assertions.assertThat;
     TransactionalTestExecutionListener.class
 })
 @Transactional(transactionManager = "legacyTransactionManager")
-public class Typo3OrganizationReaderIntegrationTest {
+class Typo3OrganizationReaderIntegrationTest {
 
     @Autowired
     Typo3OrganizationReader typo3OrganizationReader;
 
     @Test
     @DirtiesContext
-    public void read_withThwKarlsruhe_returnsBasicInformation() {
+    void read_withThwKarlsruhe_returnsBasicInformation() {
         // Arrange
 
         // Act
@@ -153,7 +153,7 @@ public class Typo3OrganizationReaderIntegrationTest {
 
     @Test
     @DirtiesContext
-    public void read_withAsbKarlsruhe_returnsBasicInformation() throws Exception {
+    void read_withAsbKarlsruhe_returnsBasicInformation() throws Exception {
         // Arrange
 
         // Act

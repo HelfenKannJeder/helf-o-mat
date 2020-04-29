@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.infrastructure;
 
-import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
 import org.springframework.batch.core.scope.JobScope;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,9 +17,6 @@ public class TestApplication {
 
     @MockBean
     PictureStorageService pictureStorageService;
-
-    @MockBean
-    IndexManager indexManager;
 
     @Bean
     @Primary
