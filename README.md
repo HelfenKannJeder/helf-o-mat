@@ -53,7 +53,7 @@ The container names are aligned to the names of the maven modules.
 
 ## Development
 
-For your convinience there is a [docker-compose.yml](helfomat-docker/docker-compose.yml) file available.
+For your convenience there is a [docker-compose.yml](helfomat-docker/docker-compose.yml) file available.
 This file is starting all required dependencies.
 For development mode you can start `helfomat-web` like any normal spring boot applications.
 You should use the spring profile `local` to enable the default connectivity to the docker containers.
