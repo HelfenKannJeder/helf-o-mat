@@ -34,17 +34,11 @@ class TravelDistanceApplicationServiceTest {
 
     private TravelDistanceApplicationService travelDistanceApplicationService;
 
-    private static final TravelDistanceDto DUMMY_TRAVEL_DISTANCE = new TravelDistanceDto();
+    private static final TravelDistanceDto DUMMY_TRAVEL_DISTANCE = new TravelDistanceDto(TravelModeDto.CYCLING, 31200L, 34200L);
 
     @BeforeEach
     void setUp() {
         travelDistanceApplicationService = new TravelDistanceApplicationService(distanceMatrixService, organizationRepository);
-    }
-
-    static {
-        DUMMY_TRAVEL_DISTANCE.setTravelMode(TravelModeDto.CYCLING);
-        DUMMY_TRAVEL_DISTANCE.setDistanceInMeters(34200L);
-        DUMMY_TRAVEL_DISTANCE.setTimeInSeconds(31200L);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.infrastructure.typo3;
 
-import de.helfenkannjeder.helfomat.core.IndexManager;
 import de.helfenkannjeder.helfomat.core.organization.Organization;
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
 import de.helfenkannjeder.helfomat.core.picture.PictureId;
@@ -28,9 +27,6 @@ public class Typo3OrganizationProcessorTest {
 
     @Mock
     private PictureStorageService pictureStorageService;
-
-    @Mock
-    private IndexManager indexManager;
 
     @BeforeEach
     void setUp() {

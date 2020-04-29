@@ -19,7 +19,7 @@ public class AttendanceTime {
     protected AttendanceTime() {
     }
 
-    private AttendanceTime(DayOfWeek day, LocalTime start, LocalTime end, String note, List<Group> groups) {
+    public AttendanceTime(DayOfWeek day, LocalTime start, LocalTime end, String note, List<Group> groups) {
         this.day = day;
         this.start = start;
         this.end = end;

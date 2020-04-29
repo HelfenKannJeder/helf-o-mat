@@ -19,7 +19,7 @@ public class ContactPerson {
     ContactPerson() {
     }
 
-    ContactPerson(String firstname, String lastname, String rank, String telephone, String mail, PictureId picture) {
+    public ContactPerson(String firstname, String lastname, String rank, String telephone, String mail, PictureId picture) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.rank = rank;
