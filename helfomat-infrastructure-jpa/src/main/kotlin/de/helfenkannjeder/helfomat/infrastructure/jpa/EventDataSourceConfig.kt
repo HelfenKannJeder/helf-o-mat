@@ -1,92 +1,70 @@
-package de.helfenkannjeder.helfomat.infrastructure.jpa;
+package de.helfenkannjeder.helfomat.infrastructure.jpa
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
-import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.PlatformTransactionManager;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
+import org.springframework.data.domain.AuditorAware
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.orm.jpa.JpaTransactionManager
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.transaction.PlatformTransactionManager
+import java.util.*
+import javax.sql.DataSource
 
 /**
  * @author Valentin Zickner
  */
 @Configuration
-@EnableJpaRepositories(
-    basePackageClasses = Event.class,
-    entityManagerFactoryRef = "eventEntityManager",
-    transactionManagerRef = "eventTransactionManager"
-)
+@EnableJpaRepositories(basePackageClasses = [Event::class], entityManagerFactoryRef = "eventEntityManager", transactionManagerRef = "eventTransactionManager")
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
-public class EventDataSourceConfig {
+open class EventDataSourceConfig {
 
     @Bean
     @Primary
-    public LocalContainerEntityManagerFactoryBean eventEntityManager(@Qualifier("eventDataSource") DataSource eventDataSource) {
-        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactoryBean.setDataSource(eventDataSource);
-        entityManagerFactoryBean.setPackagesToScan(this.getClass().getPackage().getName());
-
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
-        Map<String, String> jpaProperties = new HashMap<>();
-        jpaProperties.put("hibernate.hbm2ddl.auto", "update");
-        jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
-        jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
-        entityManagerFactoryBean.setJpaPropertyMap(jpaProperties);
-
-        return entityManagerFactoryBean;
+    open fun eventEntityManager(@Qualifier("eventDataSource") eventDataSource: DataSource): LocalContainerEntityManagerFactoryBean {
+        val entityManagerFactoryBean = LocalContainerEntityManagerFactoryBean()
+        entityManagerFactoryBean.dataSource = eventDataSource
+        entityManagerFactoryBean.setPackagesToScan(this.javaClass.getPackage().name)
+        val vendorAdapter = HibernateJpaVendorAdapter()
+        entityManagerFactoryBean.jpaVendorAdapter = vendorAdapter
+        val jpaProperties: MutableMap<String, String> = hashMapOf()
+        jpaProperties["hibernate.hbm2ddl.auto"] = "update"
+        jpaProperties["hibernate.physical_naming_strategy"] = SpringPhysicalNamingStrategy::class.java.name
+        jpaProperties["hibernate.implicit_naming_strategy"] = SpringImplicitNamingStrategy::class.java.name
+        entityManagerFactoryBean.setJpaPropertyMap(jpaProperties)
+        return entityManagerFactoryBean
     }
 
     @Bean
-    public PlatformTransactionManager eventTransactionManager(@Qualifier("eventEntityManager") LocalContainerEntityManagerFactoryBean eventEntityManager) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(eventEntityManager.getObject());
-        return transactionManager;
+    open fun eventTransactionManager(@Qualifier("eventEntityManager") eventEntityManager: LocalContainerEntityManagerFactoryBean): PlatformTransactionManager {
+        val transactionManager = JpaTransactionManager()
+        transactionManager.entityManagerFactory = eventEntityManager.getObject()
+        return transactionManager
     }
 
     @Bean
     @Primary
     @ConfigurationProperties("spring.event.datasource")
-    public DataSourceProperties eventDataSourceProperties() {
-        return new DataSourceProperties();
+    open fun eventDataSourceProperties(): DataSourceProperties {
+        return DataSourceProperties()
     }
 
     @Bean
     @Primary
-    public DataSource eventDataSource(@Qualifier("eventDataSourceProperties") DataSourceProperties eventDataSourceProperties) {
-        return eventDataSourceProperties.initializeDataSourceBuilder().build();
+    open fun eventDataSource(@Qualifier("eventDataSourceProperties") eventDataSourceProperties: DataSourceProperties): DataSource {
+        return eventDataSourceProperties.initializeDataSourceBuilder().build()
     }
 
     @Bean
-    AuditorAware<String> auditor() {
-        return () -> {
-            SecurityContext context = SecurityContextHolder.getContext();
-            if (context == null) {
-                return Optional.empty();
-            }
-            Authentication authentication = context.getAuthentication();
-            if (authentication == null) {
-                return Optional.empty();
-            }
-            return Optional.ofNullable(authentication.getName());
-        };
+    open fun auditor(): AuditorAware<String> {
+        return AuditorAware { Optional.ofNullable(SecurityContextHolder.getContext()?.authentication?.name) }
     }
-
 }

@@ -1,17 +1,16 @@
-package de.helfenkannjeder.helfomat.infrastructure.jpa;
+package de.helfenkannjeder.helfomat.infrastructure.jpa
 
-import org.springframework.data.auditing.DateTimeProvider;
-import org.springframework.stereotype.Component;
-
-import java.time.OffsetDateTime;
-import java.time.temporal.TemporalAccessor;
-import java.util.Optional;
+import org.springframework.data.auditing.DateTimeProvider
+import org.springframework.stereotype.Component
+import java.time.OffsetDateTime
+import java.time.temporal.TemporalAccessor
+import java.util.*
 
 @Component("dateTimeProvider")
-class DefaultDateTimeProvider implements DateTimeProvider {
+internal class DefaultDateTimeProvider : DateTimeProvider {
 
-    public Optional<TemporalAccessor> getNow() {
-        return Optional.of(OffsetDateTime.now());
+    override fun getNow(): Optional<TemporalAccessor> {
+        return Optional.of(OffsetDateTime.now())
     }
 
 }

@@ -1,20 +1,19 @@
-package de.helfenkannjeder.helfomat.infrastructure.jpa;
+package de.helfenkannjeder.helfomat.infrastructure.jpa
 
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import java.util.List;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 
 /**
  * @author Valentin Zickner
  */
-public interface EventRepository extends JpaRepository<Event, EventId> {
+interface EventRepository : JpaRepository<Event, EventId> {
 
     @Query("SELECT E FROM Event E ORDER BY E.createdDate")
-    List<Event> findAll();
+    override fun findAll(): List<Event>
 
     @Query("SELECT E FROM Event E WHERE E.organizationId = :organizationId ORDER BY E.createdDate")
-    List<Event> findByOrganizationId(@Param("organizationId") OrganizationId organizationId);
+    fun findByOrganizationId(@Param("organizationId") organizationId: OrganizationId): List<Event>
+
 }

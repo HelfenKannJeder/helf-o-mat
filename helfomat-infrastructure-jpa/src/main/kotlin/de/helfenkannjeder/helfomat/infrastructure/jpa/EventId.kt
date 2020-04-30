@@ -1,53 +1,35 @@
-package de.helfenkannjeder.helfomat.infrastructure.jpa;
+package de.helfenkannjeder.helfomat.infrastructure.jpa
 
-import org.springframework.data.annotation.AccessType;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.UUID;
+import org.springframework.data.annotation.AccessType
+import java.io.Serializable
+import java.util.*
+import javax.persistence.Column
+import javax.persistence.Embeddable
 
 /**
  * @author Valentin Zickner
  */
 @Embeddable
 @AccessType(AccessType.Type.FIELD)
-public class EventId implements Serializable {
+class EventId (
+    @field:Column(name = "eventId") val value: UUID = UUID.randomUUID()
+) : Serializable {
 
-    @Column(name = "eventId")
-    private UUID value;
-
-    public EventId() {
-        this(UUID.randomUUID());
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as EventId
+        if (value != other.value) return false
+        return true
     }
 
-    public EventId(UUID value) {
-        this.value = value;
+    override fun hashCode(): Int {
+        return value.hashCode()
     }
 
-    public UUID getValue() {
-        return value;
+    override fun toString(): String {
+        return "EventId(value=$value)"
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EventId eventId = (EventId) o;
-        return Objects.equals(value, eventId.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return "EventId{" +
-            "value='" + value + '\'' +
-            '}';
-    }
 
 }
