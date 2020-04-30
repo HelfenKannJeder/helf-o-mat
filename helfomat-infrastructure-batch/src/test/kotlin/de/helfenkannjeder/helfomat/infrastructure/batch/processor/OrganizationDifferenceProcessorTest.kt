@@ -1,105 +1,97 @@
-package de.helfenkannjeder.helfomat.infrastructure.batch.processor;
+package de.helfenkannjeder.helfomat.infrastructure.batch.processor
 
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditNameEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.util.Pair;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
+import de.helfenkannjeder.helfomat.core.organization.*
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditNameEvent
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.junit.jupiter.MockitoExtension
 
 /**
  * @author Valentin Zickner
  */
-@ExtendWith(MockitoExtension.class)
-class OrganizationDifferenceProcessorTest {
+@ExtendWith(MockitoExtension::class)
+internal class OrganizationDifferenceProcessorTest {
+    @Mock
+    private lateinit var organizationRepository: OrganizationRepository
 
     @Mock
-    private OrganizationRepository organizationRepository;
-
-    @Mock
-    private OrganizationRepository generalOrganizationRepository;
-
-    private OrganizationDifferenceProcessor organizationDifferenceProcessor;
+    private lateinit var generalOrganizationRepository: OrganizationRepository
+    private lateinit var organizationDifferenceProcessor: OrganizationDifferenceProcessor
 
     @BeforeEach
-    public void setUp() {
-        this.organizationDifferenceProcessor = new OrganizationDifferenceProcessor(this.organizationRepository, generalOrganizationRepository);
+    fun setUp() {
+        organizationDifferenceProcessor = OrganizationDifferenceProcessor(organizationRepository, generalOrganizationRepository)
     }
 
     @Test
-    void process_withExistingOrganization_returnsNameChangedEvent() {
+    fun process_withExistingOrganization_returnsNameChangedEvent() {
         // Arrange
-        Organization organization1 = new Organization.Builder()
+        val organization1 = Organization.Builder()
             .setName("New Organization Name")
             .setDescription("Same Description")
-            .build();
-        Organization organization2 = new Organization.Builder()
+            .setOrganizationType(OrganizationType.THW)
+            .build()
+        val organization2 = Organization.Builder()
             .setName("Old Organization Name")
             .setDescription("Same Description")
-            .build();
-        when(organizationRepository.findOrganizationWithSameTypeInDistance(eq(organization1.getDefaultAddress()), eq(organization1.getOrganizationType()), anyLong())).thenReturn(Collections.singletonList(organization2));
+            .setOrganizationType(OrganizationType.THW)
+            .build()
+        `when`(organizationRepository.findOrganizationWithSameTypeInDistance(organization1.defaultAddress, organization1.organizationType, 5L)).thenReturn(listOf(organization2))
 
         // Act
-        Pair<Organization, Stream<OrganizationEvent>> organizationDifferenceResult = this.organizationDifferenceProcessor.process(organization1);
+        val organizationDifferenceResult = organizationDifferenceProcessor.process(organization1)
 
         // Assert
-        assertThat(organizationDifferenceResult).isNotNull();
-        assertThat(organizationDifferenceResult.getFirst()).isEqualTo(organization1);
-        Stream<OrganizationEvent> organizationEventStream = organizationDifferenceResult.getSecond();
-        assertThat(organizationEventStream).isNotNull();
-        List<OrganizationEvent> organizationEvents = organizationEventStream.collect(Collectors.toList());
-        assertThat(organizationEvents).hasSize(1);
-        OrganizationEvent actual = organizationEvents.get(0);
+        assertThat(organizationDifferenceResult).isNotNull
+        assertThat(organizationDifferenceResult.first).isEqualTo(organization1)
+        val organizationEvents = organizationDifferenceResult.second
+        assertThat(organizationEvents).isNotNull
+        assertThat(organizationEvents).hasSize(1)
+        val actual = organizationEvents[0]
         assertThat(actual)
-            .isNotNull()
-            .isInstanceOf(OrganizationEditNameEvent.class);
-        OrganizationEditNameEvent organizationEditNameEvent = (OrganizationEditNameEvent) actual;
-        assertThat(organizationEditNameEvent.getName()).isEqualTo("New Organization Name");
+            .isNotNull
+            .isInstanceOf(OrganizationEditNameEvent::class.java)
+        val organizationEditNameEvent = actual as OrganizationEditNameEvent
+        assertThat(organizationEditNameEvent.name).isEqualTo("New Organization Name")
     }
 
     @Test
-    void process_withOrganizationFromGeneralRepository_returnsNoEventsAndExistingUid() {
+    fun process_withOrganizationFromGeneralRepository_returnsNoEventsAndExistingUid() {
         // Arrange
-        OrganizationId resultOrganizationId = new OrganizationId();
-        Organization organization1 = new Organization.Builder()
+        val resultOrganizationId = OrganizationId()
+        val address = Address("Street 123", null, "Karlsruhe", "76131", GeoPoint(49.0, 12.0), "+49123456", "https://example.com")
+        val organization1 = Organization.Builder()
             .setName("New Organization Name")
             .setDescription("Same Description")
-            .build();
-        Organization organization2 = new Organization.Builder()
+            .setOrganizationType(OrganizationType.THW)
+            .setDefaultAddress(address)
+            .build()
+        val organization2 = Organization.Builder()
             .setId(resultOrganizationId)
             .setName("Old Organization Name")
             .setDescription("Same Description")
-            .build();
-        when(generalOrganizationRepository.findOrganizationWithSameTypeInDistance(eq(organization1.getDefaultAddress()), eq(organization1.getOrganizationType()), anyLong())).thenReturn(Collections.singletonList(organization2));
+            .setOrganizationType(OrganizationType.THW)
+            .setDefaultAddress(address)
+            .build()
+        `when`(generalOrganizationRepository.findOrganizationWithSameTypeInDistance(organization1.defaultAddress, OrganizationType.THW, 5L)).thenReturn(listOf(organization2))
 
         // Act
-        Pair<Organization, Stream<OrganizationEvent>> organizationDifferenceResult = this.organizationDifferenceProcessor.process(organization1);
+        val organizationDifferenceResult = organizationDifferenceProcessor.process(organization1)
 
         // Assert
-        assertThat(organizationDifferenceResult).isNotNull();
-        Organization organization = organizationDifferenceResult.getFirst();
-        assertThat(organization).isNotNull();
-        assertThat(organization.getId()).isEqualTo(resultOrganizationId);
-        assertThat(organization.getName()).isEqualTo("New Organization Name");
-        assertThat(organizationDifferenceResult.getSecond())
-            .isNotNull();
-        assertThat(organizationDifferenceResult.getSecond().collect(Collectors.toList()))
-            .hasSize(0);
+        assertThat(organizationDifferenceResult).isNotNull
+        val organization = organizationDifferenceResult.first
+        assertThat(organization).isNotNull
+        assertThat(organization.id).isEqualTo(resultOrganizationId)
+        assertThat(organization.name).isEqualTo("New Organization Name")
+        assertThat(organizationDifferenceResult.second)
+            .isNotNull
+        assertThat(organizationDifferenceResult.second)
+            .hasSize(0)
     }
-
 }

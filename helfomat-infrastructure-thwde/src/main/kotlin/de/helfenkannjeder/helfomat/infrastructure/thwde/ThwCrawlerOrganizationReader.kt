@@ -12,9 +12,9 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.slf4j.LoggerFactory
-import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.batch.item.ItemReader
 import org.springframework.batch.item.ParseException
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Profile
 import org.springframework.core.annotation.Order
 import org.springframework.core.io.ClassPathResource
@@ -27,9 +27,9 @@ import java.util.*
 import java.util.regex.Pattern
 
 @Component
-@JobScope
 @Order(200)
 @Profile("!" + ProfileRegistry.DISABLE_THWDE_IMPORT)
+@EnableConfigurationProperties(ThwCrawlerConfiguration::class)
 open class ThwCrawlerOrganizationReader constructor(
     private val thwCrawlerConfiguration: ThwCrawlerConfiguration,
     private val pictureStorageService: PictureStorageService

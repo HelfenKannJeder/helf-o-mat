@@ -1,22 +1,24 @@
 package de.helfenkannjeder.helfomat.infrastructure.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.ConstructorBinding
 
 /**
  * @author Valentin Zickner
  */
+@ConstructorBinding
 @ConfigurationProperties("helfomat")
 data class OrganizationTemplateConfiguration(
     var organizationTemplates: List<Template> = ArrayList()
 ) {
 
-    class Template (
+    data class Template (
         var name: String,
         var acronym: String,
         var groups: List<GroupTemplate> = ArrayList()
     )
 
-    class GroupTemplate (
+    data class GroupTemplate (
         var name: String,
         var description: String
     )

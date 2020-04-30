@@ -1,133 +1,100 @@
-package de.helfenkannjeder.helfomat.importing;
+package de.helfenkannjeder.helfomat.importing
 
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationReader;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
-import de.helfenkannjeder.helfomat.infrastructure.batch.listener.UniqueOrganizationUrlNameOrganizationProcessor;
-import de.helfenkannjeder.helfomat.infrastructure.batch.processor.AnswerQuestionsProcessor;
-import de.helfenkannjeder.helfomat.infrastructure.batch.processor.OrganizationDifferenceProcessor;
-import de.helfenkannjeder.helfomat.infrastructure.batch.writer.OrganizationItemWriter;
-import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration;
-import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization.ElasticsearchOrganizationRepository;
-import de.helfenkannjeder.helfomat.rest.RestOrganizationEventPublisher;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.Step;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.util.Pair;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.util.StreamUtils;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationReader
+import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
+import de.helfenkannjeder.helfomat.infrastructure.batch.listener.UniqueOrganizationUrlNameOrganizationProcessor
+import de.helfenkannjeder.helfomat.infrastructure.batch.processor.AnswerQuestionsProcessor
+import de.helfenkannjeder.helfomat.infrastructure.batch.processor.OrganizationDifferenceProcessor
+import de.helfenkannjeder.helfomat.infrastructure.batch.writer.OrganizationItemWriter
+import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration
+import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization.ElasticsearchOrganizationRepository
+import de.helfenkannjeder.helfomat.rest.RestOrganizationEventPublisher
+import org.springframework.batch.core.ExitStatus
+import org.springframework.batch.core.Step
+import org.springframework.batch.core.StepExecution
+import org.springframework.batch.core.StepExecutionListener
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.core.io.Resource
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.util.StreamUtils
+import java.io.IOException
+import java.nio.charset.StandardCharsets
+import java.util.function.Function
 
 /**
  * @author Valentin Zickner
  */
 @Configuration
-public class ImportBatchConfig {
+@EnableConfigurationProperties(ElasticsearchConfiguration::class)
+open class ImportBatchConfig {
 
     @Bean
     @Qualifier("importSteps")
-    public List<Step> importSteps(StepBuilderFactory stepBuilderFactory,
-                                  List<OrganizationReader> organizationReaders,
-                                  AnswerQuestionsProcessor answerQuestionsProcessor,
-                                  ElasticsearchConfiguration elasticsearchConfiguration,
-                                  ElasticsearchTemplate elasticsearchTemplate,
-                                  RestOrganizationEventPublisher restOrganizationEventPublisher,
-                                  OrganizationRepository organizationRepository,
-                                  @Value("classpath:/mapping/organization.json") Resource organizationMapping,
-                                  @Qualifier("legacyTransactionManager") PlatformTransactionManager transactionManager) {
-        return organizationReaders.stream()
-            .map((OrganizationReader organizationReader) -> {
-                UniqueOrganizationUrlNameOrganizationProcessor uniqueOrganizationUrlNameOrganizationProcessor = new UniqueOrganizationUrlNameOrganizationProcessor();
-                OrganizationStepExecutionListener organizationStepExecutionListener = new OrganizationStepExecutionListener(organizationReader, elasticsearchConfiguration, elasticsearchTemplate, organizationMapping, organizationRepository);
-                return stepBuilderFactory.get("import" + organizationReader.getClass().getSimpleName())
-                    .<Organization, Pair<Organization, Stream<OrganizationEvent>>>chunk(20)
-                    .reader(organizationReader::read)
-                    .processor((Function<Organization, Pair<Organization, Stream<OrganizationEvent>>>) organization -> {
-                        organization = uniqueOrganizationUrlNameOrganizationProcessor.apply(organization);
-                        organization = answerQuestionsProcessor.process(organization);
-                        return organizationStepExecutionListener.getOrganizationDifferenceProcessor().process(organization);
+    open fun importSteps(stepBuilderFactory: StepBuilderFactory,
+                         organizationReaders: List<OrganizationReader>,
+                         answerQuestionsProcessor: AnswerQuestionsProcessor,
+                         elasticsearchConfiguration: ElasticsearchConfiguration,
+                         elasticsearchTemplate: ElasticsearchTemplate,
+                         restOrganizationEventPublisher: RestOrganizationEventPublisher,
+                         organizationRepository: OrganizationRepository,
+                         @Value("classpath:/mapping/organization.json") organizationMapping: Resource,
+                         @Qualifier("legacyTransactionManager") transactionManager: PlatformTransactionManager): List<Step> {
+        return organizationReaders
+            .map {
+                val uniqueOrganizationUrlNameOrganizationProcessor = UniqueOrganizationUrlNameOrganizationProcessor()
+                val indexName = elasticsearchConfiguration.index + "-" + it.name
+                val elasticsearchOrganizationRepository = ElasticsearchOrganizationRepository(elasticsearchConfiguration, elasticsearchTemplate, indexName)
+                val organizationDifferenceProcessor = OrganizationDifferenceProcessor(organizationRepository, organizationRepository)
+                stepBuilderFactory["import" + it.javaClass.simpleName]
+                    .chunk<Organization, Pair<Organization, List<OrganizationEvent>>>(20)
+                    .reader { it.read() }
+                    .processor(Function {
+                        organizationDifferenceProcessor.process(
+                            answerQuestionsProcessor.process(
+                                uniqueOrganizationUrlNameOrganizationProcessor.apply(it)
+                            )
+                        )
                     })
-                    .writer((List<? extends Pair<Organization, Stream<OrganizationEvent>>> organizationInfo) -> {
-                        OrganizationItemWriter organizationItemWriter = organizationStepExecutionListener.getOrganizationItemWriter();
-                        for (Pair<Organization, Stream<OrganizationEvent>> organizationStreamPair : organizationInfo) {
-                            restOrganizationEventPublisher.publishEvents(organizationStreamPair.getFirst(), organizationStreamPair.getSecond());
-                            organizationItemWriter.write(Collections.singletonList(organizationStreamPair.getFirst()));
+                    .writer { organizationInfo: List<Pair<Organization, List<OrganizationEvent>>> ->
+                        val organizationItemWriter = OrganizationItemWriter(organizationRepository)
+                        organizationInfo.forEach {
+                            restOrganizationEventPublisher.publishEvents(it.first, it.second)
+                            organizationItemWriter.write(listOf(it.first))
                         }
-                    })
-                    .listener(organizationStepExecutionListener)
+                    }
+                    .listener(OrganizationStepExecutionListener(elasticsearchOrganizationRepository, organizationMapping))
                     .listener(uniqueOrganizationUrlNameOrganizationProcessor)
                     .transactionManager(transactionManager)
-                    .build();
-            })
-            .collect(Collectors.toList());
-    }
-
-    private static class OrganizationStepExecutionListener implements StepExecutionListener {
-
-
-        private final OrganizationReader organizationReader;
-        private final ElasticsearchConfiguration elasticsearchConfiguration;
-        private final ElasticsearchTemplate elasticsearchTemplate;
-        private final Resource organizationMapping;
-        private final OrganizationRepository generalOrganizationRepository;
-        private OrganizationDifferenceProcessor organizationDifferenceProcessor;
-        private OrganizationItemWriter organizationItemWriter;
-
-        OrganizationStepExecutionListener(OrganizationReader organizationReader, ElasticsearchConfiguration elasticsearchConfiguration, ElasticsearchTemplate elasticsearchTemplate, Resource organizationMapping, OrganizationRepository generalOrganizationRepository) {
-            this.organizationReader = organizationReader;
-            this.elasticsearchConfiguration = elasticsearchConfiguration;
-            this.elasticsearchTemplate = elasticsearchTemplate;
-            this.organizationMapping = organizationMapping;
-            this.generalOrganizationRepository = generalOrganizationRepository;
-        }
-
-        @Override
-        public void beforeStep(StepExecution stepExecution) {
-            String readerName = organizationReader.getName();
-            String index = elasticsearchConfiguration.getIndex() + "-" + readerName;
-            ElasticsearchOrganizationRepository organizationRepository = new ElasticsearchOrganizationRepository(
-                elasticsearchConfiguration,
-                elasticsearchTemplate,
-                index
-            );
-            try {
-                String mapping = StreamUtils.copyToString(organizationMapping.getInputStream(), StandardCharsets.UTF_8);
-                organizationRepository.createIndex(mapping);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                    .build()
             }
-            organizationDifferenceProcessor = new OrganizationDifferenceProcessor(organizationRepository, generalOrganizationRepository);
-            organizationItemWriter = new OrganizationItemWriter(organizationRepository);
-        }
-
-        @Override
-        public ExitStatus afterStep(StepExecution stepExecution) {
-            return null;
-        }
-
-        OrganizationDifferenceProcessor getOrganizationDifferenceProcessor() {
-            return organizationDifferenceProcessor;
-        }
-
-        OrganizationItemWriter getOrganizationItemWriter() {
-            return organizationItemWriter;
-        }
     }
 
+    private class OrganizationStepExecutionListener internal constructor(
+        private val organizationRepository: ElasticsearchOrganizationRepository,
+        private val organizationMapping: Resource
+    ) : StepExecutionListener {
+
+        override fun beforeStep(stepExecution: StepExecution) {
+
+            try {
+                val mapping = StreamUtils.copyToString(organizationMapping.inputStream, StandardCharsets.UTF_8)
+                organizationRepository.createIndex(mapping)
+            } catch (e: IOException) {
+                throw RuntimeException(e)
+            }
+        }
+
+        override fun afterStep(stepExecution: StepExecution): ExitStatus {
+            return stepExecution.exitStatus
+        }
+
+    }
 }

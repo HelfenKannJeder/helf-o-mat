@@ -1,46 +1,37 @@
-package de.helfenkannjeder.helfomat.infrastructure.batch.configuration;
+package de.helfenkannjeder.helfomat.infrastructure.batch.configuration
 
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.job.builder.SimpleJobBuilder;
-import org.springframework.batch.core.jsr.step.batchlet.BatchletAdapter;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import javax.batch.api.AbstractBatchlet;
-import java.util.List;
+import org.springframework.batch.core.Job
+import org.springframework.batch.core.Step
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
+import org.springframework.batch.core.jsr.step.batchlet.BatchletAdapter
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import javax.batch.api.AbstractBatchlet
 
 /**
  * @author Valentin Zickner
  */
 @Configuration
-public class BatchConfiguration {
+open class BatchConfiguration {
 
     @Bean
-    public Step noopStep(StepBuilderFactory stepBuilderFactory) {
-        return stepBuilderFactory.get("noopStep")
-            .tasklet(new BatchletAdapter(new AbstractBatchlet() {
-                @Override
-                public String process() {
-                    return null;
+    open fun noopStep(stepBuilderFactory: StepBuilderFactory): Step {
+        return stepBuilderFactory["noopStep"]
+            .tasklet(BatchletAdapter(object : AbstractBatchlet() {
+                override fun process(): String? {
+                    return null
                 }
             }))
-            .build();
+            .build()
     }
 
     @Bean
-    public Job importDataJob(JobBuilderFactory jobBuilderFactory,
-                             Step noopStep,
-                             @Qualifier("importSteps") List<Step> importSteps) {
-        SimpleJobBuilder importDataJob = jobBuilderFactory.get("importDataJob")
-            .start(noopStep);
-        for (Step importStep : importSteps) {
-            importDataJob = importDataJob.next(importStep);
-        }
-        return importDataJob
-            .build();
+    open fun importDataJob(jobBuilderFactory: JobBuilderFactory, noopStep: Step, @Qualifier("importSteps") importSteps: List<Step>): Job {
+        val importDataJob = jobBuilderFactory["importDataJob"].start(noopStep)
+        importSteps.forEach { importDataJob.next(it) }
+        return importDataJob.build()
     }
+
 }

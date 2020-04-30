@@ -6,6 +6,7 @@ import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization.Ela
 import de.helfenkannjeder.helfomat.infrastructure.jpa.EventRepository
 import de.helfenkannjeder.helfomat.infrastructure.jpa.JpaEventOrganizationRepository
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets
  * @author Valentin Zickner
  */
 @Configuration
+@EnableConfigurationProperties(ElasticsearchConfiguration::class)
 @Profile("!" + ProfileRegistry.TEST)
 open class JpaCacheConfig {
 

@@ -13,7 +13,9 @@ import java.util.stream.Collectors
  */
 @Repository
 @EnableConfigurationProperties(OrganizationTemplateConfiguration::class)
-class ConfigOrganizationTemplateRepository(organizationTemplateConfiguration: OrganizationTemplateConfiguration) : OrganizationTemplateRepository {
+open class ConfigOrganizationTemplateRepository(
+    organizationTemplateConfiguration: OrganizationTemplateConfiguration
+) : OrganizationTemplateRepository {
 
     private val organizationTemplates = organizationTemplateConfiguration.organizationTemplates
         .associateBy { it.name }

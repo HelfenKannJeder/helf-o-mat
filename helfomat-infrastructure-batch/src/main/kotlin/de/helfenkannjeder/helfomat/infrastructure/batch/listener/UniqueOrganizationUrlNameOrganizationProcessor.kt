@@ -1,67 +1,58 @@
-package de.helfenkannjeder.helfomat.infrastructure.batch.listener;
+package de.helfenkannjeder.helfomat.infrastructure.batch.listener
 
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Function;
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import org.slf4j.LoggerFactory
+import org.springframework.batch.core.ExitStatus
+import org.springframework.batch.core.StepExecution
+import org.springframework.batch.core.StepExecutionListener
+import java.util.*
+import java.util.function.Function
 
 /**
  * @author Valentin Zickner
  */
-public class UniqueOrganizationUrlNameOrganizationProcessor implements Function<Organization, Organization>, StepExecutionListener {
+class UniqueOrganizationUrlNameOrganizationProcessor : Function<Organization, Organization>, StepExecutionListener {
+    private val LOG = LoggerFactory.getLogger(UniqueOrganizationUrlNameOrganizationProcessor::class.java)
+    private val organizationUrlNames: MutableSet<String> = HashSet()
 
-    private final Logger LOG = LoggerFactory.getLogger(UniqueOrganizationUrlNameOrganizationProcessor.class);
-
-    private final Set<String> organizationUrlNames = new HashSet<>();
-
-    @Override
-    public Organization apply(Organization organization) {
-        if (organization == null) {
-            return null;
-        }
-
-        String organizationUrlName = determineOrganizationUrlName(organization);
-        return new Organization.Builder(organization)
+    override fun apply(organization: Organization): Organization {
+        val organizationUrlName = determineOrganizationUrlName(organization)
+        return Organization.Builder(organization)
             .setUrlName(organizationUrlName)
-            .build();
+            .build()
     }
 
-    private synchronized String determineOrganizationUrlName(Organization organization) {
-        String organizationUrlName = toUrlName(organization.getName());
-        int i = 0;
-        String originalOrganizationUrlName = organizationUrlName;
+    @Synchronized
+    private fun determineOrganizationUrlName(organization: Organization): String {
+        var organizationUrlName = toUrlName(organization.name)
+        var i = 0
+        val originalOrganizationUrlName = organizationUrlName
         while (organizationUrlNames.contains(organizationUrlName)) {
-            organizationUrlName = originalOrganizationUrlName + "-" + (++i);
-            LOG.info("Organization name for '" + originalOrganizationUrlName + "' does already exists, choose new name '" + organizationUrlName + "'");
+            organizationUrlName = originalOrganizationUrlName + "-" + ++i
+            LOG.info("Organization name for '$originalOrganizationUrlName' does already exists, choose new name '$organizationUrlName'")
         }
-        organizationUrlNames.add(organizationUrlName);
-        return organizationUrlName;
+        organizationUrlNames.add(organizationUrlName)
+        return organizationUrlName
     }
 
-    private static String toUrlName(String organizationName) {
-        return organizationName
-            .toLowerCase()
-            .replaceAll("ä", "ae")
-            .replaceAll("ö", "oe")
-            .replaceAll("ü", "ue")
-            .replaceAll("ß", "ss")
-            .replaceAll(" ", "-")
-            .replaceAll("[^a-z0-9\\-]", "");
+    override fun beforeStep(stepExecution: StepExecution) {
+        organizationUrlNames.clear()
     }
 
-    @Override
-    public void beforeStep(StepExecution stepExecution) {
-        this.organizationUrlNames.clear();
+    override fun afterStep(stepExecution: StepExecution): ExitStatus {
+        return stepExecution.exitStatus
     }
 
-    @Override
-    public ExitStatus afterStep(StepExecution stepExecution) {
-        return stepExecution.getExitStatus();
+    companion object {
+        private fun toUrlName(organizationName: String): String {
+            return organizationName
+                .toLowerCase()
+                .replace("ä".toRegex(), "ae")
+                .replace("ö".toRegex(), "oe")
+                .replace("ü".toRegex(), "ue")
+                .replace("ß".toRegex(), "ss")
+                .replace(" ".toRegex(), "-")
+                .replace("[^a-z0-9\\-]".toRegex(), "")
+        }
     }
 }

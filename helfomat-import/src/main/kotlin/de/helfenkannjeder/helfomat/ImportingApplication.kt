@@ -1,19 +1,19 @@
-package de.helfenkannjeder.helfomat;
+package de.helfenkannjeder.helfomat
 
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+import kotlin.system.exitProcess
 
 /**
  * @author Valentin Zickner
  */
 @SpringBootApplication
 @EnableBatchProcessing
-public class ImportingApplication {
+open class ImportingApplication
 
-    public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(ImportingApplication.class, args);
-        System.exit(SpringApplication.exit(context));
-    }
+fun main(args: Array<String>) {
+    val context = runApplication<ImportingApplication>(*args)
+    exitProcess(SpringApplication.exit(context))
 }
