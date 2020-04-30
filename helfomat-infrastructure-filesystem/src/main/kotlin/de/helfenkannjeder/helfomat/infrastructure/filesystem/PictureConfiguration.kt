@@ -1,65 +1,23 @@
-package de.helfenkannjeder.helfomat.infrastructure.filesystem;
+package de.helfenkannjeder.helfomat.infrastructure.filesystem
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.ConstructorBinding
+import java.util.*
 
 /**
  * @author Valentin Zickner
  */
+@ConstructorBinding
 @ConfigurationProperties("helfomat.picture")
-public class PictureConfiguration {
+data class PictureConfiguration(
+    var pictureFolder: String,
+    var pictureSizes: List<PictureSize> = ArrayList()
+) {
 
-    private static final String DEFAULT_PICTURE_FOLDER = "pictures";
+    data class PictureSize (
+        var name: String,
+        var width: Int,
+        var height: Int
+    )
 
-    private String pictureFolder = DEFAULT_PICTURE_FOLDER;
-
-    private List<PictureSize> pictureSizes = new ArrayList<>();
-
-    public String getPictureFolder() {
-        return pictureFolder;
-    }
-
-    public void setPictureFolder(String pictureFolder) {
-        this.pictureFolder = pictureFolder;
-    }
-
-    public List<PictureSize> getPictureSizes() {
-        return pictureSizes;
-    }
-
-    public void setPictureSizes(List<PictureSize> pictureSizes) {
-        this.pictureSizes = pictureSizes;
-    }
-
-    public static class PictureSize {
-        private String name;
-        private Integer width;
-        private Integer height;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Integer getWidth() {
-            return width;
-        }
-
-        public void setWidth(Integer width) {
-            this.width = width;
-        }
-
-        public Integer getHeight() {
-            return height;
-        }
-
-        public void setHeight(Integer height) {
-            this.height = height;
-        }
-    }
 }

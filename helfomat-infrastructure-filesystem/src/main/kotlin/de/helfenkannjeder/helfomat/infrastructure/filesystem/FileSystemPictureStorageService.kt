@@ -1,111 +1,111 @@
-package de.helfenkannjeder.helfomat.infrastructure.filesystem;
+package de.helfenkannjeder.helfomat.infrastructure.filesystem
 
-import com.google.common.base.Preconditions;
-import de.helfenkannjeder.helfomat.api.picture.ResizeImageService;
-import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException;
-import de.helfenkannjeder.helfomat.core.picture.DownloadService;
-import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import de.helfenkannjeder.helfomat.core.picture.PictureStorageService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.regex.Pattern;
+import com.google.common.base.Preconditions
+import de.helfenkannjeder.helfomat.api.picture.ResizeImageService
+import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException
+import de.helfenkannjeder.helfomat.core.picture.DownloadService
+import de.helfenkannjeder.helfomat.core.picture.PictureId
+import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
+import org.slf4j.LoggerFactory
+import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.stereotype.Service
+import org.springframework.web.client.RestClientException
+import java.io.IOException
+import java.io.InputStream
+import java.nio.file.Files
+import java.nio.file.InvalidPathException
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.regex.Pattern
 
 /**
  * @author Valentin Zickner
  */
 @Service
-@EnableConfigurationProperties(PictureConfiguration.class)
-public class FileSystemPictureStorageService implements PictureStorageService {
+@EnableConfigurationProperties(PictureConfiguration::class)
+class FileSystemPictureStorageService(
+    private val downloadService: DownloadService,
+    private val resizeImageService: ResizeImageService,
+    private val pictureConfiguration: PictureConfiguration
+) : PictureStorageService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileSystemPictureStorageService.class);
-
-    private final DownloadService downloadService;
-    private final ResizeImageService resizeImageService;
-    private final PictureConfiguration pictureConfiguration;
-
-    public FileSystemPictureStorageService(DownloadService downloadService,
-                                           ResizeImageService resizeImageService,
-                                           PictureConfiguration pictureConfiguration) {
-        this.downloadService = downloadService;
-        this.resizeImageService = resizeImageService;
-        this.pictureConfiguration = pictureConfiguration;
-    }
-
-    public PictureId savePicture(String url, PictureId pictureId) throws DownloadFailedException {
-        try {
-            byte[] bytes = this.downloadService.download(url);
-            return savePicture(bytes, pictureId);
-        } catch (DownloadFailedException | RestClientException exception) {
-            LOG.error("Failed to write image to filesystem url='" + url + "' picture='" + pictureId + "'", exception);
-            throw new DownloadFailedException(exception);
+    @Throws(DownloadFailedException::class)
+    override fun savePicture(url: String, pictureId: PictureId): PictureId {
+        return try {
+            val bytes = downloadService.download(url)
+            savePicture(bytes, pictureId)
+        } catch (exception: DownloadFailedException) {
+            LOG.error("Failed to write image to filesystem url='$url' picture='$pictureId'", exception)
+            throw DownloadFailedException(exception)
+        } catch (exception: RestClientException) {
+            LOG.error("Failed to write image to filesystem url='$url' picture='$pictureId'", exception)
+            throw DownloadFailedException(exception)
         }
     }
 
-    public PictureId savePicture(byte[] bytes, PictureId pictureId) throws DownloadFailedException {
-        try {
-            Path path = createPath(pictureId.getValue());
-            if (bytes == null) {
-                throw new DownloadFailedException();
-            }
-
-            Files.write(path, bytes);
-            scalePicture(pictureId, path);
-
-            return pictureId;
-        } catch (IOException | InvalidPathException | RestClientException exception) {
-            LOG.error("Failed to write image to filesystem picture='" + pictureId + "'", exception);
-            throw new DownloadFailedException(exception);
+    @Throws(DownloadFailedException::class)
+    override fun savePicture(bytes: ByteArray, pictureId: PictureId): PictureId {
+        return try {
+            val path = createPath(pictureId.value)
+            Files.write(path, bytes)
+            scalePicture(pictureId, path)
+            pictureId
+        } catch (exception: IOException) {
+            LOG.error("Failed to write image to filesystem picture='$pictureId'", exception)
+            throw DownloadFailedException(exception)
+        } catch (exception: InvalidPathException) {
+            LOG.error("Failed to write image to filesystem picture='$pictureId'", exception)
+            throw DownloadFailedException(exception)
+        } catch (exception: RestClientException) {
+            LOG.error("Failed to write image to filesystem picture='$pictureId'", exception)
+            throw DownloadFailedException(exception)
         }
     }
 
-    @Override
-    public PictureId savePicture(PictureId pictureId, InputStream inputStream) throws DownloadFailedException {
-        try {
-            Path path = createPath(pictureId.getValue());
-            Files.copy(inputStream, path);
-            scalePicture(pictureId, path);
-            return pictureId;
-        } catch (IOException exception) {
-            throw new DownloadFailedException(exception);
+    @Throws(DownloadFailedException::class)
+    override fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId {
+        return try {
+            val path = createPath(pictureId.value)
+            Files.copy(inputStream, path)
+            scalePicture(pictureId, path)
+            pictureId
+        } catch (exception: IOException) {
+            throw DownloadFailedException(exception)
         }
     }
 
-    public Path getPicture(PictureId pictureId) {
-        return Paths.get(this.pictureConfiguration.getPictureFolder(), pictureId.getValue());
+    override fun getPicture(pictureId: PictureId): Path {
+        return Paths.get(pictureConfiguration.pictureFolder, pictureId.value)
     }
 
-    public Path getPicture(PictureId pictureId, String size) {
-        Preconditions.checkArgument(Pattern.compile("^[a-z\\-]+$").matcher(size).matches());
-        return Paths.get(this.pictureConfiguration.getPictureFolder(), size, pictureId.getValue());
+    override fun getPicture(pictureId: PictureId, size: String): Path {
+        Preconditions.checkArgument(Pattern.compile("^[a-z\\-]+$").matcher(size).matches())
+        return Paths.get(pictureConfiguration.pictureFolder, size, pictureId.value)
     }
 
-    @Override
-    public boolean existPicture(PictureId pictureId) {
-        return Files.exists(getPicture(pictureId));
+    override fun existPicture(pictureId: PictureId): Boolean {
+        return Files.exists(getPicture(pictureId))
     }
 
-    private void scalePicture(PictureId pictureId, Path path) throws IOException {
-        for (PictureConfiguration.PictureSize pictureSize : pictureConfiguration.getPictureSizes()) {
-            Path outputFile = createPath(pictureSize.getName(), pictureId.getValue());
-            resizeImageService.resize(path, outputFile, pictureSize.getWidth(), pictureSize.getHeight());
+    @Throws(IOException::class)
+    private fun scalePicture(pictureId: PictureId, path: Path) {
+        for (pictureSize in pictureConfiguration.pictureSizes) {
+            val outputFile = createPath(pictureSize.name, pictureId.value)
+            resizeImageService.resize(path, outputFile, pictureSize.width, pictureSize.height)
         }
     }
 
-    private Path createPath(String... folder) throws IOException {
-        Path path = Paths.get(pictureConfiguration.getPictureFolder(), folder);
-        if (!path.getParent().toFile().exists()) {
-            Files.createDirectories(path.getParent());
+    @Throws(IOException::class)
+    private fun createPath(vararg folder: String): Path {
+        val path = Paths.get(pictureConfiguration.pictureFolder, *folder)
+        if (!path.parent.toFile().exists()) {
+            Files.createDirectories(path.parent)
         }
-        return path;
+        return path
     }
+
+    companion object {
+        private val LOG = LoggerFactory.getLogger(FileSystemPictureStorageService::class.java)
+    }
+
 }

@@ -1,68 +1,68 @@
-package de.helfenkannjeder.helfomat.infrastructure.filesystem;
+package de.helfenkannjeder.helfomat.infrastructure.filesystem
 
-import de.helfenkannjeder.helfomat.api.geopoint.DistanceMatrixApplicationService;
-import de.helfenkannjeder.helfomat.api.picture.RestDownloadService;
-import org.assertj.core.api.ThrowableAssert;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.HttpClientErrorException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import de.helfenkannjeder.helfomat.api.picture.RestDownloadService
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.web.client.HttpClientErrorException
 
 /**
  * @author Valentin Zickner
  */
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
-class RestDownloadServiceTest {
+@ExtendWith(SpringExtension::class)
+internal class RestDownloadServiceTest {
 
     @Autowired
-    private RestDownloadService downloadService;
+    private lateinit var downloadService: RestDownloadService
 
-    @MockBean
-    private DistanceMatrixApplicationService distanceMatrixApplicationService;
 
-    @BeforeAll
-    static void setUpServer() throws Exception {
-        EmbeddedHttpServer.start();
-        EmbeddedHttpServer.setContent("/Radlader_2124_5x2.jpg", null, "de/helfenkannjeder/picture/Radlader_2124_5x2.jpg");
-    }
+    @Test
+    fun downloadPicture_withCorrectUrl_returnsByteArray() {
+        // Act
+        val bytes = downloadService.download(getUrl("Radlader_2124_5x2.jpg"))
 
-    @AfterAll
-    static void tearDownServer() {
-        EmbeddedHttpServer.stop();
+        // Assert
+        Assertions.assertThat(bytes.size).isEqualTo(2838526)
+        Assertions.assertThat(bytes[0]).isEqualTo(0xFF.toByte())
+        Assertions.assertThat(bytes[1]).isEqualTo(0xD8.toByte())
     }
 
     @Test
-    void downloadPicture_withCorrectUrl_returnsByteArray() {
+    fun downloadPicture_withIncorrectUrl_throwsHttpClientErrorException() {
         // Act
-        byte[] bytes = downloadService.download(getUrl("Radlader_2124_5x2.jpg"));
+        val throwable = ThrowingCallable { downloadService.download(getUrl("test.jpg")) }
 
         // Assert
-        assertThat(bytes).isNotNull();
-        assertThat(bytes.length).isEqualTo(2838526);
-        assertThat(bytes[0]).isEqualTo((byte) 0xFF);
-        assertThat(bytes[1]).isEqualTo((byte) 0xD8);
+        Assertions.assertThatThrownBy(throwable).isInstanceOf(HttpClientErrorException::class.java)
     }
 
-    @Test
-    void downloadPicture_withIncorrectUrl_throwsHttpClientErrorException() {
-        // Act
-        ThrowableAssert.ThrowingCallable throwable = () ->
-            downloadService.download(getUrl("test.jpg"));
+    companion object {
 
-        // Assert
-        assertThatThrownBy(throwable).isInstanceOf(HttpClientErrorException.class);
-    }
+        private val EMBEDDED_HTTP_SERVER = EmbeddedHttpServer()
 
-    private static String getUrl(String url) {
-        return "http://localhost:" + EmbeddedHttpServer.PORT + "/" + url;
+        @BeforeAll
+        @JvmStatic
+        fun setUpServer() {
+            EMBEDDED_HTTP_SERVER.start()
+            EMBEDDED_HTTP_SERVER.setContent("/Radlader_2124_5x2.jpg", null, "de/helfenkannjeder/picture/Radlader_2124_5x2.jpg")
+        }
+
+        @AfterAll
+        @JvmStatic
+        fun tearDownServer() {
+            EMBEDDED_HTTP_SERVER.stop()
+        }
+
+        private fun getUrl(url: String): String {
+            return "http://localhost:${EMBEDDED_HTTP_SERVER.port}/$url"
+        }
+
     }
 }
