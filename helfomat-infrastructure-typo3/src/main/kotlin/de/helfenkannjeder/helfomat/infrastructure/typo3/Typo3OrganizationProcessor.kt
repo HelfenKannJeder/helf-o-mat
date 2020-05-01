@@ -25,7 +25,8 @@ import java.util.stream.Collectors
 open class Typo3OrganizationProcessor(
     private val pictureStorageService: PictureStorageService
 ) : ItemProcessor<TOrganization, Organization?> {
-    open override fun process(tOrganization: TOrganization): Organization? {
+
+    override fun process(tOrganization: TOrganization): Organization? {
         if (organizationIsNoCandidateToImport(tOrganization)) {
             LOGGER.info("Ignore TYPO3 organization '" + tOrganization.name + "'")
             return null
@@ -33,28 +34,28 @@ open class Typo3OrganizationProcessor(
         return Organization.Builder()
             .setId(OrganizationId())
             .setName(tOrganization.name)
-            .setOrganizationType(OrganizationType.findByName(tOrganization.organizationtype.name))
+            .setOrganizationType(OrganizationType.findByName(tOrganization.organizationtype?.name))
             .setDescription(tOrganization.description)
             .setLogo(toPicture(tOrganization.logo))
             .setWebsite(UrlUnifier.unifyOrganizationWebsiteUrl(tOrganization.website))
-            .setMapPin(unifyOrganizationPins(tOrganization.organizationtype.picture))
+            .setMapPin(unifyOrganizationPins(tOrganization.organizationtype?.picture))
             .setPictures(toPictures(extractPictures(tOrganization.pictures)))
             .setContactPersons(toContactPersons(tOrganization.contactPersons))
-            .setAddresses(tOrganization.addresses.stream().map { tAddress: TAddress? -> toAddress(tAddress) }.collect(Collectors.toList()))
+            .setAddresses(tOrganization.addresses?.map { tAddress: TAddress? -> toAddress(tAddress) })
             .setDefaultAddress(toAddress(tOrganization.defaultaddress))
             .setGroups(
                 tOrganization.groups.stream().map { tGroup: TGroup -> toGroup(tGroup) }.collect(Collectors.toList())
             )
-            .setAttendanceTimes(tOrganization.workinghours.stream().map { tWorkingHour: TWorkingHour -> toEvent(tWorkingHour) }.collect(Collectors.toList()))
-            .setVolunteers(tOrganization.employees.stream().filter { employee: TEmployee -> !employee.motivation.isEmpty() }.map { tEmployee: TEmployee -> toVolunteer(tEmployee) }.collect(Collectors.toList()))
+            .setAttendanceTimes(tOrganization.workinghours.map { toEvent(it) })
+            .setVolunteers(tOrganization.employees.filter { !(it.motivation?.isEmpty() ?: true) }.map { toVolunteer(it) })
             .build()
     }
 
     private fun toVolunteer(tEmployee: TEmployee): Volunteer {
         return Volunteer(
-            firstname = tEmployee.prename,
+            firstname = tEmployee.prename ?: "",
             lastname = tEmployee.surname,
-            motivation = tEmployee.motivation,
+            motivation = tEmployee.motivation ?: "",
             picture = toPicture(tEmployee.pictures)
         )
     }
@@ -130,7 +131,10 @@ open class Typo3OrganizationProcessor(
             .build()
     }
 
-    private fun unifyOrganizationPins(picture: String): String {
+    private fun unifyOrganizationPins(picture: String?): String? {
+        if (picture == null) {
+            return null
+        }
         return picture.replace("_[0-9]{2}".toRegex(), "")
     }
 
@@ -162,7 +166,7 @@ open class Typo3OrganizationProcessor(
                 .setAddressAppendix(tAddress.addressappendix)
                 .setCity(tAddress.city)
                 .setZipcode(tAddress.zipcode)
-                .setLocation(GeoPoint(tAddress.latitude.toDouble(), tAddress.longitude.toDouble()))
+                .setLocation(GeoPoint(tAddress.latitude, tAddress.longitude))
                 .build()
         }
     }

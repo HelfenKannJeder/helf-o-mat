@@ -18,14 +18,15 @@ googlemaps:
 
 helfomat.picture:
   picture-folder: pictures/
-  picture-sizes:
-  - name: icon
-    width: 84
-  - name: teaser
-    width: 1000
-    height: 300
-  - name: medium
-    width: 300
+  picture:
+    picture-sizes:
+    - name: icon
+      width: 84
+    - name: teaser
+      width: 1000
+      height: 300
+    - name: medium
+      width: 300
 
 spring.servlet.multipart:
   max-file-size: 50MB

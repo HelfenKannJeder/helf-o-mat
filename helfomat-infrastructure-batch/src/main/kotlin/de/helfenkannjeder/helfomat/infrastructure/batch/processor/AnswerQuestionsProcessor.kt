@@ -38,7 +38,7 @@ class AnswerQuestionsProcessor(
 
     private fun answerQuestionForOrganization(question: QuestionMapping, organization: Organization): Answer {
         return question.groups
-            .filter { organization.organizationType == it.organizationType && organization.groups.any { group -> group.name.contains(it.phrase) } }
+            .filter { organization.organizationType == it.organizationType && organization.groups.any { group -> it.phrase != null && group.name.contains(it.phrase) } }
             .map { it.answer }
             .firstOrNull()
             ?: question.defaultAnswer
