@@ -13,10 +13,12 @@ import de.helfenkannjeder.helfomat.api.geopoint.TravelDistanceDto
 import de.helfenkannjeder.helfomat.api.geopoint.TravelDistanceNotRetrievedException
 import de.helfenkannjeder.helfomat.api.geopoint.TravelModeDto
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service
 import java.io.IOException
 
 @Service
+@EnableConfigurationProperties(GoogleMapsConfiguration::class)
 class GoogleMapsDistanceMatrixApplicationService(
     googleMapsConfiguration: GoogleMapsConfiguration
 ) : DistanceMatrixApplicationService {

@@ -1,17 +1,17 @@
 package de.helfenkannjeder.helfomat.infrastructure.thwde
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
+import org.springframework.boot.context.properties.ConstructorBinding
 
 /**
  * @author Valentin Zickner
  */
-@Component
-@ConfigurationProperties(prefix = "crawler.thw")
-class ThwCrawlerConfiguration {
-    var domain: String? = null
-    var isFollowDomainNames = true
-    var resultsPerPage = 0
-    var httpRequestTimeout = 0
+@ConstructorBinding
+@ConfigurationProperties("crawler.thw")
+class ThwCrawlerConfiguration(
+    var domain: String,
+    var isFollowDomainNames: Boolean = true,
+    var resultsPerPage: Int = 0,
+    var httpRequestTimeout: Int = 0,
     var mapPin: String? = null
-}
+)

@@ -10,59 +10,31 @@ import java.util.*
  * @author Valentin Zickner
  */
 object OrganizationTestDataFactory {
-    private val ORGANIZATION_1_ADDRESS = Address.Builder()
-        .setStreet("Grünhutstr. 9")
-        .setAddressAppendix("")
-        .setCity("Karlsruhe")
-        .setZipcode("76187")
-        .setLocation(GeoPoint(49.03765869140625, 8.352746963500977))
-        .setTelephone("0721 9712834")
-        .build()
-    private val ORGANIZATION_1_OV_STAB = Group.Builder()
-        .setName("OV-Stab")
-        .setDescription("Der OV-Stab bildet die Verwaltungseinheit eines Ortsverbands ...")
-        .build()
-    private val ORGANIZATION_1_JUGENDGRUPPE = Group.Builder()
-        .setName("Jugendgruppe")
-        .setDescription("Die THW-Jugendgruppe vermittelt Heranwachsenden im Alter von zehn bis 17 Jahren ...")
-        .build()
-    private val ORGANIZATION_1_BAMBINIGRUPPE = Group.Builder()
-        .setName("Bambini-/Mini-Jugendgruppe")
-        .setDescription("Für Kinder unter zehn Jahren besteht die Möglichkeit, in einer Mini-/Bambini-Jugendgruppe mitzumachen. ...")
-        .build()
-    private val ORGANIZATION_1_ZUGTRUPP = Group.Builder()
-        .setName("Zugtrupp")
-        .setDescription("Der Zugtrupp ist für die Koordination von THW-Einsätzen zuständig ...")
-        .build()
-    private val ORGANIZATION_1_BERGRUNG_1 = Group.Builder()
-        .setName("1. Bergungsgruppe")
-        .setDescription("Die 1. Bergungsgruppe (1. BGr) ist ...")
-        .build()
-    private val ORGANIZATION_1_R = Group.Builder()
-        .setName("Fachgruppe Räumen (FGr R, Typ A und B)")
-        .setDescription("Mit ihren leistungsfähigen Baumaschinen ist die Fachgruppe Räumen an fast ...")
-        .build()
-    private val ORGANIZATION_1_BEL = Group.Builder()
-        .setName("Fachgruppe Beleuchtung (FGr Bel)")
-        .setDescription("Die Fachgruppe Beleuchtung macht die Nacht zum Tag. Sie ...")
-        .build()
-    private val ORGANIZATION_1_ABSTUETZEN = Group.Builder()
-        .setName("Abstützen")
-        .setDescription("Mit unserem Abstützsystem aus Holzelementen lassen sich Bauwerke bis 15 ...")
-        .build()
-    private val ORGANIZATION_1_FELDKOCHHERD = Group.Builder()
-        .setName("Feldkochherd")
-        .setDescription("Mit unserer mobilen Feldküche sind wir in der Lage, ...")
-        .build()
-    private val ORGANIZATION_1_THV = Group.Builder()
-        .setName("Technische Hilfe auf Verkehrswegen (THV-Dienst)")
-        .setDescription("Wir unterstützen die Polizei auf den Bundesautobahnen vor allem in ...")
-        .build()
+    private val ORGANIZATION_1_ADDRESS = Address(
+        street = "Grünhutstr. 9",
+        city = "Karlsruhe",
+        zipcode = "76187",
+        location = GeoPoint(49.03765869140625, 8.352746963500977),
+        telephone = "0721 9712834"
+    )
+    private val ORGANIZATION_1_OV_STAB = Group(name = "OV-Stab", description = "Der OV-Stab bildet die Verwaltungseinheit eines Ortsverbands ...")
+    private val ORGANIZATION_1_JUGENDGRUPPE = Group(name = "Jugendgruppe", description = "Die THW-Jugendgruppe vermittelt Heranwachsenden im Alter von zehn bis 17 Jahren ...")
+    private val ORGANIZATION_1_BAMBINIGRUPPE = Group(name = "Bambini-/Mini-Jugendgruppe", description = "Für Kinder unter zehn Jahren besteht die Möglichkeit, in einer Mini-/Bambini-Jugendgruppe mitzumachen. ...")
+    private val ORGANIZATION_1_ZUGTRUPP = Group(name = "Zugtrupp", description = "Der Zugtrupp ist für die Koordination von THW-Einsätzen zuständig ...")
+    private val ORGANIZATION_1_BERGRUNG_1 = Group(name = "1. Bergungsgruppe", description = "Die 1. Bergungsgruppe (1. BGr) ist ...")
+    private val ORGANIZATION_1_R = Group(name = "Fachgruppe Räumen (FGr R, Typ A und B)", description = "Mit ihren leistungsfähigen Baumaschinen ist die Fachgruppe Räumen an fast ...")
+    private val ORGANIZATION_1_BEL = Group(name = "Fachgruppe Beleuchtung (FGr Bel)", description = "Die Fachgruppe Beleuchtung macht die Nacht zum Tag. Sie ...")
+    private val ORGANIZATION_1_ABSTUETZEN = Group(name = "Abstützen", description = "Mit unserem Abstützsystem aus Holzelementen lassen sich Bauwerke bis 15 ...")
+    private val ORGANIZATION_1_FELDKOCHHERD = Group(name = "Feldkochherd", description = "Mit unserer mobilen Feldküche sind wir in der Lage, ...")
+    private val ORGANIZATION_1_THV = Group(name = "Technische Hilfe auf Verkehrswegen (THV-Dienst)", description = "Wir unterstützen die Polizei auf den Bundesautobahnen vor allem in ...")
+
     @JvmField
-    val ORGANIZATION_1 = Organization.Builder()
-        .setId(OrganizationId("50758f69-093e-49b4-a514-c7acbd898036"))
-        .setName("THW Karlsruhe")
-        .setUrlName("thw-karlsruhe")
+    val ORGANIZATION_1 = Organization.Builder(
+        id = OrganizationId("50758f69-093e-49b4-a514-c7acbd898036"),
+        name = "THW Karlsruhe",
+        urlName = "thw-karlsruhe",
+        organizationType = OrganizationType.THW
+    )
         .setDescription("Wir sind die Hilfsorganisation des Bundes und ....")
         .setWebsite("http://www.thw-karlsruhe.de")
         .setLogo(PictureId("499346d3-8d5e-4028-956c-e6d329634e10"))
@@ -84,14 +56,13 @@ object OrganizationTestDataFactory {
             PictureId("82a7c111-9f1f-43c7-b084-0891386075e3")
         ))
         .setContactPersons(listOf(
-            ContactPerson.Builder()
-                .setFirstname("David")
-                .setLastname("Mustermann")
-                .setRank("Beauftragter für Öffentlichkeitsarbeit")
-                .setTelephone("")
-                .setMail("nospam@thw-karlsruhe.de")
-                .setPicture(PictureId("e4bc0a17-71de-4dc4-b91b-e82286f11fbc"))
-                .build()
+            ContactPerson(
+                firstname = "David",
+                lastname = "Mustermann",
+                rank = "Beauftragter für Öffentlichkeitsarbeit",
+                mail = "nospam@thw-karlsruhe.de",
+                picture = PictureId("e4bc0a17-71de-4dc4-b91b-e82286f11fbc")
+            )
         ))
         .setDefaultAddress(ORGANIZATION_1_ADDRESS)
         .setAddresses(listOf(ORGANIZATION_1_ADDRESS))
@@ -108,39 +79,39 @@ object OrganizationTestDataFactory {
             ORGANIZATION_1_THV
         ))
         .setAttendanceTimes(Arrays.asList(
-            AttendanceTime.Builder()
-                .setDay(DayOfWeek.TUESDAY)
-                .setStart(LocalTime.of(19, 30))
-                .setEnd(LocalTime.of(22, 30))
-                .setNote("unregelmäßig (Dienstplan siehe Homepage)")
-                .setGroups(Arrays.asList(
+            AttendanceTime(
+                day = DayOfWeek.TUESDAY,
+                start = LocalTime.of(19, 30),
+                end = LocalTime.of(22, 30),
+                note = "unregelmäßig (Dienstplan siehe Homepage)",
+                groups = Arrays.asList(
                     ORGANIZATION_1_BERGRUNG_1,
                     ORGANIZATION_1_ZUGTRUPP,
                     ORGANIZATION_1_R,
                     ORGANIZATION_1_BEL,
                     ORGANIZATION_1_JUGENDGRUPPE,
                     ORGANIZATION_1_OV_STAB
-                ))
-                .build(),
-            AttendanceTime.Builder()
-                .setDay(DayOfWeek.THURSDAY)
-                .setStart(LocalTime.of(18, 0))
-                .setEnd(LocalTime.of(19, 30))
-                .setNote("Jeder 1. und 3. Donnerstag im Monat")
-                .setGroups(listOf(ORGANIZATION_1_BAMBINIGRUPPE))
-                .build(),
-            AttendanceTime.Builder()
-                .setDay(DayOfWeek.SATURDAY)
-                .setStart(LocalTime.of(8, 0))
-                .setEnd(LocalTime.of(16, 0))
-                .setNote("unregelmäßig, Termine siehe Homepage")
-                .setGroups(Arrays.asList(
+                )
+            ),
+            AttendanceTime(
+                day = DayOfWeek.THURSDAY,
+                start = LocalTime.of(18, 0),
+                end = LocalTime.of(19, 30),
+                note = "Jeder 1. und 3. Donnerstag im Monat",
+                groups = listOf(ORGANIZATION_1_BAMBINIGRUPPE)
+            ),
+            AttendanceTime(
+                day = DayOfWeek.SATURDAY,
+                start = LocalTime.of(8, 0),
+                end = LocalTime.of(16, 0),
+                note = "unregelmäßig, Termine siehe Homepage",
+                groups = Arrays.asList(
                     ORGANIZATION_1_BERGRUNG_1,
                     ORGANIZATION_1_ZUGTRUPP,
                     ORGANIZATION_1_R,
                     ORGANIZATION_1_BEL
-                ))
-                .build()
+                )
+            )
         ))
         .setVolunteers(Arrays.asList(
             Volunteer(

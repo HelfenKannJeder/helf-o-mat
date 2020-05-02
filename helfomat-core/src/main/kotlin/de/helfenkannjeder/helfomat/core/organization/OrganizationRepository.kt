@@ -16,4 +16,5 @@ interface OrganizationRepository {
     fun findGlobalOrganizations(): List<Organization>
     fun findGeoPointsOfOrganizationsInsideBoundingBox(position: GeoPoint?, distance: Double, boundingBox: BoundingBox): List<GeoPoint>
     fun save(organizations: List<Organization>)
+    fun remove(organizationId: OrganizationId)
 }

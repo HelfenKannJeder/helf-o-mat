@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.thwde
 
 import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.picture.PictureId
 import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Offset
@@ -9,9 +10,11 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
@@ -21,16 +24,17 @@ class ThwCrawlerOrganizationReaderTest {
     @Mock
     private lateinit var pictureStorageService: PictureStorageService
 
-    private var domain: String? = null
+    private lateinit var domain: String
 
     @BeforeEach
     internal fun setUp() {
-        val thwCrawlerConfiguration = ThwCrawlerConfiguration()
         domain = "http://localhost:" + EMBEDDED_HTTP_SERVER.port + "/"
-        thwCrawlerConfiguration.domain = domain
-        thwCrawlerConfiguration.isFollowDomainNames = false
-        thwCrawlerConfiguration.resultsPerPage = 2
-        thwCrawlerConfiguration.httpRequestTimeout = 3000
+        val thwCrawlerConfiguration = ThwCrawlerConfiguration(
+            domain = domain,
+            isFollowDomainNames = false,
+            resultsPerPage = 2,
+            httpRequestTimeout = 3000
+        )
         thwCrawlerOrganizationReader = ThwCrawlerOrganizationReader(
             thwCrawlerConfiguration,
             pictureStorageService
@@ -155,9 +159,9 @@ class ThwCrawlerOrganizationReaderTest {
         assertThat(contactPerson?.rank).isEqualTo("Ortsbeauftragter")
         assertThat(contactPerson?.telephone).isEqualTo("0241 9209336")
         assertThat(contactPerson?.picture).isNull()
-        Mockito.verify(pictureStorageService, Mockito.never())?.savePicture(
-            ArgumentMatchers.eq(domain + "/SharedDocs/Bilder/DE/TiUe/NoElementPerson.jpg?__blob=thumbnail&v=5"),
-            ArgumentMatchers.any()
+        verify(pictureStorageService, Mockito.never())?.savePicture(
+            safeEq(domain + "/SharedDocs/Bilder/DE/TiUe/NoElementPerson.jpg?__blob=thumbnail&v=5"),
+            safeAny(PictureId::class.java)
         )
     }
 
@@ -176,9 +180,9 @@ class ThwCrawlerOrganizationReaderTest {
         assertThat(organization?.contactPersons)
             .isNotNull
             .hasSize(1)
-        Mockito.verify(pictureStorageService)?.savePicture(
-            ArgumentMatchers.eq(domain + "/SharedDocs/Bilder/DE/TiUe/Personen/P/probstc3.jpg?__blob=thumbnail&v=2"),
-            ArgumentMatchers.any()
+        verify(pictureStorageService)?.savePicture(
+            safeEq(domain + "/SharedDocs/Bilder/DE/TiUe/Personen/P/probstc3.jpg?__blob=thumbnail&v=2"),
+            safeAny(PictureId::class.java)
         )
     }
 
@@ -288,3 +292,6 @@ class ThwCrawlerOrganizationReaderTest {
 
 
 }
+
+fun <T : Any> safeEq(value: T): T = eq(value) ?: value
+fun safeAny(value: Class<PictureId>): PictureId = any(value) ?: PictureId()

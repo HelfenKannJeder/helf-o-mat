@@ -40,10 +40,10 @@ class ElasticsearchOrganizationRepository(
         questionAnswers,
         filterDistance(position, distance)
     )
-        .sortedWith(compareBy<ScoredOrganization> { it.score }.thenComparingDouble { it.organization.defaultAddress.location.distanceInKm(position) })
+        .sortedWith(compareBy<ScoredOrganization> { it.score }.thenComparingDouble { it.organization.defaultAddress?.location?.distanceInKm(position) ?: Double.MAX_VALUE })
 
     override fun findOrganizationsByDistanceSortByDistance(position: GeoPoint, distance: Double) = search(filterDistance(position, distance))
-        .sortedWith(compareBy { it.defaultAddress.location.distanceInKm(position) })
+        .sortedWith(compareBy { it.defaultAddress?.location?.distanceInKm(position) ?: Double.MAX_VALUE })
 
     override fun findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(questionAnswers: List<QuestionAnswer>) = findOrganizationsWithQuestionsAndFilter(
         questionAnswers,
@@ -70,8 +70,8 @@ class ElasticsearchOrganizationRepository(
         return extractOrganizations(emptyList(), organizations)
             .map { obj: ScoredOrganization -> obj.organization }
             .map { obj: Organization -> obj.defaultAddress }
-            .filter { obj: Address? -> Objects.nonNull(obj) }
-            .map { obj: Address -> obj.location }
+            .filterNotNull()
+            .map { it.location }
     }
 
     override fun save(organizations: List<Organization>) {
@@ -85,6 +85,10 @@ class ElasticsearchOrganizationRepository(
             .map { builder: IndexQueryBuilder -> builder.withIndexName(indexName) }
             .map { obj: IndexQueryBuilder -> obj.build() }
         elasticsearchTemplate.bulkIndex(indexQueries)
+    }
+
+    override fun remove(organizationId: OrganizationId) {
+        elasticsearchTemplate.delete(indexName, elasticsearchConfiguration.type.organization, organizationId.value)
     }
 
     fun createIndex(mapping: String?) {

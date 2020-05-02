@@ -30,7 +30,7 @@ open class SecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
     }
 
     @Autowired
-    fun configureGlobal(authenticationManagerBuilder: AuthenticationManagerBuilder) {
+    open fun configureGlobal(authenticationManagerBuilder: AuthenticationManagerBuilder) {
         val grantedAuthorityMapper = SimpleAuthorityMapper()
         grantedAuthorityMapper.setPrefix("ROLE_")
         val keycloakAuthenticationProvider = keycloakAuthenticationProvider()

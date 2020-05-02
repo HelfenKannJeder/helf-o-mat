@@ -31,7 +31,7 @@ class PictureController(private val pictureApplicationService: PictureApplicatio
         toResponseEntity(pictureApplicationService.getPicture(pictureId, size))
 
     @PostMapping("/picture/{pictureId}")
-    fun savePicture(@PathVariable pictureId: PictureId?, @RequestParam("file") file: MultipartFile) =
+    fun savePicture(@PathVariable pictureId: PictureId, @RequestParam("file") file: MultipartFile) =
         pictureApplicationService.savePicture(pictureId, file.inputStream)
 
     private fun toResponseEntity(picture: Path): ResponseEntity<InputStreamResource> {
