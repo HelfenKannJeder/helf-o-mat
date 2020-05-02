@@ -87,7 +87,7 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
             this._back$.asObservable()
         ])
             .subscribe(([position, zoom, distance, userAnswers]: [GeoPoint, number, number, Answer[], void]) => {
-                this.router.navigate(['/result', {
+                this.router.navigate(['/volunteer/result', {
                     answers: UrlParamBuilder.buildAnswers(userAnswers),
                     position: UrlParamBuilder.buildGeoPoint(position),
                     zoom: zoom,

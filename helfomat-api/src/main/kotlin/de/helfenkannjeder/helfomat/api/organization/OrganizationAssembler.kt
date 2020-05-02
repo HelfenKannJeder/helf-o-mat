@@ -19,8 +19,8 @@ fun ScoredOrganization.toOrganizationDto(): OrganizationDto {
         organization.urlName,
         organization.description,
         organization.website,
-        organization.addresses?.toAddressDtos() ?: emptyList(),
-        organization.contactPersons?.toContactPersonDtos() ?: emptyList(),
+        organization.addresses.toAddressDtos(),
+        organization.contactPersons.toContactPersonDtos(),
         organization.logo,
         scoredOrganization.score,
         organization.organizationType
@@ -34,8 +34,8 @@ fun Organization.toOrganizationDto() = OrganizationDto(
     this.urlName,
     this.description,
     this.website,
-    this.addresses?.toAddressDtos() ?: emptyList(),
-    this.contactPersons?.toContactPersonDtos() ?: emptyList(),
+    this.addresses.toAddressDtos(),
+    this.contactPersons.toContactPersonDtos(),
     this.logo,
     null,
     this.organizationType

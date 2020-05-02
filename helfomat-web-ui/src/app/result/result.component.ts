@@ -138,7 +138,7 @@ export class ResultComponent implements OnInit {
             this._zoom$.asObservable()
         )
             .subscribe(([userAnswers, position, distance, boundingBox, zoom]: [UserAnswer[], GeoPoint, number, BoundingBox, number]) => {
-                this.router.navigate(['/result', {
+                this.router.navigate(['/volunteer/result', {
                     answers: UrlParamBuilder.buildAnswersFromUserAnswer(userAnswers),
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance,
@@ -198,7 +198,7 @@ export class ResultComponent implements OnInit {
                 if (this.explainScore) {
                     extras.fragment = 'compare';
                 }
-                this.router.navigate(['/organization/' + organization.urlName, {
+                this.router.navigate(['/volunteer/organization/' + organization.urlName, {
                     answers: answers,
                     position: UrlParamBuilder.buildGeoPoint(position),
                     zoom: zoom,

@@ -103,11 +103,11 @@ class OrganizationEventAssembler(private val questions: List<Question>) : Organi
             confirmedChangeOrganizationEvent.changes.map { it.visit(this) }
         )
 
-    companion object {
-        fun toOrganizationEventDto(organizationEvents: List<OrganizationEvent>, questions: List<Question>): List<OrganizationEventDto> {
-            val organizationEventAssembler = OrganizationEventAssembler(questions)
-            return organizationEvents.map { it.visit(organizationEventAssembler) }
-        }
-    }
+}
 
+fun OrganizationEvent.toOrganizationEventDto(questions: List<Question>) = this.toOrganizationEventDto(OrganizationEventAssembler(questions))
+fun OrganizationEvent.toOrganizationEventDto(organizationEventAssembler: OrganizationEventAssembler) = this.visit(organizationEventAssembler)
+fun List<OrganizationEvent>.toOrganizationEventDtos(questions: List<Question>): List<OrganizationEventDto> {
+    val organizationEventAssembler = OrganizationEventAssembler(questions)
+    return this.map { it.toOrganizationEventDto(organizationEventAssembler) }
 }

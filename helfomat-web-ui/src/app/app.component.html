@@ -4,13 +4,16 @@
             <li><a href="https://helfenkannjeder.de/verein/ueber-uns/">
                 {{ 'menu.association' | translate }}
             </a></li>
-            <li><a routerLink="/profile">
+            <li><a [href]="getMyAccountUrl()">
                 {{ 'menu.myAccount' | translate }}
+            </a></li>
+            <li *ngIf="isReviewer()" [routerLinkActive]="['active']"><a routerLink="/admin">
+                {{ 'menu.admin' | translate }}
             </a></li>
             <li><a href="https://helfenkannjeder.de/neues/">
                 {{ 'menu.helfenkannjeder' | translate }}
             </a></li>
-            <li class="active"><a routerLink="/">
+            <li [routerLinkActive]="['active']"><a routerLink="/volunteer">
                 {{ 'menu.helf-o-mat' | translate }}
             </a></li>
         </ul>

@@ -3,7 +3,8 @@
     "helf-o-mat": "Helf-O-Mat",
     "helfenkannjeder": "HelfenKannJeder",
     "myAccount": "Mein Benutzer",
-    "association": "Verein"
+    "association": "Verein",
+    "admin": "Admin"
   },
   "header": {
     "title1": "Wir warten auf Dich!",
@@ -182,6 +183,24 @@
         "title": "Änderungen für '{{organizationName}}' beantragt",
         "content": "Die Änderungen für die Organisation '{{organizationName}}' wurden in unserem System hinterlegt. Diese werden in den nächsten Tagen von unser Team überprüft und veröffentlicht. Sollten die Änderungen innerhalb drei Werktagen nicht veröffentlicht sein, ist vermutlich das Wetter in Karlsruhe gut und jeder kauft bei Carsten ein Motorrad. Wenn das nach einer Woche immer noch so ist, schreibe doch bitte eine Erinnerungs-E-Mail an info@helfenkannjeder.de. Vielen Dank!",
         "confirm": "Und weiter geht's!"
+      }
+    }
+  },
+  "manage": {
+    "organization": {
+      "approval": {
+        "organizationName": "Organisation",
+        "author": "Autor",
+        "date": "Datum",
+        "sources": "Quellen",
+        "reviewButton": "Review",
+        "review": {
+          "reject": "Ablehnen",
+          "publishChanges": "Änderungen veröffentlichen",
+          "author":  "Autor",
+          "sources": "Quellen",
+          "date": "Datum"
+        }
       }
     }
   },

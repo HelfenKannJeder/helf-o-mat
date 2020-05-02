@@ -90,9 +90,9 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
 
     private static getNavigateUrl(allQuestionsAnswered: boolean): string {
         if (allQuestionsAnswered) {
-            return '/result';
+            return '/volunteer/result';
         } else {
-            return '/question';
+            return '/volunteer/question';
         }
     }
 

@@ -9,10 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <hibernate-types.version>2.9.7</hibernate-types.version>
-    </properties>
-
     <artifactId>helfomat-infrastructure-jpa</artifactId>
 
     <dependencies>
@@ -31,7 +27,6 @@
         <dependency>
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-5</artifactId>
-            <version>${hibernate-types.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

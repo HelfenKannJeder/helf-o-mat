@@ -2,18 +2,16 @@ package de.helfenkannjeder.helfomat.api.organization
 
 import de.helfenkannjeder.helfomat.api.Roles
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationCreateEventDto
-import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventAssembler
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler
+import de.helfenkannjeder.helfomat.api.organization.event.toOrganizationEventDtos
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
-import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent
 import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.context.event.EventListener
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
@@ -64,7 +62,7 @@ open class OrganizationApplicationService(
         val original = compareOrganizationDto.original.toOrganization()
         val updated = compareOrganizationDto.updated.toOrganization()
         val questions = questionRepository.findQuestions()
-        return OrganizationEventAssembler.toOrganizationEventDto(updated.compareTo(original), questions)
+        return updated.compareTo(original).toOrganizationEventDtos(questions)
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -81,18 +79,6 @@ open class OrganizationApplicationService(
             organizationEvents
         )
         applicationEventPublisher.publishEvent(proposedChangeOrganizationEvent)
-    }
-
-    @EventListener // TODO: should be based on an actual approval
-    open fun confirmOrganizationEvent(proposedChangeOrganizationEvent: ProposedChangeOrganizationEvent) {
-        val confirmedChangeOrganizationEvent = ConfirmedChangeOrganizationEvent(
-            proposedChangeOrganizationEvent.organizationId,
-            currentUser,
-            proposedChangeOrganizationEvent.author,
-            proposedChangeOrganizationEvent.sources,
-            proposedChangeOrganizationEvent.changes
-        )
-        applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent)
     }
 
     @Secured(Roles.ADMIN)

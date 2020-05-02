@@ -6,8 +6,10 @@ import {BaseAuthenticationGuard} from "./base-authentication.guard";
 @Injectable({providedIn: 'root'})
 export class IsLoggedInGuard extends BaseAuthenticationGuard implements CanActivate {
 
-    constructor(private router: Router,
-                oAuthService: OAuthService) {
+    constructor(
+        private router: Router,
+        oAuthService: OAuthService
+    ) {
         super(oAuthService);
     }
 

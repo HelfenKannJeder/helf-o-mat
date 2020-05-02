@@ -198,7 +198,7 @@ export class EditComponent implements OnInit {
                 })
                 .then(() => {
                     const navigate = () => {
-                        this.router.navigate(['/organization/' + this.originalOrganization.urlName]);
+                        this.router.navigate(['/volunteer/organization/' + this.originalOrganization.urlName]);
                     };
 
                     let confirmedRef = this.modalService.open(ChangesSentForReviewComponent);

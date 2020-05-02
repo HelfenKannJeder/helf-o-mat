@@ -1,7 +1,7 @@
 package de.helfenkannjeder.helfomat.rest
 
 import de.helfenkannjeder.helfomat.api.organization.OrganizationSubmitEventDto
-import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventAssembler
+import de.helfenkannjeder.helfomat.api.organization.event.toOrganizationEventDtos
 import de.helfenkannjeder.helfomat.config.ImporterConfiguration
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId
@@ -52,6 +52,6 @@ class RestOrganizationEventPublisher(
 private const val IMPORT_SOURCE = "Helf-O-Mat Import Application"
 
 fun List<OrganizationEvent>.toOrganizationSubmitEventDto(organizationId: OrganizationId, questions: List<Question>): OrganizationSubmitEventDto {
-    val organizationEventDtos = OrganizationEventAssembler.toOrganizationEventDto(this, questions)
+    val organizationEventDtos = this.toOrganizationEventDtos(questions)
     return OrganizationSubmitEventDto(organizationId, IMPORT_SOURCE, organizationEventDtos)
 }
