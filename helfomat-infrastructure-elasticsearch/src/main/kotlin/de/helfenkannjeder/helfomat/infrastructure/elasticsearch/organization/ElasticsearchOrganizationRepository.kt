@@ -100,7 +100,7 @@ class ElasticsearchOrganizationRepository(
 
     private fun buildQueryForOrganizationWithSameTypeInDistance(defaultAddress: Address?, organizationType: OrganizationType, distanceInMeters: Long): BoolQueryBuilder {
         val organizationListQuery = QueryBuilders.boolQuery()
-        organizationListQuery.must(QueryBuilders.termQuery("organizationType", organizationType.internalName))
+        organizationListQuery.must(QueryBuilders.termQuery("organizationType", organizationType.name))
         if (defaultAddress == null) {
             organizationListQuery.mustNot(QueryBuilders.existsQuery("defaultAddress"))
         } else {
