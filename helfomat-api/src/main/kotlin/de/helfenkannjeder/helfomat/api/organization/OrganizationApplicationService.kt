@@ -107,9 +107,9 @@ open class OrganizationApplicationService(
 
     private fun isOrganizationSubmitValid(organizationId: OrganizationId, events: List<OrganizationEventDto>): Boolean {
         val isNewOrganization = organizationRepository.findOne(organizationId.value) == null
-        val isCreate = events.stream()
-            .map { obj: OrganizationEventDto -> obj.javaClass }
-            .anyMatch { obj -> OrganizationCreateEventDto::class == obj }
+        val isCreate = events
+            .map { it.javaClass }
+            .any { OrganizationCreateEventDto::class.java == it }
         return isNewOrganization && isCreate || !isNewOrganization && !isCreate
     }
 

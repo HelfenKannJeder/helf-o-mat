@@ -10,13 +10,13 @@ import org.springframework.context.event.EventListener
 /**
  * @author Valentin Zickner
  */
-class JpaEventOrganizationRepository(
+open class JpaEventOrganizationRepository(
     persistentOrganizationRepository: OrganizationRepository,
     private val eventRepository: EventRepository
 ) : EventBasedCachingOrganizationRepository(persistentOrganizationRepository) {
 
     @EventListener
-    fun listen(organizationEvent: OrganizationEvent) {
+    open fun listen(organizationEvent: OrganizationEvent) {
         processDomainEvent(organizationEvent)
     }
 

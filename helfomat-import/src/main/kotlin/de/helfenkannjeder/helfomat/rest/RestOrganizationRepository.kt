@@ -65,11 +65,11 @@ class RestOrganizationRepository(
     }
 
     override fun save(organizations: List<Organization>) {
-        throw UnsupportedOperationException()
+        // do nothing, event is already published
     }
 
     override fun remove(organizationId: OrganizationId) {
-        throw UnsupportedOperationException()
+        // do nothing, event is already published
     }
 
 }

@@ -18,8 +18,8 @@ open class EventBasedCachingOrganizationRepository(
 
     protected fun processDomainEvents(organizationId: OrganizationId, organizationEvents: List<OrganizationEvent>) {
         LOG.debug("Received organization events for organization '{}' from event storage '{}'", organizationId, organizationEvents)
-        val organizationBuilder = getExistingOrganizationBuilder(organizationId)
-        organizationEvents.forEach { it.applyOnOrganizationBuilder(organizationBuilder) }
+        var organizationBuilder = getExistingOrganizationBuilder(organizationId)
+        organizationEvents.forEach { organizationBuilder = it.applyOnOrganizationBuilder(organizationBuilder) }
         saveOrganizationBuilder(organizationBuilder, organizationId)
 
     }

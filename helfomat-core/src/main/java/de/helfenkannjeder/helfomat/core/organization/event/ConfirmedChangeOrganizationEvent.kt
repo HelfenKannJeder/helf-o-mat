@@ -16,10 +16,11 @@ data class ConfirmedChangeOrganizationEvent(
 ) : OrganizationEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        var result = organizationBuilder
         for (change in changes) {
-            change.applyOnOrganizationBuilder(organizationBuilder)
+            result = change.applyOnOrganizationBuilder(result)
         }
-        return organizationBuilder
+        return result
     }
 
     override fun <T> visit(visitor: OrganizationEventVisitor<T>): T = visitor.visit(this)
