@@ -65,48 +65,20 @@ data class Organization(
         if (organization.defaultAddress != defaultAddress) {
             differences.add(OrganizationEditDefaultAddressEvent(id, defaultAddress))
         }
-        getDiff(organization.pictures, pictures)
-            .map { OrganizationEditDeletePictureEvent(id, it.first) }
-            .forEach { e: OrganizationEditDeletePictureEvent -> differences.add(e) }
-        getDiff(pictures, organization.pictures)
-            .map { OrganizationEditAddPictureEvent(id, it.second, it.first) }
-            .forEach { e: OrganizationEditAddPictureEvent -> differences.add(e) }
-        getDiff(organization.contactPersons, contactPersons)
-            .map { OrganizationEditDeleteContactPersonEvent(id, it.first) }
-            .forEach { e: OrganizationEditDeleteContactPersonEvent -> differences.add(e) }
-        getDiff(contactPersons, organization.contactPersons)
-            .map { OrganizationEditAddContactPersonEvent(id, it.second, it.first) }
-            .forEach { e: OrganizationEditAddContactPersonEvent -> differences.add(e) }
-        getDiff(organization.addresses, addresses)
-            .map { OrganizationEditDeleteAddressEvent(id, it.first) }
-            .forEach { e: OrganizationEditDeleteAddressEvent -> differences.add(e) }
-        getDiff(addresses, organization.addresses)
-            .map { OrganizationEditAddAddressEvent(id, it.second, it.first) }
-            .forEach { e: OrganizationEditAddAddressEvent -> differences.add(e) }
-        getDiff(organization.questionAnswers, questionAnswers)
-            .map { OrganizationEditDeleteQuestionAnswerEvent(id, it.first) }
-            .forEach { e: OrganizationEditDeleteQuestionAnswerEvent -> differences.add(e) }
-        getDiff(questionAnswers, organization.questionAnswers)
-            .map { OrganizationEditAddQuestionAnswerEvent(id, it.second, it.first) }
-            .forEach { e: OrganizationEditAddQuestionAnswerEvent -> differences.add(e) }
-        getDiff(organization.groups, groups)
-            .map { OrganizationEditDeleteGroupEvent(id, it.first) }
-            .forEach { e: OrganizationEditDeleteGroupEvent -> differences.add(e) }
-        getDiff(groups, organization.groups)
-            .map { OrganizationEditAddGroupEvent(id, it.second, it.first) }
-            .forEach { e: OrganizationEditAddGroupEvent -> differences.add(e) }
-        getDiff(organization.attendanceTimes, attendanceTimes)
-            .map { OrganizationEditDeleteAttendanceTimeEvent(id, it.first) }
-            .forEach { e: OrganizationEditDeleteAttendanceTimeEvent -> differences.add(e) }
-        getDiff(attendanceTimes, organization.attendanceTimes)
-            .map { OrganizationEditAddAttendanceTimeEvent(id, it.second, it.first) }
-            .forEach { e: OrganizationEditAddAttendanceTimeEvent -> differences.add(e) }
-        getDiff(organization.volunteers, volunteers)
-            .map { OrganizationEditDeleteVolunteerEvent(id, it.first) }
-            .forEach { e: OrganizationEditDeleteVolunteerEvent -> differences.add(e) }
-        getDiff(volunteers, organization.volunteers)
-            .map { OrganizationEditAddVolunteerEvent(id, it.second, it.first) }
-            .forEach { e: OrganizationEditAddVolunteerEvent -> differences.add(e) }
+        differences.addAll(getDiff(organization.pictures, pictures).map { OrganizationEditDeletePictureEvent(id, it.first) })
+        differences.addAll(getDiff(pictures, organization.pictures).map { OrganizationEditAddPictureEvent(id, it.second, it.first) })
+        differences.addAll(getDiff(organization.contactPersons, contactPersons).map { OrganizationEditDeleteContactPersonEvent(id, it.first) })
+        differences.addAll(getDiff(contactPersons, organization.contactPersons).map { OrganizationEditAddContactPersonEvent(id, it.second, it.first) })
+        differences.addAll(getDiff(organization.addresses, addresses).map { OrganizationEditDeleteAddressEvent(id, it.first) })
+        differences.addAll(getDiff(addresses, organization.addresses).map { OrganizationEditAddAddressEvent(id, it.second, it.first) })
+        differences.addAll(getDiff(organization.questionAnswers, questionAnswers).map { OrganizationEditDeleteQuestionAnswerEvent(id, it.first) })
+        differences.addAll(getDiff(questionAnswers, organization.questionAnswers).map { OrganizationEditAddQuestionAnswerEvent(id, it.second, it.first) })
+        differences.addAll(getDiff(organization.groups, groups).map { OrganizationEditDeleteGroupEvent(id, it.first) })
+        differences.addAll(getDiff(groups, organization.groups).map { OrganizationEditAddGroupEvent(id, it.second, it.first) })
+        differences.addAll(getDiff(organization.attendanceTimes, attendanceTimes).map { OrganizationEditDeleteAttendanceTimeEvent(id, it.first) })
+        differences.addAll(getDiff(attendanceTimes, organization.attendanceTimes).map { OrganizationEditAddAttendanceTimeEvent(id, it.second, it.first) })
+        differences.addAll(getDiff(organization.volunteers, volunteers).map { OrganizationEditDeleteVolunteerEvent(id, it.first) })
+        differences.addAll(getDiff(volunteers, organization.volunteers).map { OrganizationEditAddVolunteerEvent(id, it.second, it.first) })
         return differences
     }
 
