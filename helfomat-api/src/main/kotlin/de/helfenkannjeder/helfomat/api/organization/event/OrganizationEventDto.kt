@@ -1,30 +1,16 @@
-package de.helfenkannjeder.helfomat.api.organization.event;
+package de.helfenkannjeder.helfomat.api.organization.event
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.MINIMAL_CLASS,
-    property = "type"
-)
-public abstract class OrganizationEventDto {
-    private OrganizationId organizationId;
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, property = "type")
+interface OrganizationEventDto {
 
-    protected OrganizationEventDto() {
-    }
+    val organizationId: OrganizationId
 
-    public OrganizationEventDto(OrganizationId organizationId) {
-        this.organizationId = organizationId;
-    }
-
-    public OrganizationId getOrganizationId() {
-        return organizationId;
-    }
-
-    public abstract <T> T visit(OrganizationEventDtoVisitor<T> visitor);
+    fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T
 
 }

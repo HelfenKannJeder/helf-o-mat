@@ -32,7 +32,7 @@ class FileSystemPictureStorageService(
     @Throws(DownloadFailedException::class)
     override fun savePicture(url: String, pictureId: PictureId): PictureId {
         return try {
-            val bytes = downloadService.download(url)
+            val bytes = downloadService.download(url) ?: throw DownloadFailedException()
             savePicture(bytes, pictureId)
         } catch (exception: DownloadFailedException) {
             LOG.error("Failed to write image to filesystem url='$url' picture='$pictureId'", exception)

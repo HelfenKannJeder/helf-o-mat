@@ -1,29 +1,18 @@
-package de.helfenkannjeder.helfomat.api.organization.event;
+package de.helfenkannjeder.helfomat.api.organization.event
 
-import de.helfenkannjeder.helfomat.api.organization.AddressDto;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.api.organization.AddressDto
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-public class OrganizationEditDefaultAddressEventDto extends OrganizationEventDto {
-    private AddressDto address;
+class OrganizationEditDefaultAddressEventDto(
+    override val organizationId: OrganizationId,
+    val address: AddressDto
+) : OrganizationEventDto {
 
-    OrganizationEditDefaultAddressEventDto() {
-    }
-
-    public OrganizationEditDefaultAddressEventDto(OrganizationId organizationId, AddressDto address) {
-        super(organizationId);
-        this.address = address;
-    }
-
-    public AddressDto getAddress() {
-        return address;
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
-        return visitor.visit(this);
+    override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {
+        return visitor.visit(this)
     }
 
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 class OrganizationTemplateController(private val organizationTemplateApplicationService: OrganizationTemplateApplicationService) {
 
     @GetMapping("/template/{organizationType}")
-    fun getTemplateByOrganizationType(@PathVariable("organizationType") organizationType: OrganizationType?) =
+    fun getTemplateByOrganizationType(@PathVariable("organizationType") organizationType: OrganizationType) =
         organizationTemplateApplicationService.findOrganizationTemplateByType(organizationType)
 
 }

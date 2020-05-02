@@ -1,29 +1,18 @@
-package de.helfenkannjeder.helfomat.api.organization.event;
+package de.helfenkannjeder.helfomat.api.organization.event
 
-import de.helfenkannjeder.helfomat.api.organization.ContactPersonDto;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.api.organization.ContactPersonDto
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-public class OrganizationEditDeleteContactPersonEventDto extends OrganizationEventDto {
-    private ContactPersonDto contactPerson;
+data class OrganizationEditDeleteContactPersonEventDto(
+    override val organizationId: OrganizationId,
+    val contactPerson: ContactPersonDto
+) : OrganizationEventDto {
 
-    OrganizationEditDeleteContactPersonEventDto() {
-    }
-
-    public OrganizationEditDeleteContactPersonEventDto(OrganizationId organizationId, ContactPersonDto contactPerson) {
-        super(organizationId);
-        this.contactPerson = contactPerson;
-    }
-
-    public ContactPersonDto getContactPerson() {
-        return contactPerson;
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
-        return visitor.visit(this);
+    override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {
+        return visitor.visit(this)
     }
 
 }

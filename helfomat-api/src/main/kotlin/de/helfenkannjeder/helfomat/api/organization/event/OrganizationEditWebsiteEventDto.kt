@@ -1,28 +1,17 @@
-package de.helfenkannjeder.helfomat.api.organization.event;
+package de.helfenkannjeder.helfomat.api.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-public class OrganizationEditWebsiteEventDto extends OrganizationEventDto {
-    private String website;
+data class OrganizationEditWebsiteEventDto(
+    override val organizationId: OrganizationId,
+    val website: String
+) : OrganizationEventDto {
 
-    OrganizationEditWebsiteEventDto() {
-    }
-
-    public OrganizationEditWebsiteEventDto(OrganizationId organizationId, String website) {
-        super(organizationId);
-        this.website = website;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
-        return visitor.visit(this);
+    override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {
+        return visitor.visit(this)
     }
 
 }

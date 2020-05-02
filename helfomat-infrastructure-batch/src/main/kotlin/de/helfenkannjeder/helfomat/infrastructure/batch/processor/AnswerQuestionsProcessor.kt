@@ -38,10 +38,12 @@ class AnswerQuestionsProcessor(
 
     private fun answerQuestionForOrganization(question: QuestionMapping, organization: Organization): Answer {
         return question.groups
-            .filter { organization.organizationType == it.organizationType && organization.groups.any { group -> it.phrase != null && group.name.contains(it.phrase) } }
+            .filter { organization.organizationType == it.organizationType && organization.hasGroupWithPhrase(it.phrase) }
             .map { it.answer }
             .firstOrNull()
             ?: question.defaultAnswer
     }
 
 }
+
+fun Organization.hasGroupWithPhrase(phrase: String?) = phrase == null || this.groups.any { group -> group.name.contains(phrase) }

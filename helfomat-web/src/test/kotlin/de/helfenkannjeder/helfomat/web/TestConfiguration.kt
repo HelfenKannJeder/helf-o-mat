@@ -9,11 +9,11 @@ import org.springframework.security.oauth2.jwt.JwtDecoder
 @Configuration
 open class TestConfiguration {
     @MockBean
-    var client: Client? = null
+    lateinit var client: Client
 
     @MockBean
-    var organizationRepository: OrganizationRepository? = null
+    lateinit var organizationRepository: OrganizationRepository
 
     @MockBean
-    var jwtDecoder: JwtDecoder? = null
+    lateinit var jwtDecoder: JwtDecoder
 }

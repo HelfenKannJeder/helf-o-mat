@@ -39,7 +39,7 @@ open class OrganizationApplicationService(
     }
 
     open fun findGlobalOrganizationsWith(questionAnswerDtos: List<QuestionAnswerDto>): List<OrganizationDto> {
-        return organizationRepository.findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos))
+        return organizationRepository.findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(questionAnswerDtos.toQuestionAnswers())
             .toScoredOrganizationDtos()
     }
 
@@ -50,7 +50,7 @@ open class OrganizationApplicationService(
 
     open fun findOrganizationsWith(questionAnswerDtos: List<QuestionAnswerDto>, position: GeoPoint, distance: Double): List<OrganizationDto> {
         return organizationRepository.findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
-            QuestionAnswerAssembler.toQuestionAnswers(questionAnswerDtos),
+            questionAnswerDtos.toQuestionAnswers(),
             position,
             distance
         ).toScoredOrganizationDtos()
@@ -97,7 +97,7 @@ open class OrganizationApplicationService(
 
     @Secured(Roles.ADMIN)
     open fun findSimilarOrganizations(searchSimilarOrganizationDto: SearchSimilarOrganizationDto): List<OrganizationDetailDto> {
-        val address = OrganizationAssembler.toAddress(searchSimilarOrganizationDto.address)
+        val address = searchSimilarOrganizationDto.address?.toAddress()
         val organizationType = searchSimilarOrganizationDto.organizationType
         val distance = searchSimilarOrganizationDto.distanceInMeters
         val organizations = organizationRepository.findOrganizationWithSameTypeInDistance(address, organizationType, distance)

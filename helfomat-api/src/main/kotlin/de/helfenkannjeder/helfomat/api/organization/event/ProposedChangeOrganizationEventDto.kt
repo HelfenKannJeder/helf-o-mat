@@ -1,42 +1,19 @@
-package de.helfenkannjeder.helfomat.api.organization.event;
+package de.helfenkannjeder.helfomat.api.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-
-import java.util.List;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-public class ProposedChangeOrganizationEventDto extends OrganizationEventDto {
+data class ProposedChangeOrganizationEventDto(
+    override val organizationId: OrganizationId,
+    val author: String,
+    val sources: String,
+    val changes: List<OrganizationEventDto>
+) : OrganizationEventDto {
 
-    private String author;
-    private String sources;
-    private List<OrganizationEventDto> changes;
-
-    private ProposedChangeOrganizationEventDto() {
+    override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public ProposedChangeOrganizationEventDto(OrganizationId organizationId, String author, String sources, List<OrganizationEventDto> changes) {
-        super(organizationId);
-        this.author = author;
-        this.sources = sources;
-        this.changes = changes;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getSources() {
-        return sources;
-    }
-
-    public List<OrganizationEventDto> getChanges() {
-        return changes;
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
 }

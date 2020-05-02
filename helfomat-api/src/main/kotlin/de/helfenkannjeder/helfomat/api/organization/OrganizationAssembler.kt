@@ -68,11 +68,11 @@ fun List<AttendanceTime>.toAttendanceTimeDtos() = this.map { it.toAttendanceTime
 fun AttendanceTime.toAttendanceTimeDto() = AttendanceTimeDto(this.day, this.start, this.end, this.note, this.groups.toGroupDtos())
 
 fun List<QuestionAnswer>.toAnsweredQuestionDtos(questions: List<Question>) = this.map { it.toAnsweredQuestionDto(questions.getAnswerToQuestion(it.questionId)) }
-fun QuestionAnswer.toAnsweredQuestionDto(question: String?) = AnsweredQuestionDto(this.questionId, question, this.answer)
+fun QuestionAnswer.toAnsweredQuestionDto(question: String) = AnsweredQuestionDto(this.questionId, question, this.answer)
 fun List<Question>.getAnswerToQuestion(id: QuestionId?) =
     this.filter { question: Question -> question.id == id }
         .map { obj: Question -> obj.question }
-        .firstOrNull()
+        .first()
 
 fun List<Group>.toGroupDtos() = this.map { it.toGroupDto() }
 fun Group.toGroupDto() = GroupDto(this.name, this.description)
@@ -91,17 +91,17 @@ fun OrganizationDetailDto.toOrganization() = Organization.Builder()
     .setDescription(this.description)
     .setWebsite(this.website)
     .setLogo(this.logo)
-    .setGroups(this.groups?.toGroups() ?: emptyList())
+    .setGroups(this.groups.toGroups())
     .setPictures(this.pictures)
     .setDefaultAddress(this.defaultAddress?.toAddress())
-    .setAddresses(this.addresses?.toAddresses() ?: emptyList())
+    .setAddresses(this.addresses.toAddresses())
     .setOrganizationType(this.organizationType)
-    .setAttendanceTimes(this.attendanceTimes?.toAttendanceTimes() ?: emptyList())
+    .setAttendanceTimes(this.attendanceTimes.toAttendanceTimes())
     .setMapPin(this.mapPin)
-    .setContactPersons(this.contactPersons?.toContactPersons() ?: emptyList())
-    .setQuestionAnswers(this.questions?.toQuestionAnswers() ?: emptyList())
-    .setTeaserImage(this.pictures?.firstOrNull())
-    .setVolunteers(this.volunteers?.toVolunteers() ?: emptyList())
+    .setContactPersons(this.contactPersons.toContactPersons())
+    .setQuestionAnswers(this.questions.toQuestionAnswers())
+    .setTeaserImage(this.pictures.firstOrNull())
+    .setVolunteers(this.volunteers.toVolunteers())
     .build()
 
 fun List<VolunteerDto>.toVolunteers() = this.map { it.toVolunteer() }
@@ -114,54 +114,10 @@ fun List<ContactPersonDto>.toContactPersons() = this.map { it.toContactPerson() 
 fun ContactPersonDto.toContactPerson() = ContactPerson(this.firstname, this.lastname, this.rank, this.telephone, this.mail, this.picture)
 
 fun List<AttendanceTimeDto>.toAttendanceTimes() = this.map { it.toAttendanceTime() }
-fun AttendanceTimeDto.toAttendanceTime() = AttendanceTime(this.day, this.start, this.end, this.note, this.groups?.toGroups()
-    ?: emptyList())
+fun AttendanceTimeDto.toAttendanceTime() = AttendanceTime(this.day, this.start, this.end, this.note, this.groups.toGroups())
 
 fun List<GroupDto>.toGroups() = this.map { it.toGroup() }
 fun GroupDto.toGroup() = Group.Builder().setName(this.name).setDescription(this.description).build()
 
 fun List<AddressDto>.toAddresses() = this.map { it.toAddress() }
 fun AddressDto.toAddress() = Address(this.street, this.addressAppendix, this.city, this.zipcode, this.location, this.telephone, this.website)
-
-@Deprecated(message = "Please use extension functions instead")
-object OrganizationAssembler {
-
-    @JvmStatic
-    fun toVolunteerDto(volunteer: Volunteer) = volunteer.toVolunteerDto()
-
-    @JvmStatic
-    fun toAttendanceTimeDto(attendanceTime: AttendanceTime) = attendanceTime.toAttendanceTimeDto()
-
-    @JvmStatic
-    fun toAnsweredQuestionDto(questionAnswer: QuestionAnswer, question: String?) = questionAnswer.toAnsweredQuestionDto(question)
-
-    @JvmStatic
-    fun determineQuestionText(questions: List<Question>, id: QuestionId?) = questions.getAnswerToQuestion(id)
-
-    @JvmStatic
-    fun toGroupDto(group: Group) = group.toGroupDto()
-
-    @JvmStatic
-    fun toContactPersonDto(contactPerson: ContactPerson) = contactPerson.toContactPersonDto()
-
-    @JvmStatic
-    fun toAddressDto(address: Address?): AddressDto? = address?.toAddressDto()
-
-    @JvmStatic
-    fun toVolunteer(volunteerDto: VolunteerDto) = volunteerDto.toVolunteer()
-
-    @JvmStatic
-    fun toQuestionAnswer(answeredQuestionDto: AnsweredQuestionDto) = answeredQuestionDto.toQuestionAnswer()
-
-    @JvmStatic
-    fun toContactPerson(contactPersonDto: ContactPersonDto) = contactPersonDto.toContactPerson()
-
-    @JvmStatic
-    fun toAttendanceTime(attendanceTimeDto: AttendanceTimeDto) = attendanceTimeDto.toAttendanceTime()
-
-    @JvmStatic
-    fun toGroup(groupDto: GroupDto) = groupDto.toGroup()
-
-    @JvmStatic
-    fun toAddress(addressDto: AddressDto?) = addressDto?.toAddress()
-}

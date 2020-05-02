@@ -1,29 +1,18 @@
-package de.helfenkannjeder.helfomat.api.organization.event;
+package de.helfenkannjeder.helfomat.api.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-import de.helfenkannjeder.helfomat.core.picture.PictureId;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.picture.PictureId
 
 /**
  * @author Valentin Zickner
  */
-public class OrganizationEditLogoEventDto extends OrganizationEventDto {
-    private PictureId logo;
+data class OrganizationEditLogoEventDto(
+    override val organizationId: OrganizationId,
+    val logo: PictureId
+) : OrganizationEventDto {
 
-    OrganizationEditLogoEventDto() {
-    }
-
-    public OrganizationEditLogoEventDto(OrganizationId organizationId, PictureId logo) {
-        super(organizationId);
-        this.logo = logo;
-    }
-
-    public PictureId getLogo() {
-        return logo;
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
-        return visitor.visit(this);
+    override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {
+        return visitor.visit(this)
     }
 
 }

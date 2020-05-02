@@ -1,29 +1,18 @@
-package de.helfenkannjeder.helfomat.api.organization.event;
+package de.helfenkannjeder.helfomat.api.organization.event
 
-import de.helfenkannjeder.helfomat.api.organization.GroupDto;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.api.organization.GroupDto
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-public class OrganizationEditDeleteGroupEventDto extends OrganizationEventDto {
-    private GroupDto group;
+data class OrganizationEditDeleteGroupEventDto(
+    override val organizationId: OrganizationId,
+    val group: GroupDto
+) : OrganizationEventDto {
 
-    OrganizationEditDeleteGroupEventDto() {
-    }
-
-    public OrganizationEditDeleteGroupEventDto(OrganizationId organizationId, GroupDto group) {
-        super(organizationId);
-        this.group = group;
-    }
-
-    public GroupDto getGroup() {
-        return group;
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventDtoVisitor<T> visitor) {
-        return visitor.visit(this);
+    override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {
+        return visitor.visit(this)
     }
 
 }

@@ -1,58 +1,32 @@
-package de.helfenkannjeder.helfomat.api.organization.event;
+package de.helfenkannjeder.helfomat.api.organization.event
 
 /**
  * @author Valentin Zickner
  */
-public interface OrganizationEventDtoVisitor<T> {
-
-    T visit(OrganizationCreateEventDto organizationCreateEventDto);
-
-    T visit(OrganizationDeleteEventDto organizationDeleteEventDto);
-
-    T visit(OrganizationEditAddAddressEventDto organizationEditAddAddressEventDto);
-
-    T visit(OrganizationEditAddAttendanceTimeEventDto organizationEditAddAttendanceTimeEventDto);
-
-    T visit(OrganizationEditAddContactPersonEventDto organizationEditAddContactPersonEventDto);
-
-    T visit(OrganizationEditAddGroupEventDto organizationEditAddGroupEventDto);
-
-    T visit(OrganizationEditAddPictureEventDto organizationEditAddPictureEventDto);
-
-    T visit(OrganizationEditAddQuestionAnswerEventDto organizationEditAddQuestionAnswerEventDto);
-
-    T visit(OrganizationEditAddVolunteerEventDto organizationEditAddVolunteerEventDto);
-
-    T visit(OrganizationEditDefaultAddressEventDto organizationEditDefaultAddressEventDto);
-
-    T visit(OrganizationEditDeleteAddressEventDto organizationEditDeleteAddressEventDto);
-
-    T visit(OrganizationEditDeleteAttendanceTimeEventDto organizationEditDeleteAttendanceTimeEventDto);
-
-    T visit(OrganizationEditDeleteContactPersonEventDto organizationEditDeleteContactPersonEventDto);
-
-    T visit(OrganizationEditDeleteGroupEventDto organizationEditDeleteGroupEventDto);
-
-    T visit(OrganizationEditDeletePictureEventDto organizationEditDeletePictureEventDto);
-
-    T visit(OrganizationEditDeleteQuestionAnswerEventDto organizationEditDeleteQuestionAnswerEventDto);
-
-    T visit(OrganizationEditDeleteVolunteerEventDto organizationEditDeleteVolunteerEventDto);
-
-    T visit(OrganizationEditDescriptionEventDto organizationEditDescriptionEventDto);
-
-    T visit(OrganizationEditLogoEventDto organizationEditLogoEventDto);
-
-    T visit(OrganizationEditNameEventDto organizationEditNameEventDto);
-
-    T visit(OrganizationEditTeaserImageEventDto organizationEditTeaserImageEventDto);
-
-    T visit(OrganizationEditUrlNameEventDto organizationEditUrlNameEventDto);
-
-    T visit(OrganizationEditWebsiteEventDto organizationEditWebsiteEventDto);
-
-    T visit(ProposedChangeOrganizationEventDto proposedChangeOrganizationEventDto);
-
-    T visit(ConfirmedChangeOrganizationEventDto confirmedChangeOrganizationEventDto);
-
+interface OrganizationEventDtoVisitor<T> {
+    fun visit(organizationCreateEventDto: OrganizationCreateEventDto): T
+    fun visit(organizationDeleteEventDto: OrganizationDeleteEventDto): T
+    fun visit(organizationEditAddAddressEventDto: OrganizationEditAddAddressEventDto): T
+    fun visit(organizationEditAddAttendanceTimeEventDto: OrganizationEditAddAttendanceTimeEventDto): T
+    fun visit(organizationEditAddContactPersonEventDto: OrganizationEditAddContactPersonEventDto): T
+    fun visit(organizationEditAddGroupEventDto: OrganizationEditAddGroupEventDto): T
+    fun visit(organizationEditAddPictureEventDto: OrganizationEditAddPictureEventDto): T
+    fun visit(organizationEditAddQuestionAnswerEventDto: OrganizationEditAddQuestionAnswerEventDto): T
+    fun visit(organizationEditAddVolunteerEventDto: OrganizationEditAddVolunteerEventDto): T
+    fun visit(organizationEditDefaultAddressEventDto: OrganizationEditDefaultAddressEventDto): T
+    fun visit(organizationEditDeleteAddressEventDto: OrganizationEditDeleteAddressEventDto): T
+    fun visit(organizationEditDeleteAttendanceTimeEventDto: OrganizationEditDeleteAttendanceTimeEventDto): T
+    fun visit(organizationEditDeleteContactPersonEventDto: OrganizationEditDeleteContactPersonEventDto): T
+    fun visit(organizationEditDeleteGroupEventDto: OrganizationEditDeleteGroupEventDto): T
+    fun visit(organizationEditDeletePictureEventDto: OrganizationEditDeletePictureEventDto): T
+    fun visit(organizationEditDeleteQuestionAnswerEventDto: OrganizationEditDeleteQuestionAnswerEventDto): T
+    fun visit(organizationEditDeleteVolunteerEventDto: OrganizationEditDeleteVolunteerEventDto): T
+    fun visit(organizationEditDescriptionEventDto: OrganizationEditDescriptionEventDto): T
+    fun visit(organizationEditLogoEventDto: OrganizationEditLogoEventDto): T
+    fun visit(organizationEditNameEventDto: OrganizationEditNameEventDto): T
+    fun visit(organizationEditTeaserImageEventDto: OrganizationEditTeaserImageEventDto): T
+    fun visit(organizationEditUrlNameEventDto: OrganizationEditUrlNameEventDto): T
+    fun visit(organizationEditWebsiteEventDto: OrganizationEditWebsiteEventDto): T
+    fun visit(proposedChangeOrganizationEventDto: ProposedChangeOrganizationEventDto): T
+    fun visit(confirmedChangeOrganizationEventDto: ConfirmedChangeOrganizationEventDto): T
 }

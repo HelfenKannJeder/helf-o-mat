@@ -1,24 +1,22 @@
-package de.helfenkannjeder.helfomat.api;
+package de.helfenkannjeder.helfomat.api
 
-import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository;
-import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
-import de.helfenkannjeder.helfomat.core.template.OrganizationTemplateRepository;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
+import de.helfenkannjeder.helfomat.core.question.QuestionRepository
+import de.helfenkannjeder.helfomat.core.template.OrganizationTemplateRepository
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.test.mock.mockito.MockBean
 
 /**
  * @author Valentin Zickner
  */
 @SpringBootApplication
-public class TestApplication {
+open class TestApplication {
+    @MockBean
+    lateinit var organizationRepository: OrganizationRepository
 
     @MockBean
-    OrganizationRepository organizationRepository;
+    lateinit var organizationTemplateRepository: OrganizationTemplateRepository
 
     @MockBean
-    OrganizationTemplateRepository organizationTemplateRepository;
-
-    @MockBean
-    QuestionRepository questionRepository;
-
+    lateinit var questionRepository: QuestionRepository
 }

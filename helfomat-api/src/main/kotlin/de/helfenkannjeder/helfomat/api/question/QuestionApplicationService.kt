@@ -1,30 +1,17 @@
-package de.helfenkannjeder.helfomat.api.question;
+package de.helfenkannjeder.helfomat.api.question
 
-import de.helfenkannjeder.helfomat.core.question.QuestionRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import de.helfenkannjeder.helfomat.core.question.QuestionRepository
+import org.springframework.stereotype.Service
 
 /**
  * @author Valentin Zickner
  */
 @Service
-public class QuestionApplicationService {
-    private final QuestionRepository questionRepository;
+class QuestionApplicationService(
+    private val questionRepository: QuestionRepository
+) {
 
-    public QuestionApplicationService(QuestionRepository questionRepository) {
-        this.questionRepository = questionRepository;
-    }
+    fun findQuestions(): List<QuestionDto> = questionRepository.findQuestions()
+        .map { QuestionDto(it.id.value, it.question, it.description) }
 
-    public List<QuestionDto> findQuestions() {
-        return this.questionRepository.findQuestions()
-            .stream()
-            .map(question -> new QuestionDto(
-                question.getId().getValue(),
-                question.getQuestion(),
-                question.getDescription()
-            ))
-            .collect(Collectors.toList());
-    }
 }

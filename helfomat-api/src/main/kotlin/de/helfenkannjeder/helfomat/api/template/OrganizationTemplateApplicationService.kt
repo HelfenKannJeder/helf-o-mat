@@ -1,22 +1,17 @@
-package de.helfenkannjeder.helfomat.api.template;
+package de.helfenkannjeder.helfomat.api.template
 
-import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
-import de.helfenkannjeder.helfomat.core.template.OrganizationTemplateRepository;
-import org.springframework.stereotype.Service;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType
+import de.helfenkannjeder.helfomat.core.template.OrganizationTemplateRepository
+import org.springframework.stereotype.Service
 
 @Service
-public class OrganizationTemplateApplicationService {
+class OrganizationTemplateApplicationService(
+    private val organizationTemplateRepository: OrganizationTemplateRepository
+) {
 
-    private OrganizationTemplateRepository organizationTemplateRepository;
-
-    public OrganizationTemplateApplicationService(OrganizationTemplateRepository organizationTemplateRepository) {
-        this.organizationTemplateRepository = organizationTemplateRepository;
-    }
-
-    public OrganizationTemplateDto findOrganizationTemplateByType(OrganizationType organizationType) {
-        return OrganizationTemplateAssembler.toOrganizationTemplateDto(
-            this.organizationTemplateRepository.findByOrganizationType(organizationType)
-        );
+    fun findOrganizationTemplateByType(organizationType: OrganizationType): OrganizationTemplateDto {
+        return organizationTemplateRepository.findByOrganizationType(organizationType)
+            .toOrganizationTemplateDto()
     }
 
 }

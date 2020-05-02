@@ -1,10 +1,8 @@
-package de.helfenkannjeder.helfomat.api;
+package de.helfenkannjeder.helfomat.api
 
 /**
  * @author Valentin Zickner
  */
-public class Roles {
-
-    public static final String ADMIN = "ROLE_helfomat_admin";
-
+object Roles {
+    const val ADMIN = "ROLE_helfomat_admin"
 }

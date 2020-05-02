@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.infrastructure.filesystem
 
 import de.helfenkannjeder.helfomat.api.picture.RestDownloadService
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -26,12 +27,12 @@ internal class RestDownloadServiceTest {
     @Test
     fun downloadPicture_withCorrectUrl_returnsByteArray() {
         // Act
-        val bytes = downloadService.download(getUrl("Radlader_2124_5x2.jpg"))
+        val bytes: ByteArray? = downloadService.download(getUrl("Radlader_2124_5x2.jpg"))
 
         // Assert
-        Assertions.assertThat(bytes.size).isEqualTo(2838526)
-        Assertions.assertThat(bytes[0]).isEqualTo(0xFF.toByte())
-        Assertions.assertThat(bytes[1]).isEqualTo(0xD8.toByte())
+        assertThat(bytes?.size).isEqualTo(2838526)
+        assertThat(bytes?.get(0)).isEqualTo(0xFF.toByte())
+        assertThat(bytes?.get(1)).isEqualTo(0xD8.toByte())
     }
 
     @Test

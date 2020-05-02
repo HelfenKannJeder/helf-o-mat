@@ -17,7 +17,10 @@ open class ConfigFileLoaderConfig {
         val propertySourcesPlaceholderConfigurer = PropertySourcesPlaceholderConfigurer()
         val yaml = YamlPropertiesFactoryBean()
         yaml.setResources(ClassPathResource("config-repository-defaults.yml"))
-        propertySourcesPlaceholderConfigurer.setProperties(yaml.getObject()!!)
+        val properties = yaml.getObject()
+        if (properties != null) {
+            propertySourcesPlaceholderConfigurer.setProperties(properties)
+        }
         return propertySourcesPlaceholderConfigurer
     }
 

@@ -1,80 +1,31 @@
-package de.helfenkannjeder.helfomat.core.organization;
+package de.helfenkannjeder.helfomat.core.organization
 
-import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationCreateEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationDeleteEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddAddressEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddAttendanceTimeEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddContactPersonEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddGroupEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddPictureEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddQuestionAnswerEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddVolunteerEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDefaultAddressEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeleteAddressEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeleteAttendanceTimeEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeleteContactPersonEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeleteGroupEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeletePictureEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeleteQuestionAnswerEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeleteVolunteerEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDescriptionEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditLogoEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditNameEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditTeaserImageEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditUrlNameEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditWebsiteEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent;
+import de.helfenkannjeder.helfomat.core.organization.event.*
 
-public interface OrganizationEventVisitor<T> {
-
-    T visit(OrganizationCreateEvent organizationCreateEvent);
-
-    T visit(OrganizationDeleteEvent organizationDeleteEvent);
-
-    T visit(OrganizationEditAddAddressEvent organizationEditAddAddressEvent);
-
-    T visit(OrganizationEditAddAttendanceTimeEvent organizationEditAddAttendanceTimeEvent);
-
-    T visit(OrganizationEditAddContactPersonEvent organizationEditAddContactPersonEvent);
-
-    T visit(OrganizationEditAddGroupEvent organizationEditAddGroupEvent);
-
-    T visit(OrganizationEditAddPictureEvent organizationEditAddPictureEvent);
-
-    T visit(OrganizationEditAddQuestionAnswerEvent organizationEditAddQuestionAnswerEvent);
-
-    T visit(OrganizationEditAddVolunteerEvent organizationEditAddVolunteerEvent);
-
-    T visit(OrganizationEditDefaultAddressEvent organizationEditDefaultAddressEvent);
-
-    T visit(OrganizationEditDeleteAddressEvent organizationEditDeleteAddressEvent);
-
-    T visit(OrganizationEditDeleteAttendanceTimeEvent organizationEditDeleteAttendanceTimeEvent);
-
-    T visit(OrganizationEditDeleteContactPersonEvent organizationEditDeleteContactPersonEvent);
-
-    T visit(OrganizationEditDeleteGroupEvent organizationEditDeleteGroupEvent);
-
-    T visit(OrganizationEditDeletePictureEvent organizationEditDeletePictureEvent);
-
-    T visit(OrganizationEditDeleteQuestionAnswerEvent organizationEditDeleteQuestionAnswerEvent);
-
-    T visit(OrganizationEditDeleteVolunteerEvent organizationEditDeleteVolunteerEvent);
-
-    T visit(OrganizationEditDescriptionEvent organizationEditDescriptionEvent);
-
-    T visit(OrganizationEditLogoEvent organizationEditLogoEvent);
-
-    T visit(OrganizationEditNameEvent organizationEditNameEvent);
-
-    T visit(OrganizationEditTeaserImageEvent organizationEditTeaserImageEvent);
-
-    T visit(OrganizationEditUrlNameEvent organizationEditUrlNameEvent);
-
-    T visit(OrganizationEditWebsiteEvent organizationEditWebsiteEvent);
-
-    T visit(ProposedChangeOrganizationEvent proposedChangeOrganizationEvent);
-
-    T visit(ConfirmedChangeOrganizationEvent confirmedChangeOrganizationEvent);
+interface OrganizationEventVisitor<T> {
+    fun visit(organizationCreateEvent: OrganizationCreateEvent): T
+    fun visit(organizationDeleteEvent: OrganizationDeleteEvent): T
+    fun visit(organizationEditAddAddressEvent: OrganizationEditAddAddressEvent): T
+    fun visit(organizationEditAddAttendanceTimeEvent: OrganizationEditAddAttendanceTimeEvent): T
+    fun visit(organizationEditAddContactPersonEvent: OrganizationEditAddContactPersonEvent): T
+    fun visit(organizationEditAddGroupEvent: OrganizationEditAddGroupEvent): T
+    fun visit(organizationEditAddPictureEvent: OrganizationEditAddPictureEvent): T
+    fun visit(organizationEditAddQuestionAnswerEvent: OrganizationEditAddQuestionAnswerEvent): T
+    fun visit(organizationEditAddVolunteerEvent: OrganizationEditAddVolunteerEvent): T
+    fun visit(organizationEditDefaultAddressEvent: OrganizationEditDefaultAddressEvent): T
+    fun visit(organizationEditDeleteAddressEvent: OrganizationEditDeleteAddressEvent): T
+    fun visit(organizationEditDeleteAttendanceTimeEvent: OrganizationEditDeleteAttendanceTimeEvent): T
+    fun visit(organizationEditDeleteContactPersonEvent: OrganizationEditDeleteContactPersonEvent): T
+    fun visit(organizationEditDeleteGroupEvent: OrganizationEditDeleteGroupEvent): T
+    fun visit(organizationEditDeletePictureEvent: OrganizationEditDeletePictureEvent): T
+    fun visit(organizationEditDeleteQuestionAnswerEvent: OrganizationEditDeleteQuestionAnswerEvent): T
+    fun visit(organizationEditDeleteVolunteerEvent: OrganizationEditDeleteVolunteerEvent): T
+    fun visit(organizationEditDescriptionEvent: OrganizationEditDescriptionEvent): T
+    fun visit(organizationEditLogoEvent: OrganizationEditLogoEvent): T
+    fun visit(organizationEditNameEvent: OrganizationEditNameEvent): T
+    fun visit(organizationEditTeaserImageEvent: OrganizationEditTeaserImageEvent): T
+    fun visit(organizationEditUrlNameEvent: OrganizationEditUrlNameEvent): T
+    fun visit(organizationEditWebsiteEvent: OrganizationEditWebsiteEvent): T
+    fun visit(proposedChangeOrganizationEvent: ProposedChangeOrganizationEvent): T
+    fun visit(confirmedChangeOrganizationEvent: ConfirmedChangeOrganizationEvent): T
 }
