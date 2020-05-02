@@ -29,9 +29,8 @@ open class Typo3OrganizationReader @Autowired constructor(private val typo3Organ
 
     @Volatile
     private var current = 0
-    override fun getName(): String {
-        return "typo3"
-    }
+
+    override val name = "typo3"
 
     override fun read(): Organization? {
         if (results == null || current >= results?.size ?: 0) {

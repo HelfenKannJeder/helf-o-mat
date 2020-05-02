@@ -1,44 +1,25 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Group;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.Group
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditDeleteGroupEvent extends OrganizationEditEvent {
-    private Group group;
+data class OrganizationEditDeleteGroupEvent(
+    override val organizationId: OrganizationId,
+    val group: Group
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditDeleteGroupEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        organizationBuilder?.groups?.remove(group)
+        return organizationBuilder
     }
 
-    public OrganizationEditDeleteGroupEvent(OrganizationId organizationId, Group group) {
-        super(organizationId);
-        this.group = group;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public Group getGroup() {
-        return group;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.removeGroup(group);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditDeleteGroupEvent{" +
-            "group=" + group +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

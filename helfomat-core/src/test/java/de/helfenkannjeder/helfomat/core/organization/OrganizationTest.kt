@@ -1,178 +1,180 @@
-package de.helfenkannjeder.helfomat.core.organization;
+package de.helfenkannjeder.helfomat.core.organization
 
-import de.helfenkannjeder.helfomat.core.event.DomainEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationCreateEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddPictureEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeletePictureEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditNameEvent;
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent;
-import de.helfenkannjeder.helfomat.core.picture.PictureId;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import de.helfenkannjeder.helfomat.core.event.DomainEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationCreateEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddPictureEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeletePictureEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditNameEvent
+import de.helfenkannjeder.helfomat.core.picture.PictureId
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 /**
  * @author Valentin Zickner
  */
-public class OrganizationTest {
-
+class OrganizationTest {
     @Test
-    void compareTo_withNull_returnsAllChanges() {
+    fun compareTo_withNull_returnsAllChanges() {
         // Arrange
-        OrganizationId organizationId = new OrganizationId();
-        Organization organization = new Organization.Builder()
-            .setId(organizationId)
-            .setName("New Name")
-            .setUrlName("new-name")
-            .setOrganizationType(OrganizationType.ASB)
-            .build();
+        val organizationId = OrganizationId()
+        val organization = Organization(
+            id = organizationId,
+            name = "New Name",
+            urlName = "new-name",
+            organizationType = OrganizationType.ASB
+        )
 
         // Act
-        List<OrganizationEvent> domainEvents = organization.compareTo(null);
+        val domainEvents = organization.compareTo(null)
 
         // Assert
         assertThat(domainEvents)
-            .isNotNull()
-            .hasSize(1);
-        DomainEvent domainEvent = domainEvents.get(0);
+            .hasSize(1)
+        val domainEvent: DomainEvent = domainEvents[0]
         assertThat(domainEvent)
-            .isNotNull()
-            .isInstanceOf(OrganizationCreateEvent.class);
-        OrganizationCreateEvent organizationCreateEvent = (OrganizationCreateEvent) domainEvent;
-        assertThat(organizationCreateEvent.getOrganizationId()).isEqualTo(organizationId);
-        assertThat(organizationCreateEvent.getName()).isEqualTo("New Name");
-        assertThat(organizationCreateEvent.getUrlName()).isEqualTo("new-name");
-        assertThat(organizationCreateEvent.getOrganizationType()).isEqualTo(OrganizationType.ASB);
+            .isInstanceOf(OrganizationCreateEvent::class.java)
+        val (organizationId1, name, urlName, organizationType) = domainEvent as OrganizationCreateEvent
+        assertThat(organizationId1).isEqualTo(organizationId)
+        assertThat(name).isEqualTo("New Name")
+        assertThat(urlName).isEqualTo("new-name")
+        assertThat(organizationType).isEqualTo(OrganizationType.ASB)
     }
 
     @Test
-    void compareTo_withWrongId_justNormalProcessingWithOriginalId() {
+    fun compareTo_withWrongId_justNormalProcessingWithOriginalId() {
         // Arrange
-        OrganizationId organizationId1 = new OrganizationId();
-        OrganizationId organizationId2 = new OrganizationId();
-        Organization organization1 = new Organization.Builder().setId(organizationId1).setName("Original Name").build();
-        Organization organization2 = new Organization.Builder().setId(organizationId2).setName("New Name").build();
+        val organizationId1 = OrganizationId()
+        val organizationId2 = OrganizationId()
+        val organization1 = Organization(id = organizationId1, name = "Original Name", urlName = "url-name", organizationType = OrganizationType.ASB)
+        val organization2 = Organization(id = organizationId2, name = "New Name", urlName = "url-name", organizationType = OrganizationType.ASB)
 
         // Act
-        List<OrganizationEvent> domainEvents = organization2.compareTo(organization1);
+        val domainEvents = organization2.compareTo(organization1)
 
         // Assert
         assertThat(domainEvents)
-            .isNotNull()
-            .hasSize(1);
-        DomainEvent domainEvent = domainEvents.get(0);
+            .isNotNull
+            .hasSize(1)
+        val domainEvent: DomainEvent = domainEvents[0]
         assertThat(domainEvent)
-            .isNotNull()
-            .isInstanceOf(OrganizationEditNameEvent.class);
-        OrganizationEditNameEvent organizationEditNameEvent = (OrganizationEditNameEvent) domainEvent;
-        assertThat(organizationEditNameEvent.getOrganizationId()).isEqualTo(organizationId1);
-        assertThat(organizationEditNameEvent.getName()).isEqualTo("New Name");
+            .isNotNull
+            .isInstanceOf(OrganizationEditNameEvent::class.java)
+        val (organizationId, name) = domainEvent as OrganizationEditNameEvent
+        assertThat(organizationId).isEqualTo(organizationId1)
+        assertThat(name).isEqualTo("New Name")
     }
 
     @Test
-    void compareTo_withChangedName_returnsDifferenceObject() {
+    fun compareTo_withChangedName_returnsDifferenceObject() {
         // Arrange
-        OrganizationId organizationId = new OrganizationId();
-        Organization organization1 = new Organization.Builder().setId(organizationId).setName("Original Name").build();
-        Organization organization2 = new Organization.Builder().setId(organizationId).setName("New Name").build();
+        val organizationId = OrganizationId()
+        val organization1 = Organization(id = organizationId, name = "Original Name", urlName = "url-name", organizationType = OrganizationType.ASB)
+        val organization2 = Organization(id = organizationId, name = "New Name", urlName = "url-name", organizationType = OrganizationType.ASB)
 
         // Act
-        List<OrganizationEvent> domainEvents = organization2.compareTo(organization1);
+        val domainEvents = organization2.compareTo(organization1)
 
         // Assert
         assertThat(domainEvents)
-            .isNotNull()
-            .hasSize(1);
-        DomainEvent domainEvent = domainEvents.get(0);
+            .isNotNull
+            .hasSize(1)
+        val domainEvent: DomainEvent = domainEvents[0]
         assertThat(domainEvent)
-            .isNotNull()
-            .isInstanceOf(OrganizationEditNameEvent.class);
-        OrganizationEditNameEvent organizationEditNameEvent = (OrganizationEditNameEvent) domainEvent;
-        assertThat(organizationEditNameEvent.getOrganizationId()).isEqualTo(organizationId);
-        assertThat(organizationEditNameEvent.getName()).isEqualTo("New Name");
+            .isNotNull
+            .isInstanceOf(OrganizationEditNameEvent::class.java)
+        val (organizationId1, name) = domainEvent as OrganizationEditNameEvent
+        assertThat(organizationId1).isEqualTo(organizationId)
+        assertThat(name).isEqualTo("New Name")
     }
 
     @Test
-    void compareTo_withOneNewPicture_returnsChangedPictureEvents() {
+    fun compareTo_withOneNewPicture_returnsChangedPictureEvents() {
         // Arrange
-        OrganizationId organizationId = new OrganizationId();
-        PictureId deletedPicture = new PictureId("879340a4-52ff-4c98-9dcc-b05e9f4a72ee");
-        PictureId addedPicture = new PictureId("86078cc8-63a6-4246-a2d2-09dee7d9ced5");
-        Organization originalOrganization = new Organization.Builder()
-            .setId(organizationId)
-            .setPictures(Arrays.asList(
-                new PictureId("f63f8a8b-edf5-47d6-b3bb-ccfd6b723b87"),
+        val organizationId = OrganizationId()
+        val deletedPicture = PictureId("879340a4-52ff-4c98-9dcc-b05e9f4a72ee")
+        val addedPicture = PictureId("86078cc8-63a6-4246-a2d2-09dee7d9ced5")
+        val originalOrganization = Organization(
+            id = organizationId,
+            name = "My Organization",
+            urlName = "my-organization",
+            organizationType = OrganizationType.ASB,
+            pictures = listOf(
+                PictureId("f63f8a8b-edf5-47d6-b3bb-ccfd6b723b87"),
                 deletedPicture,
-                new PictureId("4c8090cc-7783-44d2-901c-e11335b79d09")
-            ))
-            .build();
-        Organization newOrganization = new Organization.Builder()
-            .setId(organizationId)
-            .setPictures(Arrays.asList(
-                new PictureId("f63f8a8b-edf5-47d6-b3bb-ccfd6b723b87"),
-                new PictureId("4c8090cc-7783-44d2-901c-e11335b79d09"),
+                PictureId("4c8090cc-7783-44d2-901c-e11335b79d09")
+            )
+        )
+        val newOrganization = Organization(
+            id = organizationId,
+            name = "My Organization",
+            urlName = "my-organization",
+            organizationType = OrganizationType.ASB,
+            pictures = listOf(
+                PictureId("f63f8a8b-edf5-47d6-b3bb-ccfd6b723b87"),
+                PictureId("4c8090cc-7783-44d2-901c-e11335b79d09"),
                 addedPicture
-            ))
-            .build();
+            )
+        )
 
         // Act
-        List<OrganizationEvent> domainEvents = newOrganization.compareTo(originalOrganization);
+        val domainEvents = newOrganization.compareTo(originalOrganization)
 
         // Assert
         assertThat(domainEvents)
-            .isNotNull()
-            .hasSize(2);
-        DomainEvent domainEvent1 = domainEvents.get(0);
+            .isNotNull
+            .hasSize(2)
+        val domainEvent1: DomainEvent = domainEvents[0]
         assertThat(domainEvent1)
-            .isNotNull()
-            .isInstanceOf(OrganizationEditDeletePictureEvent.class);
-        OrganizationEditDeletePictureEvent organizationEditDeletePictureEvent = (OrganizationEditDeletePictureEvent) domainEvent1;
-        assertThat(organizationEditDeletePictureEvent.getOrganizationId()).isEqualTo(organizationId);
-        assertThat(organizationEditDeletePictureEvent.getPictureId()).isEqualTo(deletedPicture);
-        DomainEvent domainEvent2 = domainEvents.get(1);
+            .isNotNull
+            .isInstanceOf(OrganizationEditDeletePictureEvent::class.java)
+        val (organizationId1, pictureId) = domainEvent1 as OrganizationEditDeletePictureEvent
+        assertThat(organizationId1).isEqualTo(organizationId)
+        assertThat(pictureId).isEqualTo(deletedPicture)
+        val domainEvent2: DomainEvent = domainEvents[1]
         assertThat(domainEvent2)
-            .isNotNull()
-            .isInstanceOf(OrganizationEditAddPictureEvent.class);
-        OrganizationEditAddPictureEvent organizationEditAddPictureEvent = (OrganizationEditAddPictureEvent) domainEvent2;
-        assertThat(organizationEditAddPictureEvent.getOrganizationId()).isEqualTo(organizationId);
-        assertThat(organizationEditAddPictureEvent.getIndex()).isEqualTo(2);
-        assertThat(organizationEditAddPictureEvent.getPictureId()).isEqualTo(addedPicture);
+            .isNotNull
+            .isInstanceOf(OrganizationEditAddPictureEvent::class.java)
+        val (organizationId2, index, pictureId1) = domainEvent2 as OrganizationEditAddPictureEvent
+        assertThat(organizationId2).isEqualTo(organizationId)
+        assertThat(index).isEqualTo(2)
+        assertThat(pictureId1).isEqualTo(addedPicture)
     }
 
     @Test
-    void compareTo_withObjectToEventsAndBackConvertion_verifyObjectsAreEquals() {
+    fun compareTo_withObjectToEventsAndBackConvertion_verifyObjectsAreEquals() {
         // Arrange
-        Organization originalOrganization = OrganizationTestDataFactory.ORGANIZATION_1;
+        val originalOrganization = OrganizationTestDataFactory.ORGANIZATION_1
 
         // Act
-        List<OrganizationEvent> domainEvents = originalOrganization.compareTo(null);
+        val domainEvents = originalOrganization.compareTo(null)
 
         // Assert
-        Organization.Builder organizationBuilder = new Organization.Builder();
-        for (OrganizationEvent domainEvent : domainEvents) {
-            organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder);
+        var organizationBuilder: Organization.Builder? = Organization.Builder(
+            id = OrganizationId(),
+            name = "Test",
+            urlName = "test",
+            organizationType = OrganizationType.DRV
+        )
+        for (domainEvent in domainEvents) {
+            organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder)
         }
-
-        assertThat(organizationBuilder).isNotNull();
-        Organization organization = organizationBuilder.build();
-        assertThat(organization.getId()).isEqualTo(originalOrganization.getId());
-        assertThat(organization.getName()).isEqualTo(originalOrganization.getName());
-        assertThat(organization.getUrlName()).isEqualTo(originalOrganization.getUrlName());
-        assertThat(organization.getOrganizationType()).isEqualTo(originalOrganization.getOrganizationType());
-        assertThat(organization.getDescription()).isEqualTo(originalOrganization.getDescription());
-        assertThat(organization.getWebsite()).isEqualTo(originalOrganization.getWebsite());
-        assertThat(organization.getLogo()).isEqualTo(originalOrganization.getLogo());
-        assertThat(organization.getTeaserImage()).isEqualTo(originalOrganization.getTeaserImage());
-        assertThat(organization.getDefaultAddress()).isEqualTo(originalOrganization.getDefaultAddress());
-        assertThat(organization.getPictures()).isEqualTo(originalOrganization.getPictures());
-        assertThat(organization.getContactPersons()).isEqualTo(originalOrganization.getContactPersons());
-        assertThat(organization.getAddresses()).isEqualTo(originalOrganization.getAddresses());
-        assertThat(organization.getQuestionAnswers()).isEqualTo(originalOrganization.getQuestionAnswers());
-        assertThat(organization.getGroups()).isEqualTo(originalOrganization.getGroups());
-        assertThat(organization.getAttendanceTimes()).isEqualTo(originalOrganization.getAttendanceTimes());
-        assertThat(organization.getVolunteers()).isEqualTo(originalOrganization.getVolunteers());
+        assertThat(organizationBuilder).isNotNull
+        val (id, name, urlName, organizationType, description, website, logo, teaserImage, defaultAddress, pictures, contactPersons, addresses, questionAnswers, _, groups, attendanceTimes, volunteers) = organizationBuilder!!.build()
+        assertThat(id).isEqualTo(originalOrganization.id)
+        assertThat(name).isEqualTo(originalOrganization.name)
+        assertThat(urlName).isEqualTo(originalOrganization.urlName)
+        assertThat(organizationType).isEqualTo(originalOrganization.organizationType)
+        assertThat(description).isEqualTo(originalOrganization.description)
+        assertThat(website).isEqualTo(originalOrganization.website)
+        assertThat(logo).isEqualTo(originalOrganization.logo)
+        assertThat(teaserImage).isEqualTo(originalOrganization.teaserImage)
+        assertThat(defaultAddress).isEqualTo(originalOrganization.defaultAddress)
+        assertThat(pictures).isEqualTo(originalOrganization.pictures)
+        assertThat(contactPersons).isEqualTo(originalOrganization.contactPersons)
+        assertThat(addresses).isEqualTo(originalOrganization.addresses)
+        assertThat(questionAnswers).isEqualTo(originalOrganization.questionAnswers)
+        assertThat(groups).isEqualTo(originalOrganization.groups)
+        assertThat(attendanceTimes).isEqualTo(originalOrganization.attendanceTimes)
+        assertThat(volunteers).isEqualTo(originalOrganization.volunteers)
     }
 }

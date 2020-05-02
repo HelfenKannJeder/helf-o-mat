@@ -68,4 +68,8 @@ class RestOrganizationRepository(
         throw UnsupportedOperationException()
     }
 
+    override fun remove(organizationId: OrganizationId) {
+        throw UnsupportedOperationException()
+    }
+
 }

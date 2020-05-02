@@ -31,24 +31,33 @@ open class Typo3OrganizationProcessor(
             LOGGER.info("Ignore TYPO3 organization '" + tOrganization.name + "'")
             return null
         }
-        return Organization.Builder()
-            .setId(OrganizationId())
-            .setName(tOrganization.name)
-            .setOrganizationType(OrganizationType.findByName(tOrganization.organizationtype?.name))
+        return Organization.Builder(
+            id = OrganizationId(),
+            name = tOrganization.name,
+            urlName = tOrganization.name,
+            organizationType = OrganizationType.findByName(tOrganization.organizationtype.name)
+        )
             .setDescription(tOrganization.description)
             .setLogo(toPicture(tOrganization.logo))
             .setWebsite(UrlUnifier.unifyOrganizationWebsiteUrl(tOrganization.website))
-            .setMapPin(unifyOrganizationPins(tOrganization.organizationtype?.picture))
+            .setMapPin(unifyOrganizationPins(tOrganization.organizationtype.picture))
             .setPictures(toPictures(extractPictures(tOrganization.pictures)))
             .setContactPersons(toContactPersons(tOrganization.contactPersons))
-            .setAddresses(tOrganization.addresses?.map { tAddress: TAddress? -> toAddress(tAddress) })
-            .setDefaultAddress(toAddress(tOrganization.defaultaddress))
+            .setAddresses(tOrganization.addresses.map { toAddress(it) })
+            .setDefaultAddress(toNullableAddress(tOrganization.defaultaddress))
             .setGroups(
                 tOrganization.groups.stream().map { tGroup: TGroup -> toGroup(tGroup) }.collect(Collectors.toList())
             )
             .setAttendanceTimes(tOrganization.workinghours.map { toEvent(it) })
-            .setVolunteers(tOrganization.employees.filter { !(it.motivation?.isEmpty() ?: true) }.map { toVolunteer(it) })
+            .setVolunteers(tOrganization.employees.filter {
+                !(it.motivation?.isEmpty() ?: true)
+            }.map { toVolunteer(it) })
             .build()
+    }
+
+    private fun toNullableAddress(tAddress: TAddress?): Address? = when (tAddress) {
+        null -> null
+        else -> toAddress(tAddress)
     }
 
     private fun toVolunteer(tEmployee: TEmployee): Volunteer {
@@ -61,27 +70,24 @@ open class Typo3OrganizationProcessor(
     }
 
     private fun toGroup(tGroup: TGroup): Group {
-        return Group.Builder()
-            .setName(tGroup.name)
-            .setDescription(tGroup.description)
-            .setContactPersons(toContactPersons(tGroup.contactPersons))
-            .setMinimumAge(tGroup.minimumAge)
-            .setMaximumAge(tGroup.maximumAge)
-            .setWebsite(tGroup.website)
-            .build()
+        return Group(
+            name = tGroup.name,
+            description = tGroup.description,
+            contactPersons = toContactPersons(tGroup.contactPersons),
+            minimumAge = tGroup.minimumAge,
+            maximumAge = tGroup.maximumAge,
+            website = tGroup.website
+        )
     }
 
     private fun toEvent(tWorkingHour: TWorkingHour): AttendanceTime {
-        return AttendanceTime.Builder()
-            .setDay(DayOfWeek.of(tWorkingHour.day))
-            .setStart(LocalTime.of(tWorkingHour.starttimehour, tWorkingHour.starttimeminute))
-            .setEnd(LocalTime.of(tWorkingHour.stoptimehour, tWorkingHour.stoptimeminute))
-            .setNote(tWorkingHour.addition)
-            .setGroups(tWorkingHour.groups
-                .stream()
-                .map { tGroup: TGroup -> toGroup(tGroup) }
-                .collect(Collectors.toList()))
-            .build()
+        return AttendanceTime(
+            day = DayOfWeek.of(tWorkingHour.day),
+            start = LocalTime.of(tWorkingHour.starttimehour, tWorkingHour.starttimeminute),
+            end = LocalTime.of(tWorkingHour.stoptimehour, tWorkingHour.stoptimeminute),
+            note = tWorkingHour.addition,
+            groups = tWorkingHour.groups.map { toGroup(it) }
+        )
     }
 
     private fun toPictures(pictures: List<String>): List<PictureId> {
@@ -121,14 +127,14 @@ open class Typo3OrganizationProcessor(
     }
 
     private fun toContactPerson(tEmployee: TEmployee): ContactPerson {
-        return ContactPerson.Builder()
-            .setFirstname(tEmployee.prename)
-            .setLastname(tEmployee.surname)
-            .setRank(tEmployee.rank)
-            .setTelephone(tEmployee.telephone)
-            .setMail(tEmployee.mail)
-            .setPicture(toPicture(tEmployee.pictures))
-            .build()
+        return ContactPerson(
+            firstname = tEmployee.prename,
+            lastname = tEmployee.surname,
+            rank = tEmployee.rank,
+            telephone = tEmployee.telephone,
+            mail = tEmployee.mail,
+            picture = toPicture(tEmployee.pictures)
+        )
     }
 
     private fun unifyOrganizationPins(picture: String?): String? {
@@ -156,19 +162,15 @@ open class Typo3OrganizationProcessor(
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(Typo3OrganizationProcessor::class.java)
-        private fun toAddress(tAddress: TAddress?): Address? {
-            return if (tAddress == null) {
-                null
-            } else Address.Builder()
-                .setWebsite(UrlUnifier.unifyOrganizationWebsiteUrl(tAddress.website))
-                .setTelephone(tAddress.telephone)
-                .setStreet(tAddress.street)
-                .setAddressAppendix(tAddress.addressappendix)
-                .setCity(tAddress.city)
-                .setZipcode(tAddress.zipcode)
-                .setLocation(GeoPoint(tAddress.latitude, tAddress.longitude))
-                .build()
-        }
+        private fun toAddress(tAddress: TAddress): Address = Address(
+            website = UrlUnifier.unifyOrganizationWebsiteUrl(tAddress.website),
+            telephone = tAddress.telephone,
+            street = tAddress.street,
+            addressAppendix = tAddress.addressappendix,
+            city = tAddress.city,
+            zipcode = tAddress.zipcode,
+            location = GeoPoint(tAddress.latitude, tAddress.longitude)
+        )
     }
 
 }

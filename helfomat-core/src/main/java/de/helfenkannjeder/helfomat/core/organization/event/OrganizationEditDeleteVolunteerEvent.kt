@@ -1,44 +1,25 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-import de.helfenkannjeder.helfomat.core.organization.Volunteer;
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.organization.Volunteer
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditDeleteVolunteerEvent extends OrganizationEditEvent {
-    private Volunteer volunteer;
+data class OrganizationEditDeleteVolunteerEvent(
+    override val organizationId: OrganizationId,
+    val volunteer: Volunteer
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditDeleteVolunteerEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        organizationBuilder?.volunteers?.remove(volunteer)
+        return organizationBuilder
     }
 
-    public OrganizationEditDeleteVolunteerEvent(OrganizationId organizationId, Volunteer volunteer) {
-        super(organizationId);
-        this.volunteer = volunteer;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public Volunteer getVolunteer() {
-        return volunteer;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.removeVolunteer(volunteer);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditDeleteVolunteerEvent{" +
-            "volunteer=" + volunteer +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

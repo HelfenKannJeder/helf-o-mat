@@ -1,14 +1,9 @@
-package de.helfenkannjeder.helfomat.core.picture;
+package de.helfenkannjeder.helfomat.core.picture
 
 /**
  * @author Valentin Zickner
  */
-public class DownloadFailedException extends Exception {
-
-    public DownloadFailedException() {
-    }
-
-    public DownloadFailedException(Exception e) {
-        super(e);
-    }
+class DownloadFailedException : Exception {
+    constructor()
+    constructor(e: Exception?) : super(e)
 }

@@ -14,7 +14,7 @@ data class OrganizationDetailDto(
     val organizationType: OrganizationType,
     val description: String?,
     val website: String?,
-    val logo: PictureId,
+    val logo: PictureId?,
     val pictures: List<PictureId>,
     val contactPersons: List<ContactPersonDto>,
     val defaultAddress: AddressDto?,

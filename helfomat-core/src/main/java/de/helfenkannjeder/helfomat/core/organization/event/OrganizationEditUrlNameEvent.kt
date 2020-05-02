@@ -1,43 +1,23 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditUrlNameEvent extends OrganizationEditEvent {
-    private String urlName;
+data class OrganizationEditUrlNameEvent(
+    override val organizationId: OrganizationId,
+    val urlName: String
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditUrlNameEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        return organizationBuilder?.setUrlName(urlName)
     }
 
-    public OrganizationEditUrlNameEvent(OrganizationId organizationId, String urlName) {
-        super(organizationId);
-        this.urlName = urlName;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public String getUrlName() {
-        return urlName;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.setUrlName(urlName);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditUrlNameEvent{" +
-            "urlName='" + urlName + '\'' +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

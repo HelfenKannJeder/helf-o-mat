@@ -9,9 +9,8 @@ class OrganizationTemplateApplicationService(
     private val organizationTemplateRepository: OrganizationTemplateRepository
 ) {
 
-    fun findOrganizationTemplateByType(organizationType: OrganizationType): OrganizationTemplateDto {
-        return organizationTemplateRepository.findByOrganizationType(organizationType)
-            .toOrganizationTemplateDto()
+    fun findOrganizationTemplateByType(organizationType: OrganizationType): OrganizationTemplateDto? {
+        return organizationTemplateRepository.findByOrganizationType(organizationType)?.toOrganizationTemplateDto()
     }
 
 }

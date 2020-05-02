@@ -12,7 +12,7 @@ data class TEmployee(
     var uid: Long,
     var rank: String?,
     var surname: String?,
-    var prename: String?,
+    var prename: String,
     var motivation: String?,
     var birthday: Long,
     var pictures: String?,

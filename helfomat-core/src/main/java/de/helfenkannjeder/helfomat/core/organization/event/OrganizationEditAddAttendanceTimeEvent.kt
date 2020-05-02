@@ -1,51 +1,26 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.AttendanceTime;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.AttendanceTime
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditAddAttendanceTimeEvent extends OrganizationEditEvent {
-    private int index;
-    private AttendanceTime attendanceTime;
+data class OrganizationEditAddAttendanceTimeEvent(
+    override val organizationId: OrganizationId,
+    val index: Int,
+    val attendanceTime: AttendanceTime
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditAddAttendanceTimeEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        organizationBuilder?.attendanceTimes?.add(index, attendanceTime)
+        return organizationBuilder
     }
 
-    public OrganizationEditAddAttendanceTimeEvent(OrganizationId organizationId, int index, AttendanceTime attendanceTime) {
-        super(organizationId);
-        this.index = index;
-        this.attendanceTime = attendanceTime;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public AttendanceTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.addAttendanceTime(index, attendanceTime);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditAddAttendanceTimeEvent{" +
-            "index=" + index +
-            ", attendanceTime=" + attendanceTime +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

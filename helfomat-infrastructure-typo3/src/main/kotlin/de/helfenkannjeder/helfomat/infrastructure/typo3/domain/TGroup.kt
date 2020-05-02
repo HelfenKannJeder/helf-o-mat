@@ -10,7 +10,7 @@ import javax.persistence.*
 data class TGroup (
     @Id
     var uid: Long,
-    var name: String?,
+    var name: String,
     var description: String?,
     var minimumAge: Int,
     var maximumAge: Int,

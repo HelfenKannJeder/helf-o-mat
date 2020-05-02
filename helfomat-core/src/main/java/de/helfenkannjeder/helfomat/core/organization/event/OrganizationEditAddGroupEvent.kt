@@ -1,51 +1,26 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Group;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.Group
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditAddGroupEvent extends OrganizationEditEvent {
-    private int index;
-    private Group group;
+data class OrganizationEditAddGroupEvent(
+    override val organizationId: OrganizationId,
+    val index: Int,
+    val group: Group
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditAddGroupEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        organizationBuilder?.groups?.add(index, group)
+        return organizationBuilder
     }
 
-    public OrganizationEditAddGroupEvent(OrganizationId organizationId, int index, Group group) {
-        super(organizationId);
-        this.index = index;
-        this.group = group;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.addGroup(index, group);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditAddGroupEvent{" +
-            "index=" + index +
-            ", group=" + group +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

@@ -21,7 +21,7 @@ open class ConfigOrganizationTemplateRepository(
         .associateBy { it.name }
 
     override fun findByOrganizationType(organizationType: OrganizationType): OrganizationTemplate? {
-        val template = organizationTemplates[organizationType.getName()] ?: return null
+        val template = organizationTemplates[organizationType.internalName] ?: return null
         return OrganizationTemplate(
             template.name,
             template.acronym,

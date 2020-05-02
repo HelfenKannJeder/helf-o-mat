@@ -1,24 +1,16 @@
-package de.helfenkannjeder.helfomat.core.organization;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+package de.helfenkannjeder.helfomat.core.organization
 
 /**
  * @author Valentin Zickner
  */
-public enum Answer {
+enum class Answer {
     YES, MAYBE, NO;
 
-    public List<Answer> getNeighbours() {
-        switch (this) {
-            case YES:
-                return Collections.singletonList(Answer.MAYBE);
-            case MAYBE:
-                return Arrays.asList(Answer.YES, Answer.NO);
-            case NO:
-                return Collections.singletonList(Answer.MAYBE);
+    val neighbours: List<Answer>
+        get() = when (this) {
+            YES -> listOf(MAYBE)
+            MAYBE -> listOf(YES, NO)
+            NO -> listOf(MAYBE)
         }
-        return Collections.emptyList();
-    }
+
 }

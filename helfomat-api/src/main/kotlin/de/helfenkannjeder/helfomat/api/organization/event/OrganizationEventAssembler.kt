@@ -42,7 +42,7 @@ class OrganizationEventAssembler(private val questions: List<Question>) : Organi
         OrganizationEditAddVolunteerEventDto(organizationEditAddVolunteerEvent.organizationId, organizationEditAddVolunteerEvent.index, organizationEditAddVolunteerEvent.volunteer.toVolunteerDto())
 
     override fun visit(organizationEditDefaultAddressEvent: OrganizationEditDefaultAddressEvent) =
-        OrganizationEditDefaultAddressEventDto(organizationEditDefaultAddressEvent.organizationId, organizationEditDefaultAddressEvent.defaultAddress.toAddressDto())
+        OrganizationEditDefaultAddressEventDto(organizationEditDefaultAddressEvent.organizationId, organizationEditDefaultAddressEvent.defaultAddress?.toAddressDto())
 
     override fun visit(organizationEditDeleteAddressEvent: OrganizationEditDeleteAddressEvent) =
         OrganizationEditDeleteAddressEventDto(organizationEditDeleteAddressEvent.organizationId, organizationEditDeleteAddressEvent.address.toAddressDto())

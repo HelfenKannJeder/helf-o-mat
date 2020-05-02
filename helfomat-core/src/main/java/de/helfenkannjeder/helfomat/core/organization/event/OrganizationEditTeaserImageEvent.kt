@@ -1,44 +1,24 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-import de.helfenkannjeder.helfomat.core.picture.PictureId;
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.picture.PictureId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditTeaserImageEvent extends OrganizationEditEvent {
-    private PictureId teaserImage;
+data class OrganizationEditTeaserImageEvent(
+    override val organizationId: OrganizationId,
+    val teaserImage: PictureId?
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditTeaserImageEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        return organizationBuilder?.setTeaserImage(teaserImage)
     }
 
-    public OrganizationEditTeaserImageEvent(OrganizationId organizationId, PictureId teaserImage) {
-        super(organizationId);
-        this.teaserImage = teaserImage;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public PictureId getTeaserImage() {
-        return teaserImage;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.setTeaserImage(teaserImage);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditTeaserImageEvent{" +
-            "teaserImage=" + teaserImage +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

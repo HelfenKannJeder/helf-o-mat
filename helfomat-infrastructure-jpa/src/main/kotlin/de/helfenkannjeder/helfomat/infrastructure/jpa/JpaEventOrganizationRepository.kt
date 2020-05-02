@@ -25,15 +25,15 @@ class JpaEventOrganizationRepository(
         super.processDomainEvents(organizationId, listOf(organizationEvent))
     }
 
-    override fun getExistingOrganizationBuilder(organizationId: OrganizationId): Organization.Builder {
+    override fun getExistingOrganizationBuilder(organizationId: OrganizationId): Organization.Builder? {
         val organizationBuilder = organizationBuilderMap[organizationId]
         if (organizationBuilder != null) {
             return organizationBuilder
         }
-        val newOrganizationBuilder = Organization.Builder()
+        var newOrganizationBuilder: Organization.Builder? = null
         eventRepository.findByOrganizationId(organizationId)
             .map { it.domainEvent }
-            .forEach { it.applyOnOrganizationBuilder(newOrganizationBuilder) }
+            .forEach { newOrganizationBuilder = it.applyOnOrganizationBuilder(newOrganizationBuilder) }
         return newOrganizationBuilder
     }
 

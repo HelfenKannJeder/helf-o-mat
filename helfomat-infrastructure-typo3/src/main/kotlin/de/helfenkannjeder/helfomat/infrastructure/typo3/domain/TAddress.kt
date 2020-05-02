@@ -10,10 +10,10 @@ import javax.persistence.Id
 data class TAddress (
     @Id
     var uid: Long,
-    var street: String?,
+    var street: String,
     var addressappendix: String?,
-    var city: String?,
-    var zipcode: String?,
+    var city: String,
+    var zipcode: String,
     var longitude: Double,
     var latitude: Double,
     var telephone: String?,

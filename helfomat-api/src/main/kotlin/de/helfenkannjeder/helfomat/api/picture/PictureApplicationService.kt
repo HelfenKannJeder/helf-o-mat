@@ -21,6 +21,6 @@ open class PictureApplicationService(
     open fun getPicture(pictureId: PictureId, size: String): Path = pictureStorageService.getPicture(pictureId, size)
 
     @Secured(Roles.ADMIN)
-    open fun savePicture(pictureId: PictureId?, inputStream: InputStream) = pictureStorageService.savePicture(pictureId, inputStream)
+    open fun savePicture(pictureId: PictureId, inputStream: InputStream) = pictureStorageService.savePicture(pictureId, inputStream)
 
 }

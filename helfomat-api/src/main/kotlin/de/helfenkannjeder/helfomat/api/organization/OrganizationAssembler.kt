@@ -50,15 +50,15 @@ fun Organization.toOrganizationDetailDto(questions: List<Question>) = Organizati
     this.description,
     this.website,
     this.logo,
-    this.pictures ?: emptyList(),
-    this.contactPersons?.toContactPersonDtos() ?: emptyList(),
+    this.pictures,
+    this.contactPersons.toContactPersonDtos(),
     this.defaultAddress?.toAddressDto(),
-    this.addresses?.toAddressDtos() ?: emptyList(),
-    this.questionAnswers?.toAnsweredQuestionDtos(questions) ?: emptyList(),
+    this.addresses.toAddressDtos(),
+    this.questionAnswers.toAnsweredQuestionDtos(questions),
     this.mapPin,
-    this.groups?.toGroupDtos() ?: emptyList(),
-    this.attendanceTimes?.toAttendanceTimeDtos() ?: emptyList(),
-    this.volunteers?.toVolunteerDtos() ?: emptyList()
+    this.groups.toGroupDtos(),
+    this.attendanceTimes.toAttendanceTimeDtos(),
+    this.volunteers.toVolunteerDtos()
 )
 
 fun List<Volunteer>.toVolunteerDtos() = this.map { it.toVolunteerDto() }
@@ -84,10 +84,12 @@ fun List<Address>.toAddressDtos() = this.map { it.toAddressDto() }
 fun Address.toAddressDto(): AddressDto = AddressDto(this.street, this.addressAppendix, this.city, this.zipcode, this.location, this.telephone, this.website)
 
 fun List<OrganizationDetailDto>.toOrganizations(): List<Organization> = this.map { it.toOrganization() }
-fun OrganizationDetailDto.toOrganization() = Organization.Builder()
-    .setId(OrganizationId(this.id))
-    .setName(this.name)
-    .setUrlName(this.urlName)
+fun OrganizationDetailDto.toOrganization() = Organization.Builder(
+    id = OrganizationId(this.id),
+    name = this.name,
+    urlName = this.urlName,
+    organizationType = this.organizationType
+)
     .setDescription(this.description)
     .setWebsite(this.website)
     .setLogo(this.logo)
@@ -95,7 +97,6 @@ fun OrganizationDetailDto.toOrganization() = Organization.Builder()
     .setPictures(this.pictures)
     .setDefaultAddress(this.defaultAddress?.toAddress())
     .setAddresses(this.addresses.toAddresses())
-    .setOrganizationType(this.organizationType)
     .setAttendanceTimes(this.attendanceTimes.toAttendanceTimes())
     .setMapPin(this.mapPin)
     .setContactPersons(this.contactPersons.toContactPersons())
@@ -117,7 +118,7 @@ fun List<AttendanceTimeDto>.toAttendanceTimes() = this.map { it.toAttendanceTime
 fun AttendanceTimeDto.toAttendanceTime() = AttendanceTime(this.day, this.start, this.end, this.note, this.groups.toGroups())
 
 fun List<GroupDto>.toGroups() = this.map { it.toGroup() }
-fun GroupDto.toGroup() = Group.Builder().setName(this.name).setDescription(this.description).build()
+fun GroupDto.toGroup() = Group(name = this.name, description = this.description)
 
 fun List<AddressDto>.toAddresses() = this.map { it.toAddress() }
 fun AddressDto.toAddress() = Address(this.street, this.addressAppendix, this.city, this.zipcode, this.location, this.telephone, this.website)

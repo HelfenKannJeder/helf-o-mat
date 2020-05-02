@@ -1,22 +1,18 @@
-package de.helfenkannjeder.helfomat.core.picture;
+package de.helfenkannjeder.helfomat.core.picture
 
-import java.io.InputStream;
-import java.nio.file.Path;
+import java.io.InputStream
+import java.nio.file.Path
 
 /**
  * @author Valentin Zickner
  */
-public interface PictureStorageService {
+interface PictureStorageService {
 
-    PictureId savePicture(String url, PictureId pictureId) throws DownloadFailedException;
+    fun savePicture(url: String, pictureId: PictureId): PictureId
+    fun savePicture(bytes: ByteArray, pictureId: PictureId): PictureId
+    fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId
+    fun getPicture(pictureId: PictureId): Path
+    fun getPicture(pictureId: PictureId, size: String): Path
+    fun existPicture(pictureId: PictureId): Boolean
 
-    PictureId savePicture(byte[] bytes, PictureId pictureId) throws DownloadFailedException;
-
-    PictureId savePicture(PictureId pictureId, InputStream inputStream) throws DownloadFailedException;
-
-    Path getPicture(PictureId pictureId);
-
-    Path getPicture(PictureId pictureId, String size);
-
-    boolean existPicture(PictureId pictureId);
 }

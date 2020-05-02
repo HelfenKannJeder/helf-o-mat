@@ -1,12 +1,10 @@
-package de.helfenkannjeder.helfomat.core.organization;
+package de.helfenkannjeder.helfomat.core.organization
 
 /**
  * @author Valentin Zickner
  */
-public interface OrganizationReader {
+interface OrganizationReader {
+    val name: String
 
-    String getName();
-
-    Organization read() throws Exception;
-
+    fun read(): Organization?
 }

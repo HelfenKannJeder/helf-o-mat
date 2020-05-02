@@ -36,7 +36,7 @@ class OrganizationEventDtoAssembler : OrganizationEventDtoVisitor<OrganizationEv
         OrganizationEditAddVolunteerEvent(organizationEditAddVolunteerEventDto.organizationId, organizationEditAddVolunteerEventDto.index, organizationEditAddVolunteerEventDto.volunteer.toVolunteer())
 
     override fun visit(organizationEditDefaultAddressEventDto: OrganizationEditDefaultAddressEventDto) =
-        OrganizationEditDefaultAddressEvent(organizationEditDefaultAddressEventDto.organizationId, organizationEditDefaultAddressEventDto.address.toAddress())
+        OrganizationEditDefaultAddressEvent(organizationEditDefaultAddressEventDto.organizationId, organizationEditDefaultAddressEventDto.address?.toAddress())
 
     override fun visit(organizationEditDeleteAddressEventDto: OrganizationEditDeleteAddressEventDto) =
         OrganizationEditDefaultAddressEvent(organizationEditDeleteAddressEventDto.organizationId, organizationEditDeleteAddressEventDto.address.toAddress())

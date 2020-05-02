@@ -1,44 +1,24 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Address;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.Address
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditDefaultAddressEvent extends OrganizationEditEvent {
-    private Address defaultAddress;
+data class OrganizationEditDefaultAddressEvent(
+    override val organizationId: OrganizationId,
+    val defaultAddress: Address?
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditDefaultAddressEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        return organizationBuilder?.setDefaultAddress(defaultAddress)
     }
 
-    public OrganizationEditDefaultAddressEvent(OrganizationId organizationId, Address defaultAddress) {
-        super(organizationId);
-        this.defaultAddress = defaultAddress;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public Address getDefaultAddress() {
-        return defaultAddress;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.setDefaultAddress(defaultAddress);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditDefaultAddressEvent{" +
-            "defaultAddress=" + defaultAddress +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

@@ -13,7 +13,7 @@ import javax.persistence.*
 data class TOrganization (
     @Id
     var uid: String? = null,
-    var name: String? = null,
+    var name: String,
     var description: String? = null,
     var website: String? = null,
     var logo: String? = null,
@@ -22,12 +22,12 @@ data class TOrganization (
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "organisationtype")
     @NotFound(action = NotFoundAction.IGNORE)
-    var organizationtype: TOrganizationType? = null,
+    var organizationtype: TOrganizationType,
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
     @Where(clause = "deleted=0")
-    var addresses: List<TAddress>? = emptyList(),
+    var addresses: List<TAddress> = emptyList(),
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "defaultaddress")

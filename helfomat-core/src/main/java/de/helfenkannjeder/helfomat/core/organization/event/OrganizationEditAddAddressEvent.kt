@@ -1,51 +1,26 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Address;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.Address
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditAddAddressEvent extends OrganizationEditEvent {
-    private int index;
-    private Address address;
+data class OrganizationEditAddAddressEvent(
+    override val organizationId: OrganizationId,
+    val index: Int,
+    val address: Address
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditAddAddressEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        organizationBuilder?.addresses?.add(index, address)
+        return organizationBuilder
     }
 
-    public OrganizationEditAddAddressEvent(OrganizationId organizationId, int index, Address address) {
-        super(organizationId);
-        this.index = index;
-        this.address = address;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.addAddress(index, address);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditAddAddressEvent{" +
-            "index=" + index +
-            ", address=" + address +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

@@ -1,9 +1,6 @@
-package de.helfenkannjeder.helfomat.core.organization;
+package de.helfenkannjeder.helfomat.core.organization
 
-import java.util.Arrays;
-
-@SuppressWarnings("WeakerAccess")
-public enum OrganizationType {
+enum class OrganizationType(val internalName: String) {
     THW("Technisches Hilfswerk"),
     ASB("Arbeiter-Samariter-Bund"),
     BRK("Bayerisches Rotes Kreuz"),
@@ -18,24 +15,15 @@ public enum OrganizationType {
     BRH("Bundesverband Rettungshunde"),
     DRV("Deutscher Rettungshunde Verein");
 
-    final String name;
-
-    OrganizationType(String name){
-        this.name = name;
+    override fun toString(): String {
+        return internalName
     }
 
-    public String getName() {
-        return name;
+    companion object {
+        fun findByName(name: String): OrganizationType {
+            return values().filter { it.internalName == name }.firstOrNull()
+                ?: throw IllegalOrganizationTypeException(name)
+        }
     }
 
-    public String toString() {
-        return name;
-    }
-
-    public static OrganizationType findByName(String name) {
-        return Arrays.stream(values())
-            .filter(organizationType -> organizationType.getName().equals(name))
-            .findFirst()
-            .orElseThrow(() -> new IllegalOrganizationTypeException(name));
-    }
 }

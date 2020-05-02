@@ -14,7 +14,7 @@ data class OrganizationDto(
     val website: String?,
     val addresses: List<AddressDto>,
     val contactPersons: List<ContactPersonDto>,
-    val logo: PictureId,
+    val logo: PictureId?,
     val scoreNorm: Double?,
     val organizationType: OrganizationType
 )

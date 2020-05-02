@@ -1,6 +1,5 @@
 package de.helfenkannjeder.helfomat.infrastructure.thwde
 
-import com.google.common.base.Preconditions
 import de.helfenkannjeder.helfomat.core.ProfileRegistry
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
 import de.helfenkannjeder.helfomat.core.organization.*
@@ -30,7 +29,7 @@ import java.util.regex.Pattern
 @Order(200)
 @Profile("!" + ProfileRegistry.DISABLE_THWDE_IMPORT)
 @EnableConfigurationProperties(ThwCrawlerConfiguration::class)
-open class ThwCrawlerOrganizationReader constructor(
+open class ThwCrawlerOrganizationReader(
     private val thwCrawlerConfiguration: ThwCrawlerConfiguration,
     private val pictureStorageService: PictureStorageService
 ) : ItemReader<Organization>, OrganizationReader {
@@ -41,10 +40,7 @@ open class ThwCrawlerOrganizationReader constructor(
     private val logoPictureid = toPictureIdFromClasspathResource("thwde/logo.png")
     private val teaserPictureId = toPictureIdFromClasspathResource("thwde/teaser.jpg")
 
-
-    override fun getName(): String {
-        return "thw-crawler"
-    }
+    override val name = "thw-crawler"
 
     @Throws(Exception::class)
     override fun read(): Organization? {
@@ -94,10 +90,12 @@ open class ThwCrawlerOrganizationReader constructor(
         val contactDataDiv = oeDetailsDocument.select(".contact-data")
         val groups = extractDistinctGroups(oeDetailsDocument)
         val address = extractAddressFromDocument(oeDetailsDocument)
-        val organization = Organization.Builder()
-            .setId(OrganizationId())
-            .setOrganizationType(OrganizationType.THW)
-            .setName(Preconditions.checkNotNull(organizationName))
+        val organization = Organization.Builder(
+            id = OrganizationId(),
+            organizationType = OrganizationType.THW,
+            name = organizationName,
+            urlName = organizationName
+        )
             .setPictures(listOf(teaserPictureId))
             .setWebsite(contactDataDiv.select(".url").select("a").attr("href"))
             .setMapPin(thwCrawlerConfiguration.mapPin)
@@ -121,13 +119,13 @@ open class ThwCrawlerOrganizationReader constructor(
         if (!imageSrc.contains("NoElementPerson.jpg") && "" != imageSrc) {
             pictureId = toPicture(thwCrawlerConfiguration.domain + imageSrc)
         }
-        return ContactPerson.Builder()
-            .setFirstname(contactDataDiv.select(".given-name").text())
-            .setLastname(contactDataDiv.select(".family-name").text())
-            .setRank(contactDataDiv.select(".title").select("span").text())
-            .setTelephone(contactDataDiv.select(".tel").first().select("span.value").text())
-            .setPicture(pictureId)
-            .build()
+        return ContactPerson(
+            firstname = contactDataDiv.select(".given-name").text(),
+            lastname = contactDataDiv.select(".family-name").text(),
+            rank = contactDataDiv.select(".title").select("span").text(),
+            telephone = contactDataDiv.select(".tel").first().select("span.value").text(),
+            picture = pictureId
+        )
     }
 
     private fun toPicture(picture: String): PictureId? {
@@ -161,12 +159,7 @@ open class ThwCrawlerOrganizationReader constructor(
     private fun extractDistinctGroups(oeDetailsDocument: Document): List<Group> {
         val groupElements = oeDetailsDocument.select("ul#accordion-box").select("h4")
         return groupElements
-            .map { groupElement: Element ->
-                Group.Builder()
-                    .setName(getGroupName(groupElement))
-                    .setDescription(getGroupDescription(groupElement))
-                    .build()
-            }
+            .map { Group(getGroupName(it), getGroupDescription(it)) }
             .distinct()
     }
 
@@ -197,12 +190,12 @@ open class ThwCrawlerOrganizationReader constructor(
     private fun extractAddressFromDocument(oeDetailsDocument: Document): Address {
         val contactDataDiv = oeDetailsDocument.select(".contact-data")
         val addressDiv = contactDataDiv.select(".adr")
-        return Address.Builder()
-            .setZipcode(addressDiv.select(".postal-code").text())
-            .setCity(addressDiv.select(".locality").text())
-            .setStreet(addressDiv.select(".street-address").text())
-            .setLocation(extractLocationFromDocument(oeDetailsDocument))
-            .build()
+        return Address(
+            zipcode = addressDiv.select(".postal-code").text(),
+            city = addressDiv.select(".locality").text(),
+            street = addressDiv.select(".street-address").text(),
+            location = extractLocationFromDocument(oeDetailsDocument)
+        )
     }
 
     private fun extractLocationFromDocument(oeDetailsDocument: Document): GeoPoint {

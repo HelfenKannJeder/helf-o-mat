@@ -1,10 +1,8 @@
-package de.helfenkannjeder.helfomat.core.question;
-
-import java.util.List;
+package de.helfenkannjeder.helfomat.core.question
 
 /**
  * @author Valentin Zickner
  */
-public interface QuestionRepository {
-    List<Question> findQuestions();
+interface QuestionRepository {
+    fun findQuestions(): List<Question>
 }

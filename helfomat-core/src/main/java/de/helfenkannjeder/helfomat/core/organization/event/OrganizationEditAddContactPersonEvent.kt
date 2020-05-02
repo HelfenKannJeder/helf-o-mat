@@ -1,51 +1,26 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.ContactPerson;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.ContactPerson
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditAddContactPersonEvent extends OrganizationEditEvent {
-    private int index;
-    private ContactPerson contactPerson;
+data class OrganizationEditAddContactPersonEvent(
+    override val organizationId: OrganizationId,
+    val index: Int,
+    val contactPerson: ContactPerson
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditAddContactPersonEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        organizationBuilder?.contactPersons?.add(index, contactPerson)
+        return organizationBuilder
     }
 
-    public OrganizationEditAddContactPersonEvent(OrganizationId organizationId, int index, ContactPerson contactPerson) {
-        super(organizationId);
-        this.index = index;
-        this.contactPerson = contactPerson;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public ContactPerson getContactPerson() {
-        return contactPerson;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.addContactPerson(index, contactPerson);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditAddContactPersonEvent{" +
-            "index=" + index +
-            ", contactPerson=" + contactPerson +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

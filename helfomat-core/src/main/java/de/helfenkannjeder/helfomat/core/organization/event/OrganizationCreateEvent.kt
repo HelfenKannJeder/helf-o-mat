@@ -1,66 +1,33 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationCreateEvent extends OrganizationEvent {
+data class OrganizationCreateEvent(
+    override val organizationId: OrganizationId,
+    val name: String,
+    val urlName: String,
+    val organizationType: OrganizationType
+) : OrganizationEvent(organizationId) {
 
-    private String name;
-    private String urlName;
-    private OrganizationType organizationType;
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?) =
+        organizationBuilder
+            ?.setId(organizationId)
+            ?.setName(name)
+            ?.setUrlName(urlName)
+            ?.setOrganizationType(organizationType)
+            ?: Organization.Builder(
+                id = organizationId,
+                name = name,
+                urlName = urlName,
+                organizationType = organizationType
+            )
 
-    protected OrganizationCreateEvent() {
-    }
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T = visitor.visit(this)
 
-    public OrganizationCreateEvent(OrganizationId organizationId,
-                                   String name,
-                                   String urlName,
-                                   OrganizationType organizationType) {
-        super(organizationId);
-        this.name = name;
-        this.urlName = urlName;
-        this.organizationType = organizationType;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organizationBuilder) {
-        return organizationBuilder
-            .setId(getOrganizationId())
-            .setName(name)
-            .setUrlName(urlName)
-            .setOrganizationType(organizationType);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getUrlName() {
-        return urlName;
-    }
-
-    public OrganizationType getOrganizationType() {
-        return organizationType;
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationCreateEvent{" +
-            "name='" + name + '\'' +
-            ", urlName='" + urlName + '\'' +
-            ", organizationType=" + organizationType +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

@@ -1,24 +1,8 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public abstract class OrganizationEditEvent extends OrganizationEvent {
-
-    protected OrganizationEditEvent() {
-    }
-
-    public OrganizationEditEvent(OrganizationId organizationId) {
-        super(organizationId);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditEvent{" +
-            "organizationId=" + organizationId +
-            '}';
-    }
-}
+abstract class OrganizationEditEvent(organizationId: OrganizationId) : OrganizationEvent(organizationId)

@@ -20,8 +20,8 @@ open class EventBasedCachingOrganizationRepository(
         LOG.debug("Received organization events for organization '{}' from event storage '{}'", organizationId, organizationEvents)
         val organizationBuilder = getExistingOrganizationBuilder(organizationId)
         organizationEvents.forEach { it.applyOnOrganizationBuilder(organizationBuilder) }
-        saveToLocalCache(organizationId, organizationBuilder)
-        persistentOrganizationRepository.save(listOf(organizationBuilder.build()))
+        saveOrganizationBuilder(organizationBuilder, organizationId)
+
     }
 
     protected open fun processDomainEvent(organizationEvent: OrganizationEvent) {
@@ -30,12 +30,21 @@ open class EventBasedCachingOrganizationRepository(
         val organizationBuilder = organizationEvent.applyOnOrganizationBuilder(
             getExistingOrganizationBuilder(organizationId)
         )
-        saveToLocalCache(organizationId, organizationBuilder)
-        persistentOrganizationRepository.save(listOf(organizationBuilder.build()))
+        saveOrganizationBuilder(organizationBuilder, organizationId)
     }
 
-    protected open fun getExistingOrganizationBuilder(organizationId: OrganizationId): Organization.Builder {
-        return organizationBuilderMap.getOrDefault(organizationId, Organization.Builder())
+    private fun saveOrganizationBuilder(organizationBuilder: Organization.Builder?, organizationId: OrganizationId) {
+        if (organizationBuilder == null) {
+            organizationBuilderMap.remove(organizationId)
+            persistentOrganizationRepository.remove(organizationId)
+        } else {
+            saveToLocalCache(organizationId, organizationBuilder)
+            persistentOrganizationRepository.save(listOf(organizationBuilder.build()))
+        }
+    }
+
+    protected open fun getExistingOrganizationBuilder(organizationId: OrganizationId): Organization.Builder? {
+        return organizationBuilderMap.get(organizationId)
     }
 
     protected open fun saveToLocalCache(organizationId: OrganizationId, organizationBuilder: Organization.Builder) {
@@ -75,6 +84,10 @@ open class EventBasedCachingOrganizationRepository(
     }
 
     override fun save(organizations: List<Organization>) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun remove(organizationId: OrganizationId) {
         throw UnsupportedOperationException()
     }
 

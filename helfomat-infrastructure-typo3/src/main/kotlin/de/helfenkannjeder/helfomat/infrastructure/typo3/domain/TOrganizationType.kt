@@ -11,7 +11,7 @@ import javax.persistence.*
 data class TOrganizationType (
     @Id
     var uid: String? = null,
-    var name: String? = null,
+    var name: String,
     var acronym: String? = null,
     var picture: String? = null,
 

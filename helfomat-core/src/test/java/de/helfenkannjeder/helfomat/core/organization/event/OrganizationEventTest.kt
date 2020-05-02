@@ -1,36 +1,36 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationType;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-class OrganizationEventTest {
+internal class OrganizationEventTest {
 
     @Test
-    void objectMapper_serializeOrganizationEvent_ensureDeserializationWorksAndContainsSameContent() throws Exception {
+    fun objectMapper_serializeOrganizationEvent_ensureDeserializationWorksAndContainsSameContent() {
         // Arrange
-        ObjectMapper objectMapper = new ObjectMapper();
-        OrganizationCreateEvent organizationCreateEvent = new OrganizationCreateEvent(
-            new OrganizationId(),
+        val objectMapper = ObjectMapper()
+        objectMapper.registerKotlinModule()
+        val organizationCreateEvent = OrganizationCreateEvent(
+            OrganizationId(),
             "Test Organization",
             "test-organization",
             OrganizationType.THW
-        );
+        )
 
         // Act
-        byte[] bytes = objectMapper.writeValueAsBytes(organizationCreateEvent);
-        OrganizationEvent result = objectMapper.readValue(bytes, OrganizationEvent.class);
+        val bytes = objectMapper.writeValueAsBytes(organizationCreateEvent)
+        val result = objectMapper.readValue(bytes, OrganizationEvent::class.java)
 
         // Assert
-        assertThat(result).isInstanceOf(OrganizationCreateEvent.class);
-        assertThat(result.getOrganizationId()).isEqualTo(organizationCreateEvent.getOrganizationId());
-        OrganizationCreateEvent event = (OrganizationCreateEvent) result;
-        assertThat(event.getName()).isEqualTo(organizationCreateEvent.getName());
-        assertThat(event.getUrlName()).isEqualTo(organizationCreateEvent.getUrlName());
-        assertThat(event.getOrganizationType()).isEqualTo(organizationCreateEvent.getOrganizationType());
+        assertThat(result).isInstanceOf(OrganizationCreateEvent::class.java)
+        assertThat(result.organizationId).isEqualTo(organizationCreateEvent.organizationId)
+        val (_, name, urlName, organizationType) = result as OrganizationCreateEvent
+        assertThat(name).isEqualTo(organizationCreateEvent.name)
+        assertThat(urlName).isEqualTo(organizationCreateEvent.urlName)
+        assertThat(organizationType).isEqualTo(organizationCreateEvent.organizationType)
     }
-
 }

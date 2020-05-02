@@ -16,7 +16,7 @@ class TravelDistanceApplicationService(
 
     fun requestTravelDistances(organizationId: OrganizationId, origin: GeoPoint): List<TravelDistanceDto> {
         val organization = organizationRepository.findOne(organizationId.value) ?: return emptyList()
-        val destination = organization.defaultAddress.location
+        val destination = organization.defaultAddress?.location ?: return emptyList()
         return TravelModeDto.values()
             .map { distanceMatrixApplicationService.getTravelDistanceFor(it, origin, destination) }
             .filterNotNull()

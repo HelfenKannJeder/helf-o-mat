@@ -47,6 +47,9 @@ open class Typo3OrganizationReaderIntegrationTest {
         assertThat(organization.website).isEqualTo("http://www.thw-karlsruhe.de")
         val defaultAddress = organization.defaultAddress
         assertThat(defaultAddress).isNotNull
+        if (defaultAddress == null) {
+            return
+        }
         assertThat(defaultAddress.location).isNotNull
         assertThat(defaultAddress.location.lat).isEqualTo(49.03766, Offset.offset(0.0001))
         assertThat(defaultAddress.location.lon).isEqualTo(8.352747, Offset.offset(0.0001))

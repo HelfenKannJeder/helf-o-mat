@@ -1,44 +1,25 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.ContactPerson;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.ContactPerson
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditDeleteContactPersonEvent extends OrganizationEditEvent {
-    private ContactPerson contactPerson;
+data class OrganizationEditDeleteContactPersonEvent(
+    override val organizationId: OrganizationId,
+    val contactPerson: ContactPerson
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditDeleteContactPersonEvent() {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        organizationBuilder?.contactPersons?.remove(contactPerson)
+        return organizationBuilder
     }
 
-    public OrganizationEditDeleteContactPersonEvent(OrganizationId organizationId, ContactPerson contactPerson) {
-        super(organizationId);
-        this.contactPerson = contactPerson;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public ContactPerson getContactPerson() {
-        return contactPerson;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.removeContactPerson(contactPerson);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditDeleteContactPersonEvent{" +
-            "contactPerson=" + contactPerson +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

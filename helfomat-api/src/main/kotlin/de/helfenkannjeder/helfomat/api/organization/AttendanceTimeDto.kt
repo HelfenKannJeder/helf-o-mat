@@ -10,6 +10,6 @@ data class AttendanceTimeDto(
     val day: DayOfWeek,
     val start: LocalTime,
     val end: LocalTime,
-    val note: String,
+    val note: String?,
     val groups: List<GroupDto>
 )

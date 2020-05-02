@@ -1,44 +1,25 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.AttendanceTime;
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
+import de.helfenkannjeder.helfomat.core.organization.AttendanceTime
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
-public class OrganizationEditDeleteAttendanceTimeEvent extends OrganizationEditEvent {
-    private AttendanceTime attendanceTime;
+data class OrganizationEditDeleteAttendanceTimeEvent(
+    override val organizationId: OrganizationId,
+    val attendanceTime: AttendanceTime
+) : OrganizationEditEvent(organizationId) {
 
-    protected OrganizationEditDeleteAttendanceTimeEvent() {
+    override fun applyOnOrganizationBuilder(organization: Organization.Builder?): Organization.Builder? {
+        organization?.attendanceTimes?.remove(attendanceTime)
+        return organization
     }
 
-    public OrganizationEditDeleteAttendanceTimeEvent(OrganizationId organizationId, AttendanceTime attendanceTime) {
-        super(organizationId);
-        this.attendanceTime = attendanceTime;
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
+        return visitor.visit(this)
     }
 
-    public AttendanceTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        return organization.removeAttendanceTime(attendanceTime);
-    }
-
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return "OrganizationEditDeleteAttendanceTimeEvent{" +
-            "attendanceTime=" + attendanceTime +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }

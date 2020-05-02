@@ -31,15 +31,21 @@ internal class OrganizationDifferenceProcessorTest {
     @Test
     fun process_withExistingOrganization_returnsNameChangedEvent() {
         // Arrange
-        val organization1 = Organization.Builder()
-            .setName("New Organization Name")
+        val organization1 = Organization.Builder(
+            id = OrganizationId(),
+            name = "New Organization Name",
+            urlName = "organization-name",
+            organizationType = OrganizationType.THW
+        )
             .setDescription("Same Description")
-            .setOrganizationType(OrganizationType.THW)
             .build()
-        val organization2 = Organization.Builder()
-            .setName("Old Organization Name")
+        val organization2 = Organization.Builder(
+            id = OrganizationId(),
+            name = "Old Organization Name",
+            urlName = "organization-name",
+            organizationType = OrganizationType.THW
+        )
             .setDescription("Same Description")
-            .setOrganizationType(OrganizationType.THW)
             .build()
         `when`(organizationRepository.findOrganizationWithSameTypeInDistance(organization1.defaultAddress, organization1.organizationType, 5L)).thenReturn(listOf(organization2))
 
@@ -65,17 +71,22 @@ internal class OrganizationDifferenceProcessorTest {
         // Arrange
         val resultOrganizationId = OrganizationId()
         val address = Address("Street 123", null, "Karlsruhe", "76131", GeoPoint(49.0, 12.0), "+49123456", "https://example.com")
-        val organization1 = Organization.Builder()
-            .setName("New Organization Name")
+        val organization1 = Organization.Builder(
+            id = OrganizationId(),
+            name = "New Organization Name",
+            urlName = "organization-name",
+            organizationType = OrganizationType.THW
+        )
             .setDescription("Same Description")
-            .setOrganizationType(OrganizationType.THW)
             .setDefaultAddress(address)
             .build()
-        val organization2 = Organization.Builder()
-            .setId(resultOrganizationId)
-            .setName("Old Organization Name")
+        val organization2 = Organization.Builder(
+            id = resultOrganizationId,
+            name = "Old Organization Name",
+            urlName = "organization-name",
+            organizationType = OrganizationType.THW
+        )
             .setDescription("Same Description")
-            .setOrganizationType(OrganizationType.THW)
             .setDefaultAddress(address)
             .build()
         `when`(generalOrganizationRepository.findOrganizationWithSameTypeInDistance(organization1.defaultAddress, OrganizationType.THW, 5L)).thenReturn(listOf(organization2))

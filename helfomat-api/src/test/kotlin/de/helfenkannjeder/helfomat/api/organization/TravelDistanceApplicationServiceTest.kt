@@ -4,10 +4,7 @@ import de.helfenkannjeder.helfomat.api.geopoint.DistanceMatrixApplicationService
 import de.helfenkannjeder.helfomat.api.geopoint.TravelDistanceDto
 import de.helfenkannjeder.helfomat.api.geopoint.TravelModeDto
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
-import de.helfenkannjeder.helfomat.core.organization.Address
-import de.helfenkannjeder.helfomat.core.organization.Organization
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId
-import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
+import de.helfenkannjeder.helfomat.core.organization.*
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -57,13 +54,20 @@ internal class TravelDistanceApplicationServiceTest {
     }
 
     private fun testSearch(): List<TravelDistanceDto> {
-        val address = Address.Builder()
-            .setLocation(GeoPoint(49.0388109, 8.3433651))
-            .build()
+        val address = Address(
+            street = "Grünhustraße 9",
+            location = GeoPoint(49.0388109, 8.3433651),
+            zipcode = "76187",
+            city = "Karlsruhe"
+        )
         val organizationId = OrganizationId()
-        `when`(organizationRepository.findOne(organizationId.value)).thenReturn(Organization.Builder()
-            .setDefaultAddress(address)
-            .build())
+        `when`(organizationRepository.findOne(organizationId.value)).thenReturn(Organization(
+            id = organizationId,
+            name = "My Organization",
+            urlName = "my-organization",
+            organizationType = OrganizationType.ASB,
+            defaultAddress = address
+        ))
         return travelDistanceApplicationService.requestTravelDistances(organizationId, GeoPoint(48.9808278, 8.4907565))
     }
 

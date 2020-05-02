@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.thwde
 
 import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.picture.PictureId
 import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Offset
@@ -159,8 +160,8 @@ class ThwCrawlerOrganizationReaderTest {
         assertThat(contactPerson?.telephone).isEqualTo("0241 9209336")
         assertThat(contactPerson?.picture).isNull()
         verify(pictureStorageService, Mockito.never())?.savePicture(
-            eq(domain + "/SharedDocs/Bilder/DE/TiUe/NoElementPerson.jpg?__blob=thumbnail&v=5"),
-            any()
+            safeEq(domain + "/SharedDocs/Bilder/DE/TiUe/NoElementPerson.jpg?__blob=thumbnail&v=5"),
+            safeAny(PictureId::class.java)
         )
     }
 
@@ -180,8 +181,8 @@ class ThwCrawlerOrganizationReaderTest {
             .isNotNull
             .hasSize(1)
         verify(pictureStorageService)?.savePicture(
-            eq(domain + "/SharedDocs/Bilder/DE/TiUe/Personen/P/probstc3.jpg?__blob=thumbnail&v=2"),
-            any()
+            safeEq(domain + "/SharedDocs/Bilder/DE/TiUe/Personen/P/probstc3.jpg?__blob=thumbnail&v=2"),
+            safeAny(PictureId::class.java)
         )
     }
 
@@ -291,3 +292,6 @@ class ThwCrawlerOrganizationReaderTest {
 
 
 }
+
+fun <T : Any> safeEq(value: T): T = eq(value) ?: value
+fun safeAny(value: Class<PictureId>): PictureId = any(value) ?: PictureId()

@@ -1,71 +1,27 @@
-package de.helfenkannjeder.helfomat.core.organization.event;
+package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Organization;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor;
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId;
-
-import java.util.List;
+import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 
 /**
  * @author Valentin Zickner
  */
-public class ConfirmedChangeOrganizationEvent extends OrganizationEvent {
+data class ConfirmedChangeOrganizationEvent(
+    override val organizationId: OrganizationId,
+    val approvedBy: String,
+    val author: String,
+    val sources: String,
+    val changes: List<OrganizationEvent>
+) : OrganizationEvent(organizationId) {
 
-    private String approvedBy;
-    private String author;
-    private String sources;
-    private List<OrganizationEvent> changes;
-
-    private ConfirmedChangeOrganizationEvent() {
-    }
-
-    public ConfirmedChangeOrganizationEvent(OrganizationId organizationId, String approvedBy, String author, String sources, List<OrganizationEvent> changes) {
-        super(organizationId);
-        this.approvedBy = approvedBy;
-        this.author = author;
-        this.sources = sources;
-        this.changes = changes;
-    }
-
-    public String getApprovedBy() {
-        return approvedBy;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getSources() {
-        return sources;
-    }
-
-    public List<OrganizationEvent> getChanges() {
-        return changes;
-    }
-
-    @Override
-    public Organization.Builder applyOnOrganizationBuilder(Organization.Builder organization) {
-        if (changes != null) {
-            for (OrganizationEvent change : changes) {
-                change.applyOnOrganizationBuilder(organization);
-            }
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+        for (change in changes) {
+            change.applyOnOrganizationBuilder(organizationBuilder)
         }
-        return organization;
+        return organizationBuilder
     }
 
-    @Override
-    public <T> T visit(OrganizationEventVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
+    override fun <T> visit(visitor: OrganizationEventVisitor<T>): T = visitor.visit(this)
 
-    @Override
-    public String toString() {
-        return "ConfirmedChangeOrganizationEvent{" +
-            "approvedBy='" + approvedBy + '\'' +
-            ", author='" + author + '\'' +
-            ", sources='" + sources + '\'' +
-            ", changes=" + changes +
-            ", organizationId=" + organizationId +
-            '}';
-    }
 }
