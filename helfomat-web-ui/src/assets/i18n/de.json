@@ -151,8 +151,8 @@
           "delete.title": "Ansprechpartner gelöscht"
         },
         "group": {
-          "add.title": "Einheit hinzugefügt",
-          "delete.title": "Einheit gelöscht"
+          "add.title": "Einheit hinzugefügt: {{groupTitle}}",
+          "delete.title": "Einheit gelöscht: {{groupTitle}}"
         },
         "picture": {
           "add.title": "Bild hinzugefügt",

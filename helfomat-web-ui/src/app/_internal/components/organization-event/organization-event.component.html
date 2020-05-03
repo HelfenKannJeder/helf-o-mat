@@ -4,7 +4,12 @@
         {{ 'edit.organization.changes.noChanges.content' | translate }}
     </div>
     <ng-container *ngFor="let organizationEvent of organizationEvents">
-        <div [ngSwitch]="organizationEvent.type" class="list-group-item flex-column align-items-start">
+        <div [ngSwitch]="organizationEvent.type" class="list-group-item flex-column align-items-start"
+             [ngClass]="{
+             'list-group-item-danger': isDeleteEvent(organizationEvent.type),
+             'list-group-item-success': isCreateEvent(organizationEvent.type),
+             'list-group-item-info': isChange(organizationEvent.type)
+             }">
             <ng-container *ngSwitchCase="'.OrganizationCreateEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.created.title' | translate }}</h5>
                 {{ 'edit.organization.changes.created.description' | translate: {name: organizationEvent.name, urlName: organizationEvent.urlName, organizationType: organizationEvent.organizationType } }}
@@ -35,10 +40,12 @@
                 <h5 class="mb-1">{{ 'edit.organization.changes.contactPerson.delete.title' | translate }}</h5>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddGroupEventDto'">
-                <h5 class="mb-1">{{ 'edit.organization.changes.group.add.title' | translate }}</h5>
+                <h5 class="mb-1">{{ 'edit.organization.changes.group.add.title' | translate: {groupTitle: organizationEvent.group.name} }}</h5>
+                {{organizationEvent.group.description}}
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDeleteGroupEventDto'">
-                <h5 class="mb-1">{{ 'edit.organization.changes.group.delete.title' | translate }}</h5>
+                <h5 class="mb-1">{{ 'edit.organization.changes.group.delete.title' | translate: {groupTitle: organizationEvent.group.name} }}</h5>
+                {{organizationEvent.group.description}}
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddPictureEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.picture.add.title' | translate }}</h5>
