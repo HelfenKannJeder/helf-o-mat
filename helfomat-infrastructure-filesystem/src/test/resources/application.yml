@@ -1,1 +1,4 @@
 helfomat.picture.picture-folder: pictures/
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
