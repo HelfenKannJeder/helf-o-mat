@@ -7,13 +7,14 @@ import {OrganizationModule} from './organization/organization.module';
 import {ResultModule} from './result/result.module';
 import {QuestionModule} from './question/question.module';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ManageModule} from "./manage/manage.module";
 import {ToastrModule} from 'ngx-toastr';
 import {OAuthModule} from "angular-oauth2-oidc";
 import {ProfileModule} from "./profile/profile.module";
+import {HttpErrorInterceptor} from "./_internal/http-error.interceptor";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -52,7 +53,12 @@ export function createTranslateLoader(http: HttpClient) {
         })
     ],
     providers: [
-        appRoutingProviders
+        appRoutingProviders,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpErrorInterceptor,
+            multi: true
+        }
     ],
     bootstrap: [
         AppComponent

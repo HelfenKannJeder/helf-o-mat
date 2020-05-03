@@ -15,6 +15,10 @@
   "map": {
     "address": "Adresse Deines Suchortes"
   },
+  "error": {
+    "server": "Es ist ein Verbindungsfehler aufgetreten, bitte versuche es später noch einmal.",
+    "client": "Irgendwas hat hier nicht geklappt. Stimmen alle Eingaben?"
+  },
   "location": {
     "headline": "Ort / Adresse",
     "contentStart": "Um die Ergebnisse auf Hilfsorganisationen in Deiner Nähe einschränken zu können, brauchen wir Deine Adresse oder zumindest den Ort/die PLZ:",
