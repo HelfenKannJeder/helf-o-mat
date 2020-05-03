@@ -193,18 +193,21 @@
   "manage": {
     "organization": {
       "approval": {
+        "headline": "Organisationen freischalten",
         "organizationName": "Organisation",
         "author": "Autor",
         "date": "Datum",
         "sources": "Quellen",
         "reviewButton": "Review",
+        "publishAll": "Alle Veröffentlichen",
         "review": {
           "reject": "Ablehnen",
           "publishChanges": "Änderungen veröffentlichen",
           "author":  "Autor",
           "sources": "Quellen",
           "date": "Datum"
-        }
+        },
+        "success": "Die Organisation wurde erfolgreich freigegeben"
       }
     }
   },

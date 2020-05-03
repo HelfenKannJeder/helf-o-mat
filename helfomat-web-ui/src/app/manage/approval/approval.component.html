@@ -1,22 +1,32 @@
-<table class="table" *ngIf="approvals | async; let approvals">
-    <thead>
-    <tr>
-        <th scope="col">{{ 'manage.organization.approval.organizationName' | translate}}</th>
-        <th scope="col">{{ 'manage.organization.approval.author' | translate}}</th>
-        <th scope="col">{{ 'manage.organization.approval.date' | translate}}</th>
-        <th scope="col">{{ 'manage.organization.approval.sources' | translate}}</th>
-        <th scope="col"></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let approval of approvals">
-        <td>{{approval.organizationName}}</td>
-        <td>{{approval.author}}</td>
-        <td>{{approval.date}}</td>
-        <td>{{approval.sources}}</td>
-        <td>
-            <button class="btn btn-primary btn-sm" [routerLink]="'review/' + approval.approvalId.value">{{ 'manage.organization.approval.reviewButton' | translate }}</button>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div *ngIf="approvals | async; let approvals">
+
+    <nav class="navbar sticky-top navbar-dark bg-lightblue">
+        <span class="navbar-brand">{{'manage.organization.approval.headline' | translate}}</span>
+        <div class="btn-group" *ngIf="isAdmin()">
+            <button class="btn btn-sm btn-danger" type="submit" (click)="approveAll(approvals)">{{'manage.organization.approval.publishAll' | translate}}</button>
+        </div>
+    </nav>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">{{ 'manage.organization.approval.organizationName' | translate}}</th>
+            <th scope="col">{{ 'manage.organization.approval.author' | translate}}</th>
+            <th scope="col">{{ 'manage.organization.approval.date' | translate}}</th>
+            <th scope="col">{{ 'manage.organization.approval.sources' | translate}}</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let approval of approvals">
+            <td>{{approval.organizationName}}</td>
+            <td>{{approval.author}}</td>
+            <td>{{approval.date}}</td>
+            <td>{{approval.sources}}</td>
+            <td>
+                <button class="btn btn-primary btn-sm" [routerLink]="'review/' + approval.approvalId.value">{{ 'manage.organization.approval.reviewButton' | translate }}</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
