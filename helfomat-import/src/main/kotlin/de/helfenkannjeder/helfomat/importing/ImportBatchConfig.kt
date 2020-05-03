@@ -52,7 +52,7 @@ open class ImportBatchConfig {
                 val uniqueOrganizationUrlNameOrganizationProcessor = UniqueOrganizationUrlNameOrganizationProcessor()
                 val indexName = elasticsearchConfiguration.index + "-" + it.name
                 val elasticsearchOrganizationRepository = ElasticsearchOrganizationRepository(elasticsearchConfiguration, elasticsearchTemplate, indexName)
-                val organizationDifferenceProcessor = OrganizationDifferenceProcessor(organizationRepository, organizationRepository)
+                val organizationDifferenceProcessor = OrganizationDifferenceProcessor(elasticsearchOrganizationRepository, organizationRepository)
                 stepBuilderFactory["import" + it.javaClass.simpleName]
                     .chunk<Organization, Pair<Organization, List<OrganizationEvent>>>(5)
                     .reader { it.read() }
@@ -64,7 +64,7 @@ open class ImportBatchConfig {
                         )
                     })
                     .writer { organizationInfo: List<Pair<Organization, List<OrganizationEvent>>> ->
-                        val organizationItemWriter = OrganizationItemWriter(organizationRepository)
+                        val organizationItemWriter = OrganizationItemWriter(elasticsearchOrganizationRepository)
                         organizationInfo.forEach {
                             restOrganizationEventPublisher.publishEvents(it.first, it.second)
                             organizationItemWriter.write(listOf(it.first))
