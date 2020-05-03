@@ -1,7 +1,6 @@
 package de.helfenkannjeder.helfomat.api.approval
 
 import de.helfenkannjeder.helfomat.api.Roles
-import de.helfenkannjeder.helfomat.api.organization.OrganizationNotFoundException
 import de.helfenkannjeder.helfomat.core.approval.Approval
 import de.helfenkannjeder.helfomat.core.approval.ApprovalId
 import de.helfenkannjeder.helfomat.core.approval.ApprovalRepository
@@ -47,7 +46,7 @@ open class ApprovalApplicationService(
         val questions = this.questionRepository.findQuestions()
         val approval = approvalRepository.getOne(approvalId)
         val organizationId = approval.requestedDomainEvent.organizationId
-        val organization: Organization = organizationRepository.findOne(organizationId.value) ?: throw OrganizationNotFoundException(organizationId)
+        val organization: Organization? = organizationRepository.findOne(organizationId.value)
         return approval.toApprovalDetailDto(organization, questions)
     }
 

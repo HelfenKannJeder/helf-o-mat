@@ -18,7 +18,9 @@ export class TextDiffComponent {
     private text2: string;
 
     public getDiff(): Array<{value: string, added: boolean, removed: boolean}> {
-        return JSDiff.diffChars(this.text1, this.text2);
+        const text1 = this.text1 || "";
+        const text2 = this.text2 || "";
+        return JSDiff.diffChars(text1, text2);
     }
 
 }

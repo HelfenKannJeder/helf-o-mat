@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.processor
 
 import de.helfenkannjeder.helfomat.core.organization.Organization
+import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
 import org.springframework.batch.item.ItemProcessor
@@ -19,7 +20,7 @@ class OrganizationDifferenceProcessor(
             updatedOrganization.urlName
         )
             ?: return generateExistingOrganizationFromOtherDatasource(updatedOrganization)
-        return updatedOrganization.updateRecordInComparisonWith(originalOrganization)
+        return updatedOrganization.withOrganizationId(originalOrganization.id).updateRecordInComparisonWith(originalOrganization)
     }
 
     private fun generateExistingOrganizationFromOtherDatasource(updatedOrganization: Organization): Pair<Organization, List<OrganizationEvent>> {
@@ -29,9 +30,7 @@ class OrganizationDifferenceProcessor(
         )
             ?: return updatedOrganization.updateRecordInComparisonWith(null)
         return Pair(
-            Organization.Builder(updatedOrganization)
-                .setId(alreadyAvailableOrganization.id)
-                .build(),
+            updatedOrganization.withOrganizationId(alreadyAvailableOrganization.id),
             emptyList()
         )
     }
@@ -51,3 +50,9 @@ fun Organization.updateRecordInComparisonWith(originalOrganization: Organization
     this,
     this.compareTo(originalOrganization)
 )
+
+fun Organization.withOrganizationId(organizationId: OrganizationId): Organization {
+    return Organization.Builder(this)
+        .setId(organizationId)
+        .build()
+}

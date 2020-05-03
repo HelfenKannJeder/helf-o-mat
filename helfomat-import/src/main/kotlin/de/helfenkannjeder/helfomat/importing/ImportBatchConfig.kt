@@ -54,7 +54,7 @@ open class ImportBatchConfig {
                 val elasticsearchOrganizationRepository = ElasticsearchOrganizationRepository(elasticsearchConfiguration, elasticsearchTemplate, indexName)
                 val organizationDifferenceProcessor = OrganizationDifferenceProcessor(organizationRepository, organizationRepository)
                 stepBuilderFactory["import" + it.javaClass.simpleName]
-                    .chunk<Organization, Pair<Organization, List<OrganizationEvent>>>(20)
+                    .chunk<Organization, Pair<Organization, List<OrganizationEvent>>>(5)
                     .reader { it.read() }
                     .processor(Function {
                         organizationDifferenceProcessor.process(
