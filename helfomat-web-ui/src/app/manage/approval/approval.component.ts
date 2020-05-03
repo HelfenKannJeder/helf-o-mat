@@ -7,7 +7,7 @@ import {Subject} from "rxjs";
 })
 export class ApprovalComponent implements OnInit {
 
-    private approvals: Subject<ApprovalOverviewDto[]> = new Subject<>();
+    public approvals: Subject<ApprovalOverviewDto[]> = new Subject<ApprovalOverviewDto[]>();
 
     constructor(private approvalService: ApprovalService) {
     }
