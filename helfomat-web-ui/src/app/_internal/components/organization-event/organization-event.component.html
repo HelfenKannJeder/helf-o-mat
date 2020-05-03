@@ -11,7 +11,7 @@
              'list-group-item-info': isChange(organizationEvent.type)
              }">
             <ng-container *ngSwitchCase="'.OrganizationCreateEventDto'">
-                <h5 class="mb-1">{{ 'edit.organization.changes.created.title' | translate }}</h5>
+                <h5 class="mb-1">{{ 'edit.organization.changes.created.title' | translate: {name: organizationEvent.name} }}</h5>
                 {{ 'edit.organization.changes.created.description' | translate: {name: organizationEvent.name, urlName: organizationEvent.urlName, organizationType: organizationEvent.organizationType } }}
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationDeleteEventDto'">

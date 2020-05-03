@@ -7,6 +7,7 @@ import java.time.OffsetDateTime
 
 data class ApprovalDetailDto(
     val approvalId: ApprovalId,
+    val organizationName: String?,
     val date: OffsetDateTime?,
     val organization: OrganizationDetailDto?,
     val proposedDomainEvent: OrganizationEventDto?

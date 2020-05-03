@@ -1,6 +1,6 @@
 <div *ngIf="approval | async; let approval">
     <nav class="navbar sticky-top navbar-dark bg-lightblue">
-        <span class="navbar-brand">{{approval.organization?.name}}</span>
+        <span class="navbar-brand">{{approval.organizationName}}</span>
         <div class="btn-group">
 <!--            <button class="btn btn-danger" type="button" (click)="decline(approval.approvalId)">{{'manage.organization.approval.review.reject' | translate}}-->
 <!--                <span class="badge badge-secondary">{{approval.proposedDomainEvent.changes.length}}</span></button>-->

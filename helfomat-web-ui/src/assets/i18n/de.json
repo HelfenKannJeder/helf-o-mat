@@ -135,6 +135,10 @@
           "title": "Keine Änderungen",
           "content": "Bisher wurden keine Änderungen vorgenommen."
         },
+        "created": {
+          "title": "Organisation angelegt: {{name}}",
+          "description": "Eine Organisation vom Typ {{organizationType}} wurde angelegt."
+        },
         "nameChanged": "Name geändert",
         "descriptionChanged": "Beschreibung geändert",
         "address": {

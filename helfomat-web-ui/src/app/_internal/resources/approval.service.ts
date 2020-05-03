@@ -33,6 +33,7 @@ export interface ApprovalOverviewDto {
 
 export interface ApprovalDetailDto {
     approvalId: ApprovalId,
+    organizationName: string,
     date: string,
     organization: Organization,
     proposedDomainEvent: ProposedChangeOrganizationEventDto
