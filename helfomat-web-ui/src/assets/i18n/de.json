@@ -15,6 +15,10 @@
   "map": {
     "address": "Adresse Deines Suchortes"
   },
+  "error": {
+    "server": "Es ist ein Verbindungsfehler aufgetreten, bitte versuche es später noch einmal.",
+    "client": "Irgendwas hat hier nicht geklappt. Stimmen alle Eingaben?"
+  },
   "location": {
     "headline": "Ort / Adresse",
     "contentStart": "Um die Ergebnisse auf Hilfsorganisationen in Deiner Nähe einschränken zu können, brauchen wir Deine Adresse oder zumindest den Ort/die PLZ:",
@@ -193,18 +197,21 @@
   "manage": {
     "organization": {
       "approval": {
+        "headline": "Organisationen freischalten",
         "organizationName": "Organisation",
         "author": "Autor",
         "date": "Datum",
         "sources": "Quellen",
         "reviewButton": "Review",
+        "publishAll": "Alle Veröffentlichen",
         "review": {
           "reject": "Ablehnen",
           "publishChanges": "Änderungen veröffentlichen",
           "author":  "Autor",
           "sources": "Quellen",
           "date": "Datum"
-        }
+        },
+        "success": "Die Organisation wurde erfolgreich freigegeben"
       }
     }
   },
