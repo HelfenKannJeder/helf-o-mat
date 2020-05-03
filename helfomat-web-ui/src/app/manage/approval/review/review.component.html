@@ -1,0 +1,27 @@
+<div *ngIf="approval | async; let approval">
+    <nav class="navbar sticky-top navbar-dark bg-lightblue">
+        <span class="navbar-brand">{{approval.organizationName}}</span>
+        <div class="btn-group">
+<!--            <button class="btn btn-danger" type="button" (click)="decline(approval.approvalId)">{{'manage.organization.approval.review.reject' | translate}}-->
+<!--                <span class="badge badge-secondary">{{approval.proposedDomainEvent.changes.length}}</span></button>-->
+            <button class="btn btn-success" type="submit" (click)="approve(approval.approvalId)">{{'manage.organization.approval.review.publishChanges' | translate}}</button>
+        </div>
+    </nav>
+
+    <div class="form-group">
+        <label for="author">{{ 'manage.organization.approval.review.author' | translate }}</label>
+        <input type="text" id="author" class="form-control" [value]="approval.proposedDomainEvent.author" readonly/>
+    </div>
+    <div class="form-group">
+        <label for="sources">{{ 'manage.organization.approval.review.sources' | translate }}</label>
+        <textarea class="form-control" id="sources" autosize [value]="approval.proposedDomainEvent.sources" readonly></textarea>
+    </div>
+    <div class="form-group">
+        <label for="date">{{ 'manage.organization.approval.review.date' | translate }}</label>
+        <input type="text" id="date" class="form-control" [value]="approval.date" readonly/>
+    </div>
+
+    <organization-event
+        [organization]="approval.organization"
+        [organizationEvents]="approval.proposedDomainEvent.changes"></organization-event>
+</div>

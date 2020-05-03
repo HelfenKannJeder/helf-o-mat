@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.jpa
 
+import de.helfenkannjeder.helfomat.core.approval.Approval
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -23,7 +24,7 @@ import javax.sql.DataSource
  * @author Valentin Zickner
  */
 @Configuration
-@EnableJpaRepositories(basePackageClasses = [Event::class], entityManagerFactoryRef = "eventEntityManager", transactionManagerRef = "eventTransactionManager")
+@EnableJpaRepositories(basePackageClasses = [Event::class, Approval::class], entityManagerFactoryRef = "eventEntityManager", transactionManagerRef = "eventTransactionManager")
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
 open class EventDataSourceConfig {
 
@@ -32,7 +33,7 @@ open class EventDataSourceConfig {
     open fun eventEntityManager(@Qualifier("eventDataSource") eventDataSource: DataSource): LocalContainerEntityManagerFactoryBean {
         val entityManagerFactoryBean = LocalContainerEntityManagerFactoryBean()
         entityManagerFactoryBean.dataSource = eventDataSource
-        entityManagerFactoryBean.setPackagesToScan(this.javaClass.getPackage().name)
+        entityManagerFactoryBean.setPackagesToScan(this.javaClass.getPackage().name, Approval::class.java.packageName)
         val vendorAdapter = HibernateJpaVendorAdapter()
         entityManagerFactoryBean.jpaVendorAdapter = vendorAdapter
         val jpaProperties: MutableMap<String, String> = hashMapOf()

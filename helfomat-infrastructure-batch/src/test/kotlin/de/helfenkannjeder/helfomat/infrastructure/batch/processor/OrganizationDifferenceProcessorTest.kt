@@ -31,8 +31,9 @@ internal class OrganizationDifferenceProcessorTest {
     @Test
     fun process_withExistingOrganization_returnsNameChangedEvent() {
         // Arrange
+        val organizationId = OrganizationId()
         val organization1 = Organization.Builder(
-            id = OrganizationId(),
+            id = organizationId,
             name = "New Organization Name",
             urlName = "organization-name",
             organizationType = OrganizationType.THW
@@ -40,7 +41,7 @@ internal class OrganizationDifferenceProcessorTest {
             .setDescription("Same Description")
             .build()
         val organization2 = Organization.Builder(
-            id = OrganizationId(),
+            id = organizationId,
             name = "Old Organization Name",
             urlName = "organization-name",
             organizationType = OrganizationType.THW

@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.infrastructure.jpa
+package de.helfenkannjeder.helfomat.core.approval
 
 import org.springframework.data.annotation.AccessType
 import java.io.Serializable
@@ -11,6 +11,11 @@ import javax.persistence.Embeddable
  */
 @Embeddable
 @AccessType(AccessType.Type.FIELD)
-data class EventId (
-    @field:Column(name = "eventId") val value: UUID = UUID.randomUUID()
-) : Serializable
+data class ApprovalId(
+    @Column(name = "approvalId") val value: UUID = UUID.randomUUID()
+) : Serializable {
+
+    @Suppress("unused")
+    constructor(value: String) : this(UUID.fromString(value))
+
+}

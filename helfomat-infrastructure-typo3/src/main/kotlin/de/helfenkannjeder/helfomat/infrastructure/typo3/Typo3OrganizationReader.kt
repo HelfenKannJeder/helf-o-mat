@@ -57,7 +57,7 @@ open class Typo3OrganizationReader @Autowired constructor(private val typo3Organ
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(Typo3OrganizationReader::class.java)
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 5
     }
 
 }

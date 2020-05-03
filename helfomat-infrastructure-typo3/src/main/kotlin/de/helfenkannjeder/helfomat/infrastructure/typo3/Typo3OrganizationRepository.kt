@@ -11,9 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository
 interface Typo3OrganizationRepository : PagingAndSortingRepository<TOrganization, String> {
 
     @Query("select organisation from tx_helfenkannjeder_domain_model_organisation organisation " +
-        "where organisation.deleted = 0 " +
-        "and organisation.hidden = 0 " +
-        "and organisation.organizationtype <> null")
+        "where organisation.deleted = 0 and organisation.hidden = 0 and organisation.organizationtype <> null order by organisation.uid")
     fun findAvailable(pageable: Pageable): List<TOrganization>
 
 }

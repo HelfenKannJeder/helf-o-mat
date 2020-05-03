@@ -62,7 +62,7 @@ services:
       - keycloak
 
   keycloak:
-    image: jboss/keycloak
+    image: jboss/keycloak:9.0.3
     environment:
       DB_VENDOR: postgres
       DB_ADDR: keycloak-postgres

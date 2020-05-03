@@ -30,9 +30,9 @@ class GoogleMapsDistanceMatrixApplicationService(
     override fun getTravelDistanceFor(travelMode: TravelModeDto, origin: GeoPoint, destination: GeoPoint): TravelDistanceDto? {
         return try {
             val apiResult = DistanceMatrixApi.newRequest(geoApiContext)
-                .destinations(geoPointToLatLng(destination))
-                .origins(geoPointToLatLng(origin))
-                .mode(mapToGoogleTravelMode(travelMode))
+                .destinations(destination.toLatLng())
+                .origins(origin.toLatLng())
+                .mode(travelMode.toTravelMode())
                 .units(Unit.METRIC)
                 .await()
             mapApiResult(apiResult, travelMode)
@@ -63,17 +63,13 @@ class GoogleMapsDistanceMatrixApplicationService(
         return null
     }
 
-    private fun mapToGoogleTravelMode(internalTravelMode: TravelModeDto): TravelMode {
-        return when (internalTravelMode) {
-            TravelModeDto.WALKING -> TravelMode.WALKING
-            TravelModeDto.CYCLING -> TravelMode.BICYCLING
-            TravelModeDto.DRIVING -> TravelMode.DRIVING
-            TravelModeDto.TRANSIT -> TravelMode.TRANSIT
-        }
-    }
-
-    private fun geoPointToLatLng(geoPoint: GeoPoint): LatLng {
-        return LatLng(geoPoint.lat, geoPoint.lon)
-    }
-
 }
+
+fun TravelModeDto.toTravelMode() = when (this) {
+    TravelModeDto.WALKING -> TravelMode.WALKING
+    TravelModeDto.CYCLING -> TravelMode.BICYCLING
+    TravelModeDto.DRIVING -> TravelMode.DRIVING
+    TravelModeDto.TRANSIT -> TravelMode.TRANSIT
+}
+
+fun GeoPoint.toLatLng() = LatLng(this.lat, this.lon)

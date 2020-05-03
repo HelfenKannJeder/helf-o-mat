@@ -95,7 +95,7 @@ body {
       @include transform(rotate(90deg));
       @include transform-origin(0, 0);
       height: 50px;
-      width: 850px;
+      width: auto;
       padding-left: 185px;
 
       ul {
