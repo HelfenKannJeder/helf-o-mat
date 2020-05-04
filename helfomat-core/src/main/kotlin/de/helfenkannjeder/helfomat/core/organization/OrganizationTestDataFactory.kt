@@ -17,16 +17,20 @@ object OrganizationTestDataFactory {
         location = GeoPoint(49.03765869140625, 8.352746963500977),
         telephone = "0721 9712834"
     )
-    private val ORGANIZATION_1_OV_STAB = Group(name = "OV-Stab", description = "Der OV-Stab bildet die Verwaltungseinheit eines Ortsverbands ...")
-    private val ORGANIZATION_1_JUGENDGRUPPE = Group(name = "Jugendgruppe", description = "Die THW-Jugendgruppe vermittelt Heranwachsenden im Alter von zehn bis 17 Jahren ...")
-    private val ORGANIZATION_1_BAMBINIGRUPPE = Group(name = "Bambini-/Mini-Jugendgruppe", description = "Für Kinder unter zehn Jahren besteht die Möglichkeit, in einer Mini-/Bambini-Jugendgruppe mitzumachen. ...")
-    private val ORGANIZATION_1_ZUGTRUPP = Group(name = "Zugtrupp", description = "Der Zugtrupp ist für die Koordination von THW-Einsätzen zuständig ...")
-    private val ORGANIZATION_1_BERGRUNG_1 = Group(name = "1. Bergungsgruppe", description = "Die 1. Bergungsgruppe (1. BGr) ist ...")
-    private val ORGANIZATION_1_R = Group(name = "Fachgruppe Räumen (FGr R, Typ A und B)", description = "Mit ihren leistungsfähigen Baumaschinen ist die Fachgruppe Räumen an fast ...")
-    private val ORGANIZATION_1_BEL = Group(name = "Fachgruppe Beleuchtung (FGr Bel)", description = "Die Fachgruppe Beleuchtung macht die Nacht zum Tag. Sie ...")
-    private val ORGANIZATION_1_ABSTUETZEN = Group(name = "Abstützen", description = "Mit unserem Abstützsystem aus Holzelementen lassen sich Bauwerke bis 15 ...")
-    private val ORGANIZATION_1_FELDKOCHHERD = Group(name = "Feldkochherd", description = "Mit unserer mobilen Feldküche sind wir in der Lage, ...")
-    private val ORGANIZATION_1_THV = Group(name = "Technische Hilfe auf Verkehrswegen (THV-Dienst)", description = "Wir unterstützen die Polizei auf den Bundesautobahnen vor allem in ...")
+    val ORGANIZATION_1_OV_STAB = Group(name = "OV-Stab", description = "Der OV-Stab bildet die Verwaltungseinheit eines Ortsverbands ...")
+    val ORGANIZATION_1_JUGENDGRUPPE = Group(name = "Jugendgruppe", description = "Die THW-Jugendgruppe vermittelt Heranwachsenden im Alter von zehn bis 17 Jahren ...")
+    val ORGANIZATION_1_BAMBINIGRUPPE = Group(name = "Bambini-/Mini-Jugendgruppe", description = "Für Kinder unter zehn Jahren besteht die Möglichkeit, in einer Mini-/Bambini-Jugendgruppe mitzumachen. ...")
+    val ORGANIZATION_1_ZUGTRUPP = Group(name = "Zugtrupp", description = "Der Zugtrupp ist für die Koordination von THW-Einsätzen zuständig ...")
+    val ORGANIZATION_1_BERGRUNGSGRUPPE = Group(name = "Bergungsgruppe", description = "Die Bergungsgruppe (B) ist ...")
+    val ORGANIZATION_1_BERGRUNG_1 = Group(name = "1. Bergungsgruppe", description = "Die 1. Bergungsgruppe (1. BGr) ist ...")
+    val ORGANIZATION_1_BERGRUNG_2 = Group(name = "2. Bergungsgruppe", description = "Die 2. Bergungsgruppe (2. BGr) ist ...")
+    val ORGANIZATION_1_SCHWERE_BERGUNG = Group(name = "Schwere Bergung (SB)", description = "Die Schwere Bergung (SB) ist ...")
+    val ORGANIZATION_1_R = Group(name = "Fachgruppe Räumen (FGr R, Typ A und B)", description = "Mit ihren leistungsfähigen Baumaschinen ist die Fachgruppe Räumen an fast ...")
+    val ORGANIZATION_1_BEL = Group(name = "Fachgruppe Beleuchtung (FGr Bel)", description = "Die Fachgruppe Beleuchtung macht die Nacht zum Tag. Sie ...")
+    val ORGANIZATION_1_N = Group(name = "Fachgruppe Notversorgung und Notinstandsetzung (FGr N)", description = "Die Fachgruppe N macht die Nacht zum Tag. Sie ...")
+    val ORGANIZATION_1_ABSTUETZEN = Group(name = "Abstützen", description = "Mit unserem Abstützsystem aus Holzelementen lassen sich Bauwerke bis 15 ...")
+    val ORGANIZATION_1_FELDKOCHHERD = Group(name = "Feldkochherd", description = "Mit unserer mobilen Feldküche sind wir in der Lage, ...")
+    val ORGANIZATION_1_THV = Group(name = "Technische Hilfe auf Verkehrswegen (THV-Dienst)", description = "Wir unterstützen die Polizei auf den Bundesautobahnen vor allem in ...")
 
     @JvmField
     val ORGANIZATION_1 = Organization.Builder(

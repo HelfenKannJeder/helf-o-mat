@@ -28,4 +28,5 @@ interface OrganizationEventVisitor<T> {
     fun visit(organizationEditWebsiteEvent: OrganizationEditWebsiteEvent): T
     fun visit(proposedChangeOrganizationEvent: ProposedChangeOrganizationEvent): T
     fun visit(confirmedChangeOrganizationEvent: ConfirmedChangeOrganizationEvent): T
+    fun visit(organizationEditChangeGroupEvent: OrganizationEditChangeGroupEvent): T
 }

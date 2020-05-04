@@ -11,8 +11,8 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 data class OrganizationEditAddGroupEvent(
     override val organizationId: OrganizationId,
     val index: Int,
-    val group: Group
-) : OrganizationEditEvent(organizationId) {
+    override val group: Group
+) : OrganizationEditGroupEvent(organizationId, group) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
         organizationBuilder?.groups?.add(index, group)

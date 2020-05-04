@@ -77,6 +77,9 @@ class OrganizationEventDtoAssembler : OrganizationEventDtoVisitor<OrganizationEv
     override fun visit(organizationEditWebsiteEventDto: OrganizationEditWebsiteEventDto) =
         OrganizationEditWebsiteEvent(organizationEditWebsiteEventDto.organizationId, organizationEditWebsiteEventDto.website)
 
+    override fun visit(organizationEditChangeGroupEventDto: OrganizationEditChangeGroupEventDto): OrganizationEvent =
+        OrganizationEditChangeGroupEvent(organizationEditChangeGroupEventDto.organizationId, organizationEditChangeGroupEventDto.indexOffset, organizationEditChangeGroupEventDto.oldGroup.toGroup(), organizationEditChangeGroupEventDto.group.toGroup())
+
     override fun visit(proposedChangeOrganizationEventDto: ProposedChangeOrganizationEventDto) =
         ProposedChangeOrganizationEvent(
             proposedChangeOrganizationEventDto.organizationId,

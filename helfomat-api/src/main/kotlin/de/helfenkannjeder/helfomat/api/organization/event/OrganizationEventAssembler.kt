@@ -103,6 +103,13 @@ class OrganizationEventAssembler(private val questions: List<Question>) : Organi
             confirmedChangeOrganizationEvent.changes.map { it.visit(this) }
         )
 
+    override fun visit(organizationEditChangeGroupEvent: OrganizationEditChangeGroupEvent): OrganizationEventDto =
+        OrganizationEditChangeGroupEventDto(
+            organizationEditChangeGroupEvent.organizationId,
+            organizationEditChangeGroupEvent.indexOffset,
+            organizationEditChangeGroupEvent.oldGroup.toGroupDto(),
+            organizationEditChangeGroupEvent.group.toGroupDto()
+        )
 }
 
 fun OrganizationEvent.toOrganizationEventDto(questions: List<Question>) = this.toOrganizationEventDto(OrganizationEventAssembler(questions))

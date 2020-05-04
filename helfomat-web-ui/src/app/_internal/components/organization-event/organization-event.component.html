@@ -47,6 +47,12 @@
                 <h5 class="mb-1">{{ 'edit.organization.changes.group.delete.title' | translate: {groupTitle: organizationEvent.group.name} }}</h5>
                 {{organizationEvent.group.description}}
             </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditChangeGroupEventDto'">
+                <h5 class="mb-1">{{ 'edit.organization.changes.group.change.title' | translate: {groupTitle: organizationEvent.group.name} }}</h5>
+                <p><strong><text-diff [text1]="organizationEvent.oldGroup.name" [text2]="organizationEvent.group.name"></text-diff></strong></p>
+                <text-diff [text1]="organizationEvent.oldGroup.description" [text2]="organizationEvent.group.description"></text-diff>
+                {{organizationEvent.indexOffset}}
+            </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddPictureEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.picture.add.title' | translate }}</h5>
             </ng-container>

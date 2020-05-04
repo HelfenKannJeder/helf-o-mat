@@ -160,7 +160,8 @@
         },
         "group": {
           "add.title": "Einheit hinzugefügt: {{groupTitle}}",
-          "delete.title": "Einheit gelöscht: {{groupTitle}}"
+          "delete.title": "Einheit gelöscht: {{groupTitle}}",
+          "change.title": "Einheit bearbeitet: {{groupTitle}}"
         },
         "picture": {
           "add.title": "Bild hinzugefügt",

@@ -2,6 +2,20 @@ package de.helfenkannjeder.helfomat.core.organization
 
 import de.helfenkannjeder.helfomat.core.organization.event.*
 import de.helfenkannjeder.helfomat.core.picture.PictureId
+import org.simmetrics.StringMetric
+import org.simmetrics.builders.StringMetricBuilder
+import org.simmetrics.metrics.CosineSimilarity
+import org.simmetrics.simplifiers.Simplifiers
+import org.simmetrics.tokenizers.Tokenizers
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.emptyList
+import kotlin.collections.filter
+import kotlin.collections.map
+import kotlin.collections.toMutableList
+
 
 /**
  * @author Valentin Zickner
@@ -73,8 +87,11 @@ data class Organization(
         differences.addAll(getDiff(addresses, organization.addresses).map { OrganizationEditAddAddressEvent(id, it.second, it.first) })
         differences.addAll(getDiff(organization.questionAnswers, questionAnswers).map { OrganizationEditDeleteQuestionAnswerEvent(id, it.first) })
         differences.addAll(getDiff(questionAnswers, organization.questionAnswers).map { OrganizationEditAddQuestionAnswerEvent(id, it.second, it.first) })
-        differences.addAll(getDiff(organization.groups, groups).map { OrganizationEditDeleteGroupEvent(id, it.first) })
-        differences.addAll(getDiff(groups, organization.groups).map { OrganizationEditAddGroupEvent(id, it.second, it.first) })
+        differences.addAll(aggregateGroupEvents(
+            getDiff(organization.groups, groups).map { it.first },
+            getDiff(groups, organization.groups).map { it.first },
+            organization
+        ))
         differences.addAll(getDiff(organization.attendanceTimes, attendanceTimes).map { OrganizationEditDeleteAttendanceTimeEvent(id, it.first) })
         differences.addAll(getDiff(attendanceTimes, organization.attendanceTimes).map { OrganizationEditAddAttendanceTimeEvent(id, it.second, it.first) })
         differences.addAll(getDiff(organization.volunteers, volunteers).map { OrganizationEditDeleteVolunteerEvent(id, it.first) })
@@ -101,6 +118,7 @@ data class Organization(
         var attendanceTimes: MutableList<AttendanceTime> = ArrayList(),
         var volunteers: MutableList<Volunteer> = ArrayList()
     ) {
+
         constructor(organization: Organization) : this(organization.id, organization.name, organization.urlName, organization.organizationType) {
             this.description = organization.description
             this.website = organization.website
@@ -156,12 +174,72 @@ data class Organization(
         )
     }
 
+    private fun aggregateGroupEvents(delete: List<Group>, add: List<Group>, originalOrganization: Organization): List<OrganizationEvent> {
+        val resultDelete = delete.toMutableList()
+        val resultAdd = add.toMutableList()
+        val conversion = hashMapOf<Group, Group>()
+        for (deleteElement in delete) {
+            val addSearchResult = resultAdd.filter { deleteElement.name == it.name }
+            if (addSearchResult.isNotEmpty()) {
+                val addElement = addSearchResult[0]
+                conversion[addElement] = deleteElement
+                resultDelete.remove(deleteElement)
+                resultAdd.remove(addElement)
+            }
+            val byDifference = resultAdd.sortedBy { 1.0 - metric.compare(deleteElement.name, it.name) }
+            if (byDifference.isNotEmpty() && metric.compare(deleteElement.name, byDifference.first().name) >= 0.5) {
+                val addElement = byDifference[0]
+                conversion[addElement] = deleteElement
+                resultDelete.remove(deleteElement)
+                resultAdd.remove(addElement)
+            }
+        }
+
+        // generate sorting event for new elements
+        val originalGroups = originalOrganization.groups.toMutableList()
+        val newGroups = this.groups.toMutableList()
+        resultAdd.forEach { newGroups.remove(it) }
+        resultDelete.forEach { originalGroups.remove(it) }
+
+        val endOfIteration = Math.min(originalGroups.size, newGroups.size) - 1
+        val resultEditEvents = ArrayList<OrganizationEditChangeGroupEvent>()
+        for (index in 0..endOfIteration) {
+            val group = newGroups[index]
+            val oldGroup = conversion.get(group) ?: group
+
+            val oldIndex = originalGroups.indexOf(oldGroup)
+            if (index != oldIndex || group != oldGroup) {
+                resultEditEvents.add(OrganizationEditChangeGroupEvent(
+                    organizationId = this.id,
+                    indexOffset =  index - oldIndex,
+                    oldGroup = oldGroup,
+                    group = group
+                ))
+                originalGroups.removeAt(oldIndex)
+                originalGroups.add(index, oldGroup)
+            }
+        }
+
+        val allGroups = this.groups.toMutableList()
+        return listOf(
+            resultDelete.map { OrganizationEditDeleteGroupEvent(id, it) },
+            resultEditEvents,
+            resultAdd.map { OrganizationEditAddGroupEvent(id, allGroups.indexOf(it), it) }
+        ).flatten()
+
+    }
     companion object {
         private fun <T> getDiff(list1: List<T>, list2: List<T>): List<Pair<T, Int>> {
             val list = ArrayList(list1)
             list.removeAll(list2)
             return list.map { Pair(it, list1.indexOf(it)) }
         }
+
+        var metric: StringMetric = StringMetricBuilder.with(CosineSimilarity())
+            .simplify(Simplifiers.toLowerCase(Locale.GERMAN))
+            .simplify(Simplifiers.replaceNonWord())
+            .tokenize(Tokenizers.whitespace())
+            .build()
     }
 
 }
