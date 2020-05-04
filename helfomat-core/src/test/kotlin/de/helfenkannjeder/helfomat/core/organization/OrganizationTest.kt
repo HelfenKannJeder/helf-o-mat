@@ -155,7 +155,7 @@ class OrganizationTest {
     }
 
     @Test
-    fun compareTo_withObjectToEventsAndBackConvertion_verifyObjectsAreEquals() {
+    fun compareTo_withObjectToEventsAndBackConversion_verifyObjectsAreEquals() {
         // Arrange
         val originalOrganization = OrganizationTestDataFactory.ORGANIZATION_1
 
@@ -213,6 +213,8 @@ class OrganizationTest {
         assertThat(organizationEditGroupEvent.indexOffset).isEqualTo(0)
         assertThat(organizationEditGroupEvent.oldGroup).isEqualTo(originalGroup)
         assertThat(organizationEditGroupEvent.group).isEqualTo(newGroup)
+
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, difference, new)
     }
 
     @ParameterizedTest
@@ -237,6 +239,8 @@ class OrganizationTest {
         assertThat(organizationEditGroupEvent.indexOffset).isEqualTo(-1)
         assertThat(organizationEditGroupEvent.oldGroup).isEqualTo(originalGroup)
         assertThat(organizationEditGroupEvent.group).isEqualTo(newGroup)
+
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, difference, new)
     }
 
     @ParameterizedTest
@@ -255,6 +259,7 @@ class OrganizationTest {
         // Assert
         assertThat(difference)
             .hasSize(2)
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, difference, new)
     }
 
     @Test
@@ -276,6 +281,8 @@ class OrganizationTest {
         assertThat(organizationEditGroupEvent.indexOffset).isEqualTo(-1)
         assertThat(organizationEditGroupEvent.oldGroup).isEqualTo(originalGroup)
         assertThat(organizationEditGroupEvent.group).isEqualTo(originalGroup)
+
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, difference, new)
     }
 
     @Test
@@ -293,13 +300,13 @@ class OrganizationTest {
 
         // Assert
         assertThat(difference).hasSize(2)
-        val event1 = difference.get(0)
+        val event1 = difference[0]
         assertThat(event1).isInstanceOf(OrganizationEditChangeGroupEvent::class.java)
         val organizationEditGroupEvent1 = event1 as OrganizationEditChangeGroupEvent
         assertThat(organizationEditGroupEvent1.indexOffset).isEqualTo(-2)
         assertThat(organizationEditGroupEvent1.oldGroup).isEqualTo(originalGroup1)
         assertThat(organizationEditGroupEvent1.group).isEqualTo(originalGroup1)
-        val event2 = difference.get(1)
+        val event2 = difference[1]
         assertThat(event2).isInstanceOf(OrganizationEditChangeGroupEvent::class.java)
         val organizationEditGroupEvent2 = event2 as OrganizationEditChangeGroupEvent
         assertThat(organizationEditGroupEvent2.indexOffset).isEqualTo(-2)
@@ -307,13 +314,123 @@ class OrganizationTest {
         assertThat(organizationEditGroupEvent2.group).isEqualTo(originalGroup2)
 
         // ensure that we are able to rebuild it
-        var organizationBuilder: Organization.Builder? = Organization.Builder(original)
-        for (domainEvent in difference) {
-            organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder)
-        }
-        assertThat(organizationBuilder).isNotNull
-        val organization = organizationBuilder?.build() ?: throw IllegalStateException()
-        assertThat(organization.groups).containsExactlyElementsOf(new.groups)
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, difference, new)
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [2, 3, 4, 5])
+    fun compareTo_withMovingOneGroupDownInTheList_ensureGroupChangeEventIsOnlyGeneratedOnce(moveOffset: Int) {
+        // Arrange
+        val notChangingGroup1 = Group("This is some test group 1", "with a strange test description")
+        val notChangingGroup2 = Group("This is some test group 2", "with a strange test description")
+        val notChangingGroup3 = Group("This is some test group 3", "with a strange test description")
+        val notChangingGroup4 = Group("This is some test group 4", "with a strange test description")
+        val notChangingGroup5 = Group("This is some test group 5", "with a strange test description")
+        val originalGroup = Group("My group name 1", "Some description for my group")
+        val notChangingGroups = listOf(notChangingGroup1, notChangingGroup2, notChangingGroup3, notChangingGroup4, notChangingGroup5)
+        val originalGroups = notChangingGroups.toMutableList()
+        originalGroups.add(0, originalGroup)
+        val original = originalGroups.toTestOrganization()
+        val newGroups = notChangingGroups.toMutableList()
+        newGroups.add(moveOffset, originalGroup)
+        val new = newGroups.toTestOrganization()
+
+        // Act
+        val difference = new.compareTo(original)
+
+        // Assert
+        assertThat(difference).hasSize(1)
+        val event1 = difference[0]
+        assertThat(event1).isInstanceOf(OrganizationEditChangeGroupEvent::class.java)
+        val organizationEditGroupEvent1 = event1 as OrganizationEditChangeGroupEvent
+        assertThat(organizationEditGroupEvent1.indexOffset).isEqualTo(moveOffset)
+        assertThat(organizationEditGroupEvent1.oldGroup).isEqualTo(originalGroup)
+        assertThat(organizationEditGroupEvent1.group).isEqualTo(originalGroup)
+
+        // ensure that we are able to rebuild it
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, difference, new)
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [2, 3, 4, 5])
+    fun compareTo_withMovingOneGroupDownInTheListAndChangingTheMovedElement_ensureGroupChangeEventIsOnlyGeneratedOnce(moveOffset: Int) {
+        // Arrange
+        val notChangingGroup1 = Group("This is some test group 1", "with a strange test description")
+        val notChangingGroup2 = Group("This is some test group 2", "with a strange test description")
+        val notChangingGroup3 = Group("This is some test group 3", "with a strange test description")
+        val notChangingGroup4 = Group("This is some test group 4", "with a strange test description")
+        val notChangingGroup5 = Group("This is some test group 5", "with a strange test description")
+        val originalGroup = Group("My group name 1", "Some description for my group")
+        val newGroup = Group("My group name 1", "Some different description for my group")
+        val notChangingGroups = listOf(notChangingGroup1, notChangingGroup2, notChangingGroup3, notChangingGroup4, notChangingGroup5)
+        val originalGroups = notChangingGroups.toMutableList()
+        originalGroups.add(0, originalGroup)
+        val original = originalGroups.toTestOrganization()
+        val newGroups = notChangingGroups.toMutableList()
+        newGroups.add(moveOffset, newGroup)
+        val new = newGroups.toTestOrganization()
+
+        // Act
+        val difference = new.compareTo(original)
+
+        // Assert
+        assertThat(difference).hasSize(1)
+        val event1 = difference[0]
+        assertThat(event1).isInstanceOf(OrganizationEditChangeGroupEvent::class.java)
+        val organizationEditGroupEvent1 = event1 as OrganizationEditChangeGroupEvent
+        assertThat(organizationEditGroupEvent1.indexOffset).isEqualTo(moveOffset)
+        assertThat(organizationEditGroupEvent1.oldGroup).isEqualTo(originalGroup)
+        assertThat(organizationEditGroupEvent1.group).isEqualTo(newGroup)
+
+        // ensure that we are able to rebuild it
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, difference, new)
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [3, 4, 5])
+    fun compareTo_withTwoGroupsMovingDownInTheList_ensureGroupChangeEventIsOnlyGeneratedTwice(moveOffset: Int) {
+        // Arrange
+        val notChangingGroup1 = Group("This is some test group 1", "with a strange test description")
+        val notChangingGroup2 = Group("This is some test group 2", "with a strange test description")
+        val notChangingGroup3 = Group("This is some test group 3", "with a strange test description")
+        val notChangingGroup4 = Group("This is some test group 4", "with a strange test description")
+        val notChangingGroup5 = Group("This is some test group 5", "with a strange test description")
+        val originalGroup1 = Group("My group name 1", "Some description for my group")
+        val originalGroup2 = Group("My group name 2", "Some description for my group")
+        val notChangingGroups = listOf(notChangingGroup1, notChangingGroup2, notChangingGroup3, notChangingGroup4, notChangingGroup5)
+        val originalGroups = notChangingGroups.toMutableList()
+        originalGroups.add(0, originalGroup1)
+        originalGroups.add(1, originalGroup2)
+        val original = originalGroups.toTestOrganization()
+        val newGroups = notChangingGroups.toMutableList()
+        newGroups.add(moveOffset, originalGroup1)
+        newGroups.add(moveOffset + 1, originalGroup2)
+        val new = newGroups.toTestOrganization()
+
+        // Act
+        val difference = new.compareTo(original)
+
+        // Assert
+        assertThat(difference).hasSize(2)
+        val event1 = difference.get(0)
+        assertThat(event1).isInstanceOf(OrganizationEditChangeGroupEvent::class.java)
+        val organizationEditGroupEvent1 = event1 as OrganizationEditChangeGroupEvent
+        // o1, o2, n1, n2, n3, n4, n5
+        // n1, n2, n3, o1, o2, n4, n5 -> result with move three
+        // since we move first o1, and it must result after n3 nwe need to have index offset 4
+        val numberOfElementsMoved = 2
+        assertThat(organizationEditGroupEvent1.indexOffset).isEqualTo(moveOffset + (numberOfElementsMoved - 1))
+        assertThat(organizationEditGroupEvent1.oldGroup).isEqualTo(originalGroup1)
+        assertThat(organizationEditGroupEvent1.group).isEqualTo(originalGroup1)
+        val event2 = difference.get(1)
+        assertThat(event2).isInstanceOf(OrganizationEditChangeGroupEvent::class.java)
+        val organizationEditGroupEvent2 = event2 as OrganizationEditChangeGroupEvent
+        assertThat(organizationEditGroupEvent2.indexOffset).isEqualTo(moveOffset + (numberOfElementsMoved - 1))
+        assertThat(organizationEditGroupEvent2.oldGroup).isEqualTo(originalGroup2)
+        assertThat(organizationEditGroupEvent2.group).isEqualTo(originalGroup2)
+
+        // ensure that we are able to rebuild it
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, difference, new)
     }
 
     @ParameterizedTest
@@ -338,6 +455,8 @@ class OrganizationTest {
         val organizationEditGroupEvent = event as OrganizationEditAddGroupEvent
         assertThat(organizationEditGroupEvent.index).isEqualTo(index)
         assertThat(organizationEditGroupEvent.group).isEqualTo(newGroup)
+
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, difference, new)
     }
 
     @ParameterizedTest
@@ -357,13 +476,7 @@ class OrganizationTest {
         val organizationEvents = new.compareTo(original)
 
         // Assert
-        var organizationBuilder: Organization.Builder? = Organization.Builder(original)
-        for (domainEvent in organizationEvents) {
-            organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder)
-        }
-        assertThat(organizationBuilder).isNotNull
-        val organization = organizationBuilder?.build() ?: throw IllegalStateException()
-        assertThat(organization.groups).containsExactlyElementsOf(newList)
+        assertThatOrganizationCanBeRebuildBasedOnEvents(original, organizationEvents, new)
     }
 
     @Test
@@ -401,13 +514,17 @@ class OrganizationTest {
         val organizationEvents = newOrganization.compareTo(originalOrganization)
 
         // Assert
-        var organizationBuilder: Organization.Builder? = Organization.Builder(originalOrganization)
-        for (domainEvent in organizationEvents) {
+        assertThatOrganizationCanBeRebuildBasedOnEvents(originalOrganization, organizationEvents, newOrganization)
+    }
+
+    private fun assertThatOrganizationCanBeRebuildBasedOnEvents(original: Organization, difference: List<OrganizationEvent>, new: Organization) {
+        var organizationBuilder: Organization.Builder? = Organization.Builder(original)
+        for (domainEvent in difference) {
             organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder)
         }
         assertThat(organizationBuilder).isNotNull
         val organization = organizationBuilder?.build() ?: throw IllegalStateException()
-        assertThat(organization.groups).containsExactlyElementsOf(newOrganization.groups)
+        assertThat(organization.groups).containsExactlyElementsOf(new.groups)
     }
 
 }

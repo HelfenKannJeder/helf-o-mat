@@ -62,25 +62,25 @@
                             </div>
                             <div class="card-body" *ngIf="attendanceTime.__expanded">
                                 <div class="form-group">
-                                    <label for="weekday">{{'edit.organization.attendanceTime.weekday' | translate}}</label>
-                                    <select class="form-control" name="weekday" id="weekday" [(ngModel)]="attendanceTime.day" required>
+                                    <label [for]="getId('weekday', attendanceTime)">{{'edit.organization.attendanceTime.weekday' | translate}}</label>
+                                    <select class="form-control" [name]="getId('weekday', attendanceTime)" [id]="getId('weekday', attendanceTime)" [(ngModel)]="attendanceTime.day" required>
                                         <option *ngFor="let weekday of weekdays" [value]="weekday">{{'organization.attendanceTime.weekday.' + weekday | translate}}</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="weekday">{{'edit.organization.attendanceTime.time' | translate}}</label>
+                                    <label [for]="getId('weekdayTime', attendanceTime)">{{'edit.organization.attendanceTime.time' | translate}}</label>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <ngb-timepicker [(ngModel)]="attendanceTime.start" [minuteStep]="15" name="start" required></ngb-timepicker>
+                                            <ngb-timepicker [(ngModel)]="attendanceTime.start" [minuteStep]="15" [name]="getId('weekdayStart', attendanceTime)" (ngModelChange)="calculateChanges(organization)" required></ngb-timepicker>
                                         </div>
                                         <div class="col-sm-6">
-                                            <ngb-timepicker [(ngModel)]="attendanceTime.end" [minuteStep]="15" name="end" required></ngb-timepicker>
+                                            <ngb-timepicker [(ngModel)]="attendanceTime.end" [minuteStep]="15" [name]="getId('weekdayEnd', attendanceTime)" (ngModelChange)="calculateChanges(organization)" required></ngb-timepicker>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="note">{{'organization.attendanceTime.note' | translate}}</label>
-                                    <textarea class="form-control" name="note" id="note" autosize [(ngModel)]="attendanceTime.note"></textarea>
+                                    <label [for]="getId('weekdayNote', attendanceTime)">{{'organization.attendanceTime.note' | translate}}</label>
+                                    <textarea class="form-control" [id]="getId('weekdayNote', attendanceTime)" [name]="getId('weekdayNote', attendanceTime)" autosize [(ngModel)]="attendanceTime.note"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -110,10 +110,10 @@
                         </div>
                         <div class="card-body" *ngIf="group.__expanded">
                             <div class="form-group">
-                                <label for="groupName">{{ 'edit.organization.groups.name' | translate }}</label>
+                                <label [for]="getId('groupName', group)">{{ 'edit.organization.groups.name' | translate }}</label>
                                 <input type="text"
-                                       id="groupName"
-                                       name="groupName"
+                                       [id]="getId('groupName', group)"
+                                       [name]="getId('groupName', group)"
                                        class="form-control"
                                        [(ngModel)]="group.name"
                                        [ngbTypeahead]="searchGroup(organization.groups)"
@@ -122,8 +122,11 @@
                                 />
                             </div>
                             <div class="form-group">
-                                <label for="groupDescription">{{ 'edit.organization.groups.description' | translate }}</label>
-                                <textarea class="form-control" id="groupDescription" name="groupDescription" autosize [(ngModel)]="group.description"></textarea>
+                                <label [for]="getId('groupDescription', group)">{{ 'edit.organization.groups.description' | translate }}</label>
+                                <textarea class="form-control"
+                                          [id]="getId('groupDescription', group)"
+                                          [name]="getId('groupDescription', group)"
+                                          autosize [(ngModel)]="group.description"></textarea>
                             </div>
                         </div>
                     </div>

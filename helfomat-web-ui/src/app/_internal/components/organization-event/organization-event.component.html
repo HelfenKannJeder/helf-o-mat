@@ -29,9 +29,25 @@
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddAttendanceTimeEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.attendanceTime.add.title' | translate }}</h5>
+                {{'organization.attendanceTime.weekday.' + organizationEvent.attendanceTime.day | translate}},
+                {{organizationEvent.attendanceTime.start | time}} -
+                {{organizationEvent.attendanceTime.end | time}}
+                <p *ngIf="organizationEvent.attendanceTime.note">{{organizationEvent.attendanceTime.note}}</p>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDeleteAttendanceTimeEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.attendanceTime.delete.title' | translate }}</h5>
+                {{'organization.attendanceTime.weekday.' + organizationEvent.attendanceTime.day | translate}},
+                {{organizationEvent.attendanceTime.start | time}} -
+                {{organizationEvent.attendanceTime.end | time}}
+                <p *ngIf="organizationEvent.attendanceTime.note">{{organizationEvent.attendanceTime.note}}</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditChangeAttendanceTimeEventDto'">
+                <change-position [indexOffset]="organizationEvent.indexOffset"></change-position>
+                <h5 class="mb-1">{{ 'edit.organization.changes.attendanceTime.change.title' | translate }}</h5>
+                <text-diff [text1]="'organization.attendanceTime.weekday.' + organizationEvent.oldAttendanceTime.day | translate" [text2]="'organization.attendanceTime.weekday.' + organizationEvent.attendanceTime.day | translate"></text-diff>,
+                <text-diff [text1]="organizationEvent.oldAttendanceTime.start | time" [text2]="organizationEvent.attendanceTime.start | time"></text-diff> -
+                <text-diff [text1]="organizationEvent.oldAttendanceTime.end | time" [text2]="organizationEvent.attendanceTime.end | time"></text-diff>
+                <p><text-diff [text1]="organizationEvent.oldAttendanceTime.note" [text2]="organizationEvent.attendanceTime.note"></text-diff></p>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddContactPersonEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.contactPerson.add.title' | translate }}</h5>
@@ -48,16 +64,22 @@
                 {{organizationEvent.group.description}}
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditChangeGroupEventDto'">
+                <change-position [indexOffset]="organizationEvent.indexOffset"></change-position>
                 <h5 class="mb-1">{{ 'edit.organization.changes.group.change.title' | translate: {groupTitle: organizationEvent.group.name} }}</h5>
-                <p><strong><text-diff [text1]="organizationEvent.oldGroup.name" [text2]="organizationEvent.group.name"></text-diff></strong></p>
-                <text-diff [text1]="organizationEvent.oldGroup.description" [text2]="organizationEvent.group.description"></text-diff>
-                {{organizationEvent.indexOffset}}
+                <p *ngIf="organizationEvent.oldGroup.name != organizationEvent.group.name"><strong><text-diff [text1]="organizationEvent.oldGroup.name" [text2]="organizationEvent.group.name"></text-diff></strong></p>
+                <p *ngIf="organizationEvent.oldGroup.description != organizationEvent.group.description"><text-diff [text1]="organizationEvent.oldGroup.description" [text2]="organizationEvent.group.description"></text-diff></p>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddPictureEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.picture.add.title' | translate }}</h5>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDeletePictureEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.picture.delete.title' | translate }}</h5>
+                <img src="api/picture/{{organizationEvent.pictureId.value}}/icon"  alt=""/>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditChangePictureEventDto'">
+                <change-position [indexOffset]="organizationEvent.indexOffset"></change-position>
+                <h5 class="mb-1">{{ 'edit.organization.changes.picture.change.title' | translate }}</h5>
+                <img src="api/picture/{{organizationEvent.pictureId.value}}/icon" alt=""/>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddQuestionAnswerEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.questionAnswer.add.title' | translate }}</h5>
@@ -84,6 +106,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditTeaserImageEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.teaserImageChanged' | translate }}</h5>
+                <img src="api/picture/{{organizationEvent.teaserImage.value}}/icon" alt=""/>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditUrlNameEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.urlNameChanged' | translate }}</h5>

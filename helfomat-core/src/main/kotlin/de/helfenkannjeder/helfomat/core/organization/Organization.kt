@@ -9,12 +9,8 @@ import org.simmetrics.simplifiers.Simplifiers
 import org.simmetrics.tokenizers.Tokenizers
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.emptyList
-import kotlin.collections.filter
-import kotlin.collections.map
-import kotlin.collections.toMutableList
+import kotlin.math.abs
+import kotlin.math.min
 
 
 /**
@@ -79,21 +75,49 @@ data class Organization(
         if (organization.defaultAddress != defaultAddress) {
             differences.add(OrganizationEditDefaultAddressEvent(id, defaultAddress))
         }
-        differences.addAll(getDiff(organization.pictures, pictures).map { OrganizationEditDeletePictureEvent(id, it.first) })
-        differences.addAll(getDiff(pictures, organization.pictures).map { OrganizationEditAddPictureEvent(id, it.second, it.first) })
+        differences.addAll(compare(
+            organization.pictures,
+            pictures,
+            object : ElementComparisonStrategy<PictureId, OrganizationEditChangePictureEvent> {
+                override fun create(index: Int, element: PictureId) = OrganizationEditAddPictureEvent(id, index, element)
+                override fun update(indexOffset: Int, oldElement: PictureId, element: PictureId) = OrganizationEditChangePictureEvent(id, indexOffset, element)
+                override fun delete(element: PictureId) = OrganizationEditDeletePictureEvent(id, element)
+                override fun isUpdateContent(event: OrganizationEditChangePictureEvent) = false
+                override fun updateWithChangedIndex(indexOffset: Int, event: OrganizationEditChangePictureEvent) = OrganizationEditChangePictureEvent(id, indexOffset, event.pictureId)
+                override fun compareWithMetric(element1: PictureId, element2: PictureId) = 0.0f
+            }
+        ))
         differences.addAll(getDiff(organization.contactPersons, contactPersons).map { OrganizationEditDeleteContactPersonEvent(id, it.first) })
         differences.addAll(getDiff(contactPersons, organization.contactPersons).map { OrganizationEditAddContactPersonEvent(id, it.second, it.first) })
         differences.addAll(getDiff(organization.addresses, addresses).map { OrganizationEditDeleteAddressEvent(id, it.first) })
         differences.addAll(getDiff(addresses, organization.addresses).map { OrganizationEditAddAddressEvent(id, it.second, it.first) })
         differences.addAll(getDiff(organization.questionAnswers, questionAnswers).map { OrganizationEditDeleteQuestionAnswerEvent(id, it.first) })
         differences.addAll(getDiff(questionAnswers, organization.questionAnswers).map { OrganizationEditAddQuestionAnswerEvent(id, it.second, it.first) })
-        differences.addAll(aggregateGroupEvents(
-            getDiff(organization.groups, groups).map { it.first },
-            getDiff(groups, organization.groups).map { it.first },
-            organization
+        differences.addAll(compare(
+            organization.groups,
+            groups,
+            object : ElementComparisonStrategy<Group, OrganizationEditChangeGroupEvent> {
+                override fun create(index: Int, element: Group) = OrganizationEditAddGroupEvent(id, index, element)
+                override fun update(indexOffset: Int, oldElement: Group, element: Group) = OrganizationEditChangeGroupEvent(id, indexOffset, oldElement, element)
+                override fun delete(element: Group) = OrganizationEditDeleteGroupEvent(id, element)
+                override fun isUpdateContent(event: OrganizationEditChangeGroupEvent) = event.oldGroup != event.group
+                override fun updateWithChangedIndex(indexOffset: Int, event: OrganizationEditChangeGroupEvent) = OrganizationEditChangeGroupEvent(id, indexOffset, event.oldGroup, event.group)
+                override fun isSimilar(element1: Group, element2: Group) = element1.name == element2.name
+                override fun compareWithMetric(element1: Group, element2: Group) = metric.compare(element1.name, element2.name)
+            }
         ))
-        differences.addAll(getDiff(organization.attendanceTimes, attendanceTimes).map { OrganizationEditDeleteAttendanceTimeEvent(id, it.first) })
-        differences.addAll(getDiff(attendanceTimes, organization.attendanceTimes).map { OrganizationEditAddAttendanceTimeEvent(id, it.second, it.first) })
+        differences.addAll(compare(
+            organization.attendanceTimes,
+            attendanceTimes,
+            object : ElementComparisonStrategy<AttendanceTime, OrganizationEditChangeAttendanceTimeEvent> {
+                override fun create(index: Int, element: AttendanceTime) = OrganizationEditAddAttendanceTimeEvent(id, index, element)
+                override fun update(indexOffset: Int, oldElement: AttendanceTime, element: AttendanceTime) = OrganizationEditChangeAttendanceTimeEvent(id, indexOffset, oldElement, element)
+                override fun delete(element: AttendanceTime) = OrganizationEditDeleteAttendanceTimeEvent(id, element)
+                override fun isUpdateContent(event: OrganizationEditChangeAttendanceTimeEvent) = event.attendanceTime != event.oldAttendanceTime
+                override fun updateWithChangedIndex(indexOffset: Int, event: OrganizationEditChangeAttendanceTimeEvent) = OrganizationEditChangeAttendanceTimeEvent(id, indexOffset, event.oldAttendanceTime, event.attendanceTime)
+                override fun compareWithMetric(element1: AttendanceTime, element2: AttendanceTime): Float = if (element1.day == element2.day) 1.0f else 0.0f
+            }
+        ))
         differences.addAll(getDiff(organization.volunteers, volunteers).map { OrganizationEditDeleteVolunteerEvent(id, it.first) })
         differences.addAll(getDiff(volunteers, organization.volunteers).map { OrganizationEditAddVolunteerEvent(id, it.second, it.first) })
         return differences
@@ -174,20 +198,22 @@ data class Organization(
         )
     }
 
-    private fun aggregateGroupEvents(delete: List<Group>, add: List<Group>, originalOrganization: Organization): List<OrganizationEvent> {
+    private fun <T, E : OrganizationEvent> compare(originalOrganizationElements: List<T>, newOrganizationElements: List<T>, elementComparisonStrategy: ElementComparisonStrategy<T, E>): List<OrganizationEvent> {
+        val delete = getDiff(originalOrganizationElements, newOrganizationElements).map { it.first }
+        val add = getDiff(newOrganizationElements, originalOrganizationElements).map { it.first }
         val resultDelete = delete.toMutableList()
         val resultAdd = add.toMutableList()
-        val conversion = hashMapOf<Group, Group>()
+        val conversion = hashMapOf<T, T>()
         for (deleteElement in delete) {
-            val addSearchResult = resultAdd.filter { deleteElement.name == it.name }
+            val addSearchResult = resultAdd.filter { elementComparisonStrategy.isSimilar(deleteElement, it) }
             if (addSearchResult.isNotEmpty()) {
                 val addElement = addSearchResult[0]
                 conversion[addElement] = deleteElement
                 resultDelete.remove(deleteElement)
                 resultAdd.remove(addElement)
             }
-            val byDifference = resultAdd.sortedBy { 1.0 - metric.compare(deleteElement.name, it.name) }
-            if (byDifference.isNotEmpty() && metric.compare(deleteElement.name, byDifference.first().name) >= 0.5) {
+            val byDifference = resultAdd.sortedBy { 1.0 - elementComparisonStrategy.compareWithMetric(deleteElement, it) }
+            if (byDifference.isNotEmpty() && elementComparisonStrategy.compareWithMetric(deleteElement, byDifference.first()) >= 0.5) {
                 val addElement = byDifference[0]
                 conversion[addElement] = deleteElement
                 resultDelete.remove(deleteElement)
@@ -195,40 +221,87 @@ data class Organization(
             }
         }
 
-        // generate sorting event for new elements
-        val originalGroups = originalOrganization.groups.toMutableList()
-        val newGroups = this.groups.toMutableList()
-        resultAdd.forEach { newGroups.remove(it) }
-        resultDelete.forEach { originalGroups.remove(it) }
+        val originalElements = originalOrganizationElements.toMutableList()
+        val newElements = newOrganizationElements.toMutableList()
+        resultAdd.forEach { newElements.remove(it) }
+        resultDelete.forEach { originalElements.remove(it) }
 
-        val endOfIteration = Math.min(originalGroups.size, newGroups.size) - 1
-        val resultEditEvents = ArrayList<OrganizationEditChangeGroupEvent>()
-        for (index in 0..endOfIteration) {
-            val group = newGroups[index]
-            val oldGroup = conversion.get(group) ?: group
+        val endOfIteration = min(originalElements.size, newElements.size)
+        var resultEditEvents: MutableList<E> = mutableListOf()
 
-            val oldIndex = originalGroups.indexOf(oldGroup)
-            if (index != oldIndex || group != oldGroup) {
-                resultEditEvents.add(OrganizationEditChangeGroupEvent(
-                    organizationId = this.id,
-                    indexOffset =  index - oldIndex,
-                    oldGroup = oldGroup,
-                    group = group
-                ))
-                originalGroups.removeAt(oldIndex)
-                originalGroups.add(index, oldGroup)
+        var editEventsInARow = 0
+        var currentIndexOffset: Int? = null
+        var furtherElementsToMove = 0
+        var furtherElementsToMoveOffset: Int? = null
+        for (index in 0 until endOfIteration) {
+            val element = newElements[index]
+            val oldElement = conversion[element] ?: element
+
+            val oldIndex = originalElements.indexOf(oldElement)
+            if (index != oldIndex || element != oldElement || furtherElementsToMove > 0) {
+                var indexOffset: Int
+                if (furtherElementsToMove > 0 && furtherElementsToMoveOffset != null) {
+                    indexOffset = furtherElementsToMoveOffset
+                    furtherElementsToMove--
+                } else {
+                    indexOffset = index - oldIndex
+                }
+                if (indexOffset != 0) {
+                    if (indexOffset == currentIndexOffset) {
+                        editEventsInARow++
+                    } else {
+                        currentIndexOffset = indexOffset
+                        editEventsInARow = 1
+                    }
+                } else {
+                    if (currentIndexOffset != null && abs(currentIndexOffset) < editEventsInARow) {
+                        resultEditEvents = removeLastEventsInCaseOnlyPositionChanged(resultEditEvents, editEventsInARow, elementComparisonStrategy).toMutableList()
+                        val elementsToMove = abs(currentIndexOffset)
+                        furtherElementsToMove = elementsToMove - 1 // we already move the current one
+                        furtherElementsToMoveOffset = editEventsInARow + elementsToMove - 1 // we need to skip over further elements we need to move
+                        indexOffset = furtherElementsToMoveOffset
+                    }
+                    currentIndexOffset = null
+                    editEventsInARow = 0
+                }
+                resultEditEvents.add(elementComparisonStrategy.update(indexOffset, oldElement, element))
+                originalElements.removeAt(oldIndex)
+                originalElements.add(index, oldElement)
+            } else {
+                if (currentIndexOffset != null && abs(currentIndexOffset) < editEventsInARow) {
+                    resultEditEvents = removeLastEventsInCaseOnlyPositionChanged(resultEditEvents, editEventsInARow, elementComparisonStrategy).toMutableList()
+                    val elementsToMove = abs(currentIndexOffset)
+                    furtherElementsToMove = elementsToMove - 1 // we already move the current one
+                    furtherElementsToMoveOffset = editEventsInARow + elementsToMove - 1 // we need to skip over further elements we need to move
+                    resultEditEvents.add(elementComparisonStrategy.update(furtherElementsToMoveOffset, oldElement, element))
+                }
+                currentIndexOffset = null
+                editEventsInARow = 0
             }
         }
 
-        val allGroups = this.groups.toMutableList()
+        val allElements = newOrganizationElements.toMutableList()
         return listOf(
-            resultDelete.map { OrganizationEditDeleteGroupEvent(id, it) },
+            resultDelete.map { elementComparisonStrategy.delete(it) },
             resultEditEvents,
-            resultAdd.map { OrganizationEditAddGroupEvent(id, allGroups.indexOf(it), it) }
+            resultAdd.map { elementComparisonStrategy.create(allElements.indexOf(it), it) }
         ).flatten()
-
     }
+
+    private fun <T, E : OrganizationEvent> removeLastEventsInCaseOnlyPositionChanged(events: List<E>, editEventsInARow: Int, elementComparisonStrategy: ElementComparisonStrategy<T, E>): List<E> {
+        val resultEditEvents = events.toMutableList()
+        val elements = resultEditEvents.size
+        for (i in (elements - 1) downTo (elements - editEventsInARow)) {
+            if (elementComparisonStrategy.isUpdateContent(resultEditEvents[i])) {
+                resultEditEvents.add(i + 1, elementComparisonStrategy.updateWithChangedIndex(0, resultEditEvents[i]))
+            }
+            resultEditEvents.removeAt(i)
+        }
+        return resultEditEvents
+    }
+
     companion object {
+
         private fun <T> getDiff(list1: List<T>, list2: List<T>): List<Pair<T, Int>> {
             val list = ArrayList(list1)
             list.removeAll(list2)
@@ -242,4 +315,14 @@ data class Organization(
             .build()
     }
 
+}
+
+interface ElementComparisonStrategy<T, E : OrganizationEvent> {
+    fun create(index: Int, element: T): OrganizationEvent
+    fun update(indexOffset: Int, oldElement: T, element: T): E
+    fun delete(element: T): OrganizationEvent
+    fun isUpdateContent(event: E): Boolean
+    fun updateWithChangedIndex(indexOffset: Int, event: E): E
+    fun isSimilar(element1: T, element2: T): Boolean = element1 == element2
+    fun compareWithMetric(element1: T, element2: T): Float = 0.0f
 }

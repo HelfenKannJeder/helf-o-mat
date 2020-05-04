@@ -110,6 +110,21 @@ class OrganizationEventAssembler(private val questions: List<Question>) : Organi
             organizationEditChangeGroupEvent.oldGroup.toGroupDto(),
             organizationEditChangeGroupEvent.group.toGroupDto()
         )
+
+    override fun visit(organizationEditChangePictureEvent: OrganizationEditChangePictureEvent): OrganizationEventDto =
+        OrganizationEditChangePictureEventDto(
+            organizationEditChangePictureEvent.organizationId,
+            organizationEditChangePictureEvent.indexOffset,
+            organizationEditChangePictureEvent.pictureId
+        )
+
+    override fun visit(organizationEditChangeAttendanceTimeEvent: OrganizationEditChangeAttendanceTimeEvent): OrganizationEventDto =
+        OrganizationEditChangeAttendanceTimeEventDto(
+            organizationEditChangeAttendanceTimeEvent.organizationId,
+            organizationEditChangeAttendanceTimeEvent.indexOffset,
+            organizationEditChangeAttendanceTimeEvent.oldAttendanceTime.toAttendanceTimeDto(),
+            organizationEditChangeAttendanceTimeEvent.attendanceTime.toAttendanceTimeDto()
+        )
 }
 
 fun OrganizationEvent.toOrganizationEventDto(questions: List<Question>) = this.toOrganizationEventDto(OrganizationEventAssembler(questions))

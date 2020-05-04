@@ -1,0 +1,5 @@
+<div class="change-position-box" *ngIf="indexOffset != 0">
+    <span class="material-icons md-48" *ngIf="indexOffset < 0">arrow_drop_up</span>
+    <span class="material-icons md-48" *ngIf="indexOffset > 1">arrow_drop_down</span>
+    <div class="change-position-text">{{abs(indexOffset)}}</div>
+</div>

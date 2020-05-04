@@ -1,21 +1,22 @@
 package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.Group
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.picture.PictureId
 
 /**
  * @author Valentin Zickner
  */
-data class OrganizationEditAddGroupEvent(
+data class OrganizationEditChangePictureEvent(
     override val organizationId: OrganizationId,
-    val index: Int,
-    val group: Group
+    val indexOffset: Int,
+    val pictureId: PictureId
 ) : OrganizationEditEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
-        organizationBuilder?.groups?.add(index, group)
+        val pictures = organizationBuilder?.pictures ?: return organizationBuilder
+        organizationBuilder.pictures = changePosition(pictures, pictureId, pictureId, indexOffset)
         return organizationBuilder
     }
 

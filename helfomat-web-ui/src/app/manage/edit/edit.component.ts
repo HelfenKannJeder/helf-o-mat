@@ -70,7 +70,14 @@ export class EditComponent implements OnInit {
     ) {
         this.organization = ObservableUtil.extractObjectMember(this.route.params, 'organization')
             .pipe(
-                switchMap((organizationName: string) => this.organizationService.getOrganization(organizationName))
+                switchMap((organizationName: string) => this.organizationService.getOrganization(organizationName)),
+                map(organization => {
+                    organization.groups = organization.groups.map(group => {
+                        group.__id = 'newItem' + Math.random();
+                        return group;
+                    })
+                    return organization;
+                })
             );
         this.organization.pipe(first()).subscribe(organization => this.originalOrganization = organization as Organization);
 
@@ -83,9 +90,19 @@ export class EditComponent implements OnInit {
 
         this.newOrganization
             .pipe(
+                map(organization => {
+                    return this.removeIncompleteFields(organization);
+                }),
                 mergeMap(organization => this.organizationService.compareOrganization(this.originalOrganization, organization))
             )
             .subscribe(changes => this.changes.next(changes));
+    }
+
+    private removeIncompleteFields(organization: Organization) {
+        const o = {...organization};
+        o.attendanceTimes = o.attendanceTimes.filter(attendanceTime => attendanceTime.day != undefined && attendanceTime.start != undefined && attendanceTime.start.length != 2 && attendanceTime.end != undefined && attendanceTime.end.length != 2);
+        o.groups = o.groups.filter(group => group.name !== undefined);
+        return o;
     }
 
     ngOnInit(): void {
@@ -97,13 +114,14 @@ export class EditComponent implements OnInit {
             __expanded: true,
             __id: documentId
         } as any);
+        console.log(items);
         window.setTimeout(() => {
             this.pageScrollService.start(new PageScrollInstance({
                 document: this.document,
                 scrollTarget: '#' + documentId
             }))
         }, 0);
-        this.calculateChanges(organization);
+        this.calculateChanges({...organization});
     }
 
     drop<T>(list: T[], event: CdkDragDrop<string[]>, organization: Organization) {
@@ -212,6 +230,10 @@ export class EditComponent implements OnInit {
                     this.publishContent = result;
                 });
         })
+    }
+
+    public getId(prefix: string, element: any): string {
+        return prefix + '-' + element.__id;
     }
 
 }

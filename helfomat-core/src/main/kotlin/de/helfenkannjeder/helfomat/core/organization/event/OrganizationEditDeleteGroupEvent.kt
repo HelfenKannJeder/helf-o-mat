@@ -10,8 +10,8 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationId
  */
 data class OrganizationEditDeleteGroupEvent(
     override val organizationId: OrganizationId,
-    override val group: Group
-) : OrganizationEditGroupEvent(organizationId, group) {
+    val group: Group
+) : OrganizationEditEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
         organizationBuilder?.groups?.remove(group)

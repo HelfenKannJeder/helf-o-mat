@@ -15,6 +15,7 @@ import {DragDropDirective} from "./_internal/drag-drop.directive";
 import {PublishChangesConfirmationComponent} from "./_internal/publish-changes-confirmation.component";
 import {OrganizationEventModule} from "../../_internal/components/organization-event/organization-event.module";
 import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review.component";
+import {MapModule} from "../../map/map.module";
 
 @NgModule({
     providers: [
@@ -33,7 +34,8 @@ import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review
         NgbTimepickerModule,
         NgbTypeaheadModule,
         NgbModalModule,
-        OrganizationEventModule
+        OrganizationEventModule,
+        MapModule
     ],
     declarations: [
         EditComponent,

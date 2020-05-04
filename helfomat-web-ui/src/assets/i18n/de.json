@@ -152,7 +152,8 @@
         },
         "attendanceTime": {
           "add.title": "Termin hinzugefügt",
-          "delete.title": "Termin gelöscht"
+          "delete.title": "Termin gelöscht",
+          "change.title": "Termin geändert"
         },
         "contactPerson": {
           "add.title": "Ansprechpartner hinzugefügt",
@@ -165,7 +166,8 @@
         },
         "picture": {
           "add.title": "Bild hinzugefügt",
-          "delete.title": "Bild gelöscht"
+          "delete.title": "Bild gelöscht",
+          "change.title": "Bild position geändert"
         },
         "questionAnswer": {
           "add.title": "Helf-O-Mat Frage hinzugefügt",
