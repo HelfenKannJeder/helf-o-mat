@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {GoogleMapsComponent} from './google-maps.component';
 import {TranslateModule} from '@ngx-translate/core';
 import {BrowserModule} from '@angular/platform-browser';
+import {GoogleMapsAddressSearchComponent} from "./google-maps-address-search.component";
 
 @NgModule({
     imports: [
@@ -9,10 +10,12 @@ import {BrowserModule} from '@angular/platform-browser';
         BrowserModule
     ],
     declarations: [
-        GoogleMapsComponent
+        GoogleMapsComponent,
+        GoogleMapsAddressSearchComponent
     ],
     exports: [
-        GoogleMapsComponent
+        GoogleMapsComponent,
+        GoogleMapsAddressSearchComponent
     ]
 })
 export class GoogleMapsModule {

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Inject, OnInit} from "@angular/core";
 import {ObservableUtil} from "../../shared/observable.util";
-import {debounceTime, distinctUntilChanged, first, map, mergeMap, switchMap} from "rxjs/operators";
+import {debounceTime, distinctUntilChanged, filter, first, map, mergeMap, switchMap} from "rxjs/operators";
 import {
     Address,
     Group,
@@ -26,6 +26,7 @@ import {PublishChangesConfirmationComponent, PublishContent} from "./_internal/p
 import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review.component";
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from "@ngx-translate/core";
+import {EditAddressComponent} from "./_internal/edit-address.component";
 
 @Component({
     selector: 'organization-edit',
@@ -39,7 +40,8 @@ import {TranslateService} from "@ngx-translate/core";
 })
 export class EditComponent implements OnInit {
 
-    public organization: Observable<Organization>;
+    public organization$: Observable<Organization>;
+    public _organization$: Subject<Organization> = new BehaviorSubject<Organization>(null);
     public changes: Subject<Array<OrganizationEvent>> = new BehaviorSubject([]);
     public newOrganization: Subject<Organization> = new EventEmitter<Organization>();
     public originalOrganization: Organization;
@@ -68,21 +70,26 @@ export class EditComponent implements OnInit {
         private translateService: TranslateService,
         @Inject(DOCUMENT) private document: Document
     ) {
-        this.organization = ObservableUtil.extractObjectMember(this.route.params, 'organization')
+        ObservableUtil.extractObjectMember(this.route.params, 'organization')
             .pipe(
                 switchMap((organizationName: string) => this.organizationService.getOrganization(organizationName)),
                 map(organization => {
-                    organization.groups = organization.groups.map(group => {
+                    organization.groups = organization.groups.map((group: any) => {
                         group.__id = 'newItem' + Math.random();
                         return group;
                     })
                     return organization;
                 })
-            );
-        this.organization.pipe(first()).subscribe(organization => this.originalOrganization = organization as Organization);
+            )
+            .subscribe(organization => this._organization$.next(organization));
+        this.organization$ = this._organization$.asObservable();
+        this.organization$.pipe(
+            first(organization => organization != null)
+        ).subscribe(organization => this.originalOrganization = EditComponent.deepCopy(organization as Organization));
 
-        this.organization
+        this.organization$
             .pipe(
+                filter(organization => organization != null),
                 map(organization => organization.organizationType),
                 switchMap(organizationType => organizationTemplateService.getOrganizationTemplateByOrganizationType(organizationType))
             )
@@ -114,7 +121,6 @@ export class EditComponent implements OnInit {
             __expanded: true,
             __id: documentId
         } as any);
-        console.log(items);
         window.setTimeout(() => {
             this.pageScrollService.start(new PageScrollInstance({
                 document: this.document,
@@ -188,6 +194,30 @@ export class EditComponent implements OnInit {
         this.newOrganization.next(organization);
     }
 
+    editAddress(addresses: Address[], address: Address, organization: Organization) {
+        const oldIndex = addresses.indexOf(address);
+        const isDefaultAddress = Address.isEqual(organization.defaultAddress, address);
+        let modalRef = this.modalService.open(EditAddressComponent, {
+            size: 'lg',
+        });
+        modalRef.componentInstance.address = {...address};
+        modalRef.componentInstance.organization = {...organization};
+        modalRef.result
+            .then((newAddress: Address) => {
+                const newOrganization = {...organization};
+                if (oldIndex < 0) {
+                    newOrganization.addresses.push(newAddress);
+                } else {
+                    newOrganization.addresses[oldIndex] = newAddress;
+                }
+                if (isDefaultAddress) {
+                    newOrganization.defaultAddress = newAddress;
+                }
+                this._organization$.next(newOrganization);
+                this.calculateChanges(newOrganization);
+            });
+    }
+
     openPublishChangesConfirmation(organization: Organization, tab: number = 0) {
         this.changes.pipe(first()).subscribe((changes) => {
             let modalRef = this.modalService.open(PublishChangesConfirmationComponent, {
@@ -234,6 +264,10 @@ export class EditComponent implements OnInit {
 
     public getId(prefix: string, element: any): string {
         return prefix + '-' + element.__id;
+    }
+
+    private static deepCopy<T>(object: T): T {
+        return JSON.parse(JSON.stringify(object));
     }
 
 }

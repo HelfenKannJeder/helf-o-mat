@@ -1,0 +1,85 @@
+<form *ngIf="address$ | async; let address">
+    <div class="modal-header bg-lightblue text-white">
+        <h4 class="modal-title" id="modal-title">{{'edit.organization.address.headline' | translate }}</h4>
+        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body text-left">
+        <div class="row">
+            <div class="col-md-6">
+                <ul ngbNav #nav="ngbNav" class="nav-tabs">
+                    <li ngbNavItem="search">
+                        <a ngbNavLink>{{'edit.organization.address.search' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="form-group">
+                                <label for="addressAppendix1">{{'edit.organization.address.addressAppendix' | translate}}</label>
+                                <input class="form-control" name="addressAppendix1" id="addressAppendix1" [(ngModel)]="address.addressAppendix" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="autocomplete">{{'edit.organization.address.autocomplete' | translate}}</label>
+                                <address-search [current]="address" (changeAddress)="onAddressChanged($event)"></address-search>
+                            </div>
+                            <div class="form-group">
+                                <label for="website1">{{'edit.organization.address.website' | translate}}</label>
+                                <input class="form-control" name="website1" id="website1" [(ngModel)]="address.website"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="telephone1">{{'edit.organization.address.telephone' | translate}}</label>
+                                <input class="form-control" name="telephone1" id="telephone1" [(ngModel)]="address.telephone"/>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li ngbNavItem="manual">
+                        <a ngbNavLink>{{'edit.organization.address.manual' | translate }}</a>
+                        <ng-template ngbNavContent>
+                            <div class="form-group">
+                                <label for="addressAppendix2">{{'edit.organization.address.addressAppendix' | translate}}</label>
+                                <input class="form-control" name="addressAppendix2" id="addressAppendix2" [(ngModel)]="address.addressAppendix" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="zipcode2">{{'edit.organization.address.zipcode' | translate}}</label>
+                                <input class="form-control" name="zipcode2" id="zipcode2" [(ngModel)]="address.zipcode" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="city2">{{'edit.organization.address.city' | translate}}</label>
+                                <input class="form-control" name="city2" id="city2" [(ngModel)]="address.city" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="street2">{{'edit.organization.address.street' | translate}}</label>
+                                <input class="form-control" name="street2" id="street2" [(ngModel)]="address.street" required/>
+                            </div>
+                            <div class="form-group">
+                                <label>{{'edit.organization.address.latitude' | translate}}</label>
+                                <geo-coordinate [(coordinate)]="address.location.lat" (coordinateChange)="onAddressChanged(address)"></geo-coordinate>
+                            </div>
+                            <div class="form-group">
+                                <label>{{'edit.organization.address.longitude' | translate}}</label>
+                                <geo-coordinate [(coordinate)]="address.location.lon" (coordinateChange)="onAddressChanged(address)"></geo-coordinate>
+                            </div>
+                            <div class="form-group">
+                                <label for="website">{{'edit.organization.address.website' | translate}}</label>
+                                <input class="form-control" name="website" id="website" [(ngModel)]="address.website"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="telephone">{{'edit.organization.address.telephone' | translate}}</label>
+                                <input class="form-control" name="telephone" id="telephone" [(ngModel)]="address.telephone"/>
+                            </div>
+                        </ng-template>
+                    </li>
+                </ul>
+                <div [ngbNavOutlet]="nav"></div>
+            </div>
+            <div class="col-md-6">
+                <helfomat-single-map
+                    [organization]="organization$"
+                    [allowUpdatePosition]="false"
+                    [showMapResizeButton]="false"
+                    mapSize="popup"></helfomat-single-map>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close(address)">{{'edit.organization.address.confirm' | translate}}</button>
+    </div>
+</form>

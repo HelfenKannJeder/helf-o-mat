@@ -1,0 +1,16 @@
+<helfomat-map
+    [organizations]="organizations"
+    [center]="center"
+    [position]="position"
+    [distance]="distance"
+    [zoom]="zoom"
+    [allowUpdatePosition]="allowUpdatePosition"
+    [mapSize]="mapSize"
+    [showMapResizeButton]="showMapResizeButton"
+    [showDefaultAddressBar]="showDefaultAddressBar"
+    (updatePosition)="updatePosition.next($event)"
+    (updateBoundingBox)="updateBoundingBox.next($event)"
+    (updateZoom)="updateZoom.next($event)"
+    (openOrganization)="openOrganization.next($event)"
+    (mapResize)="mapResize.next($event)"
+><ng-content></ng-content></helfomat-map>

@@ -9,13 +9,15 @@ import {FormsModule} from "@angular/forms";
 import {AutosizeModule} from "ngx-autosize";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from "@angular/common";
-import {NgbModalModule, NgbTimepickerModule, NgbTypeaheadModule} from "@ng-bootstrap/ng-bootstrap";
+import {NgbModalModule, NgbNavModule, NgbTimepickerModule, NgbTypeaheadModule} from "@ng-bootstrap/ng-bootstrap";
 import {OrganizationTemplateService} from "../../_internal/resources/organization-template.service";
 import {DragDropDirective} from "./_internal/drag-drop.directive";
 import {PublishChangesConfirmationComponent} from "./_internal/publish-changes-confirmation.component";
 import {OrganizationEventModule} from "../../_internal/components/organization-event/organization-event.module";
 import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review.component";
 import {MapModule} from "../../map/map.module";
+import {EditAddressComponent} from "./_internal/edit-address.component";
+import {GeoCoordinateComponent} from "./_internal/geo-coordinate.component";
 
 @NgModule({
     providers: [
@@ -35,17 +37,21 @@ import {MapModule} from "../../map/map.module";
         NgbTypeaheadModule,
         NgbModalModule,
         OrganizationEventModule,
-        MapModule
+        MapModule,
+        NgbNavModule
     ],
     declarations: [
         EditComponent,
         DragDropDirective,
         PublishChangesConfirmationComponent,
-        ChangesSentForReviewComponent
+        ChangesSentForReviewComponent,
+        EditAddressComponent,
+        GeoCoordinateComponent
     ],
     entryComponents: [
         PublishChangesConfirmationComponent,
-        ChangesSentForReviewComponent
+        ChangesSentForReviewComponent,
+        EditAddressComponent
     ]
 })
 export class EditModule {

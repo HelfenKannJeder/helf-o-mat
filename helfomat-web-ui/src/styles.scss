@@ -25,6 +25,18 @@
   }
 }
 
+.modal {
+  z-index: 550;
+}
+
+.modal-backdrop {
+  z-index: 500 !important;
+}
+
+.navbar.sticky-top {
+  z-index: 400;
+}
+
 @import "colors";
 
 /* mixins */

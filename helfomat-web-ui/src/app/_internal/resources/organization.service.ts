@@ -144,15 +144,16 @@ export class ContactPerson {
 
 export class Address {
     public street: string;
-    public addressAppendix: string;
+    public addressAppendix?: string;
     public city: string;
     public zipcode: string;
     public location: GeoPoint;
-    public telephone: string;
-    public website: string;
+    public telephone?: string;
+    public website?: string;
 
     static isEqual(address1: Address, address2: Address): boolean {
-        return address1.location.lon == address2.location.lon
+        return address1 != null && address2 != null
+            && address1.location.lon == address2.location.lon
             && address1.location.lat == address2.location.lat
             && address1.addressAppendix == address2.addressAppendix
             && address1.city == address2.city

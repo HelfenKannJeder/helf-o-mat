@@ -1,4 +1,4 @@
-<div *ngIf="organization | async; let organization; else loading">
+<div *ngIf="organization$ | async; let organization; else loading">
     <form class="needs-validation" novalidate (ngSubmit)="openPublishChangesConfirmation(organization)" (change)="calculateChanges(organization)">
         <nav class="navbar sticky-top navbar-dark bg-lightblue">
             <span class="navbar-brand">{{organization.name}}</span>
@@ -134,24 +134,28 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="card card-default" *ngIf="organization.addresses.length > 0">
+                <div class="card card-default">
                     <div class="card-header">
                         {{organization.addresses.length | i18nPlural: {
                         '=1': 'organization.address.title',
                         'other': 'organization.address.titlePlural'
                     } | translate}}
                     </div>
-                    <!--                <helfomat-map-->
-                    <!--                    [organizations]="organizations"-->
-                    <!--                    [position]="position"-->
-                    <!--                    [distance]="distance"-->
-                    <!--                    [center]="center"-->
-                    <!--                    [zoom]="zoom"-->
-                    <!--                    [allowUpdatePosition]="false"-->
-                    <!--                    [showMapResizeButton]="false"></helfomat-map>-->
+                    <helfomat-single-map
+                        [organization]="organization$"
+                        [allowUpdatePosition]="false"
+                        [showMapResizeButton]="false"></helfomat-single-map>
                     <ul class="list-group">
                         <li *ngFor="let address of organization.addresses" class="list-group-item"
                             [ngClass]="{'list-group-item-info': areAddressesEqual(organization.defaultAddress, address)}">
+                            <div class="float-right btn-group" role="group">
+                                <button class="btn btn-primary btn-sm" (click)="editAddress(organization.addresses, address, organization);" type="button">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button class="btn btn-danger btn-sm" (click)="remove(organization.addresses, address, organization);" type="button">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </div>
                             <strong *ngIf="address.addressAppendix">{{address.addressAppendix}}<br/></strong>
                             {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
                             <span

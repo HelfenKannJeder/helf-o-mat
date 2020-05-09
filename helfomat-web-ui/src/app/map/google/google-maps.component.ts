@@ -13,7 +13,7 @@ import {
 import {combineLatest, Observable} from 'rxjs';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {BoundingBox, Organization} from '../../_internal/resources/organization.service';
+import {Address, BoundingBox, Organization} from '../../_internal/resources/organization.service';
 import {GeoPoint} from '../../../_internal/geopoint';
 import {environment} from "../../../environments/environment";
 import Map = google.maps.Map;
@@ -37,6 +37,9 @@ import Autocomplete = google.maps.places.Autocomplete;
             })),
             state('large', style({
                 height: '600px'
+            })),
+            state('popup', style({
+                height: '450px'
             })),
             state('fullscreen', style({
                 height: 'calc(100vh - 160px)'
@@ -79,8 +82,10 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
 
     private searchContainers: HTMLElement[] = [];
 
-    constructor(private element: ElementRef,
-                private ngZone: NgZone) {
+    constructor(
+        private element: ElementRef,
+        private ngZone: NgZone
+    ) {
     }
 
     ngOnInit() {
@@ -162,10 +167,10 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
             return;
         }
 
-        combineLatest(
+        combineLatest([
             this.position,
             this.distance
-        )
+        ])
             .subscribe(([position, distance]: [GeoPoint, number]) => {
                 if (position == null) {
                     return;
@@ -206,7 +211,7 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
                 searchText = <HTMLInputElement>addressSearchContainer.getElementsByClassName('addressInput')[0];
             }
 
-            let autocomplete = new Autocomplete(searchText,  {types: ['geocode']});
+            let autocomplete = new Autocomplete(searchText, {types: ['geocode']});
             autocomplete.setComponentRestrictions({'country': environment.defaults.countries});
 
             autocomplete.addListener('place_changed', () => {
@@ -262,13 +267,16 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
                         };
 
                         let opacity = 1;
-                        if (organization.scoreNorm !== null) {
+                        if (organization.scoreNorm !== null && organization.scoreNorm !== undefined) {
                             opacity = organization.scoreNorm / 100;
+                        }
+                        if (!Address.isEqual(organization.defaultAddress, address)) {
+                            opacity = opacity * 0.5;
                         }
                         let marker = new Marker({
                             position: GoogleMapsComponent.convertGeoPointToLatLng(address.location),
                             map: this.map,
-                            title: organization.name,
+                            title: address.addressAppendix || organization.name,
                             icon,
                             opacity
                         });
