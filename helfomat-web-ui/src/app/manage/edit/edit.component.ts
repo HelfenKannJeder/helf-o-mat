@@ -200,7 +200,7 @@ export class EditComponent implements OnInit {
             const pictureId: PictureId = {value: uuidv4()};
             this.ng2ImgMax.compressImage(event[index], 3).subscribe(
                 result => {
-                    const imageToUpload = new File([result], result.name);
+                    const imageToUpload = new File([result], result.name, {type: event[index].type});
                     aggregatedPercentComplete += 50;
                     this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
                     this.pictureService.uploadPicture(pictureId, imageToUpload)

@@ -28,12 +28,12 @@ open class PictureApplicationService(
     open fun getPicture(pictureId: PictureId, size: String): Path = pictureStorageService.getPicture(pictureId, size)
 
     @Secured(Roles.ADMIN, Roles.REVIEWER, Roles.USER)
-    open fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId {
+    open fun savePicture(pictureId: PictureId, inputStream: InputStream, contentType: String?): PictureId {
         if (pictureRepository.findByIdOrNull(pictureId) != null) {
             throw IllegalStateException("PictureId already exists ${pictureId}")
         }
-        pictureRepository.save(Picture(pictureId, false))
-        return pictureStorageService.savePicture(pictureId, inputStream)
+        pictureRepository.save(Picture(pictureId, false, contentType))
+        return pictureStorageService.savePicture(pictureId, inputStream, contentType)
     }
 
 }

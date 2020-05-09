@@ -13,7 +13,7 @@ import javax.imageio.ImageIO
 @Service
 open class ResizeImageService {
 
-    open fun resize(input: Path, output: Path, expectedWidth: Int?, expectedHeight: Int?) {
+    open fun resize(input: Path, output: Path, expectedWidth: Int?, expectedHeight: Int?, contentType: String?) {
         LOGGER.debug("Scale '$input' to size ${expectedWidth ?: "-"}x${expectedHeight ?: "-"} with new name '$output' ")
         var image = ImageIO.read(input.toFile())
         var width = image.width
@@ -31,13 +31,20 @@ open class ResizeImageService {
         } else if (expectedWidth != null && width != expectedWidth) {
             image = cropImage(image, (width - expectedWidth) / 2, 0, expectedWidth, expectedHeight ?: height)
         }
-        ImageIO.write(image, "PNG", output.toFile())
+        val imageWriters = ImageIO.getImageWritersByMIMEType(contentType ?: "image/jpeg")
+        val hasNext = imageWriters.iterator().hasNext()
+        if (!hasNext) {
+            throw IllegalStateException("Failed to find image writer for '$contentType'")
+        }
+        val imageWriter = imageWriters.next()
+        imageWriter.output = ImageIO.createImageOutputStream(output.toFile())
+        imageWriter.write(image)
     }
 
     private fun scaleImage(inputImage: BufferedImage, width: Int, height: Int): BufferedImage {
         var image = inputImage
         val tempImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH)
-        image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+        image = BufferedImage(width, height, inputImage.type)
         val graphics = image.graphics
         graphics.drawImage(tempImage, 0, 0, null)
         graphics.dispose()

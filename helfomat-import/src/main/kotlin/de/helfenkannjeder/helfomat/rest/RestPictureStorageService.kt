@@ -32,14 +32,14 @@ class RestPictureStorageService(
             val responseEntity = plainRestTemplate.exchange(url, HttpMethod.GET, httpEntity, Resource::class.java)
             val body = responseEntity.body ?: throw DownloadFailedException()
             val inputStream = body.inputStream
-            savePicture(inputStream.readAllBytes(), pictureId)
+            savePicture(inputStream.readAllBytes(), pictureId, null)
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
     }
 
     @Throws(DownloadFailedException::class)
-    override fun savePicture(bytes: ByteArray, pictureId: PictureId): PictureId {
+    override fun savePicture(bytes: ByteArray, pictureId: PictureId, contentType: String?): PictureId {
         // it seems to be unnecessary hard to upload a file....
         // see https://medium.com/red6-es/uploading-a-file-with-a-filename-with-spring-resttemplate-8ec5e7dc52ca for mor details
         val fileMap: MultiValueMap<String, String> = LinkedMultiValueMap()
@@ -59,7 +59,7 @@ class RestPictureStorageService(
         return pictureId
     }
 
-    override fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId {
+    override fun savePicture(pictureId: PictureId, inputStream: InputStream, contentType: String?): PictureId {
         throw UnsupportedOperationException()
     }
 

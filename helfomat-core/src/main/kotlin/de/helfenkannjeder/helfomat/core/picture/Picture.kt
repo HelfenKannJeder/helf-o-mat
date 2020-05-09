@@ -20,6 +20,8 @@ data class Picture(
 
     var public: Boolean,
 
+    var contentType: String?,
+
     @CreatedDate
     @Column(columnDefinition = "TIMESTAMPTZ")
     var createdDate: OffsetDateTime? = null,

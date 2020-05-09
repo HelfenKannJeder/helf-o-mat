@@ -32,7 +32,7 @@ class PictureController(private val pictureApplicationService: PictureApplicatio
 
     @PostMapping("/picture/{pictureId}")
     fun savePicture(@PathVariable pictureId: PictureId, @RequestParam("file") file: MultipartFile) =
-        pictureApplicationService.savePicture(pictureId, file.inputStream)
+        pictureApplicationService.savePicture(pictureId, file.inputStream, file.contentType)
 
     private fun toResponseEntity(picture: Path): ResponseEntity<InputStreamResource> {
         if (!Files.exists(picture)) {

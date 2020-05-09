@@ -33,7 +33,7 @@ class FileSystemPictureStorageService(
     override fun savePicture(url: String, pictureId: PictureId): PictureId {
         return try {
             val bytes = downloadService.download(url) ?: throw DownloadFailedException()
-            savePicture(bytes, pictureId)
+            savePicture(bytes, pictureId, null)
         } catch (exception: DownloadFailedException) {
             LOG.error("Failed to write image to filesystem url='$url' picture='$pictureId'", exception)
             throw DownloadFailedException(exception)
@@ -44,11 +44,11 @@ class FileSystemPictureStorageService(
     }
 
     @Throws(DownloadFailedException::class)
-    override fun savePicture(bytes: ByteArray, pictureId: PictureId): PictureId {
+    override fun savePicture(bytes: ByteArray, pictureId: PictureId, contentType: String?): PictureId {
         return try {
             val path = createPath(pictureId.value.toString())
             Files.write(path, bytes)
-            scalePicture(pictureId, path)
+            scalePicture(pictureId, path, contentType)
             pictureId
         } catch (exception: IOException) {
             LOG.error("Failed to write image to filesystem picture='$pictureId'", exception)
@@ -63,11 +63,11 @@ class FileSystemPictureStorageService(
     }
 
     @Throws(DownloadFailedException::class)
-    override fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId {
+    override fun savePicture(pictureId: PictureId, inputStream: InputStream, contentType: String?): PictureId {
         return try {
             val path = createPath(pictureId.value.toString())
             Files.copy(inputStream, path)
-            scalePicture(pictureId, path)
+            scalePicture(pictureId, path, contentType)
             pictureId
         } catch (exception: IOException) {
             throw DownloadFailedException(exception)
@@ -88,10 +88,10 @@ class FileSystemPictureStorageService(
     }
 
     @Throws(IOException::class)
-    private fun scalePicture(pictureId: PictureId, path: Path) {
+    private fun scalePicture(pictureId: PictureId, path: Path, contentType: String?) {
         for (pictureSize in pictureConfiguration.pictureSizes) {
             val outputFile = createPath(pictureSize.name, pictureId.value.toString())
-            resizeImageService.resize(path, outputFile, pictureSize.width, pictureSize.height)
+            resizeImageService.resize(path, outputFile, pictureSize.width, pictureSize.height, contentType)
         }
     }
 
