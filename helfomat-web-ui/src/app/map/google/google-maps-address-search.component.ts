@@ -24,8 +24,12 @@ export class GoogleMapsAddressSearchComponent {
     }
 
     ngOnInit() {
-        if (this.current !== null && this.current !== undefined) {
-            this.addressString = `${this.current.street}, ${this.current.zipcode} ${this.current.city}`;
+        if (this.current != null) {
+            this.addressString = this.current.street;
+            if (this.addressString != "" && this.current.zipcode != "" || this.current.city != "") {
+                this.addressString += ", ";
+            }
+            this.addressString += `${this.current.zipcode} ${this.current.city}`.trim();
         }
     }
 

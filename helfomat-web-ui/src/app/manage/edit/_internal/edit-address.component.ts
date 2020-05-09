@@ -34,6 +34,7 @@ export class EditAddressComponent {
     }
 
     ngOnInit() {
+        this.address.location = this.address.location || {lat: null, lon: null};
         this._address$ = new BehaviorSubject(this.address);
         this.address$ = this._address$.asObservable();
         this.organization$ = this.address$.pipe(

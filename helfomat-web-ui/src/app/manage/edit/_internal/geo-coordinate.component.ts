@@ -40,7 +40,17 @@ export class GeoCoordinateComponent {
     }
 
     change() {
-        const coordinate = this.degree + (this.minutes / 60) + (this.seconds / 3600);
+        let coordinate: number = null;
+        if (this.degree != null) {
+            coordinate = this.degree;
+
+            if (this.minutes != null) {
+                coordinate += (this.minutes / 60);
+            }
+            if (this.seconds != null) {
+                coordinate += (this.seconds / 3600);
+            }
+        }
         this.coordinateChange.next(coordinate);
     }
 }

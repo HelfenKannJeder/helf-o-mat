@@ -1,5 +1,6 @@
 import {Component, Input} from "@angular/core";
 import {Organization, OrganizationEvent} from "../../resources/organization.service";
+import {GeoPoint} from "../../../../_internal/geopoint";
 
 @Component({
     selector: 'organization-event',
@@ -28,4 +29,7 @@ export class OrganizationEventComponent {
         return !this.isDeleteEvent(eventType) && !this.isCreateEvent(eventType);
     }
 
+    isGeoPointEqual(location: GeoPoint, location2: GeoPoint) {
+        return GeoPoint.isEqual(location, location2);
+    }
 }

@@ -153,8 +153,7 @@ export class Address {
 
     static isEqual(address1: Address, address2: Address): boolean {
         return address1 != null && address2 != null
-            && address1.location.lon == address2.location.lon
-            && address1.location.lat == address2.location.lat
+            && GeoPoint.isEqual(address1.location, address2.location)
             && address1.addressAppendix == address2.addressAppendix
             && address1.city == address2.city
             && address1.street == address2.street

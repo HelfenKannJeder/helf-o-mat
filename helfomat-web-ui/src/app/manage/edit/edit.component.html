@@ -140,6 +140,9 @@
                         '=1': 'organization.address.title',
                         'other': 'organization.address.titlePlural'
                     } | translate}}
+                        <button class="btn btn-success btn-sm float-right" (click)="editAddress(organization.addresses, {city: '',location: null ,street: '',zipcode: ''}, organization)" type="button">
+                            <i class="material-icons">add</i>
+                        </button>
                     </div>
                     <helfomat-single-map
                         [organization]="organization$"

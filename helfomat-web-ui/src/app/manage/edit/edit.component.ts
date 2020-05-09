@@ -191,6 +191,10 @@ export class EditComponent implements OnInit {
     }
 
     calculateChanges(organization: Organization) {
+        if (organization.addresses != null && organization.addresses.length > 0) {
+            organization.defaultAddress = organization.addresses[0];
+        }
+        this._organization$.next(organization);
         this.newOrganization.next(organization);
     }
 
@@ -213,7 +217,6 @@ export class EditComponent implements OnInit {
                 if (isDefaultAddress) {
                     newOrganization.defaultAddress = newAddress;
                 }
-                this._organization$.next(newOrganization);
                 this.calculateChanges(newOrganization);
             });
     }
