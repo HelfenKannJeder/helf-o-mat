@@ -44,7 +44,7 @@
                         </button>
                     </h2>
                     <div cdkDropList (cdkDropListDropped)="drop(organization.attendanceTimes, $event, organization)">
-                        <div *ngFor="let attendanceTime of organization.attendanceTimes" class="card card-default dragable" cdkDrag>
+                        <div *ngFor="let attendanceTime of organization.attendanceTimes" class="card card-default draggable" cdkDrag>
                             <div class="card-header" (click)="attendanceTime.__expanded = !attendanceTime.__expanded">
                                 <button class="float-right btn btn-danger btn-sm" (click)="remove(organization.attendanceTimes, attendanceTime, organization);" type="button">
                                     <i class="material-icons" (click)="remove(organization.attendanceTimes, attendanceTime, organization);">delete</i>
@@ -94,7 +94,7 @@
                     </button>
                 </h2>
                 <div cdkDropList (cdkDropListDropped)="drop(organization.groups, $event, organization)">
-                    <div *ngFor="let group of organization.groups" class="card card-default dragable" cdkDrag [id]="group.__id">
+                    <div *ngFor="let group of organization.groups" class="card card-default draggable" cdkDrag [id]="group.__id">
                         <div class="card-header" (click)="group.__expanded = !group.__expanded">
                             <button class="float-right btn btn-danger btn-sm" (click)="remove(organization.groups, group, organization);" type="button">
                                 <i class="material-icons">delete</i>
@@ -145,9 +145,9 @@
                         [organization]="organization$"
                         [allowUpdatePosition]="false"
                         [showMapResizeButton]="false"></helfomat-single-map>
-                    <ul class="list-group">
-                        <li *ngFor="let address of organization.addresses" class="list-group-item"
-                            [ngClass]="{'list-group-item-info': areAddressesEqual(organization.defaultAddress, address)}">
+                    <ul class="list-group"  cdkDropList (cdkDropListDropped)="drop(organization.addresses, $event, organization)">
+                        <li *ngFor="let address of organization.addresses" class="list-group-item draggable"
+                            [ngClass]="{'list-group-item-info': areAddressesEqual(organization.defaultAddress, address)}" cdkDrag [id]="address.__id">
                             <div class="float-right btn-group" role="group">
                                 <button class="btn btn-primary btn-sm" (click)="editAddress(organization.addresses, address, organization);" type="button">
                                     <i class="material-icons">edit</i>
@@ -194,7 +194,7 @@
                     <div class="card-header">
                         {{'organization.pictures.title' | translate}}
                     </div>
-                    <div class="dragable" cdkDrag *ngFor="let picture of organization.pictures" [cdkDragData]="picture">
+                    <div class="draggable" cdkDrag *ngFor="let picture of organization.pictures" [cdkDragData]="picture">
                         <button class="btn btn-danger btn-sm position-top-right" (click)="remove(organization.pictures, picture, organization);" type="button">
                             <i class="material-icons" (click)="remove(organization.pictures, picture, organization);">delete</i>
                         </button>

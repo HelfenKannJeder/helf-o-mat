@@ -10,6 +10,7 @@ import org.simmetrics.tokenizers.Tokenizers
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 
 
@@ -89,8 +90,19 @@ data class Organization(
         ))
         differences.addAll(getDiff(organization.contactPersons, contactPersons).map { OrganizationEditDeleteContactPersonEvent(id, it.first) })
         differences.addAll(getDiff(contactPersons, organization.contactPersons).map { OrganizationEditAddContactPersonEvent(id, it.second, it.first) })
-        differences.addAll(getDiff(organization.addresses, addresses).map { OrganizationEditDeleteAddressEvent(id, it.first) })
-        differences.addAll(getDiff(addresses, organization.addresses).map { OrganizationEditAddAddressEvent(id, it.second, it.first) })
+        differences.addAll(compare(
+            organization.addresses,
+            addresses,
+            object : ElementComparisonStrategy<Address, OrganizationEditChangeAddressEvent> {
+                override fun create(index: Int, element: Address) = OrganizationEditAddAddressEvent(id, index, element)
+                override fun update(indexOffset: Int, oldElement: Address, element: Address) = OrganizationEditChangeAddressEvent(id, indexOffset, oldElement, element)
+                override fun delete(element: Address) = OrganizationEditDeleteAddressEvent(id, element)
+                override fun isUpdateContent(event: OrganizationEditChangeAddressEvent) = event.address != event.oldAddress
+                override fun updateWithChangedIndex(indexOffset: Int, event: OrganizationEditChangeAddressEvent) = OrganizationEditChangeAddressEvent(id, indexOffset, event.oldAddress, event.address)
+                override fun isSimilar(element1: Address, element2: Address) = element1.addressAppendix == element2.addressAppendix
+                override fun compareWithMetric(element1: Address, element2: Address) = max((5.0 - element1.location.distanceInKm(element2.location)) / 5.0, 0.0).toFloat()
+            }
+        ))
         differences.addAll(getDiff(organization.questionAnswers, questionAnswers).map { OrganizationEditDeleteQuestionAnswerEvent(id, it.first) })
         differences.addAll(getDiff(questionAnswers, organization.questionAnswers).map { OrganizationEditAddQuestionAnswerEvent(id, it.second, it.first) })
         differences.addAll(compare(

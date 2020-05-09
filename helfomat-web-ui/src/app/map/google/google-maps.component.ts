@@ -32,6 +32,9 @@ import Autocomplete = google.maps.places.Autocomplete;
     styleUrls: ['./google-maps.component.scss'],
     animations: [
         trigger('resizeMap', [
+            state('icon', style({
+                height: '150px'
+            })),
             state('normal', style({
                 height: '300px'
             })),

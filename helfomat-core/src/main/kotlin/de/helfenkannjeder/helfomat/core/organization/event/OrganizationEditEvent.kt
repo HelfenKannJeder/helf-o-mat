@@ -11,7 +11,12 @@ abstract class OrganizationEditEvent(organizationId: OrganizationId) : Organizat
         val indexOf = items.indexOf(oldElement);
         if (indexOf != -1) {
             items.removeAt(indexOf)
-            items.add(indexOf + indexOffset, newElement)
+            val newIndex = indexOf + indexOffset
+            if (newIndex > items.size) {
+                items.add(newElement)
+            } else {
+                items.add(newIndex, newElement)
+            }
         }
         return items
     }

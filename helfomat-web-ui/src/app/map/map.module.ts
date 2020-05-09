@@ -5,6 +5,7 @@ import {MapComponent} from './map.component';
 import {BrowserModule} from '@angular/platform-browser';
 import {SingleMapComponent} from "./single-map.component";
 import {AddressSearchComponent} from "./address-search.component";
+import {MapIconComponent} from "./map-icon.component";
 
 @NgModule({
     imports: [
@@ -15,12 +16,14 @@ import {AddressSearchComponent} from "./address-search.component";
     declarations: [
         MapComponent,
         SingleMapComponent,
-        AddressSearchComponent
+        AddressSearchComponent,
+        MapIconComponent
     ],
     exports: [
         MapComponent,
         SingleMapComponent,
-        AddressSearchComponent
+        AddressSearchComponent,
+        MapIconComponent
     ]
 })
 export class MapModule {

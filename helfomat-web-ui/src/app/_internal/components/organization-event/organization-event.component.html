@@ -12,20 +12,61 @@
              }">
             <ng-container *ngSwitchCase="'.OrganizationCreateEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.created.title' | translate: {name: organizationEvent.name} }}</h5>
-                {{ 'edit.organization.changes.created.description' | translate: {name: organizationEvent.name, urlName: organizationEvent.urlName, organizationType: organizationEvent.organizationType } }}
+                {{ 'edit.organization.changes.created.description' | translate: {name: organizationEvent.name, urlName: organizationEvent.urlName, organizationType: organizationEvent.organizationType} }}
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationDeleteEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.deleted.title' | translate }}</h5>
                 {{ 'edit.organization.changes.deleted.description' | translate: {name: organization?.name} }}
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddAddressEventDto'">
+                <div class="float-right">
+                    <map-icon [geoPoint]="organizationEvent.address.location" [organizationType]="organization?.organizationType"></map-icon>
+                </div>
                 <h5 class="mb-1">{{ 'edit.organization.changes.address.add.title' | translate }}</h5>
+                <strong *ngIf="organizationEvent.address.addressAppendix">{{organizationEvent.address.addressAppendix}}<br/></strong>
+                {{organizationEvent.address.street}}, {{organizationEvent.address.zipcode}} {{organizationEvent.address.city}}
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDefaultAddressEventDto'">
+                <div class="float-right">
+                    <map-icon [geoPoint]="organizationEvent.address.location" [organizationType]="organization?.organizationType"></map-icon>
+                </div>
+                <ng-container *ngIf="organization?.defaultAddress?.location != organizationEvent.address?.location">
+                    <div class="float-right map-arrow">
+                        <span class="material-icons md-48">keyboard_arrow_right</span>
+                    </div>
+                    <div class="float-right">
+                        <map-icon [geoPoint]="organization?.defaultAddress?.location" [organizationType]="organization?.organizationType"></map-icon>
+                    </div>
+                </ng-container>
                 <h5 class="mb-1">{{ 'edit.organization.changes.address.default.title' | translate }}</h5>
+                <strong *ngIf="organizationEvent.address.addressAppendix"><text-diff [text1]="organization?.defaultAddress?.addressAppendix" [text2]="organizationEvent.address.addressAppendix"></text-diff><br/></strong>
+                <text-diff [simple]="true" [text1]="organization?.defaultAddress?.street" [text2]="organizationEvent.address.street"></text-diff>,
+                <text-diff [simple]="true" [text1]="organization?.defaultAddress?.zipcode" [text2]="organizationEvent.address.zipcode"></text-diff>
+                <text-diff [simple]="true" [text1]="organization?.defaultAddress?.city" [text2]="organizationEvent.address.city"></text-diff>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDeleteAddressEventDto'">
+                <div class="float-right">
+                    <map-icon [geoPoint]="organizationEvent.address.location" [organizationType]="organization?.organizationType"></map-icon>
+                </div>
                 <h5 class="mb-1">{{ 'edit.organization.changes.address.delete.title' | translate }}</h5>
+                <strong *ngIf="organizationEvent.address.addressAppendix">{{organizationEvent.address.addressAppendix}}<br/></strong>
+                {{organizationEvent.address.street}}, {{organizationEvent.address.zipcode}} {{organizationEvent.address.city}}
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditChangeAddressEventDto'">
+                <div class="float-right">
+                    <map-icon [geoPoint]="organizationEvent.address.location" [organizationType]="organization?.organizationType"></map-icon>
+                </div>
+                <div class="float-right map-arrow">
+                    <span class="material-icons md-48">keyboard_arrow_right</span>
+                </div>
+                <div class="float-right">
+                    <map-icon [geoPoint]="organizationEvent.oldAddress.location" [organizationType]="organization?.organizationType"></map-icon>
+                </div>
+                <h5 class="mb-1">{{ 'edit.organization.changes.address.change.title' | translate }}</h5>
+                <strong *ngIf="organizationEvent.address.addressAppendix"><text-diff [text1]="organizationEvent.oldAddress.addressAppendix" [text2]="organizationEvent.address.addressAppendix"></text-diff><br/></strong>
+                <text-diff [simple]="true" [text1]="organizationEvent.oldAddress.street" [text2]="organizationEvent.address.street"></text-diff>,
+                <text-diff [simple]="true" [text1]="organizationEvent.oldAddress.zipcode" [text2]="organizationEvent.address.zipcode"></text-diff>
+                <text-diff [simple]="true" [text1]="organizationEvent.oldAddress.city" [text2]="organizationEvent.address.city"></text-diff>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddAttendanceTimeEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.attendanceTime.add.title' | translate }}</h5>
@@ -74,7 +115,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDeletePictureEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.picture.delete.title' | translate }}</h5>
-                <img src="api/picture/{{organizationEvent.pictureId.value}}/icon"  alt=""/>
+                <img src="api/picture/{{organizationEvent.pictureId.value}}/icon" alt=""/>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditChangePictureEventDto'">
                 <change-position [indexOffset]="organizationEvent.indexOffset"></change-position>

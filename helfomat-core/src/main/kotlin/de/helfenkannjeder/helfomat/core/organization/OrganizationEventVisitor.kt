@@ -31,4 +31,5 @@ interface OrganizationEventVisitor<T> {
     fun visit(organizationEditChangeGroupEvent: OrganizationEditChangeGroupEvent): T
     fun visit(organizationEditChangePictureEvent: OrganizationEditChangePictureEvent): T
     fun visit(organizationEditChangeAttendanceTimeEvent: OrganizationEditChangeAttendanceTimeEvent): T
+    fun visit(organizationEditChangeAddressEvent: OrganizationEditChangeAddressEvent): T
 }

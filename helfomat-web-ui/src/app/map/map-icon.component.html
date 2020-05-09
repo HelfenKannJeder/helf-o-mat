@@ -1,0 +1,8 @@
+<div class="map-icon" *ngIf="organization | async">
+    <helfomat-single-map
+        [organization]="organization"
+        mapSize="icon"
+        [showDefaultAddressBar]="false"
+        [showMapResizeButton]="false"
+    ></helfomat-single-map>
+</div>

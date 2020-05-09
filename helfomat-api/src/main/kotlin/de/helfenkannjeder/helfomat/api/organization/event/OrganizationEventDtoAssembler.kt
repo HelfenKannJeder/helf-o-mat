@@ -86,6 +86,9 @@ class OrganizationEventDtoAssembler : OrganizationEventDtoVisitor<OrganizationEv
     override fun visit(organizationEditChangeAttendanceTimeEventDto: OrganizationEditChangeAttendanceTimeEventDto): OrganizationEvent =
         OrganizationEditChangeAttendanceTimeEvent(organizationEditChangeAttendanceTimeEventDto.organizationId, organizationEditChangeAttendanceTimeEventDto.indexOffset, organizationEditChangeAttendanceTimeEventDto.oldAttendanceTime.toAttendanceTime(), organizationEditChangeAttendanceTimeEventDto.attendanceTime.toAttendanceTime())
 
+    override fun visit(organizationEditChangeAddressEventDto: OrganizationEditChangeAddressEventDto): OrganizationEvent =
+        OrganizationEditChangeAddressEvent(organizationEditChangeAddressEventDto.organizationId, organizationEditChangeAddressEventDto.indexOffset, organizationEditChangeAddressEventDto.oldAddress.toAddress(), organizationEditChangeAddressEventDto.address.toAddress())
+
     override fun visit(proposedChangeOrganizationEventDto: ProposedChangeOrganizationEventDto) =
         ProposedChangeOrganizationEvent(
             proposedChangeOrganizationEventDto.organizationId,

@@ -148,7 +148,8 @@
         "address": {
           "add.title": "Adresse hinzugefügt",
           "default.title": "Hauptadresse geändert",
-          "delete.title": "Adresse gelöscht"
+          "delete.title": "Adresse gelöscht",
+          "change.title": "Adresse geändert"
         },
         "attendanceTime": {
           "add.title": "Termin hinzugefügt",

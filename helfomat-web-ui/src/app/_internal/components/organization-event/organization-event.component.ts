@@ -17,11 +17,11 @@ export class OrganizationEventComponent {
     public organizationEvents: Array<OrganizationEvent> = [];
 
     public isDeleteEvent(eventType: string): boolean {
-        return eventType.indexOf("Delete") >= 0;
+        return eventType.indexOf("EditDelete") >= 0;
     }
 
     public isCreateEvent(eventType: string): boolean {
-        return eventType.indexOf("Add") >= 0;
+        return eventType.indexOf("EditAdd") >= 0;
     }
 
     public isChange(eventType: string): boolean {

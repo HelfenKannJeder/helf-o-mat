@@ -125,6 +125,14 @@ class OrganizationEventAssembler(private val questions: List<Question>) : Organi
             organizationEditChangeAttendanceTimeEvent.oldAttendanceTime.toAttendanceTimeDto(),
             organizationEditChangeAttendanceTimeEvent.attendanceTime.toAttendanceTimeDto()
         )
+
+    override fun visit(organizationEditChangeAddressEvent: OrganizationEditChangeAddressEvent): OrganizationEventDto =
+        OrganizationEditChangeAddressEventDto(
+            organizationEditChangeAddressEvent.organizationId,
+            organizationEditChangeAddressEvent.indexOffset,
+            organizationEditChangeAddressEvent.oldAddress.toAddressDto(),
+            organizationEditChangeAddressEvent.address.toAddressDto()
+        )
 }
 
 fun OrganizationEvent.toOrganizationEventDto(questions: List<Question>) = this.toOrganizationEventDto(OrganizationEventAssembler(questions))

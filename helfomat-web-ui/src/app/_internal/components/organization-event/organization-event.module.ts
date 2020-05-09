@@ -6,6 +6,7 @@ import {TextDiffModule} from "../text-diff/text-diff.module";
 import {TranslateModule} from "@ngx-translate/core";
 import {ChangePositionModule} from "../change-position/change-position.module";
 import {TimeModule} from "../../../shared/time.module";
+import {MapModule} from "../../../map/map.module";
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import {TimeModule} from "../../../shared/time.module";
         TextDiffModule,
         TranslateModule,
         ChangePositionModule,
-        TimeModule
+        TimeModule,
+        MapModule
     ],
     exports: [
         OrganizationEventComponent
