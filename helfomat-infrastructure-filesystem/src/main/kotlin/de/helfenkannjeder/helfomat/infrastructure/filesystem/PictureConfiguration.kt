@@ -16,8 +16,8 @@ data class PictureConfiguration(
 
     data class PictureSize (
         var name: String,
-        var width: Int,
-        var height: Int
+        var width: Int?,
+        var height: Int?
     )
 
 }

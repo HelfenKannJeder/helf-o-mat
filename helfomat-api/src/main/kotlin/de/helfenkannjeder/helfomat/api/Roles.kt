@@ -8,4 +8,6 @@ object Roles {
 
     const val REVIEWER = "ROLE_helfomat_reviewer"
 
+    const val USER = "ROLE_helfomat_user"
+
 }

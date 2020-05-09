@@ -201,7 +201,7 @@
                         <button class="btn btn-danger btn-sm position-top-right" (click)="remove(organization.pictures, picture, organization);" type="button">
                             <i class="material-icons" (click)="remove(organization.pictures, picture, organization);">delete</i>
                         </button>
-                        <img [src]="picture.fileDataUrl || 'api/picture/' + picture.value + '/medium'" #myPicture style="width:100%"/>
+                        <img [src]="'api/picture/' + picture.value + '/medium' | authImage | async" style="width:100%"/>
                         <div class="cdk-drag-placeholder" *cdkDragPlaceholder style="height:200px"></div>
                     </div>
                     <div class="upload-file-container" (click)="fileInput.click()" dragDrop (onFileDropped)="uploadFile(organization.pictures, $event)">

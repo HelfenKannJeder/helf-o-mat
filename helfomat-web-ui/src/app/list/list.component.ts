@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Organization, PictureId} from '../_internal/resources/organization.service';
+import {Organization} from '../_internal/resources/organization.service';
+import {PictureId} from "../_internal/resources/picture.service";
 
 @Component({
     selector: 'helfomat-list',

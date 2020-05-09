@@ -46,7 +46,7 @@ class FileSystemPictureStorageService(
     @Throws(DownloadFailedException::class)
     override fun savePicture(bytes: ByteArray, pictureId: PictureId): PictureId {
         return try {
-            val path = createPath(pictureId.value)
+            val path = createPath(pictureId.value.toString())
             Files.write(path, bytes)
             scalePicture(pictureId, path)
             pictureId
@@ -65,7 +65,7 @@ class FileSystemPictureStorageService(
     @Throws(DownloadFailedException::class)
     override fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId {
         return try {
-            val path = createPath(pictureId.value)
+            val path = createPath(pictureId.value.toString())
             Files.copy(inputStream, path)
             scalePicture(pictureId, path)
             pictureId
@@ -75,12 +75,12 @@ class FileSystemPictureStorageService(
     }
 
     override fun getPicture(pictureId: PictureId): Path {
-        return Paths.get(pictureConfiguration.pictureFolder, pictureId.value)
+        return Paths.get(pictureConfiguration.pictureFolder, pictureId.value.toString())
     }
 
     override fun getPicture(pictureId: PictureId, size: String): Path {
         Preconditions.checkArgument(Pattern.compile("^[a-z\\-]+$").matcher(size).matches())
-        return Paths.get(pictureConfiguration.pictureFolder, size, pictureId.value)
+        return Paths.get(pictureConfiguration.pictureFolder, size, pictureId.value.toString())
     }
 
     override fun existPicture(pictureId: PictureId): Boolean {
@@ -90,7 +90,7 @@ class FileSystemPictureStorageService(
     @Throws(IOException::class)
     private fun scalePicture(pictureId: PictureId, path: Path) {
         for (pictureSize in pictureConfiguration.pictureSizes) {
-            val outputFile = createPath(pictureSize.name, pictureId.value)
+            val outputFile = createPath(pictureSize.name, pictureId.value.toString())
             resizeImageService.resize(path, outputFile, pictureSize.width, pictureSize.height)
         }
     }

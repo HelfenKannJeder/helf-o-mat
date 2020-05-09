@@ -3,6 +3,7 @@ import {Observable} from 'rxjs';
 import {Answer} from '../../shared/answer.model';
 import {GeoPoint} from '../../../_internal/geopoint';
 import {HttpClient} from "@angular/common/http";
+import {PictureId} from "./picture.service";
 
 @Injectable()
 export class OrganizationService {
@@ -92,10 +93,6 @@ export class Organization {
     public logo: PictureId;
     public volunteers: Volunteer[] = [];
     public attendanceTimes: AttendanceTime[] = [];
-}
-
-export class PictureId {
-    public value: string;
 }
 
 export class TravelDistance {

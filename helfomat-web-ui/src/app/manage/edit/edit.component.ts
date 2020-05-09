@@ -7,7 +7,6 @@ import {
     Organization,
     OrganizationEvent,
     OrganizationService,
-    PictureId
 } from "../../_internal/resources/organization.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
@@ -27,6 +26,8 @@ import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from "@ngx-translate/core";
 import {EditAddressComponent} from "./_internal/edit-address.component";
+import {PictureId, PictureService} from "../../_internal/resources/picture.service";
+import {v4 as uuidv4} from 'uuid';
 
 @Component({
     selector: 'organization-edit',
@@ -46,7 +47,6 @@ export class EditComponent implements OnInit {
     public newOrganization: Subject<Organization> = new EventEmitter<Organization>();
     public originalOrganization: Organization;
     public organizationTemplate: OrganizationTemplate;
-    public files: UploadedFile[] = [];
     public publishContent: PublishContent = {} as PublishContent;
 
     public weekdays: string[] = [
@@ -68,6 +68,7 @@ export class EditComponent implements OnInit {
         private router: Router,
         private toastr: ToastrService,
         private translateService: TranslateService,
+        private pictureService: PictureService,
         @Inject(DOCUMENT) private document: Document
     ) {
         ObservableUtil.extractObjectMember(this.route.params, 'organization')
@@ -177,16 +178,13 @@ export class EditComponent implements OnInit {
         return field.invalid && (field.dirty || field.touched);
     }
 
-    uploadFile(pictures: (PictureId | UploadedFile)[], event: FileList) {
+    uploadFile(pictures: PictureId[], event: FileList) {
         for (let index: number = 0; index < event.length; index++) {
-            const element = event[index];
-            let uploadedFile = new UploadedFile();
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                uploadedFile.fileDataUrl = e.target.result;
-            };
-            reader.readAsDataURL(element);
-            pictures.push(uploadedFile);
+            const pictureId: PictureId = {value: uuidv4()};
+            this.pictureService.uploadPicture(pictureId, event[index])
+                .subscribe(() => {
+                    pictures.push(pictureId);
+                })
         }
     }
 
@@ -273,8 +271,4 @@ export class EditComponent implements OnInit {
         return JSON.parse(JSON.stringify(object));
     }
 
-}
-
-class UploadedFile {
-    fileDataUrl: string | ArrayBuffer | null;
 }

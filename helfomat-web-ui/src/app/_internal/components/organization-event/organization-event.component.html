@@ -113,15 +113,16 @@
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddPictureEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.picture.add.title' | translate }}</h5>
+                <img [src]="'api/picture/' + organizationEvent.pictureId.value + '/icon' | authImage | async" alt=""/>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDeletePictureEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.picture.delete.title' | translate }}</h5>
-                <img src="api/picture/{{organizationEvent.pictureId.value}}/icon" alt=""/>
+                <img [src]="'api/picture/' + organizationEvent.pictureId.value + '/icon'" alt=""/>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditChangePictureEventDto'">
                 <change-position [indexOffset]="organizationEvent.indexOffset"></change-position>
                 <h5 class="mb-1">{{ 'edit.organization.changes.picture.change.title' | translate }}</h5>
-                <img src="api/picture/{{organizationEvent.pictureId.value}}/icon" alt=""/>
+                <img [src]="'api/picture/' + organizationEvent.pictureId.value + '/icon'" alt=""/>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddQuestionAnswerEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.questionAnswer.add.title' | translate }}</h5>
@@ -148,7 +149,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditTeaserImageEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.teaserImageChanged' | translate }}</h5>
-                <img src="api/picture/{{organizationEvent.teaserImage.value}}/icon" alt=""/>
+                <img [src]="'api/picture/' + organizationEvent.teaserImage.value + '/icon' | authImage | async" alt=""/>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditUrlNameEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.urlNameChanged' | translate }}</h5>

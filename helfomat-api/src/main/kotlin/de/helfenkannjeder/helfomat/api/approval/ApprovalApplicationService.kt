@@ -1,18 +1,23 @@
 package de.helfenkannjeder.helfomat.api.approval
 
 import de.helfenkannjeder.helfomat.api.Roles
+import de.helfenkannjeder.helfomat.api.currentUsername
 import de.helfenkannjeder.helfomat.core.approval.Approval
 import de.helfenkannjeder.helfomat.core.approval.ApprovalId
 import de.helfenkannjeder.helfomat.core.approval.ApprovalRepository
+import de.helfenkannjeder.helfomat.core.organization.NullableOrganizationEventVisitor
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
 import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddPictureEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditTeaserImageEvent
 import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent
+import de.helfenkannjeder.helfomat.core.picture.PictureId
+import de.helfenkannjeder.helfomat.core.picture.PictureRepository
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.security.access.annotation.Secured
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 
@@ -25,7 +30,8 @@ open class ApprovalApplicationService(
     private val approvalRepository: ApprovalRepository,
     private val organizationRepository: OrganizationRepository,
     private val questionRepository: QuestionRepository,
-    private val applicationEventPublisher: ApplicationEventPublisher
+    private val applicationEventPublisher: ApplicationEventPublisher,
+    private val pictureRepository: PictureRepository
 ) {
 
     @EventListener
@@ -55,16 +61,32 @@ open class ApprovalApplicationService(
         val proposedChangeOrganizationEvent = approval.requestedDomainEvent
         val confirmedChangeOrganizationEvent = ConfirmedChangeOrganizationEvent(
             proposedChangeOrganizationEvent.organizationId,
-            currentUser,
+            currentUsername(),
             proposedChangeOrganizationEvent.author,
             proposedChangeOrganizationEvent.sources,
             proposedChangeOrganizationEvent.changes
         )
+        publishNewPictures(proposedChangeOrganizationEvent)
         approval.approvedDomainEvent = confirmedChangeOrganizationEvent
         approvalRepository.save(approval)
         applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent)
     }
 
-    private val currentUser get() = SecurityContextHolder.getContext().authentication.name
+    private fun publishNewPictures(proposedChangeOrganizationEvent: ProposedChangeOrganizationEvent) {
+        val visitor = object : NullableOrganizationEventVisitor<List<PictureId>> {
+            override fun visit(organizationEditAddPictureEvent: OrganizationEditAddPictureEvent): List<PictureId>? =
+                listOf(organizationEditAddPictureEvent.pictureId)
+
+            override fun visit(organizationEditTeaserImageEvent: OrganizationEditTeaserImageEvent): List<PictureId>? {
+                val pictureId = organizationEditTeaserImageEvent.teaserImage ?: return null
+                return listOf(pictureId)
+            }
+        }
+        val picturesToMakePublic = proposedChangeOrganizationEvent.changes.flatMap { it.visit(visitor) ?: emptyList() }
+        this.pictureRepository.saveAll(
+            pictureRepository.findAllById(picturesToMakePublic)
+                .map { it.apply { public = true } }
+        )
+    }
 
 }

@@ -18,10 +18,13 @@ import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review
 import {MapModule} from "../../map/map.module";
 import {EditAddressComponent} from "./_internal/edit-address.component";
 import {GeoCoordinateComponent} from "./_internal/geo-coordinate.component";
+import {PictureService} from "../../_internal/resources/picture.service";
+import {AuthenticationModule} from "../../_internal/authentication/authentication.module";
 
 @NgModule({
     providers: [
         OrganizationService,
+        PictureService,
         OrganizationTemplateService
     ],
     imports: [
@@ -38,7 +41,8 @@ import {GeoCoordinateComponent} from "./_internal/geo-coordinate.component";
         NgbModalModule,
         OrganizationEventModule,
         MapModule,
-        NgbNavModule
+        NgbNavModule,
+        AuthenticationModule
     ],
     declarations: [
         EditComponent,

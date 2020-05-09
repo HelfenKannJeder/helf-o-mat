@@ -7,6 +7,7 @@ import {TranslateModule} from "@ngx-translate/core";
 import {ChangePositionModule} from "../change-position/change-position.module";
 import {TimeModule} from "../../../shared/time.module";
 import {MapModule} from "../../../map/map.module";
+import {AuthenticationModule} from "../../authentication/authentication.module";
 
 @NgModule({
     declarations: [
@@ -19,7 +20,8 @@ import {MapModule} from "../../../map/map.module";
         TranslateModule,
         ChangePositionModule,
         TimeModule,
-        MapModule
+        MapModule,
+        AuthenticationModule
     ],
     exports: [
         OrganizationEventComponent
