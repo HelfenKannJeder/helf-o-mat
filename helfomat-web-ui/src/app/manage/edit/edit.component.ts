@@ -28,6 +28,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {EditAddressComponent} from "./_internal/edit-address.component";
 import {PictureId, PictureService} from "../../_internal/resources/picture.service";
 import {v4 as uuidv4} from 'uuid';
+import {Ng2ImgMaxService} from "ng2-img-max";
 
 @Component({
     selector: 'organization-edit',
@@ -48,6 +49,7 @@ export class EditComponent implements OnInit {
     public originalOrganization: Organization;
     public organizationTemplate: OrganizationTemplate;
     public publishContent: PublishContent = {} as PublishContent;
+    public uploadProgress: Subject<number> = new BehaviorSubject(null);
 
     public weekdays: string[] = [
         "MONDAY",
@@ -69,6 +71,7 @@ export class EditComponent implements OnInit {
         private toastr: ToastrService,
         private translateService: TranslateService,
         private pictureService: PictureService,
+        private ng2ImgMax: Ng2ImgMaxService,
         @Inject(DOCUMENT) private document: Document
     ) {
         ObservableUtil.extractObjectMember(this.route.params, 'organization')
@@ -104,6 +107,17 @@ export class EditComponent implements OnInit {
                 mergeMap(organization => this.organizationService.compareOrganization(this.originalOrganization, organization))
             )
             .subscribe(changes => this.changes.next(changes));
+
+        this.uploadProgress
+            .pipe(
+                distinctUntilChanged(),
+                debounceTime(5000),
+            )
+            .subscribe(percentage => {
+                if (percentage == 100) {
+                    this.uploadProgress.next(null);
+                }
+            })
     }
 
     private removeIncompleteFields(organization: Organization) {
@@ -179,12 +193,33 @@ export class EditComponent implements OnInit {
     }
 
     uploadFile(pictures: PictureId[], event: FileList) {
-        for (let index: number = 0; index < event.length; index++) {
+        const numberOfImages = event.length;
+        let aggregatedPercentComplete = 0;
+        this.uploadProgress.next(1);
+        for (let index: number = 0; index < numberOfImages; index++) {
             const pictureId: PictureId = {value: uuidv4()};
-            this.pictureService.uploadPicture(pictureId, event[index])
-                .subscribe(() => {
-                    pictures.push(pictureId);
-                })
+            this.ng2ImgMax.compressImage(event[index], 3).subscribe(
+                result => {
+                    const imageToUpload = new File([result], result.name);
+                    aggregatedPercentComplete += 50;
+                    this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
+                    this.pictureService.uploadPicture(pictureId, imageToUpload)
+                        .subscribe(() => {
+                            aggregatedPercentComplete += 50;
+                            pictures.push(pictureId);
+                            this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
+                        });
+                },
+                error => {
+                    console.error('Scaling went wrong, tyring to just upload it as is', error);
+                    this.pictureService.uploadPicture(pictureId, event[index])
+                        .subscribe(() => {
+                            aggregatedPercentComplete += 100;
+                            pictures.push(pictureId);
+                            this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
+                        });
+                }
+            );
         }
     }
 

@@ -20,6 +20,7 @@ import {EditAddressComponent} from "./_internal/edit-address.component";
 import {GeoCoordinateComponent} from "./_internal/geo-coordinate.component";
 import {PictureService} from "../../_internal/resources/picture.service";
 import {AuthenticationModule} from "../../_internal/authentication/authentication.module";
+import {Ng2ImgMaxModule} from "ng2-img-max";
 
 @NgModule({
     providers: [
@@ -42,7 +43,8 @@ import {AuthenticationModule} from "../../_internal/authentication/authenticatio
         OrganizationEventModule,
         MapModule,
         NgbNavModule,
-        AuthenticationModule
+        AuthenticationModule,
+        Ng2ImgMaxModule
     ],
     declarations: [
         EditComponent,

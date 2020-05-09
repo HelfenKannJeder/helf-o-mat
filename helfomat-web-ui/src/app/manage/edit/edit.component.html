@@ -13,7 +13,7 @@
                     <img src="api/picture/{{organization.logo.value}}/icon"
                          [attr.alt]="organization.name">
                 </div>
-                <img [src]="organization.pictures[0].fileDataUrl || 'api/picture/' + organization.pictures[0].value + '/teaser'" width="100%"/>
+                <img [src]="'api/picture/' + organization.pictures[0].value + '/teaser' | authImage | async" width="100%"/>
             </div>
         </div>
 
@@ -205,8 +205,11 @@
                         <div class="cdk-drag-placeholder" *cdkDragPlaceholder style="height:200px"></div>
                     </div>
                     <div class="upload-file-container" (click)="fileInput.click()" dragDrop (onFileDropped)="uploadFile(organization.pictures, $event)">
-                        <input hidden type="file" #fileInput (change)="uploadFile(organization.pictures, $event.target.files)">
+                        <input hidden type="file" #fileInput (change)="uploadFile(organization.pictures, $event.target.files)" multiple>
                         <i class="material-icons">cloud_upload</i>
+                        <div class="progress" *ngIf="uploadProgress | async; let uploadProgress">
+                            <div class="progress-bar" role="progressbar" [ngStyle]="{width: uploadProgress + '%'}" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
                     </div>
                 </div>
 

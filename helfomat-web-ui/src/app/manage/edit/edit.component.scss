@@ -65,6 +65,11 @@ img.thumb {
   text-align: center;
   background-color: $lightgray;
   color: $darkblue;
+
+  .progress {
+    background-color: $darkgray;
+    margin: 0 1em;
+  }
 }
 
 .navbar.sticky-top {
