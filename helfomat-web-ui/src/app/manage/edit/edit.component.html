@@ -1,4 +1,4 @@
-<div *ngIf="organization | async; let organization; else loading">
+<div *ngIf="organization$ | async; let organization; else loading">
     <form class="needs-validation" novalidate (ngSubmit)="openPublishChangesConfirmation(organization)" (change)="calculateChanges(organization)">
         <nav class="navbar sticky-top navbar-dark bg-lightblue">
             <span class="navbar-brand">{{organization.name}}</span>
@@ -13,7 +13,7 @@
                     <img src="api/picture/{{organization.logo.value}}/icon"
                          [attr.alt]="organization.name">
                 </div>
-                <img [src]="organization.pictures[0].fileDataUrl || 'api/picture/' + organization.pictures[0].value + '/teaser'" width="100%"/>
+                <img [src]="'api/picture/' + organization.pictures[0].value + '/teaser' | authImage | async" width="100%"/>
             </div>
         </div>
 
@@ -44,7 +44,7 @@
                         </button>
                     </h2>
                     <div cdkDropList (cdkDropListDropped)="drop(organization.attendanceTimes, $event, organization)">
-                        <div *ngFor="let attendanceTime of organization.attendanceTimes" class="card card-default dragable" cdkDrag>
+                        <div *ngFor="let attendanceTime of organization.attendanceTimes" class="card card-default draggable" cdkDrag>
                             <div class="card-header" (click)="attendanceTime.__expanded = !attendanceTime.__expanded">
                                 <button class="float-right btn btn-danger btn-sm" (click)="remove(organization.attendanceTimes, attendanceTime, organization);" type="button">
                                     <i class="material-icons" (click)="remove(organization.attendanceTimes, attendanceTime, organization);">delete</i>
@@ -62,25 +62,25 @@
                             </div>
                             <div class="card-body" *ngIf="attendanceTime.__expanded">
                                 <div class="form-group">
-                                    <label for="weekday">{{'edit.organization.attendanceTime.weekday' | translate}}</label>
-                                    <select class="form-control" name="weekday" id="weekday" [(ngModel)]="attendanceTime.day" required>
+                                    <label [for]="getId('weekday', attendanceTime)">{{'edit.organization.attendanceTime.weekday' | translate}}</label>
+                                    <select class="form-control" [name]="getId('weekday', attendanceTime)" [id]="getId('weekday', attendanceTime)" [(ngModel)]="attendanceTime.day" required>
                                         <option *ngFor="let weekday of weekdays" [value]="weekday">{{'organization.attendanceTime.weekday.' + weekday | translate}}</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="weekday">{{'edit.organization.attendanceTime.time' | translate}}</label>
+                                    <label [for]="getId('weekdayTime', attendanceTime)">{{'edit.organization.attendanceTime.time' | translate}}</label>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <ngb-timepicker [(ngModel)]="attendanceTime.start" [minuteStep]="15" name="start" required></ngb-timepicker>
+                                            <ngb-timepicker [(ngModel)]="attendanceTime.start" [minuteStep]="15" [name]="getId('weekdayStart', attendanceTime)" (ngModelChange)="calculateChanges(organization)" required></ngb-timepicker>
                                         </div>
                                         <div class="col-sm-6">
-                                            <ngb-timepicker [(ngModel)]="attendanceTime.end" [minuteStep]="15" name="end" required></ngb-timepicker>
+                                            <ngb-timepicker [(ngModel)]="attendanceTime.end" [minuteStep]="15" [name]="getId('weekdayEnd', attendanceTime)" (ngModelChange)="calculateChanges(organization)" required></ngb-timepicker>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="note">{{'organization.attendanceTime.note' | translate}}</label>
-                                    <textarea class="form-control" name="note" id="note" autosize [(ngModel)]="attendanceTime.note"></textarea>
+                                    <label [for]="getId('weekdayNote', attendanceTime)">{{'organization.attendanceTime.note' | translate}}</label>
+                                    <textarea class="form-control" [id]="getId('weekdayNote', attendanceTime)" [name]="getId('weekdayNote', attendanceTime)" autosize [(ngModel)]="attendanceTime.note"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                     </button>
                 </h2>
                 <div cdkDropList (cdkDropListDropped)="drop(organization.groups, $event, organization)">
-                    <div *ngFor="let group of organization.groups" class="card card-default dragable" cdkDrag [id]="group.__id">
+                    <div *ngFor="let group of organization.groups" class="card card-default draggable" cdkDrag [id]="group.__id">
                         <div class="card-header" (click)="group.__expanded = !group.__expanded">
                             <button class="float-right btn btn-danger btn-sm" (click)="remove(organization.groups, group, organization);" type="button">
                                 <i class="material-icons">delete</i>
@@ -110,10 +110,10 @@
                         </div>
                         <div class="card-body" *ngIf="group.__expanded">
                             <div class="form-group">
-                                <label for="groupName">{{ 'edit.organization.groups.name' | translate }}</label>
+                                <label [for]="getId('groupName', group)">{{ 'edit.organization.groups.name' | translate }}</label>
                                 <input type="text"
-                                       id="groupName"
-                                       name="groupName"
+                                       [id]="getId('groupName', group)"
+                                       [name]="getId('groupName', group)"
                                        class="form-control"
                                        [(ngModel)]="group.name"
                                        [ngbTypeahead]="searchGroup(organization.groups)"
@@ -122,8 +122,11 @@
                                 />
                             </div>
                             <div class="form-group">
-                                <label for="groupDescription">{{ 'edit.organization.groups.description' | translate }}</label>
-                                <textarea class="form-control" id="groupDescription" name="groupDescription" autosize [(ngModel)]="group.description"></textarea>
+                                <label [for]="getId('groupDescription', group)">{{ 'edit.organization.groups.description' | translate }}</label>
+                                <textarea class="form-control"
+                                          [id]="getId('groupDescription', group)"
+                                          [name]="getId('groupDescription', group)"
+                                          autosize [(ngModel)]="group.description"></textarea>
                             </div>
                         </div>
                     </div>
@@ -131,24 +134,31 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="card card-default" *ngIf="organization.addresses.length > 0">
+                <div class="card card-default">
                     <div class="card-header">
                         {{organization.addresses.length | i18nPlural: {
                         '=1': 'organization.address.title',
                         'other': 'organization.address.titlePlural'
                     } | translate}}
+                        <button class="btn btn-success btn-sm float-right" (click)="editAddress(organization.addresses, {city: '',location: null ,street: '',zipcode: ''}, organization)" type="button">
+                            <i class="material-icons">add</i>
+                        </button>
                     </div>
-                    <!--                <helfomat-map-->
-                    <!--                    [organizations]="organizations"-->
-                    <!--                    [position]="position"-->
-                    <!--                    [distance]="distance"-->
-                    <!--                    [center]="center"-->
-                    <!--                    [zoom]="zoom"-->
-                    <!--                    [allowUpdatePosition]="false"-->
-                    <!--                    [showMapResizeButton]="false"></helfomat-map>-->
-                    <ul class="list-group">
-                        <li *ngFor="let address of organization.addresses" class="list-group-item"
-                            [ngClass]="{'list-group-item-info': areAddressesEqual(organization.defaultAddress, address)}">
+                    <helfomat-single-map
+                        [organization]="organization$"
+                        [allowUpdatePosition]="false"
+                        [showMapResizeButton]="false"></helfomat-single-map>
+                    <ul class="list-group"  cdkDropList (cdkDropListDropped)="drop(organization.addresses, $event, organization)">
+                        <li *ngFor="let address of organization.addresses" class="list-group-item draggable"
+                            [ngClass]="{'list-group-item-info': areAddressesEqual(organization.defaultAddress, address)}" cdkDrag [id]="address.__id">
+                            <div class="float-right btn-group" role="group">
+                                <button class="btn btn-primary btn-sm" (click)="editAddress(organization.addresses, address, organization);" type="button">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button class="btn btn-danger btn-sm" (click)="remove(organization.addresses, address, organization);" type="button">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </div>
                             <strong *ngIf="address.addressAppendix">{{address.addressAppendix}}<br/></strong>
                             {{address.street}}, {{address.zipcode}} {{address.city}}<br/>
                             <span
@@ -187,16 +197,19 @@
                     <div class="card-header">
                         {{'organization.pictures.title' | translate}}
                     </div>
-                    <div class="dragable" cdkDrag *ngFor="let picture of organization.pictures" [cdkDragData]="picture">
+                    <div class="draggable" cdkDrag *ngFor="let picture of organization.pictures" [cdkDragData]="picture">
                         <button class="btn btn-danger btn-sm position-top-right" (click)="remove(organization.pictures, picture, organization);" type="button">
                             <i class="material-icons" (click)="remove(organization.pictures, picture, organization);">delete</i>
                         </button>
-                        <img [src]="picture.fileDataUrl || 'api/picture/' + picture.value + '/medium'" #myPicture style="width:100%"/>
+                        <img [src]="'api/picture/' + picture.value + '/medium' | authImage | async" style="width:100%"/>
                         <div class="cdk-drag-placeholder" *cdkDragPlaceholder style="height:200px"></div>
                     </div>
                     <div class="upload-file-container" (click)="fileInput.click()" dragDrop (onFileDropped)="uploadFile(organization.pictures, $event)">
-                        <input hidden type="file" #fileInput (change)="uploadFile(organization.pictures, $event.target.files)">
+                        <input hidden type="file" #fileInput (change)="uploadFile(organization.pictures, $event.target.files)" multiple>
                         <i class="material-icons">cloud_upload</i>
+                        <div class="progress" *ngIf="uploadProgress | async; let uploadProgress">
+                            <div class="progress-bar" role="progressbar" [ngStyle]="{width: uploadProgress + '%'}" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
                     </div>
                 </div>
 

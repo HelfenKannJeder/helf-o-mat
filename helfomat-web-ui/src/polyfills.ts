@@ -20,3 +20,5 @@ import 'core-js/features/set';
 import 'core-js/features/reflect';
 
 import 'zone.js/dist/zone';
+
+import 'blueimp-canvas-to-blob/js/canvas-to-blob.min.js';

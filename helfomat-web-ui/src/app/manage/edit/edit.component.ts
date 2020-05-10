@@ -1,13 +1,12 @@
 import {Component, EventEmitter, Inject, OnInit} from "@angular/core";
 import {ObservableUtil} from "../../shared/observable.util";
-import {debounceTime, distinctUntilChanged, first, map, mergeMap, switchMap} from "rxjs/operators";
+import {debounceTime, distinctUntilChanged, filter, first, map, mergeMap, switchMap} from "rxjs/operators";
 import {
     Address,
     Group,
     Organization,
     OrganizationEvent,
     OrganizationService,
-    PictureId
 } from "../../_internal/resources/organization.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
@@ -26,6 +25,10 @@ import {PublishChangesConfirmationComponent, PublishContent} from "./_internal/p
 import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review.component";
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from "@ngx-translate/core";
+import {EditAddressComponent} from "./_internal/edit-address.component";
+import {PictureId, PictureService} from "../../_internal/resources/picture.service";
+import {v4 as uuidv4} from 'uuid';
+import {Ng2ImgMaxService} from "ng2-img-max";
 
 @Component({
     selector: 'organization-edit',
@@ -39,13 +42,14 @@ import {TranslateService} from "@ngx-translate/core";
 })
 export class EditComponent implements OnInit {
 
-    public organization: Observable<Organization>;
+    public organization$: Observable<Organization>;
+    public _organization$: Subject<Organization> = new BehaviorSubject<Organization>(null);
     public changes: Subject<Array<OrganizationEvent>> = new BehaviorSubject([]);
     public newOrganization: Subject<Organization> = new EventEmitter<Organization>();
     public originalOrganization: Organization;
     public organizationTemplate: OrganizationTemplate;
-    public files: UploadedFile[] = [];
     public publishContent: PublishContent = {} as PublishContent;
+    public uploadProgress: Subject<number> = new BehaviorSubject(null);
 
     public weekdays: string[] = [
         "MONDAY",
@@ -66,16 +70,30 @@ export class EditComponent implements OnInit {
         private router: Router,
         private toastr: ToastrService,
         private translateService: TranslateService,
+        private pictureService: PictureService,
+        private ng2ImgMax: Ng2ImgMaxService,
         @Inject(DOCUMENT) private document: Document
     ) {
-        this.organization = ObservableUtil.extractObjectMember(this.route.params, 'organization')
+        ObservableUtil.extractObjectMember(this.route.params, 'organization')
             .pipe(
-                switchMap((organizationName: string) => this.organizationService.getOrganization(organizationName))
-            );
-        this.organization.pipe(first()).subscribe(organization => this.originalOrganization = organization as Organization);
+                switchMap((organizationName: string) => this.organizationService.getOrganization(organizationName)),
+                map(organization => {
+                    organization.groups = organization.groups.map((group: any) => {
+                        group.__id = 'newItem' + Math.random();
+                        return group;
+                    })
+                    return organization;
+                })
+            )
+            .subscribe(organization => this._organization$.next(organization));
+        this.organization$ = this._organization$.asObservable();
+        this.organization$.pipe(
+            first(organization => organization != null)
+        ).subscribe(organization => this.originalOrganization = EditComponent.deepCopy(organization as Organization));
 
-        this.organization
+        this.organization$
             .pipe(
+                filter(organization => organization != null),
                 map(organization => organization.organizationType),
                 switchMap(organizationType => organizationTemplateService.getOrganizationTemplateByOrganizationType(organizationType))
             )
@@ -83,9 +101,30 @@ export class EditComponent implements OnInit {
 
         this.newOrganization
             .pipe(
+                map(organization => {
+                    return this.removeIncompleteFields(organization);
+                }),
                 mergeMap(organization => this.organizationService.compareOrganization(this.originalOrganization, organization))
             )
             .subscribe(changes => this.changes.next(changes));
+
+        this.uploadProgress
+            .pipe(
+                distinctUntilChanged(),
+                debounceTime(5000),
+            )
+            .subscribe(percentage => {
+                if (percentage == 100) {
+                    this.uploadProgress.next(null);
+                }
+            })
+    }
+
+    private removeIncompleteFields(organization: Organization) {
+        const o = {...organization};
+        o.attendanceTimes = o.attendanceTimes.filter(attendanceTime => attendanceTime.day != undefined && attendanceTime.start != undefined && attendanceTime.start.length != 2 && attendanceTime.end != undefined && attendanceTime.end.length != 2);
+        o.groups = o.groups.filter(group => group.name !== undefined);
+        return o;
     }
 
     ngOnInit(): void {
@@ -103,7 +142,7 @@ export class EditComponent implements OnInit {
                 scrollTarget: '#' + documentId
             }))
         }, 0);
-        this.calculateChanges(organization);
+        this.calculateChanges({...organization});
     }
 
     drop<T>(list: T[], event: CdkDragDrop<string[]>, organization: Organization) {
@@ -153,21 +192,66 @@ export class EditComponent implements OnInit {
         return field.invalid && (field.dirty || field.touched);
     }
 
-    uploadFile(pictures: (PictureId | UploadedFile)[], event: FileList) {
-        for (let index: number = 0; index < event.length; index++) {
-            const element = event[index];
-            let uploadedFile = new UploadedFile();
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                uploadedFile.fileDataUrl = e.target.result;
-            };
-            reader.readAsDataURL(element);
-            pictures.push(uploadedFile);
+    uploadFile(pictures: PictureId[], event: FileList) {
+        const numberOfImages = event.length;
+        let aggregatedPercentComplete = 0;
+        this.uploadProgress.next(1);
+        for (let index: number = 0; index < numberOfImages; index++) {
+            const pictureId: PictureId = {value: uuidv4()};
+            this.ng2ImgMax.compressImage(event[index], 3).subscribe(
+                result => {
+                    const imageToUpload = new File([result], result.name, {type: event[index].type});
+                    aggregatedPercentComplete += 50;
+                    this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
+                    this.pictureService.uploadPicture(pictureId, imageToUpload)
+                        .subscribe(() => {
+                            aggregatedPercentComplete += 50;
+                            pictures.push(pictureId);
+                            this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
+                        });
+                },
+                error => {
+                    console.error('Scaling went wrong, tyring to just upload it as is', error);
+                    this.pictureService.uploadPicture(pictureId, event[index])
+                        .subscribe(() => {
+                            aggregatedPercentComplete += 100;
+                            pictures.push(pictureId);
+                            this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
+                        });
+                }
+            );
         }
     }
 
     calculateChanges(organization: Organization) {
+        if (organization.addresses != null && organization.addresses.length > 0) {
+            organization.defaultAddress = organization.addresses[0];
+        }
+        this._organization$.next(organization);
         this.newOrganization.next(organization);
+    }
+
+    editAddress(addresses: Address[], address: Address, organization: Organization) {
+        const oldIndex = addresses.indexOf(address);
+        const isDefaultAddress = Address.isEqual(organization.defaultAddress, address);
+        let modalRef = this.modalService.open(EditAddressComponent, {
+            size: 'lg',
+        });
+        modalRef.componentInstance.address = {...address};
+        modalRef.componentInstance.organization = {...organization};
+        modalRef.result
+            .then((newAddress: Address) => {
+                const newOrganization = {...organization};
+                if (oldIndex < 0) {
+                    newOrganization.addresses.push(newAddress);
+                } else {
+                    newOrganization.addresses[oldIndex] = newAddress;
+                }
+                if (isDefaultAddress) {
+                    newOrganization.defaultAddress = newAddress;
+                }
+                this.calculateChanges(newOrganization);
+            });
     }
 
     openPublishChangesConfirmation(organization: Organization, tab: number = 0) {
@@ -214,8 +298,12 @@ export class EditComponent implements OnInit {
         })
     }
 
-}
+    public getId(prefix: string, element: any): string {
+        return prefix + '-' + element.__id;
+    }
 
-class UploadedFile {
-    fileDataUrl: string | ArrayBuffer | null;
+    private static deepCopy<T>(object: T): T {
+        return JSON.parse(JSON.stringify(object));
+    }
+
 }

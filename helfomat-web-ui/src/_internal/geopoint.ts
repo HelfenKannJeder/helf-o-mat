@@ -11,6 +11,13 @@ export class GeoPoint {
         return geoPoint.lat + ',' + geoPoint.lon;
     }
 
+    public static isEqual(first: GeoPoint, second: GeoPoint) {
+        if (first == null || second == null) {
+            return false;
+        }
+        return first.lat == second.lat && first.lon == second.lon;
+    }
+
     public static pointBetween(first: GeoPoint, second: GeoPoint) {
         if (first == null) {
             return second;

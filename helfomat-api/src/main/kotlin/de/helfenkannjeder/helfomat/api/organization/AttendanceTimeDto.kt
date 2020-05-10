@@ -11,5 +11,5 @@ data class AttendanceTimeDto(
     val start: LocalTime,
     val end: LocalTime,
     val note: String?,
-    val groups: List<GroupDto>
+    val groups: List<GroupDto> = emptyList()
 )

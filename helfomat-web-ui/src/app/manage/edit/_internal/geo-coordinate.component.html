@@ -1,0 +1,14 @@
+<div class="input-group mb-3">
+    <input type="number" class="form-control" aria-label="degree" aria-describedby="basic-addon1" [(ngModel)]="degree" (ngModelChange)="change()">
+    <div class="input-group-append">
+        <span class="input-group-text">°</span>
+    </div>
+    <input type="number" class="form-control" aria-label="degree" aria-describedby="basic-addon1" [(ngModel)]="minutes" (ngModelChange)="change()" min="0" max="59">
+    <div class="input-group-append">
+        <span class="input-group-text">'</span>
+    </div>
+    <input type="number" class="form-control" aria-label="degree" aria-describedby="basic-addon1" [(ngModel)]="seconds" (ngModelChange)="change()" min="0" max="59.999999">
+    <div class="input-group-append">
+        <span class="input-group-text">"</span>
+    </div>
+</div>

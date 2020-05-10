@@ -103,6 +103,36 @@ class OrganizationEventAssembler(private val questions: List<Question>) : Organi
             confirmedChangeOrganizationEvent.changes.map { it.visit(this) }
         )
 
+    override fun visit(organizationEditChangeGroupEvent: OrganizationEditChangeGroupEvent): OrganizationEventDto =
+        OrganizationEditChangeGroupEventDto(
+            organizationEditChangeGroupEvent.organizationId,
+            organizationEditChangeGroupEvent.indexOffset,
+            organizationEditChangeGroupEvent.oldGroup.toGroupDto(),
+            organizationEditChangeGroupEvent.group.toGroupDto()
+        )
+
+    override fun visit(organizationEditChangePictureEvent: OrganizationEditChangePictureEvent): OrganizationEventDto =
+        OrganizationEditChangePictureEventDto(
+            organizationEditChangePictureEvent.organizationId,
+            organizationEditChangePictureEvent.indexOffset,
+            organizationEditChangePictureEvent.pictureId
+        )
+
+    override fun visit(organizationEditChangeAttendanceTimeEvent: OrganizationEditChangeAttendanceTimeEvent): OrganizationEventDto =
+        OrganizationEditChangeAttendanceTimeEventDto(
+            organizationEditChangeAttendanceTimeEvent.organizationId,
+            organizationEditChangeAttendanceTimeEvent.indexOffset,
+            organizationEditChangeAttendanceTimeEvent.oldAttendanceTime.toAttendanceTimeDto(),
+            organizationEditChangeAttendanceTimeEvent.attendanceTime.toAttendanceTimeDto()
+        )
+
+    override fun visit(organizationEditChangeAddressEvent: OrganizationEditChangeAddressEvent): OrganizationEventDto =
+        OrganizationEditChangeAddressEventDto(
+            organizationEditChangeAddressEvent.organizationId,
+            organizationEditChangeAddressEvent.indexOffset,
+            organizationEditChangeAddressEvent.oldAddress.toAddressDto(),
+            organizationEditChangeAddressEvent.address.toAddressDto()
+        )
 }
 
 fun OrganizationEvent.toOrganizationEventDto(questions: List<Question>) = this.toOrganizationEventDto(OrganizationEventAssembler(questions))

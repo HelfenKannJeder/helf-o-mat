@@ -67,7 +67,6 @@ internal class ResizeImageServiceTest {
         assertImageSize(result, 100, 50)
         assertThat(getColor(result, 0, 0)).isEqualTo(Color(29, 29, 29))
         assertThat(getColor(result, 99, 49)).isEqualTo(Color(223, 223, 223))
-        assertThat(getAlpha(result, 0, 0)).isEqualTo(255)
     }
 
     @Test
@@ -129,8 +128,8 @@ internal class ResizeImageServiceTest {
         val tempFile1 = createTempFile()
         val tempFile2 = createTempFile()
         val inputFile = Paths.get(inputImage.uri)
-        resizeImageService.resize(inputFile, tempFile1.toPath(), expectedWidth, expectedHeight)
-        resizeImageService.resize(tempFile1.toPath(), tempFile2.toPath(), expectedWidth, expectedHeight)
+        resizeImageService.resize(inputFile, tempFile1.toPath(), expectedWidth, expectedHeight, "image/png")
+        resizeImageService.resize(tempFile1.toPath(), tempFile2.toPath(), expectedWidth, expectedHeight, "image/png")
         assertThat(Files.readAllBytes(tempFile2.toPath()))
             .isEqualTo(Files.readAllBytes(tempFile1.toPath()))
         return tempFile2.toPath()

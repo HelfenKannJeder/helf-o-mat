@@ -148,11 +148,13 @@
         "address": {
           "add.title": "Adresse hinzugefügt",
           "default.title": "Hauptadresse geändert",
-          "delete.title": "Adresse gelöscht"
+          "delete.title": "Adresse gelöscht",
+          "change.title": "Adresse geändert"
         },
         "attendanceTime": {
           "add.title": "Termin hinzugefügt",
-          "delete.title": "Termin gelöscht"
+          "delete.title": "Termin gelöscht",
+          "change.title": "Termin geändert"
         },
         "contactPerson": {
           "add.title": "Ansprechpartner hinzugefügt",
@@ -160,11 +162,13 @@
         },
         "group": {
           "add.title": "Einheit hinzugefügt: {{groupTitle}}",
-          "delete.title": "Einheit gelöscht: {{groupTitle}}"
+          "delete.title": "Einheit gelöscht: {{groupTitle}}",
+          "change.title": "Einheit bearbeitet: {{groupTitle}}"
         },
         "picture": {
           "add.title": "Bild hinzugefügt",
-          "delete.title": "Bild gelöscht"
+          "delete.title": "Bild gelöscht",
+          "change.title": "Bild position geändert"
         },
         "questionAnswer": {
           "add.title": "Helf-O-Mat Frage hinzugefügt",
@@ -191,6 +195,21 @@
         "title": "Änderungen für '{{organizationName}}' beantragt",
         "content": "Die Änderungen für die Organisation '{{organizationName}}' wurden in unserem System hinterlegt. Diese werden in den nächsten Tagen von unser Team überprüft und veröffentlicht. Sollten die Änderungen innerhalb drei Werktagen nicht veröffentlicht sein, ist vermutlich das Wetter in Karlsruhe gut und jeder kauft bei Carsten ein Motorrad. Wenn das nach einer Woche immer noch so ist, schreibe doch bitte eine Erinnerungs-E-Mail an info@helfenkannjeder.de. Vielen Dank!",
         "confirm": "Und weiter geht's!"
+      },
+      "address": {
+        "headline": "Adresse angeben",
+        "search": "Suchen",
+        "addressAppendix": "Beschreibung",
+        "autocomplete": "Adressesuche",
+        "website": "Webseite",
+        "telephone": "Telefonnummer",
+        "manual": "Manuelle Eingabe",
+        "zipcode": "PLZ",
+        "city": "Ort",
+        "street": "Straße",
+        "latitude": "Breitengrad",
+        "longitude": "Längengrad",
+        "confirm": "Bestätigen"
       }
     }
   },

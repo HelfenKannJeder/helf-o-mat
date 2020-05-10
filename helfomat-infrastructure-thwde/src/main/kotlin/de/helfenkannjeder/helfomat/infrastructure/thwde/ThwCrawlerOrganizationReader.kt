@@ -37,8 +37,8 @@ open class ThwCrawlerOrganizationReader(
     private var iterator: Iterator<Element>? = null
     private var currentLetter = 'A'
     private var currentPage = 1
-    private val logoPictureid = toPictureIdFromClasspathResource("thwde/logo.png")
-    private val teaserPictureId = toPictureIdFromClasspathResource("thwde/teaser.jpg")
+    private val logoPictureid = toPictureIdFromClasspathResource("thwde/logo.png", "image/png")
+    private val teaserPictureId = toPictureIdFromClasspathResource("thwde/teaser.jpg", "image/jpeg")
 
     override val name = "thw-crawler"
 
@@ -142,13 +142,13 @@ open class ThwCrawlerOrganizationReader(
         }
     }
 
-    private fun toPictureIdFromClasspathResource(imagePath: String): PictureId {
+    private fun toPictureIdFromClasspathResource(imagePath: String, contentType: String?): PictureId {
         val pictureId = toPictureId("classpath:$imagePath")
         if (pictureStorageService.existPicture(pictureId)) {
             return pictureId
         }
         val imageByteArray = StreamUtils.copyToByteArray(ClassPathResource(imagePath).inputStream)
-        pictureStorageService.savePicture(imageByteArray, pictureId)
+        pictureStorageService.savePicture(imageByteArray, pictureId, contentType)
         return pictureId
     }
 

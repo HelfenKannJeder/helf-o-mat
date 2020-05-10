@@ -1,4 +1,4 @@
-<div *ngIf="organization | async; let organization; else loading">
+<div *ngIf="organization$ | async; let organization; else loading">
     <div class="custom-content">
         <div class="logo-container" *ngIf="organization.pictures.length > 0">
             <div class="logo">
@@ -91,14 +91,12 @@
                     'other': 'organization.address.titlePlural'
                 } | translate}}
                 </div>
-                <helfomat-map
-                    [organizations]="organizations"
+                <helfomat-single-map
+                    [organization]="organization$"
                     [position]="position"
                     [distance]="distance"
-                    [center]="center"
-                    [zoom]="zoom"
                     [allowUpdatePosition]="false"
-                    [showMapResizeButton]="false"></helfomat-map>
+                    [showMapResizeButton]="false"></helfomat-single-map>
                 <ul class="list-group">
                     <li *ngFor="let address of organization.addresses" class="list-group-item"
                         [ngClass]="{'list-group-item-info': areAddressesEqual(organization.defaultAddress, address)}">

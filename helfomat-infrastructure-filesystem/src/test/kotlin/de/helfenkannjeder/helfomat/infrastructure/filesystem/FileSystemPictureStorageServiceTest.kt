@@ -67,7 +67,7 @@ internal class FileSystemPictureStorageServiceTest {
             .isNotNull
             .isEqualTo(pictureId)
         verify(downloadService).download(PICTURE_URL)
-        val pathOfOutput: Path = Paths.get(CONF_FOLDER, pictureId.value)
+        val pathOfOutput: Path = Paths.get(CONF_FOLDER, pictureId.value.toString())
         assertThat(Files.readAllBytes(pathOfOutput))
             .isEqualTo(content)
         Files.delete(pathOfOutput)
@@ -83,7 +83,7 @@ internal class FileSystemPictureStorageServiceTest {
         val thrownException = ThrowingCallable { fileSystemPictureStorageService.savePicture("http://does.not.exist", pictureId) }
 
         // Assert
-        val pathOfOutput = Paths.get(CONF_FOLDER, pictureId.value)
+        val pathOfOutput = Paths.get(CONF_FOLDER, pictureId.value.toString())
         assertThat(pathOfOutput)
             .doesNotExist()
         assertThatThrownBy(thrownException)
@@ -123,12 +123,12 @@ internal class FileSystemPictureStorageServiceTest {
         // Assert
         assertThat(resultPictureId)
             .isNotNull
-        val output = Paths.get(CONF_FOLDER, pictureId.value)
+        val output = Paths.get(CONF_FOLDER, pictureId.value.toString())
         val pictureSize = pictureConfiguration.pictureSizes[0]
-        val outputScaled = Paths.get(CONF_FOLDER, pictureSize.name, pictureId.value)
+        val outputScaled = Paths.get(CONF_FOLDER, pictureSize.name, pictureId.value.toString())
         assertThat(output)
             .exists()
-        verify(resizeImageService).resize(output, outputScaled, pictureSize.width, pictureSize.height)
+        verify(resizeImageService).resize(output, outputScaled, pictureSize.width, pictureSize.height, null)
         Files.delete(output)
     }
 

@@ -21,7 +21,7 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.dragable {
+.draggable {
   cursor: move;
   position: relative;
 }
@@ -65,6 +65,11 @@ img.thumb {
   text-align: center;
   background-color: $lightgray;
   color: $darkblue;
+
+  .progress {
+    background-color: $darkgray;
+    margin: 0 1em;
+  }
 }
 
 .navbar.sticky-top {

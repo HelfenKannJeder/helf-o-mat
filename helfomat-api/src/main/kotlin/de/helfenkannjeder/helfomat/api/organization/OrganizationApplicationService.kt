@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.api.organization
 
 import de.helfenkannjeder.helfomat.api.Roles
+import de.helfenkannjeder.helfomat.api.currentUsername
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationCreateEventDto
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler
@@ -14,7 +15,6 @@ import de.helfenkannjeder.helfomat.core.question.QuestionRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 /**
@@ -74,7 +74,7 @@ open class OrganizationApplicationService(
         }
         val proposedChangeOrganizationEvent = ProposedChangeOrganizationEvent(
             organizationId,
-            currentUser,
+            currentUsername(),
             organizationSubmitEventDto.sources,
             organizationEvents
         )
@@ -98,7 +98,5 @@ open class OrganizationApplicationService(
             .any { OrganizationCreateEventDto::class.java == it }
         return isNewOrganization && isCreate || !isNewOrganization && !isCreate
     }
-
-    private val currentUser get() = SecurityContextHolder.getContext().authentication.name
 
 }

@@ -1,0 +1,15 @@
+@import "../../../../colors";
+
+.change-position-box {
+  float: right;
+  height: 48px;
+  background-color: white;
+  padding-right: 15px;
+  margin-left: 15px;
+  border-radius: 5px;
+}
+
+.change-position-text {
+  line-height: 48px;
+  float: right;
+}

@@ -29,4 +29,8 @@ interface OrganizationEventDtoVisitor<T> {
     fun visit(organizationEditWebsiteEventDto: OrganizationEditWebsiteEventDto): T
     fun visit(proposedChangeOrganizationEventDto: ProposedChangeOrganizationEventDto): T
     fun visit(confirmedChangeOrganizationEventDto: ConfirmedChangeOrganizationEventDto): T
+    fun visit(organizationEditChangeGroupEventDto: OrganizationEditChangeGroupEventDto): T
+    fun visit(organizationEditChangePictureEventDto: OrganizationEditChangePictureEventDto): T
+    fun visit(organizationEditChangeAttendanceTimeEventDto: OrganizationEditChangeAttendanceTimeEventDto): T
+    fun visit(organizationEditChangeAddressEventDto: OrganizationEditChangeAddressEventDto): T
 }
