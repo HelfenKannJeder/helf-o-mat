@@ -32,8 +32,9 @@ open class PictureApplicationService(
         if (pictureRepository.findByIdOrNull(pictureId) != null) {
             throw IllegalStateException("PictureId already exists ${pictureId}")
         }
-        pictureRepository.save(Picture(pictureId, false, contentType))
-        return pictureStorageService.savePicture(pictureId, inputStream, contentType)
+        pictureStorageService.savePicture(pictureId, inputStream)
+        pictureRepository.save(Picture(pictureId, false, pictureStorageService.getContentType(pictureId)))
+        return pictureId
     }
 
 }

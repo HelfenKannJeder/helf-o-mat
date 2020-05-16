@@ -128,7 +128,7 @@ internal class FileSystemPictureStorageServiceTest {
         val outputScaled = Paths.get(CONF_FOLDER, pictureSize.name, pictureId.value.toString())
         assertThat(output)
             .exists()
-        verify(resizeImageService).resize(output, outputScaled, pictureSize.width, pictureSize.height, null)
+        verify(resizeImageService).resize(output, outputScaled, pictureSize.width, pictureSize.height, "text/plain")
         Files.delete(output)
     }
 

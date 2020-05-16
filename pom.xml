@@ -28,6 +28,7 @@
         <hibernate-types.version>2.9.7</hibernate-types.version>
         <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
         <spring-security-oauth2.version>2.2.5.RELEASE</spring-security-oauth2.version>
+        <tika-core.version>1.22</tika-core.version>
     </properties>
 
     <distributionManagement>
@@ -169,6 +170,11 @@
                 <groupId>org.springframework.security.oauth.boot</groupId>
                 <artifactId>spring-security-oauth2-autoconfigure</artifactId>
                 <version>${spring-security-oauth2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>${tika-core.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

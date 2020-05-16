@@ -59,7 +59,11 @@ class RestPictureStorageService(
         return pictureId
     }
 
-    override fun savePicture(pictureId: PictureId, inputStream: InputStream, contentType: String?): PictureId {
+    override fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId {
+        throw UnsupportedOperationException()
+    }
+
+    override fun getContentType(pictureId: PictureId): String? {
         throw UnsupportedOperationException()
     }
 
