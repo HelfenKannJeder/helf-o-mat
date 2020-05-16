@@ -8,10 +8,7 @@ import de.helfenkannjeder.helfomat.core.approval.ApprovalRepository
 import de.helfenkannjeder.helfomat.core.organization.NullableOrganizationEventVisitor
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
-import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditAddPictureEvent
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditTeaserImageEvent
-import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent
+import de.helfenkannjeder.helfomat.core.organization.event.*
 import de.helfenkannjeder.helfomat.core.picture.PictureId
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository
@@ -79,6 +76,16 @@ open class ApprovalApplicationService(
 
             override fun visit(organizationEditTeaserImageEvent: OrganizationEditTeaserImageEvent): List<PictureId>? {
                 val pictureId = organizationEditTeaserImageEvent.teaserImage ?: return null
+                return listOf(pictureId)
+            }
+
+            override fun visit(organizationEditAddContactPersonEvent: OrganizationEditAddContactPersonEvent): List<PictureId>? {
+                val pictureId = organizationEditAddContactPersonEvent.contactPerson.picture ?: return null
+                return listOf(pictureId)
+            }
+
+            override fun visit(organizationEditAddVolunteerEvent: OrganizationEditAddVolunteerEvent): List<PictureId>? {
+                val pictureId = organizationEditAddVolunteerEvent.volunteer.picture ?: return null
                 return listOf(pictureId)
             }
         }
