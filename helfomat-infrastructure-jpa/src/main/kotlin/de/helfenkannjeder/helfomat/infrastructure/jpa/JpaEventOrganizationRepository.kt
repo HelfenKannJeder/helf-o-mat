@@ -4,7 +4,7 @@ import de.helfenkannjeder.helfomat.api.organization.EventBasedCachingOrganizatio
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
+import de.helfenkannjeder.helfomat.core.organization.event.ReloadOrganizationEvent
 import org.springframework.context.event.EventListener
 
 /**
@@ -16,16 +16,11 @@ open class JpaEventOrganizationRepository(
 ) : EventBasedCachingOrganizationRepository(persistentOrganizationRepository) {
 
     @EventListener
-    open fun listen(organizationEvent: OrganizationEvent) {
-        processDomainEvent(organizationEvent)
+    open fun listen(reloadOrganizationEvent: ReloadOrganizationEvent) {
+        super.updateOrganizationBasedOnAllEvents(reloadOrganizationEvent.organizationId)
     }
 
-    override fun processDomainEvent(organizationEvent: OrganizationEvent) {
-        val organizationId = organizationEvent.organizationId
-        super.processDomainEvents(organizationId, listOf(organizationEvent))
-    }
-
-    override fun getExistingOrganizationBuilder(organizationId: OrganizationId): Organization.Builder? {
+    override fun buildOrganization(organizationId: OrganizationId): Organization.Builder? {
         val organizationBuilder = organizationBuilderMap[organizationId]
         if (organizationBuilder != null) {
             return organizationBuilder

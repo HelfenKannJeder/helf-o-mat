@@ -3,7 +3,6 @@ package de.helfenkannjeder.helfomat.api.organization
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
 import de.helfenkannjeder.helfomat.core.organization.*
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
 import org.slf4j.LoggerFactory
 
 /**
@@ -16,20 +15,9 @@ open class EventBasedCachingOrganizationRepository(
     @JvmField
     protected val organizationBuilderMap: MutableMap<OrganizationId, Organization.Builder> = mutableMapOf()
 
-    protected fun processDomainEvents(organizationId: OrganizationId, organizationEvents: List<OrganizationEvent>) {
-        LOG.debug("Received organization events for organization '{}' from event storage '{}'", organizationId, organizationEvents)
-        var organizationBuilder = getExistingOrganizationBuilder(organizationId)
-        organizationEvents.forEach { organizationBuilder = it.applyOnOrganizationBuilder(organizationBuilder) }
-        saveOrganizationBuilder(organizationBuilder, organizationId)
-
-    }
-
-    protected open fun processDomainEvent(organizationEvent: OrganizationEvent) {
-        val organizationId = organizationEvent.organizationId
-        LOG.debug("Received organization event for organization '{}' from event storage '{}'", organizationId, organizationEvent)
-        val organizationBuilder = organizationEvent.applyOnOrganizationBuilder(
-            getExistingOrganizationBuilder(organizationId)
-        )
+    protected fun updateOrganizationBasedOnAllEvents(organizationId: OrganizationId) {
+        LOG.debug("Update organization based on database events '{}'", organizationId)
+        val organizationBuilder = buildOrganization(organizationId)
         saveOrganizationBuilder(organizationBuilder, organizationId)
     }
 
@@ -43,7 +31,7 @@ open class EventBasedCachingOrganizationRepository(
         }
     }
 
-    protected open fun getExistingOrganizationBuilder(organizationId: OrganizationId): Organization.Builder? {
+    protected open fun buildOrganization(organizationId: OrganizationId): Organization.Builder? {
         return organizationBuilderMap.get(organizationId)
     }
 
