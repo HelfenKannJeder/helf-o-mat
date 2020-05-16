@@ -44,12 +44,23 @@ open class ResizeImageService {
     private fun scaleImage(inputImage: BufferedImage, width: Int, height: Int): BufferedImage {
         var image = inputImage
         val tempImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH)
-        image = BufferedImage(width, height, inputImage.type)
+        var type = BufferedImage.TYPE_INT_RGB
+        if (hasAlphaChannel(inputImage)) {
+            type = BufferedImage.TYPE_INT_ARGB
+        }
+        image = BufferedImage(width, height, type)
         val graphics = image.graphics
         graphics.drawImage(tempImage, 0, 0, null)
         graphics.dispose()
         return image
     }
+
+    private fun hasAlphaChannel(inputImage: BufferedImage) =
+        inputImage.type == BufferedImage.TYPE_INT_ARGB ||
+            inputImage.type == BufferedImage.TYPE_INT_ARGB_PRE ||
+            inputImage.type == BufferedImage.TYPE_4BYTE_ABGR ||
+            inputImage.type == BufferedImage.TYPE_4BYTE_ABGR_PRE ||
+            inputImage.type == BufferedImage.TYPE_INT_ARGB_PRE
 
     private fun cropImage(inputImage: BufferedImage, x: Int, y: Int, width: Int, height: Int): BufferedImage {
         var image = inputImage
