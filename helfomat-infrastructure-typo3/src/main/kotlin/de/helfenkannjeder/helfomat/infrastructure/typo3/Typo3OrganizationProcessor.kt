@@ -1,10 +1,10 @@
 package de.helfenkannjeder.helfomat.infrastructure.typo3
 
+import de.helfenkannjeder.helfomat.api.picture.PictureStorageService
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
 import de.helfenkannjeder.helfomat.core.organization.*
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException
 import de.helfenkannjeder.helfomat.core.picture.PictureId
-import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
 import de.helfenkannjeder.helfomat.infrastructure.typo3.domain.*
 import org.slf4j.LoggerFactory
 import org.springframework.batch.item.ItemProcessor

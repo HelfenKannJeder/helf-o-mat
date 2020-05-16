@@ -29,6 +29,7 @@
         <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
         <spring-security-oauth2.version>2.2.5.RELEASE</spring-security-oauth2.version>
         <tika-core.version>1.22</tika-core.version>
+        <assertk-jvm.version>0.22</assertk-jvm.version>
     </properties>
 
     <distributionManagement>
@@ -83,6 +84,12 @@
                 <module>helfomat-infrastructure-typo3</module>
                 <module>helfomat-infrastructure-thwde</module>
                 <module>helfomat-import</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>azure</id>
+            <modules>
+                <module>helfomat-infrastructure-azure</module>
             </modules>
         </profile>
     </profiles>
@@ -157,6 +164,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-azure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.twelvemonkeys.imageio</groupId>
                 <artifactId>imageio-jpeg</artifactId>
                 <version>${imageio.version}</version>
@@ -175,6 +187,11 @@
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
                 <version>${tika-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.willowtreeapps.assertk</groupId>
+                <artifactId>assertk-jvm</artifactId>
+                <version>${assertk-jvm.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

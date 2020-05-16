@@ -1,6 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure
 
-import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
+import de.helfenkannjeder.helfomat.api.picture.PictureStorageService
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
 import org.springframework.boot.context.properties.ConfigurationProperties

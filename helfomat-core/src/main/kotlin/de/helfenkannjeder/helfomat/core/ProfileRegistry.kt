@@ -9,4 +9,5 @@ object ProfileRegistry {
     const val DISABLE_THWDE_IMPORT = "disable-thwde-import"
     const val DISABLE_TYPO3_IMPORT = "disable-typo3-import"
     const val TEST = "test"
+    const val AZURE = "azure"
 }

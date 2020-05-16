@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.infrastructure.filesystem
+package de.helfenkannjeder.helfomat.api.picture
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
@@ -10,7 +10,6 @@ import java.util.*
 @ConstructorBinding
 @ConfigurationProperties("helfomat.picture")
 data class PictureConfiguration(
-    var pictureFolder: String,
     var pictureSizes: List<PictureSize> = ArrayList()
 ) {
 

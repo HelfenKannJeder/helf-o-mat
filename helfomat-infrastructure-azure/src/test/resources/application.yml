@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+azure.storage:
+  endpoint: https://helfenkannjederpictures.blob.core.windows.net/
+  container-name: local-container
