@@ -30,7 +30,7 @@
                 <div class="float-right">
                     <map-icon [geoPoint]="organizationEvent.address.location" [organizationType]="organization?.organizationType"></map-icon>
                 </div>
-                <ng-container *ngIf="!isGeoPointEqual(organization?.defaultAddress?.location, organizationEvent.address.location)">
+                <ng-container *ngIf="organization?.defaultAddress != null && !isGeoPointEqual(organization?.defaultAddress?.location, organizationEvent.address.location)">
                     <div class="float-right map-arrow">
                         <span class="material-icons md-48">keyboard_arrow_right</span>
                     </div>

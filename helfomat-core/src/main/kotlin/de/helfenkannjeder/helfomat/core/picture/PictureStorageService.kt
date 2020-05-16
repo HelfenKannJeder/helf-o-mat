@@ -10,9 +10,10 @@ interface PictureStorageService {
 
     fun savePicture(url: String, pictureId: PictureId): PictureId
     fun savePicture(bytes: ByteArray, pictureId: PictureId, contentType: String?): PictureId
-    fun savePicture(pictureId: PictureId, inputStream: InputStream, contentType: String?): PictureId
+    fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId
     fun getPicture(pictureId: PictureId): Path
     fun getPicture(pictureId: PictureId, size: String): Path
     fun existPicture(pictureId: PictureId): Boolean
+    fun getContentType(pictureId: PictureId): String?
 
 }

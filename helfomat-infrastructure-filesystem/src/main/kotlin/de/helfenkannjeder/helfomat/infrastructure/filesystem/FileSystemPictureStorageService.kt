@@ -6,6 +6,7 @@ import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException
 import de.helfenkannjeder.helfomat.core.picture.DownloadService
 import de.helfenkannjeder.helfomat.core.picture.PictureId
 import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
+import org.apache.tika.Tika
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service
@@ -48,7 +49,7 @@ class FileSystemPictureStorageService(
         return try {
             val path = createPath(pictureId.value.toString())
             Files.write(path, bytes)
-            scalePicture(pictureId, path, contentType)
+            scalePicture(pictureId, path)
             pictureId
         } catch (exception: IOException) {
             LOG.error("Failed to write image to filesystem picture='$pictureId'", exception)
@@ -63,16 +64,18 @@ class FileSystemPictureStorageService(
     }
 
     @Throws(DownloadFailedException::class)
-    override fun savePicture(pictureId: PictureId, inputStream: InputStream, contentType: String?): PictureId {
+    override fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId {
         return try {
             val path = createPath(pictureId.value.toString())
             Files.copy(inputStream, path)
-            scalePicture(pictureId, path, contentType)
+            scalePicture(pictureId, path)
             pictureId
         } catch (exception: IOException) {
             throw DownloadFailedException(exception)
         }
     }
+
+    override fun getContentType(pictureId: PictureId): String? = Tika().detect(createPath(pictureId.value.toString()))
 
     override fun getPicture(pictureId: PictureId): Path {
         return Paths.get(pictureConfiguration.pictureFolder, pictureId.value.toString())
@@ -88,7 +91,8 @@ class FileSystemPictureStorageService(
     }
 
     @Throws(IOException::class)
-    private fun scalePicture(pictureId: PictureId, path: Path, contentType: String?) {
+    private fun scalePicture(pictureId: PictureId, path: Path) {
+        val contentType = getContentType(pictureId)
         for (pictureSize in pictureConfiguration.pictureSizes) {
             val outputFile = createPath(pictureSize.name, pictureId.value.toString())
             resizeImageService.resize(path, outputFile, pictureSize.width, pictureSize.height, contentType)
