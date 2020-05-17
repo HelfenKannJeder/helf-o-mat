@@ -4,8 +4,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.awt.Image
 import java.awt.image.BufferedImage
-import java.nio.file.Path
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import javax.imageio.ImageIO
+
 
 /**
  * @author Valentin Zickner
@@ -13,9 +16,9 @@ import javax.imageio.ImageIO
 @Service
 open class ResizeImageService {
 
-    open fun resize(input: Path, output: Path, expectedWidth: Int?, expectedHeight: Int?, contentType: String?) {
-        LOGGER.debug("Scale '$input' to size ${expectedWidth ?: "-"}x${expectedHeight ?: "-"} with new name '$output' ")
-        var image = ImageIO.read(input.toFile())
+    open fun resize(input: InputStream, expectedWidth: Int?, expectedHeight: Int?, contentType: String?): Pair<InputStream, Long> {
+        LOGGER.debug("Scale '$input' to size ${expectedWidth ?: "-"}x${expectedHeight ?: "-"}")
+        var image = ImageIO.read(input)
         var width = image.width
         var height = image.height
         if (expectedWidth != null && expectedHeight == null || expectedHeight != null && expectedWidth != null && isNecessaryToScaleHeight(expectedWidth, expectedHeight, image)) {
@@ -37,8 +40,11 @@ open class ResizeImageService {
             throw IllegalStateException("Failed to find image writer for '$contentType'")
         }
         val imageWriter = imageWriters.next()
-        imageWriter.output = ImageIO.createImageOutputStream(output.toFile())
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        imageWriter.output = ImageIO.createImageOutputStream(byteArrayOutputStream)
         imageWriter.write(image)
+        val inputStream = ByteArrayInputStream(byteArrayOutputStream.toByteArray())
+        return Pair(inputStream, byteArrayOutputStream.size().toLong())
     }
 
     private fun scaleImage(inputImage: BufferedImage, width: Int, height: Int): BufferedImage {

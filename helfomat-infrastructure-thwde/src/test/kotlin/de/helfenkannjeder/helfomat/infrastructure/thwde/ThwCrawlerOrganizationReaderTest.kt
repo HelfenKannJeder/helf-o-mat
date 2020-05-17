@@ -1,8 +1,8 @@
 package de.helfenkannjeder.helfomat.infrastructure.thwde
 
+import de.helfenkannjeder.helfomat.api.picture.PictureStorageService
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.picture.PictureId
-import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.Offset
 import org.junit.jupiter.api.AfterAll

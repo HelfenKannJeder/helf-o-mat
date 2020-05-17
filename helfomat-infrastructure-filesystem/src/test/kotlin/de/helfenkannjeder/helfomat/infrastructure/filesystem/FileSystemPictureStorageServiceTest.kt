@@ -1,11 +1,8 @@
 package de.helfenkannjeder.helfomat.infrastructure.filesystem
 
-import de.helfenkannjeder.helfomat.api.picture.ResizeImageService
-import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException
+import de.helfenkannjeder.helfomat.api.picture.PictureStorageService
 import de.helfenkannjeder.helfomat.core.picture.DownloadService
 import de.helfenkannjeder.helfomat.core.picture.PictureId
-import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
-import de.helfenkannjeder.helfomat.infrastructure.filesystem.PictureConfiguration.PictureSize
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable
@@ -18,6 +15,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.web.client.HttpClientErrorException
+import java.nio.file.FileSystemException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -31,16 +29,8 @@ internal class FileSystemPictureStorageServiceTest {
     @Mock
     private lateinit var downloadService: DownloadService
 
-    @Mock
-    private lateinit var resizeImageService: ResizeImageService
-
-    private var pictureConfiguration: PictureConfiguration = PictureConfiguration(
-        CONF_FOLDER,
-        listOf(PictureSize(
-            name = "test-size",
-            width = 100,
-            height = 200
-        ))
+    private var fileSystemPictureConfigurationProperties: FileSystemPictureConfigurationProperties = FileSystemPictureConfigurationProperties(
+        CONF_FOLDER
     )
 
     @Mock
@@ -48,7 +38,7 @@ internal class FileSystemPictureStorageServiceTest {
 
     @BeforeEach
     fun setUp() {
-        fileSystemPictureStorageService = FileSystemPictureStorageService(downloadService, resizeImageService, pictureConfiguration)
+        fileSystemPictureStorageService = FileSystemPictureStorageService(downloadService, fileSystemPictureConfigurationProperties)
     }
 
     @Test
@@ -60,12 +50,9 @@ internal class FileSystemPictureStorageServiceTest {
         `when`(downloadService.download(PICTURE_URL)).thenReturn(content)
 
         // Act
-        val resultPictureId = fileSystemPictureStorageService.savePicture(PICTURE_URL, pictureId)
+        fileSystemPictureStorageService.savePicture(PICTURE_URL, pictureId)
 
         // Assert
-        assertThat(resultPictureId)
-            .isNotNull
-            .isEqualTo(pictureId)
         verify(downloadService).download(PICTURE_URL)
         val pathOfOutput: Path = Paths.get(CONF_FOLDER, pictureId.value.toString())
         assertThat(Files.readAllBytes(pathOfOutput))
@@ -74,7 +61,7 @@ internal class FileSystemPictureStorageServiceTest {
     }
 
     @Test
-    fun savePicture_withInvalidUrl_expectDownloadFailedException() {
+    fun savePicture_withInvalidUrl_expectHttpClientErrorException() {
         // Arrange
         val pictureId = PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44adde")
         `when`(downloadService.download(ArgumentMatchers.anyString())).thenThrow(HttpClientErrorException::class.java)
@@ -87,26 +74,26 @@ internal class FileSystemPictureStorageServiceTest {
         assertThat(pathOfOutput)
             .doesNotExist()
         assertThatThrownBy(thrownException)
-            .isInstanceOf(DownloadFailedException::class.java)
+            .isInstanceOf(HttpClientErrorException::class.java)
     }
 
     @Test
-    fun savePicture_withFileWriteException_expectDownloadFailedException() {
+    fun savePicture_withFileWriteException_expectFileSystemException() {
         // Arrange
         val pictureId = PictureId("1fc673b0-f1c8-4d8a-bd6c-c852fd44adda")
         val configuredFolder = "/*"
         val content = byteArrayOf('a'.toByte(), 'b'.toByte(), 'c'.toByte(), 'd'.toByte())
         `when`(downloadService.download(PICTURE_URL)).thenReturn(content)
-        val originalFolder = pictureConfiguration.pictureFolder
-        pictureConfiguration.pictureFolder = configuredFolder
+        val originalFolder = fileSystemPictureConfigurationProperties.pictureFolder
+        fileSystemPictureConfigurationProperties.pictureFolder = configuredFolder
 
         // Act
         val thrownException = ThrowingCallable { fileSystemPictureStorageService.savePicture(PICTURE_URL, pictureId) }
 
         // Assert
         assertThatThrownBy(thrownException)
-            .isInstanceOf(DownloadFailedException::class.java)
-        pictureConfiguration.pictureFolder = originalFolder
+            .isInstanceOf(FileSystemException::class.java)
+        fileSystemPictureConfigurationProperties.pictureFolder = originalFolder
     }
 
     @Test
@@ -124,11 +111,8 @@ internal class FileSystemPictureStorageServiceTest {
         assertThat(resultPictureId)
             .isNotNull
         val output = Paths.get(CONF_FOLDER, pictureId.value.toString())
-        val pictureSize = pictureConfiguration.pictureSizes[0]
-        val outputScaled = Paths.get(CONF_FOLDER, pictureSize.name, pictureId.value.toString())
         assertThat(output)
             .exists()
-        verify(resizeImageService).resize(output, outputScaled, pictureSize.width, pictureSize.height, "text/plain")
         Files.delete(output)
     }
 

@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.web.exception
 
 import de.helfenkannjeder.helfomat.api.organization.OrganizationNotFoundException
+import de.helfenkannjeder.helfomat.api.picture.PictureNotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -26,6 +27,10 @@ open class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     open fun handleOrganizationNotFoundException(organizationNotFoundException: OrganizationNotFoundException): ResponseEntity<ErrorDetails> {
         return createErrorResponse(HttpStatus.NOT_FOUND, organizationNotFoundException)
     }
+
+    @ExceptionHandler
+    open fun handlePictureNotFoundException(pictureNotFoundException: PictureNotFoundException): ResponseEntity<ErrorDetails> =
+        createErrorResponse(HttpStatus.NOT_FOUND, pictureNotFoundException)
 
     private fun createErrorResponse(status: HttpStatus, e: Exception): ResponseEntity<ErrorDetails> {
         return ResponseEntity(ErrorDetails(e.javaClass.simpleName), HttpHeaders(), status)

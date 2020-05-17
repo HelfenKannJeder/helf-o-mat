@@ -53,10 +53,6 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${springfox-swagger2.version}</version>
@@ -77,6 +73,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>azure</id>
+            <dependencies>
+                <dependency>
+                    <groupId>de.helfenkannjeder.helfomat</groupId>
+                    <artifactId>helfomat-infrastructure-azure</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <build>
         <finalName>helfomat</finalName>

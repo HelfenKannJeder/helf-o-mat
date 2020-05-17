@@ -1,19 +1,17 @@
 package de.helfenkannjeder.helfomat.rest
 
+import de.helfenkannjeder.helfomat.api.picture.PictureStorageService
 import de.helfenkannjeder.helfomat.config.ImporterConfiguration
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException
 import de.helfenkannjeder.helfomat.core.picture.PictureId
-import de.helfenkannjeder.helfomat.core.picture.PictureStorageService
 import org.springframework.core.io.Resource
 import org.springframework.http.*
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
-import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestTemplate
-import java.io.IOException
 import java.io.InputStream
-import java.nio.file.Path
 
 /**
  * @author Valentin Zickner
@@ -24,22 +22,16 @@ class RestPictureStorageService(
     private val importerConfiguration: ImporterConfiguration
 ) : PictureStorageService {
 
-    @Throws(DownloadFailedException::class)
-    override fun savePicture(url: String, pictureId: PictureId): PictureId {
+    override fun savePicture(url: String, pictureId: PictureId) {
         val plainRestTemplate = RestTemplate()
-        return try {
-            val httpEntity = HttpEntity<Any>(HttpHeaders())
-            val responseEntity = plainRestTemplate.exchange(url, HttpMethod.GET, httpEntity, Resource::class.java)
-            val body = responseEntity.body ?: throw DownloadFailedException()
-            val inputStream = body.inputStream
-            savePicture(inputStream.readAllBytes(), pictureId, null)
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        }
+        val httpEntity = HttpEntity<Any>(HttpHeaders())
+        val responseEntity = plainRestTemplate.exchange(url, HttpMethod.GET, httpEntity, Resource::class.java)
+        val body = responseEntity.body ?: throw DownloadFailedException()
+        val inputStream = body.inputStream
+        savePicture(inputStream.readAllBytes(), pictureId, null)
     }
 
-    @Throws(DownloadFailedException::class)
-    override fun savePicture(bytes: ByteArray, pictureId: PictureId, contentType: String?): PictureId {
+    override fun savePicture(bytes: ByteArray, pictureId: PictureId, contentType: String?) {
         // it seems to be unnecessary hard to upload a file....
         // see https://medium.com/red6-es/uploading-a-file-with-a-filename-with-spring-resttemplate-8ec5e7dc52ca for mor details
         val fileMap: MultiValueMap<String, String> = LinkedMultiValueMap()
@@ -56,10 +48,13 @@ class RestPictureStorageService(
         headers.contentType = MediaType.MULTIPART_FORM_DATA
         val requestEntity = HttpEntity(body, headers)
         restTemplate.exchange("${importerConfiguration.webApiUrl}/api/picture/${pictureId.value}", HttpMethod.POST, requestEntity, Void::class.java)
-        return pictureId
     }
 
-    override fun savePicture(pictureId: PictureId, inputStream: InputStream): PictureId {
+    override fun savePicture(pictureId: PictureId, inputStream: InputStream, fileSize: Long, tag: String) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun savePicture(pictureId: PictureId, inputStream: InputStream, size: Long) {
         throw UnsupportedOperationException()
     }
 
@@ -71,16 +66,16 @@ class RestPictureStorageService(
         return try {
             restTemplate.headForHeaders(importerConfiguration.webApiUrl + "/api/picture/" + pictureId.value)
             true
-        } catch (restClientException: HttpClientErrorException) {
+        } catch (e: ResourceAccessException) {
             false
         }
     }
 
-    override fun getPicture(pictureId: PictureId): Path {
+    override fun getPicture(pictureId: PictureId): InputStream {
         throw UnsupportedOperationException()
     }
 
-    override fun getPicture(pictureId: PictureId, size: String): Path {
+    override fun getPicture(pictureId: PictureId, tag: String): InputStream {
         throw UnsupportedOperationException()
     }
 

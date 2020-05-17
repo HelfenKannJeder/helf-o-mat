@@ -10,6 +10,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 import javax.imageio.ImageIO
 
 /**
@@ -127,9 +128,12 @@ internal class ResizeImageServiceTest {
     private fun makeResizeFixPointTest(inputImage: Resource, expectedWidth: Int?, expectedHeight: Int?): Path {
         val tempFile1 = createTempFile()
         val tempFile2 = createTempFile()
-        val inputFile = Paths.get(inputImage.uri)
-        resizeImageService.resize(inputFile, tempFile1.toPath(), expectedWidth, expectedHeight, "image/png")
-        resizeImageService.resize(tempFile1.toPath(), tempFile2.toPath(), expectedWidth, expectedHeight, "image/png")
+        Paths.get(inputImage.uri)
+        val image1 = resizeImageService.resize(inputImage.inputStream, expectedWidth, expectedHeight, "image/png")
+        Files.copy(image1.first, tempFile1.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        val image2 = resizeImageService.resize(tempFile1.inputStream(), expectedWidth, expectedHeight, "image/png")
+        Files.copy(image2.first, tempFile2.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        assertThat(image1.second).isEqualTo(image2.second)
         assertThat(Files.readAllBytes(tempFile2.toPath()))
             .isEqualTo(Files.readAllBytes(tempFile1.toPath()))
         return tempFile2.toPath()
