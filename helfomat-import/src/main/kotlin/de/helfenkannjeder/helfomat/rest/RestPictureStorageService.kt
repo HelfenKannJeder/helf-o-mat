@@ -6,6 +6,8 @@ import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException
 import de.helfenkannjeder.helfomat.core.picture.PictureId
 import org.springframework.core.io.Resource
 import org.springframework.http.*
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
@@ -17,11 +19,12 @@ import java.io.InputStream
  * @author Valentin Zickner
  */
 @Component
-class RestPictureStorageService(
+open class RestPictureStorageService(
     private val restTemplate: RestTemplate,
     private val importerConfiguration: ImporterConfiguration
 ) : PictureStorageService {
 
+    @Retryable(maxAttempts = 5, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
     override fun savePicture(url: String, pictureId: PictureId) {
         val plainRestTemplate = RestTemplate()
         val httpEntity = HttpEntity<Any>(HttpHeaders())
@@ -31,6 +34,7 @@ class RestPictureStorageService(
         savePicture(inputStream.readAllBytes(), pictureId, null)
     }
 
+    @Retryable(maxAttempts = 5, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
     override fun savePicture(bytes: ByteArray, pictureId: PictureId, contentType: String?) {
         // it seems to be unnecessary hard to upload a file....
         // see https://medium.com/red6-es/uploading-a-file-with-a-filename-with-spring-resttemplate-8ec5e7dc52ca for mor details
@@ -62,6 +66,7 @@ class RestPictureStorageService(
         throw UnsupportedOperationException()
     }
 
+    @Retryable(maxAttempts = 5, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
     override fun existPicture(pictureId: PictureId): Boolean {
         return try {
             restTemplate.headForHeaders(importerConfiguration.webApiUrl + "/api/picture/" + pictureId.value)
