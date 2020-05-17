@@ -14,6 +14,7 @@ import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 import java.util.regex.Pattern
 
 /**
@@ -38,12 +39,12 @@ class FileSystemPictureStorageService(
 
     override fun savePicture(pictureId: PictureId, inputStream: InputStream, fileSize: Long) {
         val path = createPath(pictureId.value.toString())
-        Files.copy(inputStream, path)
+        Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING)
     }
 
     override fun savePicture(pictureId: PictureId, inputStream: InputStream, fileSize: Long, tag: String) {
         val path = createPath(tag, pictureId.value.toString())
-        Files.copy(inputStream, path)
+        Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING)
     }
 
     override fun getContentType(pictureId: PictureId): String? = Tika().detect(createPath(pictureId.value.toString()))

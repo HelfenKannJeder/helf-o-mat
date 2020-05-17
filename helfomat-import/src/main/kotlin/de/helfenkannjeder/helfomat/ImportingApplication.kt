@@ -4,6 +4,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.retry.annotation.EnableRetry
 import kotlin.system.exitProcess
 
 /**
@@ -11,6 +12,7 @@ import kotlin.system.exitProcess
  */
 @SpringBootApplication
 @EnableBatchProcessing
+@EnableRetry
 open class ImportingApplication
 
 fun main(args: Array<String>) {
