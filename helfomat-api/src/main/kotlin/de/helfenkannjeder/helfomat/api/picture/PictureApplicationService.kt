@@ -9,7 +9,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import java.io.File
 import java.io.InputStream
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 /**
  * @author Valentin Zickner
@@ -50,14 +53,16 @@ open class PictureApplicationService(
         if (pictureRepository.existsById(pictureId)) {
             throw IllegalStateException("PictureId already exists ${pictureId}")
         }
-        pictureStorageService.savePicture(pictureId, inputStream, size)
-        val picture = pictureStorageService.getPicture(pictureId)
-        val contentType = Tika().detect(picture)
+        val tempFile = File.createTempFile("cache", null)
+        Files.copy(inputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        pictureStorageService.savePicture(pictureId, tempFile.inputStream(), size)
+        val contentType = Tika().detect(tempFile)
         for (pictureSize in pictureConfiguration.pictureSizes) {
-            val inputStreamToResize = pictureStorageService.getPicture(pictureId)
+            val inputStreamToResize = tempFile.inputStream()
             val resizedImage = resizeImageService.resize(inputStreamToResize, pictureSize.width, pictureSize.height, contentType)
             pictureStorageService.savePicture(pictureId, resizedImage.first, resizedImage.second, pictureSize.name)
         }
+        tempFile.delete()
         pictureRepository.save(Picture(pictureId, false, contentType))
         return pictureId
     }
