@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
@@ -49,9 +50,10 @@ open class PictureApplicationService(
     }
 
     @Secured(Roles.ADMIN, Roles.REVIEWER, Roles.USER)
+    @Transactional
     open fun savePicture(pictureId: PictureId, inputStream: InputStream, size: Long): PictureId {
         if (pictureRepository.existsById(pictureId)) {
-            throw IllegalStateException("PictureId already exists ${pictureId}")
+            throw PictureAlreadyExistException(pictureId)
         }
         val tempFile = File.createTempFile("cache", null)
         Files.copy(inputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)

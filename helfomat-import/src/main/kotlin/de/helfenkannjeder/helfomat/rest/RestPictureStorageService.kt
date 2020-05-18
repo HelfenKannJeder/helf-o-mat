@@ -4,6 +4,8 @@ import de.helfenkannjeder.helfomat.api.picture.PictureStorageService
 import de.helfenkannjeder.helfomat.config.ImporterConfiguration
 import de.helfenkannjeder.helfomat.core.picture.DownloadFailedException
 import de.helfenkannjeder.helfomat.core.picture.PictureId
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource
 import org.springframework.http.*
 import org.springframework.retry.annotation.Backoff
@@ -11,6 +13,7 @@ import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestTemplate
 import java.io.InputStream
@@ -51,7 +54,11 @@ open class RestPictureStorageService(
         val headers = HttpHeaders()
         headers.contentType = MediaType.MULTIPART_FORM_DATA
         val requestEntity = HttpEntity(body, headers)
-        restTemplate.exchange("${importerConfiguration.webApiUrl}/api/picture/${pictureId.value}", HttpMethod.POST, requestEntity, Void::class.java)
+        try {
+            restTemplate.exchange("${importerConfiguration.webApiUrl}/api/picture/${pictureId.value}", HttpMethod.POST, requestEntity, Void::class.java)
+        } catch (e: HttpClientErrorException) {
+            LOG.error("Failed to save picture with id $pictureId. Ignore and proceed with next", e)
+        }
     }
 
     override fun savePicture(pictureId: PictureId, inputStream: InputStream, fileSize: Long, tag: String) {
@@ -82,6 +89,10 @@ open class RestPictureStorageService(
 
     override fun getPicture(pictureId: PictureId, tag: String): InputStream {
         throw UnsupportedOperationException()
+    }
+
+    companion object {
+        val LOG: Logger = LoggerFactory.getLogger(javaClass)
     }
 
 }
