@@ -104,6 +104,26 @@ internal class ResizeImageServiceTest {
     }
 
     @Test
+    fun resize_withGif_expectToStillHaveAlphaChannel() {
+        // Act
+        val result = makeResizeFixPointTest(ClassPathResource("de/helfenkannjeder/picture/test.gif"), 40, 40)
+
+        // Assert
+        assertImageSize(result, 40, 40)
+        assertThat(getAlpha(result, 39, 39)).isEqualTo(0)
+    }
+
+    @Test
+    fun resize_withPngAndSpecialType_expectToStillHaveAlphaChannel() {
+        // Act
+        val result = makeResizeFixPointTest(ClassPathResource("de/helfenkannjeder/picture/test2.png"), 40, 40)
+
+        // Assert
+        assertImageSize(result, 40, 40)
+        assertThat(getAlpha(result, 0, 0)).isEqualTo(0)
+    }
+
+    @Test
     fun resize_withCorruptedImage_expectNotToFail() {
         // Act
         val corruptedInputImage: Resource = ClassPathResource("de/helfenkannjeder/picture/test-asb-scale-problem.jpg")

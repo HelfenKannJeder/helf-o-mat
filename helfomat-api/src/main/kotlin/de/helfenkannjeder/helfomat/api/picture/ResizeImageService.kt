@@ -28,13 +28,14 @@ open class ResizeImageService {
             height = expectedHeight
             width = expectedHeight * image.width / image.height
         }
-        image = scaleImage(image, width, height)
+        val resultContentType = getContentType(contentType)
+        image = scaleImage(image, width, height, resultContentType)
         if (expectedHeight != null && height != expectedHeight) {
             image = cropImage(image, 0, (height - expectedHeight) / 2, expectedWidth ?: width, expectedHeight)
         } else if (expectedWidth != null && width != expectedWidth) {
             image = cropImage(image, (width - expectedWidth) / 2, 0, expectedWidth, expectedHeight ?: height)
         }
-        val imageWriters = ImageIO.getImageWritersByMIMEType(contentType ?: "image/jpeg")
+        val imageWriters = ImageIO.getImageWritersByMIMEType(resultContentType)
         val hasNext = imageWriters.iterator().hasNext()
         if (!hasNext) {
             throw IllegalStateException("Failed to find image writer for '$contentType'")
@@ -47,11 +48,18 @@ open class ResizeImageService {
         return Pair(inputStream, byteArrayOutputStream.size().toLong())
     }
 
-    private fun scaleImage(inputImage: BufferedImage, width: Int, height: Int): BufferedImage {
+    private fun getContentType(contentType: String?) =
+        when (contentType) {
+            "image/gif" -> "image/png"
+            "image/png" -> "image/png"
+            else -> "image/jpeg"
+        }
+
+    private fun scaleImage(inputImage: BufferedImage, width: Int, height: Int, resultContentType: String): BufferedImage {
         var image = inputImage
         val tempImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH)
         var type = BufferedImage.TYPE_INT_RGB
-        if (hasAlphaChannel(inputImage)) {
+        if (hasAlphaChannel(resultContentType)) {
             type = BufferedImage.TYPE_INT_ARGB
         }
         image = BufferedImage(width, height, type)
@@ -61,12 +69,7 @@ open class ResizeImageService {
         return image
     }
 
-    private fun hasAlphaChannel(inputImage: BufferedImage) =
-        inputImage.type == BufferedImage.TYPE_INT_ARGB ||
-            inputImage.type == BufferedImage.TYPE_INT_ARGB_PRE ||
-            inputImage.type == BufferedImage.TYPE_4BYTE_ABGR ||
-            inputImage.type == BufferedImage.TYPE_4BYTE_ABGR_PRE ||
-            inputImage.type == BufferedImage.TYPE_INT_ARGB_PRE
+    private fun hasAlphaChannel(resultContentType: String) = resultContentType != "image/jpeg"
 
     private fun cropImage(inputImage: BufferedImage, x: Int, y: Int, width: Int, height: Int): BufferedImage {
         var image = inputImage
