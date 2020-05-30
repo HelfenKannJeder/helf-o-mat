@@ -4,9 +4,15 @@ import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {ObservableUtil} from '../shared/observable.util';
-import {Address, Organization, OrganizationService, TravelDistance} from '../_internal/resources/organization.service';
+import {
+    Address,
+    Organization,
+    OrganizationService,
+    TravelDistance,
+    TravelMode
+} from '../_internal/resources/organization.service';
 import {GeoPoint} from '../../_internal/geopoint';
-import {filter, flatMap, map, switchMap} from "rxjs/operators";
+import {filter, flatMap, map, switchMap, tap} from "rxjs/operators";
 
 @Component({
     selector: 'organization',
@@ -71,14 +77,26 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
                 }]);
             });
 
-        this.travelDistances = combineLatest(
+        this.travelDistances = combineLatest([
             this.organization$,
             this.position.pipe(
                 filter(position => position != null)
             )
-        )
+        ])
             .pipe(
-                flatMap(([organization, position]: [Organization, GeoPoint]) => this.organizationService.getTravelDistances(organization.id, position))
+                flatMap(([organization, position]: [Organization, GeoPoint]) =>
+                    this.organizationService.getTravelDistances(organization.id, position)
+                        .pipe(
+                            tap((travelDistances: TravelDistance[]) => {
+                                    travelDistances.splice(0, 0, {
+                                        travelMode: TravelMode.FLIGHT,
+                                        timeInSeconds: null,
+                                        distanceInMeters: GeoPoint.distanceInMeter(organization?.defaultAddress?.location, position)
+                                    });
+                                }
+                            )
+                        )
+                )
             );
     }
 

@@ -14,6 +14,9 @@ export class TimeComponent {
     }
 
     public format(): string {
+        if (this.seconds == null) {
+            return "-";
+        }
         let minutesComplete = Math.round(this.seconds / 60);
         let hours = Math.floor(minutesComplete / 60);
         let minutes = minutesComplete % 60;

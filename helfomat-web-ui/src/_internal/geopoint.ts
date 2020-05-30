@@ -31,6 +31,13 @@ export class GeoPoint {
         )
     }
 
+    public static distanceInMeter(first: GeoPoint, second: GeoPoint) {
+        if (first == null || second == null) {
+            return null;
+        }
+        return Math.round(GeoPoint.distanceInKm(first, second) * 1000);
+    }
+
     public static distanceInKm(first: GeoPoint, second: GeoPoint) {
         const R_earth = 6371;
         const dLat = GeoPoint.deg2rad(second.lat - first.lat);

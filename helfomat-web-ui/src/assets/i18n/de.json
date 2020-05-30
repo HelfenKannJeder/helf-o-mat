@@ -49,6 +49,7 @@
         "TRANSIT": "mit dem ÖPNV",
         "CYCLING": "mit dem Rad",
         "WALKING": "zu Fuß",
+        "FLIGHT": "Luftlinie",
         "kilometer": "{{ kilometers }}km",
         "meter": "{{ meters }}m",
         "time": "{{ hours }}:{{ minutes }}h"

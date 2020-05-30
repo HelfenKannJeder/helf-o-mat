@@ -12,6 +12,7 @@ data class OrganizationDto(
     val urlName: String,
     val description: String?,
     val website: String?,
+    val defaultAddress: AddressDto?,
     val addresses: List<AddressDto>,
     val contactPersons: List<ContactPersonDto>,
     val logo: PictureId?,
