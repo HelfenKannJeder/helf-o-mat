@@ -66,13 +66,31 @@
                     {{'result.mobile.swipe.questions' | translate}}
                 </button>
                 <div class="card">
-                    <div class="card-header">{{ 'result.header.list' | translate }}</div>
+                    <div class="card-header">
+                        <div class="float-right">
+                            <a (click)="createOrganization()" [title]="'result.header.createOrganization' | translate"><i class="material-icons md-36 text-success">create_new_folder</i></a>
+                        </div>
+                        {{ 'result.header.list' | translate }}
+                    </div>
                 </div>
                 <br class="clearfix"/>
                 <helfomat-list
                     [organizations]="organizations"
                     (openOrganization)="openOrganization($event)"
                     (openOrganizationScoreExplanation)="openOrganization($event, true)"></helfomat-list>
+                <div class="card card-default">
+                    <div class="card-header pointer" (click)="createOrganization()">{{'result.newOrganization.header' | translate}}</div>
+                    <div class="card-body pointer" (click)="createOrganization()">
+                        <div class="row">
+                            <div class="col-4">
+                                <i class="material-icons md-36 text-success">create_new_folder</i>
+                            </div>
+                            <div class="col-8">
+                                <p>{{'result.newOrganization.description' | translate}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

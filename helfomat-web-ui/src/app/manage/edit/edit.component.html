@@ -9,7 +9,7 @@
         </nav>
         <div class="custom-content">
             <div class="logo-container" *ngIf="organization.pictures.length > 0">
-                <div class="logo">
+                <div class="logo" *ngIf="organization.logo">
                     <img src="api/picture/{{organization.logo.value}}/icon"
                          [attr.alt]="organization.name">
                 </div>
@@ -19,7 +19,7 @@
 
         <div class="row">
             <div class="col-lg-8">
-                <h1>{{ 'edit.organization.title' | translate: {name: organization.name} }}</h1>
+                <h1>{{ isNew ? ('edit.organization.titleNew' | translate) : ('edit.organization.title' | translate: {name: organization.name})}}</h1>
                 <div class="form-group">
                     <label for="name">{{ 'edit.organization.name' | translate }}</label>
                     <input type="text" id="name" name="name" class="form-control" [ngClass]="{'is-invalid': hasError(organizationName)}" required [(ngModel)]="organization.name" #organizationName="ngModel"/>
@@ -145,6 +145,7 @@
                         </button>
                     </div>
                     <helfomat-single-map
+                        *ngIf="organization.defaultAddress != null"
                         [organization]="organization$"
                         [allowUpdatePosition]="false"
                         [showMapResizeButton]="false"></helfomat-single-map>

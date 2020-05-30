@@ -34,6 +34,7 @@ export class MapIconComponent {
             name: "",
             organizationType: this.organizationType,
             questions: [],
+            pictures: [],
             scoreNorm: null,
             urlName: "",
             volunteers: [],

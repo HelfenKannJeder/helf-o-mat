@@ -122,3 +122,6 @@ fun GroupDto.toGroup() = Group(name = this.name, description = this.description)
 
 fun List<AddressDto>.toAddresses() = this.map { it.toAddress() }
 fun AddressDto.toAddress() = Address(this.street, this.addressAppendix, this.city, this.zipcode, this.location, this.telephone, this.website)
+
+fun Array<OrganizationType>.toOrganizationTypeDtos() = this.map { it.toOrganizationTypeDto() }
+fun OrganizationType.toOrganizationTypeDto() = OrganizationTypeDto(this.name, this.internalName)

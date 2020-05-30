@@ -87,7 +87,7 @@ export class SingleMapComponent {
     }
 
     private static getOrganizationLocation(organization: Organization): GeoPoint {
-        return organization.defaultAddress.location;
+        return organization?.defaultAddress?.location;
     }
 
     private static prefixWithNull<T>(observable: Observable<T>): Observable<T> {

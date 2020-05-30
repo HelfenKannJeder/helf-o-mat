@@ -5,6 +5,8 @@ import {ListModule} from '../list/list.module';
 import {BrowserModule} from '@angular/platform-browser';
 import {QuestionModule} from '../question/question.module';
 import {TranslateModule} from '@ngx-translate/core';
+import {RouterModule} from "@angular/router";
+import {CreateOrganizationDialogModule} from "../_internal/components/create-organization-dialog/create-organization-dialog.module";
 
 @NgModule({
     imports: [
@@ -12,7 +14,9 @@ import {TranslateModule} from '@ngx-translate/core';
         TranslateModule,
         QuestionModule,
         MapModule,
-        ListModule
+        ListModule,
+        RouterModule,
+        CreateOrganizationDialogModule
     ],
     declarations: [
         ResultComponent

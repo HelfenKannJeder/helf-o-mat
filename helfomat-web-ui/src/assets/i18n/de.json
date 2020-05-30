@@ -113,6 +113,7 @@
   "edit": {
     "organization": {
       "title": "'{{name}}' bearbeiten",
+      "titleNew": "Neue Organisation",
       "name": "Name:",
       "website": "Webseite:",
       "description": "Beschreibung:",
@@ -141,7 +142,7 @@
         },
         "created": {
           "title": "Organisation angelegt: {{name}}",
-          "description": "Eine Organisation vom Typ {{organizationType}} wurde angelegt."
+          "description": "Eine Organisation vom Typ {{organizationType}} wurde angelegt. Die Organization hat den URL Namen '{{urlName}}'"
         },
         "nameChanged": "Name geändert",
         "descriptionChanged": "Beschreibung geändert",
@@ -187,6 +188,7 @@
       "publish": {
         "review": "Review",
         "publishChangesHeadline": "Änderungen veröffentlichen: {{organizationName}}",
+        "publishNewOrganizationHeadline": "Neue Organization veröffentlichen",
         "reviewChanges": "Überprüfe Deine Änderungen",
         "describeSources": "Quellen für diese Änderungen zur schnelleren Verifizierung",
         "publishChanges": "Änderungen veröffentlichen"
@@ -249,7 +251,8 @@
   "result": {
     "header": {
       "questions": "Du kannst Deine Antworten noch durch Klick auf die jeweils anderen Daumen anpassen. Anschließend wird das Ergebnis automatisch angepasst.",
-      "list": "Aufgrund Deiner Antworten haben wir hier die Übereinstimmung mit den Hilfsorganisationen, die auf HelfenKannJeder.de erfasst sind, dargestellt."
+      "list": "Aufgrund Deiner Antworten haben wir hier die Übereinstimmung mit den Hilfsorganisationen, die auf HelfenKannJeder.de erfasst sind, dargestellt.",
+      "createOrganization": "Neue Organisation anlegen"
     },
     "mobile": {
       "swipe": {
@@ -260,6 +263,17 @@
     "list": {
       "hoverResultExplain": "Klicke auf das Fragezeichen um herauszufinden, in welchen Punkten '{{ organizationName }}' Deinen Wünschen nahekommt.",
       "more": "[Weitere Informationen]"
+    },
+    "newOrganization": {
+      "header": "Deine Organisation fehlt?",
+      "description": "Hier kannst du kostenlos weitere Organisationen hinzufügen."
+    }
+  },
+  "dialog": {
+    "create-organization-dialog": {
+      "title": "Neue Organisation anlegen",
+      "organizationType": "Um eine neue Organisation anzulegen gebe bitte zuerst den Dachverband der Organisation an:",
+      "continue": "Weiter"
     }
   },
   "navigation": {

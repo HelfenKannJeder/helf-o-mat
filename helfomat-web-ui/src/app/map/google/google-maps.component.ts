@@ -429,6 +429,9 @@ export class GoogleMapsComponent implements OnInit, AfterViewInit, AfterViewChec
     }
 
     private static convertGeoPointToLatLng(location: GeoPoint): LatLng {
+        if (location == null) {
+            return null;
+        }
         return new LatLng(location.lat, location.lon);
     }
 

@@ -11,8 +11,16 @@ export class OrganizationService {
     constructor(private httpClient: HttpClient) {
     }
 
+    findOrganizationTypes(): Observable<OrganizationType[]> {
+        return this.httpClient.get<OrganizationType[]>('api/organization/types');
+    }
+
     findGlobal(): Observable<Organization[]> {
         return this.httpClient.get<Organization[]>('api/organization/global');
+    }
+
+    getGlobalOrganizationByType(organizationType: string): Observable<Organization> {
+        return this.httpClient.get<Organization>(`api/organization/global/${organizationType}`);
     }
 
     findGlobalByQuestionAnswers(answers: UserAnswer[]): Observable<Organization[]> {
@@ -85,8 +93,9 @@ export class Organization {
     public description: string;
     public website: string;
     public scoreNorm: number;
+    public pictures: PictureId[] = [];
     public contactPersons: ContactPerson[] = [];
-    public defaultAddress: Address;
+    public defaultAddress: Address = null;
     public addresses: Address[] = [];
     public groups: Group[] = [];
     public questions: AnsweredQuestion[] = [];
@@ -199,4 +208,9 @@ export class OrganizationEvent {
 
 export class OrganizationId {
     public value: string;
+}
+
+export interface OrganizationType {
+    type: string;
+    name: string;
 }

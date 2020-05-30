@@ -36,5 +36,10 @@ export const manageRoutes: Routes = [
         path: 'volunteer/organization/:organization/edit',
         component: EditComponent,
         canActivate: [IsLoggedInGuard]
+    },
+    {
+        path: 'volunteer/organization/:organizationType/create',
+        component: EditComponent,
+        canActivate: [IsLoggedInGuard]
     }
 ];

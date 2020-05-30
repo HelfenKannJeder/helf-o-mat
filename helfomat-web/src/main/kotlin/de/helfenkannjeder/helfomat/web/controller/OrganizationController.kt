@@ -4,6 +4,7 @@ import de.helfenkannjeder.helfomat.api.organization.*
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
@@ -18,6 +19,9 @@ class OrganizationController(
 
     @GetMapping("/organization/global")
     fun findGlobalOrganizations(): List<OrganizationDto> = organizationApplicationService.findGlobalOrganizations()
+
+    @GetMapping("/organization/global/{organizationType}")
+    fun getGlobalOrganizationByType(@PathVariable("organizationType") organizationType: OrganizationType) = organizationApplicationService.getGlobalOrganizationByType(organizationType)
 
     @PostMapping("/organization/global/byQuestionAnswers")
     fun findOrganizationsByQuestionAnswers(@RequestBody questionAnswersDto: List<QuestionAnswerDto>) = organizationApplicationService.findGlobalOrganizationsWith(questionAnswersDto)
@@ -54,6 +58,9 @@ class OrganizationController(
     @PostMapping("/organization/compare")
     fun compareOrganizations(@RequestBody compareOrganizationDto: CompareOrganizationDto) =
         organizationApplicationService.compareOrganizations(compareOrganizationDto)
+
+    @GetMapping("/organization/types")
+    fun getOrganizationTypes() = organizationApplicationService.findOrganizationTypes()
 
     data class BoundingBoxRequestDto(
         var position: GeoPoint?,
