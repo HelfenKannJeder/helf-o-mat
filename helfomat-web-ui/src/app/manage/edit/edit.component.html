@@ -134,7 +134,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="card card-default">
+                <div class="card card-default" [ngClass]="{'is-invalid': formTouched && !areAddressesValid(organization)}">
                     <div class="card-header">
                         {{organization.addresses.length | i18nPlural: {
                         '=1': 'organization.address.title',
@@ -143,6 +143,9 @@
                         <button class="btn btn-success btn-sm float-right" (click)="editAddress(organization.addresses, {city: '',location: null ,street: '',zipcode: ''}, organization)" type="button">
                             <i class="material-icons">add</i>
                         </button>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="formTouched && !areAddressesValid(organization)">
+                        {{ 'edit.organization.error.atLeastOnAddressRequired' | translate }}
                     </div>
                     <helfomat-single-map
                         *ngIf="organization.defaultAddress != null"
