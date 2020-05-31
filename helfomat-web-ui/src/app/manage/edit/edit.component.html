@@ -1,9 +1,9 @@
 <div *ngIf="organization$ | async; let organization; else loading">
-    <form class="needs-validation" novalidate (ngSubmit)="openPublishChangesConfirmation(organization)" (change)="calculateChanges(organization)">
+    <form class="needs-validation" novalidate (ngSubmit)="openPublishChangesConfirmation(organization, 0, formElement)" (change)="calculateChanges(organization)" #formElement="ngForm">
         <nav class="navbar sticky-top navbar-dark bg-lightblue">
             <span class="navbar-brand">{{organization.name}}</span>
             <div class="btn-group" *ngIf="changes | async; let changes">
-                <button class="btn btn-outline-light" type="button" [disabled]="changes.length == 0" (click)="openPublishChangesConfirmation(organization, 1)">{{'edit.organization.publish.review' | translate}} <span class="badge badge-secondary">{{changes.length}}</span></button>
+                <button class="btn btn-outline-light" type="button" [disabled]="changes.length == 0" (click)="openPublishChangesConfirmation(organization, 1, formElement)">{{'edit.organization.publish.review' | translate}} <span class="badge badge-secondary">{{changes.length}}</span></button>
                 <button class="btn btn-warning" type="submit" [disabled]="changes.length == 0">{{'edit.organization.publish.publishChanges' | translate}}</button>
             </div>
         </nav>

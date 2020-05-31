@@ -13,6 +13,8 @@ import {
 } from '../_internal/resources/organization.service';
 import {GeoPoint} from '../../_internal/geopoint';
 import {filter, flatMap, map, switchMap, tap} from "rxjs/operators";
+import {hasRole, Roles} from "../_internal/authentication/util";
+import {OAuthService} from "angular-oauth2-oidc";
 
 @Component({
     selector: 'organization',
@@ -34,9 +36,12 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
     public travelDistances: Observable<Array<TravelDistance>>;
     private fragment: string;
 
-    constructor(private route: ActivatedRoute,
-                private router: Router,
-                private organizationService: OrganizationService) {
+    constructor(
+        private route: ActivatedRoute,
+        private router: Router,
+        private organizationService: OrganizationService,
+        private oAuthService: OAuthService
+    ) {
         this._back$ = new Subject<void>();
 
         this.userAnswers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
@@ -121,6 +126,11 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
 
     public areAddressesEqual(address1: Address, address2: Address): boolean {
         return Address.isEqual(address1, address2);
+    }
+
+    public isReviewer() {
+        const accessToken = this.oAuthService.getAccessToken();
+        return hasRole(accessToken, Roles.ADMIN) || hasRole(accessToken, Roles.REVIEWER);
     }
 
 }

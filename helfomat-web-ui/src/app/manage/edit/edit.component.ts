@@ -20,7 +20,7 @@ import {
 } from "../../_internal/resources/organization-template.service";
 import {NgbModal, NgbTimeAdapter, NgbTypeaheadSelectItemEvent} from "@ng-bootstrap/ng-bootstrap";
 import {TimepickerAdapterService} from "./_internal/timepicker-adapter.service";
-import {NgModel} from "@angular/forms";
+import {NgForm, NgModel} from "@angular/forms";
 import {PublishChangesConfirmationComponent, PublishContent} from "./_internal/publish-changes-confirmation.component";
 import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review.component";
 import {ToastrService} from 'ngx-toastr';
@@ -107,7 +107,9 @@ export class EditComponent implements OnInit {
         this.organization$.pipe(
             first(organization => organization != null)
         ).subscribe(organization => {
-            if (!this.isNew) {
+            if (this.isNew) {
+                this.newOrganization.next(organization);
+            } else {
                 this.originalOrganization = EditComponent.deepCopy(organization as Organization);
             }
         });
@@ -280,7 +282,14 @@ export class EditComponent implements OnInit {
             });
     }
 
-    openPublishChangesConfirmation(organization: Organization, tab: number = 0) {
+    openPublishChangesConfirmation(organization: Organization, tab: number = 0, formElement: NgForm) {
+        const valid = formElement.valid;
+        if (tab == 0 && !valid) {
+            for (const i in formElement.controls) {
+                formElement.controls[i].markAsTouched();
+            }
+            return;
+        }
         this.changes.pipe(first()).subscribe((changes) => {
             let modalRef = this.modalService.open(PublishChangesConfirmationComponent, {
                 size: 'lg',
@@ -288,6 +297,7 @@ export class EditComponent implements OnInit {
             modalRef.componentInstance.activeTab = tab;
             modalRef.componentInstance.publish.organization = this.originalOrganization;
             modalRef.componentInstance.publish.changes = changes;
+            modalRef.componentInstance.isFormValid = valid;
             modalRef.componentInstance.publish.describeSources = this.publishContent.describeSources;
             modalRef.result
                 .then((result) => {
@@ -330,7 +340,7 @@ export class EditComponent implements OnInit {
                     // keep content in case the dialog is opened again
                     this.publishContent = result;
                 });
-        })
+        });
     }
 
     public getId(prefix: string, element: any): string {
