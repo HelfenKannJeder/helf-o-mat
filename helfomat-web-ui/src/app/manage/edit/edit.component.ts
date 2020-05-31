@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Inject, OnInit} from "@angular/core";
 import {ObservableUtil} from "../../shared/observable.util";
-import {debounceTime, distinctUntilChanged, filter, first, map, mergeMap, switchMap} from "rxjs/operators";
+import {debounceTime, distinctUntilChanged, filter, first, flatMap, map, mergeMap, switchMap} from "rxjs/operators";
 import {
     Address,
     Group,
@@ -46,10 +46,11 @@ export class EditComponent implements OnInit {
     public _organization$: Subject<Organization> = new BehaviorSubject<Organization>(null);
     public changes: Subject<Array<OrganizationEvent>> = new BehaviorSubject([]);
     public newOrganization: Subject<Organization> = new EventEmitter<Organization>();
-    public originalOrganization: Organization;
+    public originalOrganization: Organization = null;
     public organizationTemplate: OrganizationTemplate;
     public publishContent: PublishContent = {} as PublishContent;
     public uploadProgress: Subject<number> = new BehaviorSubject(null);
+    public isNew: boolean = false;
 
     public weekdays: string[] = [
         "MONDAY",
@@ -76,7 +77,23 @@ export class EditComponent implements OnInit {
     ) {
         ObservableUtil.extractObjectMember(this.route.params, 'organization')
             .pipe(
-                switchMap((organizationName: string) => this.organizationService.getOrganization(organizationName)),
+                switchMap((organizationName: string) => {
+                    if (organizationName === null) {
+                        return ObservableUtil.extractObjectMember(this.route.params, 'organizationType')
+                            .pipe(
+                                flatMap((organizationType: string) => organizationService.getGlobalOrganizationByType(organizationType)),
+                                map((organization: Organization) => {
+                                    this.isNew = true;
+                                    const newOrganization = {...organization};
+                                    newOrganization.id = uuidv4();
+                                    newOrganization.name = "";
+                                    newOrganization.urlName = "";
+                                    return newOrganization;
+                                })
+                            )
+                    }
+                    return this.organizationService.getOrganization(organizationName);
+                }),
                 map(organization => {
                     organization.groups = organization.groups.map((group: any) => {
                         group.__id = 'newItem' + Math.random();
@@ -89,7 +106,11 @@ export class EditComponent implements OnInit {
         this.organization$ = this._organization$.asObservable();
         this.organization$.pipe(
             first(organization => organization != null)
-        ).subscribe(organization => this.originalOrganization = EditComponent.deepCopy(organization as Organization));
+        ).subscribe(organization => {
+            if (!this.isNew) {
+                this.originalOrganization = EditComponent.deepCopy(organization as Organization);
+            }
+        });
 
         this.organization$
             .pipe(
@@ -102,6 +123,11 @@ export class EditComponent implements OnInit {
         this.newOrganization
             .pipe(
                 map(organization => {
+                    if (this.isNew) {
+                        organization.urlName = organization.name.toLowerCase()
+                            .replace(/ /g, '-')
+                            .replace(/[^a-z0-9\-]/g, '');
+                    }
                     return this.removeIncompleteFields(organization);
                 }),
                 mergeMap(organization => this.organizationService.compareOrganization(this.originalOrganization, organization))
@@ -267,8 +293,12 @@ export class EditComponent implements OnInit {
                 .then((result) => {
                     this.publishContent = result;
 
+                    let organizationId = organization.id;
+                    if (this.originalOrganization) {
+                        organizationId = this.originalOrganization.id;
+                    }
                     return this.organizationService.submitOrganizationEvents(
-                        {value: this.originalOrganization.id},
+                        {value: organizationId},
                         this.publishContent.describeSources,
                         this.publishContent.changes
                     )
@@ -282,11 +312,16 @@ export class EditComponent implements OnInit {
                 })
                 .then(() => {
                     const navigate = () => {
-                        this.router.navigate(['/volunteer/organization/' + this.originalOrganization.urlName]);
+                        let urlName = this.originalOrganization?.urlName;
+                        if (urlName) {
+                            this.router.navigate([`/volunteer/organization/${urlName}`]);
+                        } else {
+                            this.router.navigate(['/volunteer/result']);
+                        }
                     };
 
                     let confirmedRef = this.modalService.open(ChangesSentForReviewComponent);
-                    confirmedRef.componentInstance.organizationName = this.originalOrganization.name;
+                    confirmedRef.componentInstance.organizationName = this.originalOrganization?.name || organization.name;
                     confirmedRef.result
                         .then(navigate)
                         .catch(navigate)

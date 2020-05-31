@@ -2,14 +2,18 @@ package de.helfenkannjeder.helfomat.api.organization
 
 import de.helfenkannjeder.helfomat.api.Roles
 import de.helfenkannjeder.helfomat.api.currentUsername
-import de.helfenkannjeder.helfomat.api.organization.event.OrganizationCreateEventDto
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler
 import de.helfenkannjeder.helfomat.api.organization.event.toOrganizationEventDtos
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
+import de.helfenkannjeder.helfomat.core.organization.NullableOrganizationEventVisitor
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
+import de.helfenkannjeder.helfomat.core.organization.OrganizationType
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationCreateEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditUrlNameEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
 import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository
 import org.springframework.context.ApplicationEventPublisher
@@ -36,6 +40,19 @@ open class OrganizationApplicationService(
         return organizationRepository.findGlobalOrganizations().toOrganizationDtos()
     }
 
+    open fun getGlobalOrganizationByType(organizationType: OrganizationType): OrganizationDetailDto {
+        val questions = questionRepository.findQuestions()
+        return organizationRepository.findGlobalOrganizations()
+            .firstOrNull { it.organizationType == organizationType }
+            ?.toOrganizationDetailDto(questions)
+            ?: OrganizationDetailDto(
+                id = OrganizationId().value,
+                name = organizationType.internalName,
+                organizationType = organizationType,
+                urlName = organizationType.name.toLowerCase()
+            )
+    }
+
     open fun findGlobalOrganizationsWith(questionAnswerDtos: List<QuestionAnswerDto>): List<OrganizationDto> {
         return organizationRepository.findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(questionAnswerDtos.toQuestionAnswers())
             .toScoredOrganizationDtos()
@@ -58,8 +75,10 @@ open class OrganizationApplicationService(
         return organizationRepository.findGeoPointsOfOrganizationsInsideBoundingBox(position, distance, boundingBox)
     }
 
+    open fun findOrganizationTypes() = OrganizationType.values().toOrganizationTypeDtos().sortedBy { it.name }
+
     open fun compareOrganizations(compareOrganizationDto: CompareOrganizationDto): List<OrganizationEventDto> {
-        val original = compareOrganizationDto.original.toOrganization()
+        val original = compareOrganizationDto.original?.toOrganization()
         val updated = compareOrganizationDto.updated.toOrganization()
         val questions = questionRepository.findQuestions()
         return updated.compareTo(original).toOrganizationEventDtos(questions)
@@ -69,7 +88,7 @@ open class OrganizationApplicationService(
     open fun submitOrganization(organizationSubmitEventDto: OrganizationSubmitEventDto) {
         val organizationEvents = OrganizationEventDtoAssembler.toOrganizationEvent(organizationSubmitEventDto.events)
         val organizationId = organizationSubmitEventDto.organizationId
-        if (!isOrganizationSubmitValid(organizationId, organizationSubmitEventDto.events)) {
+        if (!isOrganizationSubmitValid(organizationId, organizationEvents)) {
             throw OrganizationNotFoundException(organizationId)
         }
         val proposedChangeOrganizationEvent = ProposedChangeOrganizationEvent(
@@ -91,12 +110,33 @@ open class OrganizationApplicationService(
         return organizations.toOrganizationDetailsDto(questions)
     }
 
-    private fun isOrganizationSubmitValid(organizationId: OrganizationId, events: List<OrganizationEventDto>): Boolean {
+    private fun isOrganizationSubmitValid(organizationId: OrganizationId, events: List<OrganizationEvent>): Boolean {
         val isNewOrganization = organizationRepository.findOne(organizationId.value) == null
         val isCreate = events
-            .map { it.javaClass }
-            .any { OrganizationCreateEventDto::class.java == it }
-        return isNewOrganization && isCreate || !isNewOrganization && !isCreate
+            .mapNotNull {
+                it.visit(object : NullableOrganizationEventVisitor<OrganizationCreateEvent> {
+                    override fun visit(organizationCreateEvent: OrganizationCreateEvent): OrganizationCreateEvent? = organizationCreateEvent
+                })
+            }
+            .any()
+        var isUrlNameNew = true
+        val urlName = getUrlName(events)
+        if (urlName != null) {
+            isUrlNameNew = organizationRepository.findByUrlName(urlName) == null
+        }
+        return (isNewOrganization && isCreate || !isNewOrganization && !isCreate) && isUrlNameNew
+    }
+
+    private fun getUrlName(events: List<OrganizationEvent>): String? {
+        return events
+            .mapNotNull {
+                it.visit(object : NullableOrganizationEventVisitor<String> {
+                    override fun visit(organizationCreateEvent: OrganizationCreateEvent): String? = organizationCreateEvent.urlName
+                    override fun visit(organizationEditUrlNameEvent: OrganizationEditUrlNameEvent): String? = organizationEditUrlNameEvent.urlName
+                })
+            }
+            .lastOrNull()
+
     }
 
 }

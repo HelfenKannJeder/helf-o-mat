@@ -8,6 +8,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {environment} from '../../environments/environment';
 import {GeoPoint} from '../../_internal/geopoint';
 import {debounceTime, distinctUntilChanged, filter, first, flatMap, map} from "rxjs/operators";
+import {CreateOrganizationDialogService} from "../_internal/components/create-organization-dialog/create-organization-dialog.service";
 
 @Component({
     selector: 'app-result',
@@ -55,6 +56,7 @@ export class ResultComponent implements OnInit {
     constructor(private organizationService: OrganizationService,
                 private router: Router,
                 private route: ActivatedRoute,
+                private createOrganizationDialogService: CreateOrganizationDialogService,
                 private changeDetectorRef: ChangeDetectorRef) {
         ObservableUtil.extractObjectMember(this.route.params, 'position')
             .pipe(
@@ -130,13 +132,13 @@ export class ResultComponent implements OnInit {
     }
 
     ngOnInit() {
-        combineLatest(
+        combineLatest([
             this._answers$.asObservable(),
             this._position$.asObservable(),
             this.distance,
             this._boundingBox$.asObservable(),
             this._zoom$.asObservable()
-        )
+        ])
             .subscribe(([userAnswers, position, distance, boundingBox, zoom]: [UserAnswer[], GeoPoint, number, BoundingBox, number]) => {
                 this.router.navigate(['/volunteer/result', {
                     answers: UrlParamBuilder.buildAnswersFromUserAnswer(userAnswers),
@@ -149,11 +151,11 @@ export class ResultComponent implements OnInit {
                 });
             });
 
-        combineLatest(
+        combineLatest([
             this._answers$.asObservable(),
             this.position,
             this.distance
-        )
+        ])
             .pipe(
                 flatMap(([answers, position, distance]: [Array<UserAnswer>, GeoPoint, number]) => {
                     if (answers.length == 0 && position == null) {
@@ -171,12 +173,12 @@ export class ResultComponent implements OnInit {
                 this.organizations.next(organizations);
             });
 
-        combineLatest(
+        combineLatest([
             this.position,
             this.distance,
             this._boundingBox$.asObservable(),
             this.zoom
-        )
+        ])
             .pipe(
                 flatMap(([position, distance, boundingBox, zoom]: [GeoPoint, number, BoundingBox, number]) => {
                     return this.organizationService.boundingBox(position, distance, boundingBox, zoom);
@@ -186,13 +188,13 @@ export class ResultComponent implements OnInit {
                 this.clusteredOrganizations.next(clusteredOrganizations);
             });
 
-        combineLatest(
+        combineLatest([
             this._organization$.asObservable(),
             this._newAnswers$.asObservable(),
             this.position,
             this.zoom,
             this.distance
-        )
+        ])
             .subscribe(([organization, answers, position, zoom, distance]: [Organization, string, GeoPoint, number, number]) => {
                 let extras: NavigationExtras = {};
                 if (this.explainScore) {
@@ -216,6 +218,10 @@ export class ResultComponent implements OnInit {
             }
             this.changeDetectorRef.detectChanges();
         }
+    }
+
+    createOrganization() {
+        this.createOrganizationDialogService.showCreateOrganizationDialog();
     }
 
     updateOrganizations(answers: UserAnswer[]) {

@@ -1,0 +1,28 @@
+<div class="modal-header bg-lightblue text-white">
+    <h4 class="modal-title" id="modal-title">
+        {{ 'dialog.create-organization-dialog.title' | translate }}
+    </h4>
+    <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form (ngSubmit)="modal.close(organizationType)" #form="ngForm">
+    <div class="modal-body text-left">
+        <div class="form-group">
+            <label for="organizationType">
+                {{ 'dialog.create-organization-dialog.organizationType' | translate }}
+            </label>
+            <select class="form-control"
+                    id="organizationType"
+                    name="organizationType"
+                    [(ngModel)]="organizationType" required
+                    [ngClass]="{'is-invalid': model.invalid && (model.dirty || model.touched)}"
+                    #model="ngModel">
+                <option *ngFor="let organizationType of organizationTypes" [value]="organizationType.type">{{organizationType.name}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="form.invalid">{{'dialog.create-organization-dialog.continue' | translate}}</button>
+    </div>
+</form>
