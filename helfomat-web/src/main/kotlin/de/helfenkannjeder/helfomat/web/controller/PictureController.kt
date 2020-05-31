@@ -39,6 +39,7 @@ class PictureController(private val pictureApplicationService: PictureApplicatio
         if (contentType != null) {
             headers.contentType = MediaType.parseMediaType(contentType)
         }
+        headers.cacheControl = "public, max-age=15552000"
         return ResponseEntity(InputStreamResource(pictureDto.inputStream), headers, HttpStatus.OK)
     }
 

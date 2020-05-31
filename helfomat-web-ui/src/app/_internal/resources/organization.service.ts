@@ -111,6 +111,7 @@ export class TravelDistance {
 }
 
 export enum TravelMode {
+    FLIGHT = 'FLIGHT',
     WALKING = 'WALKING',
     CYCLING = 'CYCLING',
     DRIVING = 'DRIVING',
