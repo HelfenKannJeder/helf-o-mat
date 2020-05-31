@@ -762,15 +762,14 @@
       "name": "Helf-O-Mat",
       "rootUrl": "",
       "adminUrl": "",
-      "baseUrl": "https://dev.helf-o-m.at/",
+      "baseUrl": "http://localhost:4200/authenticate",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "https://dev.helf-o-m.at/*",
-        "http://localhost:4200/*"
+        "http://localhost:4200/authenticate"
       ],
       "webOrigins": [
         "*"
