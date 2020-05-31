@@ -2,7 +2,6 @@ package de.helfenkannjeder.helfomat.api.approval
 
 import de.helfenkannjeder.helfomat.api.Roles
 import de.helfenkannjeder.helfomat.api.currentUsername
-import de.helfenkannjeder.helfomat.core.approval.Approval
 import de.helfenkannjeder.helfomat.core.approval.ApprovalId
 import de.helfenkannjeder.helfomat.core.approval.ApprovalRepository
 import de.helfenkannjeder.helfomat.core.organization.NullableOrganizationEventVisitor
@@ -13,7 +12,6 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.context.event.EventListener
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
 
@@ -30,11 +28,6 @@ open class ApprovalApplicationService(
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val pictureRepository: PictureRepository
 ) {
-
-    @EventListener
-    open fun listenForProposals(proposedChangeOrganizationEvent: ProposedChangeOrganizationEvent) {
-        approvalRepository.save(Approval(ApprovalId(), proposedChangeOrganizationEvent))
-    }
 
     open fun findItemsToApprove(): List<ApprovalOverviewDto> {
         return approvalRepository.findToApprove()

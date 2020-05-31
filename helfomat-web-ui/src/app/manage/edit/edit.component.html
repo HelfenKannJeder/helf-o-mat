@@ -1,9 +1,9 @@
 <div *ngIf="organization$ | async; let organization; else loading">
-    <form class="needs-validation" novalidate (ngSubmit)="openPublishChangesConfirmation(organization)" (change)="calculateChanges(organization)">
+    <form class="needs-validation" novalidate (ngSubmit)="openPublishChangesConfirmation(organization, 0, formElement)" (change)="calculateChanges(organization)" #formElement="ngForm">
         <nav class="navbar sticky-top navbar-dark bg-lightblue">
             <span class="navbar-brand">{{organization.name}}</span>
             <div class="btn-group" *ngIf="changes | async; let changes">
-                <button class="btn btn-outline-light" type="button" [disabled]="changes.length == 0" (click)="openPublishChangesConfirmation(organization, 1)">{{'edit.organization.publish.review' | translate}} <span class="badge badge-secondary">{{changes.length}}</span></button>
+                <button class="btn btn-outline-light" type="button" [disabled]="changes.length == 0" (click)="openPublishChangesConfirmation(organization, 1, formElement)">{{'edit.organization.publish.review' | translate}} <span class="badge badge-secondary">{{changes.length}}</span></button>
                 <button class="btn btn-warning" type="submit" [disabled]="changes.length == 0">{{'edit.organization.publish.publishChanges' | translate}}</button>
             </div>
         </nav>
@@ -134,7 +134,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="card card-default">
+                <div class="card card-default" [ngClass]="{'is-invalid': formTouched && !areAddressesValid(organization)}">
                     <div class="card-header">
                         {{organization.addresses.length | i18nPlural: {
                         '=1': 'organization.address.title',
@@ -143,6 +143,9 @@
                         <button class="btn btn-success btn-sm float-right" (click)="editAddress(organization.addresses, {city: '',location: null ,street: '',zipcode: ''}, organization)" type="button">
                             <i class="material-icons">add</i>
                         </button>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="formTouched && !areAddressesValid(organization)">
+                        {{ 'edit.organization.error.atLeastOnAddressRequired' | translate }}
                     </div>
                     <helfomat-single-map
                         *ngIf="organization.defaultAddress != null"

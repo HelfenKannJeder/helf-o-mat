@@ -1,4 +1,6 @@
 @import "../../../colors";
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
 
 .cdk-drag-preview {
   box-sizing: border-box;
@@ -75,4 +77,12 @@ img.thumb {
 .navbar.sticky-top {
   margin-right: -15px;
   margin-left: -15px;
+}
+
+.card.is-invalid .card-header {
+  border: 1px solid $form-feedback-invalid-color;
+  background-image: escape-svg($form-feedback-icon-invalid);
+  background-repeat: no-repeat;
+  background-size: 1.125rem 1.125rem;
+  background-position: right 4rem center;
 }

@@ -130,7 +130,9 @@
         "new": "Neuer Termin"
       },
       "error": {
-        "nameIsRequired": "Der Name der Organisation ist ein Pflichtfeld, dieser dient zur leichteren Identifikation der Organisation."
+        "nameIsRequired": "Der Name der Organisation ist ein Pflichtfeld, dieser dient zur leichteren Identifikation der Organisation.",
+        "sourcesAreRequired": "Bitte gebe die Quellen an, die du verwendet hast um diese Organisation zu bearbeiten.",
+        "atLeastOnAddressRequired": "Bitte gebe die Adresse der Organisation an, damit wir wissen wo wir sie als Suchergebnis zur Verfügung stellen sollen."
       },
       "changes": {
         "message": {
