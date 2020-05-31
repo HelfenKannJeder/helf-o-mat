@@ -5,8 +5,6 @@ security:
       client-secret: 526f9f2c-34e8-405d-85c5-35b708c77bb1
       access-token-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/token
       token-info-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/token/introspect
-      scope:
-        - helfomat_admin
 
 helfomat:
   importer:
