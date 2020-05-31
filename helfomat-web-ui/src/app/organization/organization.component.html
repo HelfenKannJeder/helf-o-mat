@@ -210,7 +210,15 @@
                         <th>{{'organization.facts.distance.duration' | translate}}</th>
                     </tr>
                     <tr *ngFor="let travelDistance of travelDistances">
-                        <td>{{'organization.facts.distance.' + travelDistance.travelMode | translate}}</td>
+                        <td>
+                            <ng-container [ngSwitch]="travelDistance.travelMode">
+                                <i *ngSwitchCase="'FLIGHT'" class="material-icons">flight</i>
+                                <i *ngSwitchCase="'WALKING'" class="material-icons">directions_run</i>
+                                <i *ngSwitchCase="'CYCLING'" class="material-icons">directions_bike</i>
+                                <i *ngSwitchCase="'DRIVING'" class="material-icons">directions_car</i>
+                                <i *ngSwitchCase="'TRANSIT'" class="material-icons">directions_transit</i>
+                            </ng-container>
+                            {{'organization.facts.distance.' + travelDistance.travelMode | translate}}</td>
                         <td>
                             <distance [meter]="travelDistance.distanceInMeters"></distance>
                         </td>
