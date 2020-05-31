@@ -241,20 +241,14 @@ Die erste Ausbildungsstufe wird mit einer Prüfung abgeschlossen. Erst danach is
           description: ""
         - name: Zugtrupp
           description: "Der Zugtrupp ist für die Koordination von THW-Einsätzen zuständig und richtet in der Regel nahe des Einsatzgeschehens eine Befehlsstelle ein, welche sich mit den Führungsstellen anderer Hilfsorganisationen abstimmt."
-        - name: 1. Bergungsgruppe
-          description: "Die 1. Bergungsgruppe (1. BGr) ist die universellste Gruppe im Technischen Zug. Das Personal und die Ausstattung sind auf die Bewältigung eines möglichst breiten Aufgabenspektrums ausgerichtet. Zur Ausstattung gehört ein umfangreiches Sortiment an Werkzeugen und Geräten zur Rettung von Menschen, zur Bearbeitung von Holz, Metall und Stein, zur Sicherung von Personen und Einsatzstellen, zum Trennen, Heben und Bewegen von Trümmern oder Bauteilen sowie zum Bau von Hilfskonstruktionen und anderem mehr."
-        - name: 2. Bergungsgruppe
-          description: "Die 2. Bergungsgruppe (2. BGr) verfügt neben einer Grundausstattung, die weitgehend jener der 1. BGr ähnelt, über zusätzliche, schwere Komponenten. Einige Gruppen verfügen zusätzlich über spezielles Rettungsgerät, wie Betonkettensäge, Plasmaschneider und Kernbohrgeräten, mit dem ein erschütterungsfreies Vordringen in Trümmerstrukturen möglich ist."
-        - name: Zugtrupp
-          description: "Der Zugtrupp ist für die Koordination von THW-Einsätzen zuständig und richtet in der Regel nahe des Einsatzgeschehens eine Befehlsstelle ein, welche sich mit den Führungsstellen anderer Hilfsorganisationen abstimmt."
-        - name: 1. Bergungsgruppe
-          description: "Die 1. Bergungsgruppe (1. BGr) ist die universellste Gruppe im Technischen Zug. Das Personal und die Ausstattung sind auf die Bewältigung eines möglichst breiten Aufgabenspektrums ausgerichtet. Zur Ausstattung gehört ein umfangreiches Sortiment an Werkzeugen und Geräten zur Rettung von Menschen, zur Bearbeitung von Holz, Metall und Stein, zur Sicherung von Personen und Einsatzstellen, zum Trennen, Heben und Bewegen von Trümmern oder Bauteilen sowie zum Bau von Hilfskonstruktionen und anderem mehr."
-        - name: 2. Bergungsgruppe
-          description: "Die 2. Bergungsgruppe (2. BGr) verfügt neben einer Grundausstattung, die weitgehend jener der 1. BGr ähnelt, über zusätzliche, schwere Komponenten. Einige Gruppen verfügen zusätzlich über spezielles Rettungsgerät, wie Betonkettensäge, Plasmaschneider und Kernbohrgeräten, mit dem ein erschütterungsfreies Vordringen in Trümmerstrukturen möglich ist."
+        - name: Bergungsgruppe
+          description: "Die Bergungsgruppe (B) ist die universellste Gruppe im Technischen Zug. Das Personal und die Ausstattung sind auf die Bewältigung eines möglichst breiten Aufgabenspektrums ausgerichtet. Zur Ausstattung gehört ein umfangreiches Sortiment an Werkzeugen und Geräten zur Rettung von Menschen, zur Bearbeitung von Holz, Metall und Stein, zur Sicherung von Personen und Einsatzstellen, zum Trennen, Heben und Bewegen von Trümmern oder Bauteilen sowie zum Bau von Hilfskonstruktionen und anderem mehr."
+        - name: Schwere Bergung
+          description: "Die Schwere Bergung (SB) verfügt neben einer Grundausstattung, die weitgehend jener der B ähnelt, über zusätzliche, schwere Komponenten. Einige Gruppen verfügen zusätzlich über spezielles Rettungsgerät, wie Betonkettensäge, Plasmaschneider und Kernbohrgeräten, mit dem ein erschütterungsfreies Vordringen in Trümmerstrukturen möglich ist."
         - name: Fachgruppe Räumen (FGr R, Typ A und B)
           description: "Mit ihren leistungsfähigen Baumaschinen ist die Fachgruppe Räumen an fast allen alltäglichen Einsätzen des THW beteiligt. Häufig kommen die wendigen Radlader zum Einsatz, um die Feuerwehr bei der Brandbekämpfung zu unterstützen. Insbesondere, wenn einsturzgefährdete Gebäude gesichert oder eingerissen, Bauwerksteile niedergelegt oder Trümmer weggeräumt werden müssen, ist diese Einheit eine große Hilfe. Die Einsatzkräfte dieser Fachgruppe unterstützen auch Rettungskräfte, die zu eingeschlossenen oder verschütteten Personen vordringen müssen."
-        - name: Fachgruppe Beleuchtung (FGr Bel)
-          description: "Die Fachgruppe Beleuchtung macht die Nacht zum Tag. Sie besitzt eine breite Palette von Beleuchtungsmitteln, um Einsatzstellen, Bereitstellungsräume oder Veranstaltungsorte großflächig auszuleuchten."
+        - name: Fachgruppe Notversorgung und Notinstandsetzung (FGr N)
+          description: "Die Fachgruppe Notversorgung und Notinstandsetzung kümmert sich um Notunterbringung, Notversorgung, Transport, Beleuchtung von Einsatzstellen und vieles mehr."
         - name: Fachgruppe Wassergefahren (FGr W, Typ A und B)
           description: "Die Fachgruppe Wassergefahren rettet Menschen, Tiere und birgt Sachwerte bei Wassergefahren. Sie betreibt Mehrzweck-Wasserfahrzeuge auf dem Wasser, baut schwimmende Arbeitsplattformen und Anleger für verschiedene Arbeiten an und auf dem Wasser. Ferner wirkt sie bei der Damm- und Deichsicherung mit. Im Rahmen der Ausbildung zum Fahren von Motorbooten oder Pontons kann der erworbene Bootsführerschein auch privat genutzt werden."
         - name: Fachgruppe Wasserschaden/Pumpen (FGr WP)
