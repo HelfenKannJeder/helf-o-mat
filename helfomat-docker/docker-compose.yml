@@ -62,7 +62,7 @@ services:
       - keycloak
 
   keycloak:
-    image: jboss/keycloak:9.0.3
+    image: jboss/keycloak:10.0.1
     environment:
       DB_VENDOR: postgres
       DB_ADDR: keycloak-postgres
@@ -81,6 +81,7 @@ services:
       - keycloak
     volumes:
       - ./realm-export.json:/realm-export.json
+      - helfenkannjeder-theme:/opt/jboss/keycloak/themes/helfenkannjeder
 
 volumes:
   elastic:

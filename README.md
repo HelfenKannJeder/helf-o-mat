@@ -63,6 +63,14 @@ This command is automatically proxying the API to the backend service.
 You can reach the API at `http://localhost:8080/`.
 The frontend is running at `http://localhost:4200/`.
 
+### Users
+
+To sign-in to the application you need to go to [Keycloak](http://localhost:8085/auth/admin/master/console/#/realms/helfomat/users) and create a user.
+The username for the admin console is `admin` and the password is `secret`.
+After pressing the `Add user` button, you need to give the user a username.
+Once the user is created you need to give the user a password in the `Credentials` tab.
+In the `Role Mapping` you can assign one of the Helf-O-Mat roles (e.g. `helfomat_admin`).
+
 ### Offline Usage (Unsupported)
 
 For offline usage you can start the spring boot app with the parameter `--spring.profiles.active=offline`.
