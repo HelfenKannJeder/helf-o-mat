@@ -42,6 +42,14 @@ export function resolveAuthenticationProviderHostName(currentHost?: string): str
     }
 }
 
+export function getOAuth2Configuration() {
+    return {
+        ...environment.auth,
+        issuer: resolveAuthenticationProviderUrl(),
+        redirectUri: `${getProtocol()}${window.location.host}/authenticate`
+    };
+}
+
 export function resolveAuthenticationProviderUrl(currentHost?: string): string {
     return getProtocol() + resolveAuthenticationProviderHostName(currentHost) + environment.auth.issuer;
 }

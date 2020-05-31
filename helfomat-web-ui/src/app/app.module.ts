@@ -15,6 +15,7 @@ import {ToastrModule} from 'ngx-toastr';
 import {OAuthModule} from "angular-oauth2-oidc";
 import {ProfileModule} from "./profile/profile.module";
 import {HttpErrorInterceptor} from "./_internal/http-error.interceptor";
+import {AuthenticateModule} from "./authenticate/authenticate.module";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -34,6 +35,7 @@ export function createTranslateLoader(http: HttpClient) {
         FormsModule,
         HttpClientModule,
         ProfileModule,
+        AuthenticateModule,
         routing,
         TranslateModule.forRoot({
             loader: {

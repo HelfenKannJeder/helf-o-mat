@@ -14,7 +14,7 @@ export class IsLoggedInGuard extends BaseAuthenticationGuard implements CanActiv
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-        this.setupOAuthContext(state);
+        this.setupOAuthContext();
         return this.oAuthService.loadDiscoveryDocumentAndTryLogin()
             .then(() => {
                 let withoutUrlParams = BaseAuthenticationGuard.removeOAuthUrlParams(state.url);
@@ -24,7 +24,13 @@ export class IsLoggedInGuard extends BaseAuthenticationGuard implements CanActiv
                 }
                 let authenticated = this.oAuthService.hasValidAccessToken();
                 if (!authenticated) {
-                    this.oAuthService.initLoginFlow();
+                    this.router.navigate([
+                        '/authenticate'
+                    ], {
+                        queryParams: {
+                            redirectTo: state.url
+                        }
+                    })
                     return false;
                 }
                 return authenticated;
