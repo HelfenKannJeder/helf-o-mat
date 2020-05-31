@@ -20,7 +20,7 @@ import {
 } from "../../_internal/resources/organization-template.service";
 import {NgbModal, NgbTimeAdapter, NgbTypeaheadSelectItemEvent} from "@ng-bootstrap/ng-bootstrap";
 import {TimepickerAdapterService} from "./_internal/timepicker-adapter.service";
-import {NgModel} from "@angular/forms";
+import {NgForm, NgModel} from "@angular/forms";
 import {PublishChangesConfirmationComponent, PublishContent} from "./_internal/publish-changes-confirmation.component";
 import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review.component";
 import {ToastrService} from 'ngx-toastr';
@@ -29,6 +29,8 @@ import {EditAddressComponent} from "./_internal/edit-address.component";
 import {PictureId, PictureService} from "../../_internal/resources/picture.service";
 import {v4 as uuidv4} from 'uuid';
 import {Ng2ImgMaxService} from "ng2-img-max";
+import {hasRole, Roles} from "../../_internal/authentication/util";
+import {OAuthService} from "angular-oauth2-oidc";
 
 @Component({
     selector: 'organization-edit',
@@ -51,6 +53,7 @@ export class EditComponent implements OnInit {
     public publishContent: PublishContent = {} as PublishContent;
     public uploadProgress: Subject<number> = new BehaviorSubject(null);
     public isNew: boolean = false;
+    public formTouched: boolean = false;
 
     public weekdays: string[] = [
         "MONDAY",
@@ -73,6 +76,7 @@ export class EditComponent implements OnInit {
         private translateService: TranslateService,
         private pictureService: PictureService,
         private ng2ImgMax: Ng2ImgMaxService,
+        private oAuthService: OAuthService,
         @Inject(DOCUMENT) private document: Document
     ) {
         ObservableUtil.extractObjectMember(this.route.params, 'organization')
@@ -107,7 +111,9 @@ export class EditComponent implements OnInit {
         this.organization$.pipe(
             first(organization => organization != null)
         ).subscribe(organization => {
-            if (!this.isNew) {
+            if (this.isNew) {
+                this.newOrganization.next(organization);
+            } else {
                 this.originalOrganization = EditComponent.deepCopy(organization as Organization);
             }
         });
@@ -280,7 +286,28 @@ export class EditComponent implements OnInit {
             });
     }
 
-    openPublishChangesConfirmation(organization: Organization, tab: number = 0) {
+    areAddressesValid(organization: Organization) {
+        if (organization.addresses.length > 0) {
+            return true;
+        }
+        const accessToken = this.oAuthService.getAccessToken();
+        return hasRole(accessToken, Roles.ADMIN) || hasRole(accessToken, Roles.REVIEWER);
+    }
+
+    openPublishChangesConfirmation(organization: Organization, tab: number = 0, formElement: NgForm) {
+        const valid = formElement.valid;
+        if (tab == 0) {
+            this.formTouched = true;
+            if (!valid) {
+                for (const i in formElement.controls) {
+                    formElement.controls[i].markAsTouched();
+                }
+                return;
+            }
+            if (!this.areAddressesValid(organization)) {
+                return;
+            }
+        }
         this.changes.pipe(first()).subscribe((changes) => {
             let modalRef = this.modalService.open(PublishChangesConfirmationComponent, {
                 size: 'lg',
@@ -288,6 +315,7 @@ export class EditComponent implements OnInit {
             modalRef.componentInstance.activeTab = tab;
             modalRef.componentInstance.publish.organization = this.originalOrganization;
             modalRef.componentInstance.publish.changes = changes;
+            modalRef.componentInstance.isFormValid = valid;
             modalRef.componentInstance.publish.describeSources = this.publishContent.describeSources;
             modalRef.result
                 .then((result) => {
@@ -330,7 +358,7 @@ export class EditComponent implements OnInit {
                     // keep content in case the dialog is opened again
                     this.publishContent = result;
                 });
-        })
+        });
     }
 
     public getId(prefix: string, element: any): string {

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
@@ -28,7 +29,8 @@ class SearchControllerTest {
     @Test
     @Throws(Exception::class)
     fun searchQuestions_withNoMoreInformation_returnsListOfQuestions() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/questions"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/questions")
+            .with(user("admin"))) // security is disabled, that's why authentication is enabled by default
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.jsonPath("$").isArray)

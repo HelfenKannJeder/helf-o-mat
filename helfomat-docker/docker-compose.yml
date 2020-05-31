@@ -81,7 +81,6 @@ services:
       - keycloak
     volumes:
       - ./realm-export.json:/realm-export.json
-      - helfenkannjeder-theme:/opt/jboss/keycloak/themes/helfenkannjeder
 
 volumes:
   elastic:

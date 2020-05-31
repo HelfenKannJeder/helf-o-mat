@@ -12,10 +12,14 @@
     <artifactId>helfomat-infrastructure-keycloak</artifactId>
 
     <properties>
-        <keycloak.version>9.0.0</keycloak.version>
+        <keycloak.version>10.0.1</keycloak.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>de.helfenkannjeder.helfomat</groupId>
+            <artifactId>helfomat-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
