@@ -4,6 +4,7 @@ import {QuestionComponent} from './question/question.component';
 import {ResultComponent} from './result/result.component';
 import {OrganizationComponent} from './organization/organization.component';
 import {NoAuthGuard} from "./_internal/authentication/no-auth.guard";
+import {AuthenticateComponent} from "./authenticate/authenticate.component";
 
 const appRoutes: Routes = [
     {
@@ -20,6 +21,7 @@ const appRoutes: Routes = [
     {path: 'question', redirectTo: '/volunteer/question'},
     {path: 'location', redirectTo: '/volunteer/location'},
     {path: 'organisation/:organization', redirectTo: '/volunteer/organization/:organization'},
+    {path: 'authenticate', component: AuthenticateComponent},
     {path: '', redirectTo: '/volunteer/question', pathMatch: 'full'}
 ];
 

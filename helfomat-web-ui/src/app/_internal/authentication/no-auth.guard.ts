@@ -12,7 +12,7 @@ export class NoAuthGuard extends BaseAuthenticationGuard implements CanActivate 
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-        this.setupOAuthContext(state);
+        this.setupOAuthContext();
         return this.oAuthService.loadDiscoveryDocumentAndTryLogin()
             .then(() => {
                 if (!this.oAuthService.hasValidAccessToken()) {

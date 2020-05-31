@@ -1,18 +1,13 @@
-import {environment} from "../../../environments/environment";
 import {NullValidationHandler, OAuthService} from "angular-oauth2-oidc";
-import {RouterStateSnapshot} from "@angular/router";
-import {resolveAuthenticationProviderUrl} from "./util";
+import {getOAuth2Configuration} from "./util";
 
 export class BaseAuthenticationGuard {
 
     constructor(protected oAuthService: OAuthService) {
     }
 
-    protected setupOAuthContext(state: RouterStateSnapshot) {
-        let config = {...environment.auth};
-        config.redirectUri = location.origin + BaseAuthenticationGuard.removeOAuthUrlParams(state.url);
-        config.issuer = resolveAuthenticationProviderUrl();
-        this.oAuthService.configure(config);
+    protected setupOAuthContext() {
+        this.oAuthService.configure(getOAuth2Configuration());
         this.oAuthService.setupAutomaticSilentRefresh();
         this.oAuthService.tokenValidationHandler = new NullValidationHandler();
     }
