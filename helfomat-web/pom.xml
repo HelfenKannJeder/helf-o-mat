@@ -38,6 +38,10 @@
         </dependency>
         <dependency>
             <groupId>de.helfenkannjeder.helfomat</groupId>
+            <artifactId>helfomat-infrastructure-email</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.helfenkannjeder.helfomat</groupId>
             <artifactId>helfomat-infrastructure-filesystem</artifactId>
         </dependency>
         <dependency>
