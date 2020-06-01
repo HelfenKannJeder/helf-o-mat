@@ -27,7 +27,7 @@ open class RestPictureStorageService(
     private val importerConfiguration: ImporterConfiguration
 ) : PictureStorageService {
 
-    @Retryable(maxAttempts = 5, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
+    @Retryable(maxAttempts = 15, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
     override fun savePicture(url: String, pictureId: PictureId) {
         val plainRestTemplate = RestTemplate()
         val httpEntity = HttpEntity<Any>(HttpHeaders())
@@ -37,7 +37,7 @@ open class RestPictureStorageService(
         savePicture(inputStream.readAllBytes(), pictureId, null)
     }
 
-    @Retryable(maxAttempts = 5, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
+    @Retryable(maxAttempts = 15, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
     override fun savePicture(bytes: ByteArray, pictureId: PictureId, contentType: String?) {
         // it seems to be unnecessary hard to upload a file....
         // see https://medium.com/red6-es/uploading-a-file-with-a-filename-with-spring-resttemplate-8ec5e7dc52ca for mor details
@@ -73,7 +73,7 @@ open class RestPictureStorageService(
         throw UnsupportedOperationException()
     }
 
-    @Retryable(maxAttempts = 5, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
+    @Retryable(maxAttempts = 15, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
     override fun existPicture(pictureId: PictureId): Boolean {
         return try {
             restTemplate.headForHeaders(importerConfiguration.webApiUrl + "/api/picture/" + pictureId.value)

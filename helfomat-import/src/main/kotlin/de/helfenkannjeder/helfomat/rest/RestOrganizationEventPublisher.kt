@@ -11,6 +11,8 @@ import de.helfenkannjeder.helfomat.core.question.QuestionRepository
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
@@ -20,24 +22,25 @@ import org.springframework.web.client.RestTemplate
  */
 @Component
 @EnableConfigurationProperties(ImporterConfiguration::class)
-class RestOrganizationEventPublisher(
+open class RestOrganizationEventPublisher(
     private val restTemplate: RestTemplate,
     private val questionRepository: QuestionRepository,
     private val importerConfiguration: ImporterConfiguration
 ) {
 
-    fun publishEvents(organization: Organization, organizationEvents: List<OrganizationEvent>) {
+    @Retryable(maxAttempts = 15, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
+    open fun publishEvents(organization: Organization, organizationEvents: List<OrganizationEvent>) {
         val questions = questionRepository.findQuestions()
         if (organizationEvents.isNotEmpty()) {
             val organizationSubmitEventDto = organizationEvents.toOrganizationSubmitEventDto(organization.id, questions)
             try {
                 submitOrganization(organizationSubmitEventDto)
             } catch (exception: HttpClientErrorException) {
-                if (HttpStatus.NOT_FOUND == exception.statusCode) {
+                when {
                     // try to create complete organization
-                    submitOrganization(organization.compareTo(null).toOrganizationSubmitEventDto(organization.id, questions))
-                } else {
-                    throw exception
+                    HttpStatus.NOT_FOUND == exception.statusCode -> submitOrganization(organization.compareTo(null).toOrganizationSubmitEventDto(organization.id, questions))
+                    // ignore conflicts, this only means the organization is already created
+                    HttpStatus.CONFLICT != exception.statusCode -> throw exception
                 }
             }
         }

@@ -12,6 +12,8 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
@@ -20,11 +22,12 @@ import org.springframework.web.client.exchange
  * @author Valentin Zickner
  */
 @Component
-class RestOrganizationRepository(
+open class RestOrganizationRepository(
     private val restTemplate: RestTemplate,
     private val importerConfiguration: ImporterConfiguration
 ) : OrganizationRepository {
 
+    @Retryable(maxAttempts = 15, include = [RuntimeException::class], backoff = Backoff(delay = 15000, multiplier = 2.0))
     override fun findOrganizationWithSameTypeInDistance(defaultAddress: Address?, organizationType: OrganizationType, distanceInMeters: Long): List<Organization> {
         val searchSimilarOrganizationDto = SearchSimilarOrganizationDto(
             defaultAddress?.toAddressDto(),
