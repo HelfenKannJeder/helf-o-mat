@@ -62,7 +62,7 @@ open class Typo3OrganizationProcessor(
 
     private fun toVolunteer(tEmployee: TEmployee): Volunteer {
         return Volunteer(
-            firstname = tEmployee.prename ?: "",
+            firstname = tEmployee.prename,
             lastname = tEmployee.surname,
             motivation = tEmployee.motivation ?: "",
             picture = toPicture(tEmployee.pictures)
@@ -96,11 +96,12 @@ open class Typo3OrganizationProcessor(
             .filterNotNull()
     }
 
-    fun toPicture(picture: String?): PictureId? {
+    private fun toPicture(picture: String?): PictureId? {
         return if (picture == null || picture == "") {
             null
         } else try {
             val url = "https://helfenkannjeder.de/uploads/pics/$picture"
+            LOGGER.info("uploading picture $url")
             val pictureId = toPictureId(url)
             if (pictureStorageService.existPicture(pictureId)) {
                 return pictureId
@@ -146,7 +147,7 @@ open class Typo3OrganizationProcessor(
 
     private fun organizationIsNoCandidateToImport(tOrganization: TOrganization): Boolean {
         val organizationType = tOrganization.organizationtype
-        return organizationType == null || isIrrelevantOrganizationType(organizationType)
+        return isIrrelevantOrganizationType(organizationType)
     }
 
     private fun isIrrelevantOrganizationType(organizationType: TOrganizationType): Boolean {
