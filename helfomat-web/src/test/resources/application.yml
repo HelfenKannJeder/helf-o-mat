@@ -2,6 +2,9 @@ helfomat.picture:
   picture-folder: pictures/
 
 spring:
+  flyway:
+    enabled: false
+
   legacy:
     datasource:
       url: jdbc:h2:mem:legacy_test
