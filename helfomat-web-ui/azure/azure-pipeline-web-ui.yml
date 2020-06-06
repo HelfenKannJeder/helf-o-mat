@@ -12,6 +12,8 @@ variables:
   dockerBuildContext: 'helfomat-web-ui'
   tagDevelop: '$(Build.BuildId)-develop'
   tagMaster: '$(Build.BuildId)-master'
+  k8sDirectory: 'helfomat-web-ui/azure/k8s'
+
 
 stages:
   - stage: Build
@@ -52,7 +54,7 @@ stages:
           tags: |
             $(tagDevelop)
 
-      - upload: helfomat-web-ui/azure/k8s
+      - upload: $(k8sDirectory)
         artifact: k8s
 
 
@@ -96,7 +98,7 @@ stages:
           tags: |
             $(tagMaster)
 
-      - upload: helfomat-web-ui/azure/k8s
+      - upload: $(k8sDirectory)
         artifact: k8s
 
 
