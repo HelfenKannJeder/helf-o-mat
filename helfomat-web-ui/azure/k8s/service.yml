@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: helfomat-web-ui-service
+  labels:
+    app: helfomat-web-ui
+spec:
+  ports:
+    - name: helfomat-port
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: helfomat-web-ui
