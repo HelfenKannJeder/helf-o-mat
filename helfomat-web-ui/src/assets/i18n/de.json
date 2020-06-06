@@ -176,7 +176,8 @@
         },
         "questionAnswer": {
           "add.title": "Helf-O-Mat Frage hinzugefügt",
-          "delete.title": "Helf-O-Mat Frage gelöscht"
+          "delete.title": "Helf-O-Mat Frage gelöscht",
+          "change.title": "Helf-O-Mat Frage geändert"
         },
         "volunteer": {
           "add.title": "Mitmacher hinzugefügt",

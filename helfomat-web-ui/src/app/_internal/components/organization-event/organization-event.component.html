@@ -125,10 +125,33 @@
                 <img [src]="'api/picture/' + organizationEvent.pictureId.value + '/icon'" alt=""/>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddQuestionAnswerEventDto'">
+                <div class="float-right">
+                    <img [src]="organizationEvent.answeredQuestion.answer | answerImage" [alt]="organizationEvent.answeredQuestion.answer"/>
+                </div>
                 <h5 class="mb-1">{{ 'edit.organization.changes.questionAnswer.add.title' | translate }}</h5>
+                <p>{{ organizationEvent.answeredQuestion.question }}</p>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDeleteQuestionAnswerEventDto'">
+                <div class="float-right">
+                    <img [src]="organizationEvent.answeredQuestion.answer | answerImage" [alt]="organizationEvent.answeredQuestion.answer"/>
+                </div>
                 <h5 class="mb-1">{{ 'edit.organization.changes.questionAnswer.delete.title' | translate }}</h5>
+                <p>{{ organizationEvent.answeredQuestion.question }}</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditChangeQuestionAnswerEventDto'">
+                <div class="float-right">
+                    <img [src]="organizationEvent.answeredQuestion.answer | answerImage" [alt]="organizationEvent.answeredQuestion.answer"/>
+                </div>
+                <ng-container *ngIf="organizationEvent.oldAnsweredQuestion.answer != organizationEvent.answeredQuestion.answer">
+                    <div class="float-right">
+                        <span class="material-icons md-48 question-arrow">keyboard_arrow_right</span>
+                    </div>
+                    <div class="float-right">
+                        <img [src]="organizationEvent.oldAnsweredQuestion.answer | answerImage" [alt]="organizationEvent.oldAnsweredQuestion.answer"/>
+                    </div>
+                </ng-container>
+                <h5 class="mb-1">{{ 'edit.organization.changes.questionAnswer.change.title' | translate }}</h5>
+                <p>{{ organizationEvent.answeredQuestion.question }}</p>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddVolunteerEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.volunteer.add.title' | translate }}</h5>

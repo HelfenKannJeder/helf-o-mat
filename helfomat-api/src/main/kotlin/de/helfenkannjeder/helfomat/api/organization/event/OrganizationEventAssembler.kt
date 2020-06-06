@@ -133,6 +133,15 @@ class OrganizationEventAssembler(private val questions: List<Question>) : Organi
             organizationEditChangeAddressEvent.oldAddress.toAddressDto(),
             organizationEditChangeAddressEvent.address.toAddressDto()
         )
+
+    override fun visit(organizationEditChangeQuestionAnswerEvent: OrganizationEditChangeQuestionAnswerEvent): OrganizationEventDto {
+        return OrganizationEditChangeQuestionAnswerEventDto(
+            organizationEditChangeQuestionAnswerEvent.organizationId,
+            organizationEditChangeQuestionAnswerEvent.indexOffset,
+            organizationEditChangeQuestionAnswerEvent.oldQuestionAnswer.toAnsweredQuestionDto(questions.getAnswerToQuestion(organizationEditChangeQuestionAnswerEvent.oldQuestionAnswer.questionId)),
+            organizationEditChangeQuestionAnswerEvent.questionAnswer.toAnsweredQuestionDto(questions.getAnswerToQuestion(organizationEditChangeQuestionAnswerEvent.questionAnswer.questionId))
+        )
+    }
 }
 
 fun OrganizationEvent.toOrganizationEventDto(questions: List<Question>) = this.toOrganizationEventDto(OrganizationEventAssembler(questions))

@@ -38,9 +38,7 @@ class OrganizationDifferenceProcessor(
     private fun findClosestMatch(organizations: List<Organization>, urlName: String?): Organization? {
         return when (organizations.size) {
             1 -> organizations[0]
-            else -> organizations
-                .filter { it.urlName == urlName }
-                .firstOrNull()
+            else -> organizations.firstOrNull { it.urlName == urlName }
         }
     }
 

@@ -8,6 +8,7 @@ import {ChangePositionModule} from "../change-position/change-position.module";
 import {TimeModule} from "../../../shared/time.module";
 import {MapModule} from "../../../map/map.module";
 import {AuthenticationModule} from "../../authentication/authentication.module";
+import {AnswerImageModule} from "../../../shared/answer-image.module";
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import {AuthenticationModule} from "../../authentication/authentication.module";
         ChangePositionModule,
         TimeModule,
         MapModule,
-        AuthenticationModule
+        AuthenticationModule,
+        AnswerImageModule
     ],
     exports: [
         OrganizationEventComponent
