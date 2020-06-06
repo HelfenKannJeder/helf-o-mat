@@ -162,7 +162,8 @@
         },
         "contactPerson": {
           "add.title": "Ansprechpartner hinzugefügt",
-          "delete.title": "Ansprechpartner gelöscht"
+          "delete.title": "Ansprechpartner gelöscht",
+          "change.title": "Ansprechpartner geändert"
         },
         "group": {
           "add.title": "Einheit hinzugefügt: {{groupTitle}}",

@@ -86,16 +86,57 @@
             <ng-container *ngSwitchCase="'.OrganizationEditChangeAttendanceTimeEventDto'">
                 <change-position [indexOffset]="organizationEvent.indexOffset"></change-position>
                 <h5 class="mb-1">{{ 'edit.organization.changes.attendanceTime.change.title' | translate }}</h5>
-                <text-diff [text1]="'organization.attendanceTime.weekday.' + organizationEvent.oldAttendanceTime.day | translate" [text2]="'organization.attendanceTime.weekday.' + organizationEvent.attendanceTime.day | translate"></text-diff>,
+                <text-diff [text1]="'organization.attendanceTime.weekday.' + organizationEvent.oldAttendanceTime.day | translate" [text2]="'organization.attendanceTime.weekday.' + organizationEvent.attendanceTime.day | translate" [simple]="true"></text-diff>,
                 <text-diff [text1]="organizationEvent.oldAttendanceTime.start | time" [text2]="organizationEvent.attendanceTime.start | time"></text-diff> -
                 <text-diff [text1]="organizationEvent.oldAttendanceTime.end | time" [text2]="organizationEvent.attendanceTime.end | time"></text-diff>
                 <p><text-diff [text1]="organizationEvent.oldAttendanceTime.note" [text2]="organizationEvent.attendanceTime.note"></text-diff></p>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddContactPersonEventDto'">
+                <div class="float-right" *ngIf="organizationEvent.contactPerson.picture">
+                    <img [src]="'api/picture/' + organizationEvent.contactPerson.picture.value + '/icon' | authImage | async"
+                         width="100%"
+                         alt="{{organizationEvent.contactPerson.firstname}} {{organizationEvent.contactPerson.lastname}}"/>
+                </div>
                 <h5 class="mb-1">{{ 'edit.organization.changes.contactPerson.add.title' | translate }}</h5>
+                {{organizationEvent.contactPerson.firstname}} {{organizationEvent.contactPerson.lastname}}<br />
+                <span *ngIf="organizationEvent.contactPerson.rank">({{organizationEvent.contactPerson.rank}})<br/></span>
+                <span *ngIf="organizationEvent.contactPerson.telephone">{{'organization.contact.telephone' | translate}} {{organizationEvent.contactPerson.telephone}}<br/></span>
+                <span *ngIf="organizationEvent.contactPerson.mail">{{'organization.contact.mail' | translate}} {{organizationEvent.contactPerson.mail}}<br/></span>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditDeleteContactPersonEventDto'">
+                <div class="float-right" *ngIf="organizationEvent.contactPerson.picture">
+                    <img [src]="'api/picture/' + organizationEvent.contactPerson.picture.value + '/icon' | authImage | async"
+                         width="100%"
+                         alt="{{organizationEvent.contactPerson.firstname}} {{organizationEvent.contactPerson.lastname}}"/>
+                </div>
                 <h5 class="mb-1">{{ 'edit.organization.changes.contactPerson.delete.title' | translate }}</h5>
+                {{organizationEvent.contactPerson.firstname}} {{organizationEvent.contactPerson.lastname}}<br />
+                <span *ngIf="organizationEvent.contactPerson.rank">({{organizationEvent.contactPerson.rank}})<br/></span>
+                <span *ngIf="organizationEvent.contactPerson.telephone">{{'organization.contact.telephone' | translate}} {{organizationEvent.contactPerson.telephone}}<br/></span>
+                <span *ngIf="organizationEvent.contactPerson.mail">{{'organization.contact.mail' | translate}} {{organizationEvent.contactPerson.mail}}<br/></span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'.OrganizationEditChangeContactPersonEventDto'">
+                <div class="float-right" *ngIf="organizationEvent.contactPerson.picture">
+                    <img [src]="'api/picture/' + organizationEvent.contactPerson.picture.value + '/icon' | authImage | async"
+                         width="100%"
+                         alt="{{organizationEvent.contactPerson.firstname}} {{organizationEvent.contactPerson.lastname}}"/>
+                </div>
+                <ng-container *ngIf="organizationEvent.oldContactPerson?.picture != null && organizationEvent.contactPerson.picture?.value != organizationEvent.oldContactPerson?.picture?.value">
+                    <div class="float-right">
+                        <span class="material-icons md-48 image-arrow">keyboard_arrow_right</span>
+                    </div>
+                    <div class="float-right">
+                        <img [src]="'api/picture/' + organizationEvent.oldContactPerson.picture.value + '/icon' | authImage | async"
+                             width="100%"
+                             alt="{{organizationEvent.oldContactPerson.firstname}} {{organizationEvent.contactPerson.lastname}}"/>
+                    </div>
+                </ng-container>
+                <h5 class="mb-1">{{ 'edit.organization.changes.contactPerson.change.title' | translate }}</h5>
+                <text-diff [text1]="organizationEvent.oldContactPerson.firstname" [text2]="organizationEvent.contactPerson.firstname" [simple]="true"></text-diff>&nbsp;
+                <text-diff [text1]="organizationEvent.oldContactPerson.lastname" [text2]="organizationEvent.contactPerson.lastname" [simple]="true"></text-diff><br />
+                <span *ngIf="organizationEvent.contactPerson.rank || organizationEvent.oldContactPerson.rank">(<text-diff [text1]="organizationEvent.oldContactPerson.rank" [text2]="organizationEvent.contactPerson.rank"></text-diff>)<br/></span>
+                <span *ngIf="organizationEvent.contactPerson.telephone || organizationEvent.oldContactPerson.telephone">{{'organization.contact.telephone' | translate}} <text-diff [text1]="organizationEvent.oldContactPerson.telephone" [text2]="organizationEvent.contactPerson.telephone"></text-diff><br/></span>
+                <span *ngIf="organizationEvent.contactPerson.mail || organizationEvent.oldContactPerson.mail">{{'organization.contact.mail' | translate}} <text-diff [text1]="organizationEvent.oldContactPerson.mail" [text2]="organizationEvent.contactPerson.mail"></text-diff><br/></span>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditAddGroupEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.group.add.title' | translate: {groupTitle: organizationEvent.group.name} }}</h5>
