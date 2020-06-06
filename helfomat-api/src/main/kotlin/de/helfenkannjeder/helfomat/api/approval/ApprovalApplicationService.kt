@@ -48,6 +48,9 @@ open class ApprovalApplicationService(
 
     open fun confirmOrganizationChange(approvalId: ApprovalId) {
         val approval = this.approvalRepository.getOne(approvalId)
+        if (approval.approvedDomainEvent != null) {
+            return
+        }
         val proposedChangeOrganizationEvent = approval.requestedDomainEvent
         val confirmedChangeOrganizationEvent = ConfirmedChangeOrganizationEvent(
             proposedChangeOrganizationEvent.organizationId,
