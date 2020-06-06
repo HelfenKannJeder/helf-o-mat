@@ -183,7 +183,7 @@
                         <div *ngFor="let contactPerson of organization.contactPersons" class="row">
                             <div class="col-md-4">
                                 <img *ngIf="contactPerson.picture"
-                                     src="api/picture/{{contactPerson.picture.value}}/icon"
+                                     [src]="'api/picture/' + contactPerson.picture.value + '/icon' | authImage | async"
                                      width="100%"
                                      alt="{{contactPerson.firstname}} {{contactPerson.lastname}}"/>
                                 <div class="btn-group marginTop" role="group">

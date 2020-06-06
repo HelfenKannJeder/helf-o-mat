@@ -44,10 +44,12 @@
                     <button class="btn btn-danger btn-sm position-top-right" (click)="contactPerson.picture = null;" type="button">
                         <i class="material-icons">delete</i>
                     </button>
-                    <img src="api/picture/{{contactPerson.picture.value}}/medium"
+                    <img [src]="'api/picture/' + contactPerson.picture.value + '/medium' | authImage | async"
                          width="100%"
                          alt="{{contactPerson.firstname}} {{contactPerson.lastname}}"/>
                 </div>
+                <file-upload *ngIf="!contactPerson.picture"
+                             (onPictureUploaded)="contactPerson.picture = $event"></file-upload>
             </div>
         </div>
     </div>
