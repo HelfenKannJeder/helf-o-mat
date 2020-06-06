@@ -33,15 +33,27 @@ open class RestOrganizationEventPublisher(
         val questions = questionRepository.findQuestions()
         if (organizationEvents.isNotEmpty()) {
             val organizationSubmitEventDto = organizationEvents.toOrganizationSubmitEventDto(organization.id, questions)
-            try {
-                submitOrganization(organizationSubmitEventDto)
-            } catch (exception: HttpClientErrorException) {
-                when {
-                    // try to create complete organization
-                    HttpStatus.NOT_FOUND == exception.statusCode -> submitOrganization(organization.compareTo(null).toOrganizationSubmitEventDto(organization.id, questions))
-                    // ignore conflicts, this only means the organization is already created
-                    HttpStatus.CONFLICT != exception.statusCode -> throw exception
-                }
+            submitOrganizationAndHandleException(organizationSubmitEventDto, organization, questions, 0)
+        }
+    }
+
+    private fun submitOrganizationAndHandleException(organizationSubmitEventDto: OrganizationSubmitEventDto, organization: Organization, questions: List<Question>, tries: Int) {
+        if (tries >= 3) {
+            return
+        }
+        try {
+            submitOrganization(organizationSubmitEventDto)
+        } catch (exception: HttpClientErrorException) {
+            when {
+                // try to create complete organization
+                HttpStatus.NOT_FOUND == exception.statusCode -> submitOrganizationAndHandleException(
+                    organization.compareTo(null).toOrganizationSubmitEventDto(organization.id, questions),
+                    organization,
+                    questions,
+                    tries + 1
+                )
+                // ignore conflicts, this only means the organization is already created
+                HttpStatus.CONFLICT != exception.statusCode -> throw exception
             }
         }
     }
