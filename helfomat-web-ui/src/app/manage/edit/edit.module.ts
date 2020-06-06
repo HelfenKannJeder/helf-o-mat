@@ -22,6 +22,7 @@ import {PictureService} from "../../_internal/resources/picture.service";
 import {AuthenticationModule} from "../../_internal/authentication/authentication.module";
 import {Ng2ImgMaxModule} from "ng2-img-max";
 import {EditContactPersonComponent} from "./_internal/edit-contact-person.component";
+import {FileUploadComponent} from "./_internal/file-upload.component";
 
 @NgModule({
     providers: [
@@ -54,7 +55,8 @@ import {EditContactPersonComponent} from "./_internal/edit-contact-person.compon
         ChangesSentForReviewComponent,
         EditAddressComponent,
         GeoCoordinateComponent,
-        EditContactPersonComponent
+        EditContactPersonComponent,
+        FileUploadComponent
     ],
     entryComponents: [
         PublishChangesConfirmationComponent,

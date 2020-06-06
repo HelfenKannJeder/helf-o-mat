@@ -1,4 +1,3 @@
-@import "../../../colors";
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 
@@ -57,21 +56,6 @@ img.thumb {
 
 .invalid-feedback {
   display: block;
-}
-
-.upload-file-container {
-  padding-top: 0.5em;
-  padding-bottom: 0.4em;
-  font-size: 6em;
-  cursor: pointer;
-  text-align: center;
-  background-color: $lightgray;
-  color: $darkblue;
-
-  .progress {
-    background-color: $darkgray;
-    margin: 0 1em;
-  }
 }
 
 .navbar.sticky-top {
