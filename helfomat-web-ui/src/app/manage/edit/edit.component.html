@@ -152,7 +152,7 @@
                         [organization]="organization$"
                         [allowUpdatePosition]="false"
                         [showMapResizeButton]="false"></helfomat-single-map>
-                    <ul class="list-group"  cdkDropList (cdkDropListDropped)="drop(organization.addresses, $event, organization)">
+                    <ul class="list-group" cdkDropList (cdkDropListDropped)="drop(organization.addresses, $event, organization)">
                         <li *ngFor="let address of organization.addresses" class="list-group-item draggable"
                             [ngClass]="{'list-group-item-info': areAddressesEqual(organization.defaultAddress, address)}" cdkDrag [id]="address.__id">
                             <div class="float-right btn-group" role="group">
@@ -172,16 +172,28 @@
                     <br class="clearfix"/>
                 </div>
 
-                <div class="card card-default" *ngIf="organization.contactPersons.length > 0">
+                <div class="card card-default">
                     <div class="card-header">
                         {{'organization.contact.title' | translate}}
+                        <button class="btn btn-success btn-sm float-right" (click)="editContactPerson(organization.contactPersons, {}, organization)" type="button">
+                            <i class="material-icons">add</i>
+                        </button>
                     </div>
                     <div class="card-body">
                         <div *ngFor="let contactPerson of organization.contactPersons" class="row">
-                            <div class="col-md-4" *ngIf="contactPerson.picture">
-                                <img src="api/picture/{{contactPerson.picture.value}}/icon"
+                            <div class="col-md-4">
+                                <img *ngIf="contactPerson.picture"
+                                     src="api/picture/{{contactPerson.picture.value}}/icon"
                                      width="100%"
                                      alt="{{contactPerson.firstname}} {{contactPerson.lastname}}"/>
+                                <div class="btn-group marginTop" role="group">
+                                    <button class="btn btn-primary btn-sm" (click)="editContactPerson(organization.contactPersons, contactPerson, organization);" type="button">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" (click)="remove(organization.contactPersons, contactPerson, organization);" type="button">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="col">
                                 <h4>{{contactPerson.firstname}} {{contactPerson.lastname}}</h4>
@@ -203,7 +215,7 @@
                     </div>
                     <div class="draggable" cdkDrag *ngFor="let picture of organization.pictures" [cdkDragData]="picture">
                         <button class="btn btn-danger btn-sm position-top-right" (click)="remove(organization.pictures, picture, organization);" type="button">
-                            <i class="material-icons" (click)="remove(organization.pictures, picture, organization);">delete</i>
+                            <i class="material-icons">delete</i>
                         </button>
                         <img [src]="'api/picture/' + picture.value + '/medium' | authImage | async" style="width:100%"/>
                         <div class="cdk-drag-placeholder" *cdkDragPlaceholder style="height:200px"></div>

@@ -216,6 +216,14 @@
         "latitude": "Breitengrad",
         "longitude": "Längengrad",
         "confirm": "Bestätigen"
+      },
+      "contactPerson": {
+        "headline": "Ansprechpartner",
+        "firstname": "Vorname",
+        "lastname": "Nachname",
+        "rank":  "Position",
+        "telephone": "Telefon",
+        "mail":  "E-Mail"
       }
     }
   },

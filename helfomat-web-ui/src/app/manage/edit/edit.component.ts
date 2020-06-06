@@ -3,6 +3,7 @@ import {ObservableUtil} from "../../shared/observable.util";
 import {debounceTime, distinctUntilChanged, filter, first, flatMap, map, mergeMap, switchMap} from "rxjs/operators";
 import {
     Address,
+    ContactPerson,
     Group,
     Organization,
     OrganizationEvent,
@@ -31,6 +32,7 @@ import {v4 as uuidv4} from 'uuid';
 import {Ng2ImgMaxService} from "ng2-img-max";
 import {hasRole, Roles} from "../../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
+import {EditContactPersonComponent} from "./_internal/edit-contact-person.component";
 
 @Component({
     selector: 'organization-edit',
@@ -266,7 +268,7 @@ export class EditComponent implements OnInit {
     editAddress(addresses: Address[], address: Address, organization: Organization) {
         const oldIndex = addresses.indexOf(address);
         const isDefaultAddress = Address.isEqual(organization.defaultAddress, address);
-        let modalRef = this.modalService.open(EditAddressComponent, {
+        const modalRef = this.modalService.open(EditAddressComponent, {
             size: 'lg',
         });
         modalRef.componentInstance.address = {...address};
@@ -281,6 +283,24 @@ export class EditComponent implements OnInit {
                 }
                 if (isDefaultAddress) {
                     newOrganization.defaultAddress = newAddress;
+                }
+                this.calculateChanges(newOrganization);
+            });
+    }
+
+    editContactPerson(contactPersons: ContactPerson[], contactPerson: ContactPerson, organization: Organization) {
+        const oldIndex = contactPersons.indexOf(contactPerson);
+        const modalRef = this.modalService.open(EditContactPersonComponent, {
+            size: 'lg',
+        });
+        modalRef.componentInstance.contactPerson = {...contactPerson};
+        modalRef.result
+            .then((newContactPerson: ContactPerson) => {
+                const newOrganization = {...organization};
+                if (oldIndex < 0) {
+                    newOrganization.contactPersons.push(newContactPerson);
+                } else {
+                    newOrganization.contactPersons[oldIndex] = newContactPerson;
                 }
                 this.calculateChanges(newOrganization);
             });
