@@ -33,4 +33,5 @@ interface NullableOrganizationEventVisitor<T> : OrganizationEventVisitor<T?> {
     override fun visit(organizationEditChangeAttendanceTimeEvent: OrganizationEditChangeAttendanceTimeEvent): T? = null
     override fun visit(organizationEditChangeAddressEvent: OrganizationEditChangeAddressEvent): T? = null
     override fun visit(organizationEditChangeQuestionAnswerEvent: OrganizationEditChangeQuestionAnswerEvent): T? = null
+    override fun visit(organizationEditChangeContactPersonEvent: OrganizationEditChangeContactPersonEvent): T? = null
 }

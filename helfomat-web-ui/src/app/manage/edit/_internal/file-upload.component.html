@@ -1,0 +1,7 @@
+<div class="upload-file-container" (click)="fileInput.click()" dragDrop (onFileDropped)="uploadFile($event)">
+    <input hidden type="file" #fileInput (change)="uploadFile($event.target.files)" multiple>
+    <i class="material-icons">cloud_upload</i>
+    <div class="progress" *ngIf="uploadProgress | async; let uploadProgress">
+        <div class="progress-bar" role="progressbar" [ngStyle]="{width: uploadProgress + '%'}" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+</div>

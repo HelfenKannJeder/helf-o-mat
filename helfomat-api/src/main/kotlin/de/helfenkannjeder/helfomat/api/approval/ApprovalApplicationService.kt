@@ -89,6 +89,11 @@ open class ApprovalApplicationService(
                 val pictureId = organizationEditLogoEvent.logo ?: return null
                 return listOf(pictureId)
             }
+
+            override fun visit(organizationEditChangeContactPersonEvent: OrganizationEditChangeContactPersonEvent): List<PictureId>? {
+                val pictureId = organizationEditChangeContactPersonEvent.contactPerson.picture ?: return null
+                return listOf(pictureId)
+            }
         }
         val picturesToMakePublic = proposedChangeOrganizationEvent.changes.flatMap { it.visit(visitor) ?: emptyList() }
         this.pictureRepository.saveAll(

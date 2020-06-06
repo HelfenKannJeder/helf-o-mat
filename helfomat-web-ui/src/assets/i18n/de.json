@@ -162,7 +162,8 @@
         },
         "contactPerson": {
           "add.title": "Ansprechpartner hinzugefügt",
-          "delete.title": "Ansprechpartner gelöscht"
+          "delete.title": "Ansprechpartner gelöscht",
+          "change.title": "Ansprechpartner geändert"
         },
         "group": {
           "add.title": "Einheit hinzugefügt: {{groupTitle}}",
@@ -216,6 +217,14 @@
         "latitude": "Breitengrad",
         "longitude": "Längengrad",
         "confirm": "Bestätigen"
+      },
+      "contactPerson": {
+        "headline": "Ansprechpartner",
+        "firstname": "Vorname",
+        "lastname": "Nachname",
+        "rank":  "Position",
+        "telephone": "Telefon",
+        "mail":  "E-Mail"
       }
     }
   },

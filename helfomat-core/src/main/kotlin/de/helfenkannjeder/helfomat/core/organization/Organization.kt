@@ -88,8 +88,19 @@ data class Organization(
                 override fun compareWithMetric(element1: PictureId, element2: PictureId) = 0.0f
             }
         ))
-        differences.addAll(getDiff(organization.contactPersons, contactPersons).map { OrganizationEditDeleteContactPersonEvent(id, it.first) })
-        differences.addAll(getDiff(contactPersons, organization.contactPersons).map { OrganizationEditAddContactPersonEvent(id, it.second, it.first) })
+        differences.addAll(compare(
+            organization.contactPersons,
+            contactPersons,
+            object : ElementComparisonStrategy<ContactPerson, OrganizationEditChangeContactPersonEvent> {
+                override fun create(index: Int, element: ContactPerson): OrganizationEvent = OrganizationEditAddContactPersonEvent(id, index, element)
+                override fun update(indexOffset: Int, oldElement: ContactPerson, element: ContactPerson): OrganizationEditChangeContactPersonEvent = OrganizationEditChangeContactPersonEvent(id, indexOffset, oldElement, element)
+                override fun delete(element: ContactPerson): OrganizationEvent = OrganizationEditDeleteContactPersonEvent(id, element)
+                override fun isUpdateContent(event: OrganizationEditChangeContactPersonEvent): Boolean = event.contactPerson != event.oldContactPerson
+                override fun updateWithChangedIndex(indexOffset: Int, event: OrganizationEditChangeContactPersonEvent): OrganizationEditChangeContactPersonEvent = OrganizationEditChangeContactPersonEvent(id, indexOffset, event.oldContactPerson, event.contactPerson)
+                override fun isSimilar(element1: ContactPerson, element2: ContactPerson): Boolean = element1.firstname == element2.firstname && element2.lastname == element2.lastname
+                override fun compareWithMetric(element1: ContactPerson, element2: ContactPerson) = metric.compare("${element1.firstname} ${element1.lastname}", "${element2.firstname} ${element2.lastname}")
+            }
+        ))
         differences.addAll(compare(
             organization.addresses,
             addresses,

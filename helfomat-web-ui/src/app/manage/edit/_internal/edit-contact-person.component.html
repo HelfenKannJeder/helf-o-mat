@@ -1,0 +1,59 @@
+<form (ngSubmit)="confirmChange(formElement)" #formElement="ngForm">
+    <div class="modal-header bg-lightblue text-white">
+        <h4 class="modal-title" id="modal-title">{{'edit.organization.contactPerson.headline' | translate }}</h4>
+        <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body text-left">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="firstname">{{ 'edit.organization.contactPerson.firstname' | translate }}</label>
+                    <input type="text"
+                           class="form-control"
+                           name="firstname"
+                           id="firstname"
+                           [ngClass]="{'is-invalid': hasError(firstName)}"
+                           [(ngModel)]="contactPerson.firstname"
+                           required
+                           #firstName="ngModel"/>
+                    <div *ngIf="hasError(firstName)" class="invalid-feedback">
+                        <div *ngIf="firstName.errors.required">{{ 'edit.organization.error.nameIsRequired' | translate }}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastname">{{ 'edit.organization.contactPerson.lastname' | translate }}</label>
+                    <input type="text" class="form-control" name="lastname" id="lastname" [(ngModel)]="contactPerson.lastname"/>
+                </div>
+                <div class="form-group">
+                    <label for="rank">{{ 'edit.organization.contactPerson.rank' | translate }}</label>
+                    <input type="text" class="form-control" name="rank" id="rank" [(ngModel)]="contactPerson.rank"/>
+                </div>
+                <div class="form-group">
+                    <label for="telephone">{{ 'edit.organization.contactPerson.telephone' | translate }}</label>
+                    <input type="text" class="form-control" name="telephone" id="telephone" [(ngModel)]="contactPerson.telephone"/>
+                </div>
+                <div class="form-group">
+                    <label for="mail">{{ 'edit.organization.contactPerson.mail' | translate }}</label>
+                    <input type="text" class="form-control" name="mail" id="mail" [(ngModel)]="contactPerson.mail"/>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="image" *ngIf="contactPerson.picture">
+                    <button class="btn btn-danger btn-sm position-top-right" (click)="contactPerson.picture = null;" type="button">
+                        <i class="material-icons">delete</i>
+                    </button>
+                    <img [src]="'api/picture/' + contactPerson.picture.value + '/medium' | authImage | async"
+                         width="100%"
+                         alt="{{contactPerson.firstname}} {{contactPerson.lastname}}"/>
+                </div>
+                <file-upload *ngIf="!contactPerson.picture"
+                             (onPictureUploaded)="contactPerson.picture = $event"></file-upload>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">{{'edit.organization.address.confirm' | translate}}</button>
+    </div>
+</form>
