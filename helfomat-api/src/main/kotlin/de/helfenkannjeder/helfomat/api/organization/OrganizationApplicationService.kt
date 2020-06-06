@@ -28,7 +28,9 @@ import org.springframework.stereotype.Service
 open class OrganizationApplicationService(
     private var organizationRepository: OrganizationRepository,
     private var questionRepository: QuestionRepository,
-    private var applicationEventPublisher: ApplicationEventPublisher) {
+    private var applicationEventPublisher: ApplicationEventPublisher,
+    private var answerOrganizationQuestionService: AnswerOrganizationQuestionService
+) {
 
     open fun findOrganizationDetails(urlName: String): OrganizationDetailDto? {
         val organization = organizationRepository.findByUrlName(urlName)
@@ -80,8 +82,9 @@ open class OrganizationApplicationService(
     open fun compareOrganizations(compareOrganizationDto: CompareOrganizationDto): List<OrganizationEventDto> {
         val original = compareOrganizationDto.original?.toOrganization()
         val updated = compareOrganizationDto.updated.toOrganization()
+        val updatedWithAnsweredQuestions = answerOrganizationQuestionService.answerQuestions(updated)
         val questions = questionRepository.findQuestions()
-        return updated.compareTo(original).toOrganizationEventDtos(questions)
+        return updatedWithAnsweredQuestions.compareTo(original).toOrganizationEventDtos(questions)
     }
 
     @PreAuthorize("isAuthenticated()")

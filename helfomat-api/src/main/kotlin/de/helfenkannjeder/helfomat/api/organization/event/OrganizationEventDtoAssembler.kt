@@ -106,6 +106,14 @@ class OrganizationEventDtoAssembler : OrganizationEventDtoVisitor<OrganizationEv
             confirmedChangeOrganizationEventDto.changes.map { it.visit(this) }
         )
 
+    override fun visit(organizationEditChangeQuestionAnswerEventDto: OrganizationEditChangeQuestionAnswerEventDto): OrganizationEvent =
+        OrganizationEditChangeQuestionAnswerEvent(
+            organizationEditChangeQuestionAnswerEventDto.organizationId,
+            organizationEditChangeQuestionAnswerEventDto.indexOffset,
+            organizationEditChangeQuestionAnswerEventDto.oldAnsweredQuestion.toQuestionAnswer(),
+            organizationEditChangeQuestionAnswerEventDto.answeredQuestion.toQuestionAnswer()
+        )
+
     companion object {
         fun toOrganizationEvent(organizationEvents: List<OrganizationEventDto>): List<OrganizationEvent> {
             val organizationEventDtoAssembler = OrganizationEventDtoAssembler()

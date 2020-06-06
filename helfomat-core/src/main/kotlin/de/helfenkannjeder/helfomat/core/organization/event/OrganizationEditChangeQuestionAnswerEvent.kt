@@ -1,20 +1,23 @@
 package de.helfenkannjeder.helfomat.core.organization.event
 
-import de.helfenkannjeder.helfomat.core.organization.AttendanceTime
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.OrganizationEventVisitor
 import de.helfenkannjeder.helfomat.core.organization.OrganizationId
+import de.helfenkannjeder.helfomat.core.organization.QuestionAnswer
 
 /**
  * @author Valentin Zickner
  */
-data class OrganizationEditDeleteAttendanceTimeEvent(
+data class OrganizationEditChangeQuestionAnswerEvent(
     override val organizationId: OrganizationId,
-    val attendanceTime: AttendanceTime
+    val indexOffset: Int,
+    val oldQuestionAnswer: QuestionAnswer,
+    val questionAnswer: QuestionAnswer
 ) : OrganizationEditEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
-        organizationBuilder?.attendanceTimes?.remove(attendanceTime)
+        val questionAnswers = organizationBuilder?.questionAnswers ?: return organizationBuilder
+        organizationBuilder.questionAnswers = changePosition(questionAnswers, oldQuestionAnswer, questionAnswer, indexOffset)
         return organizationBuilder
     }
 

@@ -1,11 +1,11 @@
 package de.helfenkannjeder.helfomat.importing
 
+import de.helfenkannjeder.helfomat.api.organization.AnswerOrganizationQuestionService
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.OrganizationReader
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
 import de.helfenkannjeder.helfomat.infrastructure.batch.listener.UniqueOrganizationUrlNameOrganizationProcessor
-import de.helfenkannjeder.helfomat.infrastructure.batch.processor.AnswerQuestionsProcessor
 import de.helfenkannjeder.helfomat.infrastructure.batch.processor.OrganizationDifferenceProcessor
 import de.helfenkannjeder.helfomat.infrastructure.batch.writer.OrganizationItemWriter
 import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration
@@ -40,7 +40,7 @@ open class ImportBatchConfig {
     @Qualifier("importSteps")
     open fun importSteps(stepBuilderFactory: StepBuilderFactory,
                          organizationReaders: List<OrganizationReader>,
-                         answerQuestionsProcessor: AnswerQuestionsProcessor,
+                         answerOrganizationQuestionService: AnswerOrganizationQuestionService,
                          elasticsearchConfiguration: ElasticsearchConfiguration,
                          elasticsearchTemplate: ElasticsearchTemplate,
                          restOrganizationEventPublisher: RestOrganizationEventPublisher,
@@ -58,7 +58,7 @@ open class ImportBatchConfig {
                     .reader { it.read() }
                     .processor(Function {
                         organizationDifferenceProcessor.process(
-                            answerQuestionsProcessor.process(
+                            answerOrganizationQuestionService.answerQuestions(
                                 uniqueOrganizationUrlNameOrganizationProcessor.apply(it)
                             )
                         )

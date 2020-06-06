@@ -12,7 +12,7 @@ import {Answer} from './answer.model';
  */
 @Pipe({name: 'answerImage'})
 export class AnswerImagePipe implements PipeTransform {
-    transform(value: Answer, inactive: boolean): string {
+    transform(value: Answer, inactive: boolean = false): string {
         let addition = '';
         if (inactive === true) {
             addition = '-inactive';
