@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helfomat-web
+spec:
+  selector:
+    matchLabels:
+      app: helfomat-web
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: helfomat-web
+    spec:
+      containers:
+        - name: helfomat-web
+          image: helfenkannjedercontainer.azurecr.io/helf-o-mat.web
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 900Mi
+            requests:
+              cpu: 100m
+              memory: 400Mi
+
+          ports:
+            - containerPort: 8080
+
+          imagePullPolicy: Always
+
+          env:
+            - name: SPRING_PROFILES_INCLUDE
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.spring.profiles
+
+            - name: SPRING_EVENT_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.web.db.events.url
+            - name: SPRING_EVENT_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: helfomat-db-secret
+                  key: helfomat.postgres.user
+            - name: SPRING_EVENT_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: helfomat-db-secret
+                  key: helfomat.postgres.password
+
+            - name: SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.web.elastic.url
+            - name: SPRING_DATA_ELASTICSEARCH_CLUSTER-NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.web.elastic.cluster.name
+
+            - name: GOOGLEMAPS_API-KEY
+              valueFrom:
+                secretKeyRef:
+                  name: helfomat-web-secret
+                  key: helfomat.web.googlemaps.api.key
+
+            - name: KEYCLOAK_AUTH-SERVER-URL
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.import.keycloak.url
+
+            - name: JAVA_TOOL_OPTIONS
+              value: -Xmx700m
+
+            - name: AZURE_STORAGE_CONTAINER-NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.web.azure.container-name
+            - name: AZURE_STORAGE_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.web.azure.endpoint
+            - name: AZURE_STORAGE_CONNECTION-STRING
+              valueFrom:
+                secretKeyRef:
+                  name: helfomat-web-secret
+                  key: helfomat.web.azure.connection-string
+            - name: SPRING_MAIL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.mail.host
+            - name: SPRING_MAIL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.mail.port
+            - name: SPRING_MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: helfomat-web-secret
+                  key: helfomat.mail.username
+            - name: SPRING_MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: helfomat-web-secret
+                  key: helfomat.mail.password
+            - name: SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.mail.properties.mail.smtp.auth
+            - name: SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.mail.properties.mail.smtp.starttls.enable
+            - name: HELFOMAT_EMAIL_SENDER
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.mail.sender
+            - name: HELFOMAT_EMAIL_REFERENCED-URL
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.mail.referenced-url
+            - name: HELFOMAT_EMAIL_RECEIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.mail.receiver
+
+#          livenessProbe:
+#            httpGet:
+#              path: /actuator/health
+#              port: 8080
+#              scheme: HTTP
+#            initialDelaySeconds: 90
+#            periodSeconds: 3
+#            successThreshold: 1
+#            failureThreshold: 3
+#            timeoutSeconds: 3
+#
+#          readinessProbe:
+#            httpGet:
+#              path: /actuator/health
+#              port: 8080
+#              scheme: HTTP
+#            initialDelaySeconds: 30
+#            periodSeconds: 1
+#            successThreshold: 1
+#            failureThreshold: 3
+#            timeoutSeconds: 1
