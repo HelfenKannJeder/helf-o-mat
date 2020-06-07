@@ -9,7 +9,7 @@ variables:
   containerRegistry: 'helfenkannjedercontainer.azurecr.io'
   imageRepository: 'helf-o-mat.web'
   dockerFilePath: 'helfomat-web/azure/Dockerfile'
-  dockerBuildContext: 'helfomat-web'
+  dockerBuildContext: '.'
   tagDevelop: '$(Build.BuildId)-develop'
   tagMaster: '$(Build.BuildId)-master'
   k8sDirectory: 'helfomat-web/azure/k8s'
