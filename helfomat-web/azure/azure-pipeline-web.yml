@@ -24,7 +24,7 @@ stages:
           - task: Maven@3
             inputs:
               mavenPomFile: 'pom.xml'
-              options: '-Phelfomat-web-ui,docker'
+              options: ' -Phelfomat-web,azure -DskipTests'
               publishJUnitResults: true
               testResultsFiles: '**/surefire-reports/TEST-*.xml'
               javaHomeOption: 'JDKVersion'
