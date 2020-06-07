@@ -12,6 +12,6 @@ RUN ./mvnw package -Phelfomat-web,azure -DskipTests
 
 FROM openjdk:11-jre-slim
 
-COPY --from=builder helfomat-web/target/helfomat.jar /helfomat.jar
+COPY --from=builder /app/helfomat-web/target/helfomat.jar /helfomat.jar
 
 ENTRYPOINT ["java","-jar","/helfomat.jar"]
