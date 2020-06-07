@@ -12,6 +12,6 @@ RUN ./mvnw package -Phelfomat-import -DskipTests -pl helfomat-import -am
 
 FROM openjdk:11-jre-slim
 
-COPY --from=builder /app/helfomat-import/target/helfomat.jar /helfomat.jar
+COPY --from=builder /app/helfomat-import/target/helfomat-import.jar /helfomat-import.jar
 
-ENTRYPOINT ["java","-jar","/helfomat.jar"]
+ENTRYPOINT ["java","-jar","/helfomat-import.jar"]
