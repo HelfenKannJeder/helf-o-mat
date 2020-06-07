@@ -32,6 +32,7 @@ import {v4 as uuidv4} from 'uuid';
 import {hasRole, Roles} from "../../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
 import {EditContactPersonComponent} from "./_internal/edit-contact-person.component";
+import {EditLogoComponent} from "./_internal/edit-logo.component";
 
 @Component({
     selector: 'organization-edit',
@@ -263,6 +264,20 @@ export class EditComponent implements OnInit {
                 }
                 this.calculateChanges(newOrganization);
             });
+    }
+
+    editLogo(organization: Organization) {
+        const modalRef = this.modalService.open(EditLogoComponent, {
+            size: 'md',
+        });
+        modalRef.componentInstance.logo = organization.logo;
+        modalRef.componentInstance.logoSuggestions = this.organizationTemplate.logoSuggestions;
+        modalRef.result
+            .then((logo) => {
+                const newOrganization = {...organization};
+                newOrganization.logo = logo;
+                this.calculateChanges(newOrganization);
+            })
     }
 
     areAddressesValid(organization: Organization) {

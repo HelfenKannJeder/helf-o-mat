@@ -25,6 +25,7 @@ open class ConfigOrganizationTemplateRepository(
         return OrganizationTemplate(
             template.name,
             template.acronym,
+            template.logoSuggestions,
             true,
             toGroupTemplates(template.groups)
         )

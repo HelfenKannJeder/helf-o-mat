@@ -1,3 +1,4 @@
+@import "../../../colors";
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 
@@ -44,6 +45,7 @@ img.thumb {
 
 .logo-container {
   position: relative;
+  background-color: $gray;
 
   .logo {
     position: absolute;
@@ -51,6 +53,10 @@ img.thumb {
     bottom: 10%;
     padding: 1em 1em 1em 1.2em;
     background-color: white;
+
+    .btn {
+      margin-left: 1em;
+    }
   }
 }
 
