@@ -1,0 +1,123 @@
+trigger:
+  branches:
+    include:
+      - '*'
+
+
+variables:
+  dockerRegistryServiceConnection: 'HelfenKannJeder-containers'
+  containerRegistry: 'helfenkannjedercontainer.azurecr.io'
+  imageRepository: 'helf-o-mat.web'
+  dockerFilePath: 'helfomat-web/azure/Dockerfile'
+  dockerBuildContext: 'helfomat-web'
+  tagDevelop: '$(Build.BuildId)-develop'
+  tagMaster: '$(Build.BuildId)-master'
+  k8sDirectory: 'helfomat-web/azure/k8s'
+
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        displayName: Build & Test
+        steps:
+          - task: Maven@3
+            inputs:
+              mavenPomFile: 'pom.xml'
+              options: '-Phelfomat-web-ui,docker'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.11'
+              mavenVersionOption: 'Default'
+              mavenAuthenticateFeed: false
+              effectivePomSkip: false
+              sonarQubeRunAnalysis: false
+
+
+  - stage: BuildDevelop
+    displayName: Build Docker Develop
+    dependsOn: Build
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq(variables['Build.Reason'], 'Manual')))
+    jobs:
+    - job: BuildPushDockerDevelop
+      displayName: Build & Push Docker Develop
+      steps:
+      - task: Docker@2
+        displayName: Build and push an image to container registry
+        inputs:
+          command: buildAndPush
+          repository: $(imageRepository)
+          dockerfile: $(dockerFilePath)
+          buildContext: $(dockerBuildContext)
+          containerRegistry: $(dockerRegistryServiceConnection)
+          tags: |
+            $(tagDevelop)
+
+      - upload: $(k8sDirectory)
+        artifact: k8s
+
+
+  - stage: DeployDevStage
+    displayName: Deploy Stage
+    dependsOn: BuildDevelop
+    jobs:
+    - deployment: DeployDevStage
+      displayName: Deploy Dev Stage
+      environment: 'HelfenKannJeder.dev'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: KubernetesManifest@0
+              displayName: Deploy to Kubernetes cluster
+              inputs:
+                action: deploy
+                manifests: |
+                  $(Pipeline.Workspace)/k8s/*.yml
+                containers: |
+                  $(containerRegistry)/$(imageRepository):$(tagDevelop)
+
+
+  - stage: BuildMaster
+    displayName: Build Docker Master
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+    - job: BuildPushDockerMaster
+      displayName: Build & Push Docker Master
+      steps:
+      - task: Docker@2
+        displayName: Build and push an image to container registry
+        inputs:
+          command: buildAndPush
+          repository: $(imageRepository)
+          dockerfile: $(dockerFilePath)
+          buildContext: $(dockerBuildContext)
+          containerRegistry: $(dockerRegistryServiceConnection)
+          tags: |
+            $(tagMaster)
+
+      - upload: $(k8sDirectory)
+        artifact: k8s
+
+
+  - stage: DeployProdStage
+    displayName: Prod Stage
+    dependsOn: BuildMaster
+    jobs:
+    - deployment: DeployProdStage
+      displayName: Deploy Prod Stage
+      environment: 'HelfenKannJeder.prod'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: KubernetesManifest@0
+              displayName: Deploy to Kubernetes cluster
+              inputs:
+                action: deploy
+                manifests: |
+                  $(Pipeline.Workspace)/k8s/*.yml
+                containers: |
+                  $(containerRegistry)/$(imageRepository):$(tagMaster)
