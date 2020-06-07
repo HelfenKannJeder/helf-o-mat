@@ -137,12 +137,13 @@ spec:
                 configMapKeyRef:
                   name: helfomat-web-config
                   key: helfomat.mail.receiver
+
 #          livenessProbe:
 #            httpGet:
-#              path: //health/live
+#              path: /actuator/health
 #              port: 8080
 #              scheme: HTTP
-#            initialDelaySeconds: 10
+#            initialDelaySeconds: 90
 #            periodSeconds: 3
 #            successThreshold: 1
 #            failureThreshold: 3
@@ -150,10 +151,10 @@ spec:
 #
 #          readinessProbe:
 #            httpGet:
-#              path: //health/ready
+#              path: /actuator/health
 #              port: 8080
 #              scheme: HTTP
-#            initialDelaySeconds: 1
+#            initialDelaySeconds: 30
 #            periodSeconds: 1
 #            successThreshold: 1
 #            failureThreshold: 3
