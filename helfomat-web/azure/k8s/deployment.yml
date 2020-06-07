@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: helfomat-web
-          image: helfenkannjeder/helfomat-web:0.0.1-SNAPSHOT-81d33d5c
+          image: helfenkannjedercontainer.azurecr.io/helf-o-mat.web
           resources:
             limits:
               cpu: 1000m
