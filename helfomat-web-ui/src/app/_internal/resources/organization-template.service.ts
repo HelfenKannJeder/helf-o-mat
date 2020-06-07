@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {PictureId} from "./picture.service";
 
 @Injectable()
 export class OrganizationTemplateService {
@@ -16,6 +17,7 @@ export class OrganizationTemplateService {
 
 export class OrganizationTemplate {
     public name: string;
+    public logoSuggestions: PictureId[];
     public groups: GroupTemplate[];
 }
 

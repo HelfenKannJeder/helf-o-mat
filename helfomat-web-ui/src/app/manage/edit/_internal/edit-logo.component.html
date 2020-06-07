@@ -1,0 +1,25 @@
+<div class="modal-header bg-lightblue text-white">
+    <h4 class="modal-title" id="modal-title">{{'edit.organization.logo.headline' | translate }}</h4>
+    <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body text-left">
+    <div class="marginBottom" *ngIf="logo">
+        <h5>{{ 'edit.organization.logo.current' | translate }}</h5>
+        <a (click)="modal.close(logo)">
+            <img [src]="'api/picture/' + logo.value + '/icon' | authImage | async" class="img-thumbnail"/>
+        </a>
+    </div>
+    <div class="marginBottom" *ngIf="logoSuggestions && logoSuggestions.length > 0">
+        <h5>{{ 'edit.organization.logo.template' | translate }}</h5>
+        <a (click)="modal.close(logo)" *ngFor="let logo of logoSuggestions">
+            <img [src]="'api/picture/' + logo.value + '/icon' | authImage | async" class="img-thumbnail"/>
+        </a>
+    </div>
+    <h5>{{ 'edit.organization.logo.upload' | translate }}</h5>
+    <file-upload (onPictureUploaded)="modal.close($event)"></file-upload>
+</div>
+<div class="modal-footer" *ngIf="logo">
+    <button type="button" (click)="modal.close(null)" class="btn btn-danger">{{'edit.organization.logo.remove' | translate}}</button>
+</div>

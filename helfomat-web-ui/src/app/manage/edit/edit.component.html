@@ -8,12 +8,23 @@
             </div>
         </nav>
         <div class="custom-content">
-            <div class="logo-container" *ngIf="organization.pictures.length > 0">
-                <div class="logo" *ngIf="organization.logo">
-                    <img src="api/picture/{{organization.logo.value}}/icon"
-                         [attr.alt]="organization.name">
+            <div class="logo-container">
+                <div class="logo">
+                    <img [src]="'api/picture/' + organization.logo.value + '/icon' | authImage | async"
+                         [attr.alt]="organization.name"
+                         *ngIf="organization.logo">
+                    <span *ngIf="!organization.logo">{{ 'edit.organization.logo.buttonLabel' | translate }}</span>
+                    <button class="btn btn-primary btn-sm" (click)="editLogo(organization);" type="button">
+                        <i class="material-icons">edit</i>
+                    </button>
                 </div>
-                <img [src]="'api/picture/' + organization.pictures[0].value + '/teaser' | authImage | async" width="100%"/>
+                <img *ngIf="organization.pictures.length > 0" [src]="'api/picture/' + organization.pictures[0].value + '/teaser' | authImage | async" width="100%"/>
+                <ng-container *ngIf="organization.pictures.length == 0">
+                    <div class="card card-default">
+                        <div class="card-header">{{ 'edit.organization.teaserImage' | translate }}</div>
+                    </div>
+                    <file-upload (onPictureUploaded)="onPictureUploaded(organization.pictures, $event)"></file-upload>
+                </ng-container>
             </div>
         </div>
 
