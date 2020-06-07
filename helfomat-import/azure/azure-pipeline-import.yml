@@ -7,12 +7,12 @@ trigger:
 variables:
   dockerRegistryServiceConnection: 'HelfenKannJeder-containers'
   containerRegistry: 'helfenkannjedercontainer.azurecr.io'
-  imageRepository: 'helf-o-mat.web'
-  dockerFilePath: 'helfomat-web/azure/Dockerfile'
+  imageRepository: 'helf-o-mat.import'
+  dockerFilePath: 'helfomat-import/azure/Dockerfile'
   dockerBuildContext: '.'
   tagDevelop: '$(Build.BuildId)-develop'
   tagMaster: '$(Build.BuildId)-master'
-  k8sDirectory: 'helfomat-web/azure/k8s'
+  k8sDirectory: 'helfomat-import/azure/k8s'
 
 
 stages:
@@ -24,7 +24,7 @@ stages:
           - task: Maven@3
             inputs:
               mavenPomFile: 'pom.xml'
-              options: '-Phelfomat-web -pl helfomat-web -am'
+              options: '-Phelfomat-import -pl helfomat-import -am'
               publishJUnitResults: true
               testResultsFiles: '**/surefire-reports/TEST-*.xml'
               javaHomeOption: 'JDKVersion'
