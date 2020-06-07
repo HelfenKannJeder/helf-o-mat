@@ -118,6 +118,7 @@
       "name": "Name:",
       "website": "Webseite:",
       "description": "Beschreibung:",
+      "teaserImage": "Titelbild",
       "groups": {
         "newGroupName": "Neue Gruppe",
         "groupName": "{{groupName}}",
@@ -184,7 +185,7 @@
           "add.title": "Mitmacher hinzugefügt",
           "delete.title": "Mitmacher gelöscht"
         },
-        "logoChanged": "Logo gändert",
+        "logoChanged": "Logo geändert",
         "teaserImageChanged": "Titelbild geändert",
         "urlNameChanged": "URL geändert",
         "websiteChanged": "Webseite geändert",
@@ -224,7 +225,16 @@
         "lastname": "Nachname",
         "rank":  "Position",
         "telephone": "Telefon",
-        "mail":  "E-Mail"
+        "mail":  "E-Mail",
+        "confirm": "Bestätigen"
+      },
+      "logo": {
+        "headline": "Logo",
+        "buttonLabel": "Logo",
+        "current": "Aktuelles Logo",
+        "template": "Vorlagen für Logos",
+        "upload": "Eigens Logo hochladen",
+        "remove": "Löschen"
       }
     }
   },

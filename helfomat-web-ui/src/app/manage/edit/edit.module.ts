@@ -23,6 +23,7 @@ import {AuthenticationModule} from "../../_internal/authentication/authenticatio
 import {Ng2ImgMaxModule} from "ng2-img-max";
 import {EditContactPersonComponent} from "./_internal/edit-contact-person.component";
 import {FileUploadComponent} from "./_internal/file-upload.component";
+import {EditLogoComponent} from "./_internal/edit-logo.component";
 
 @NgModule({
     providers: [
@@ -56,13 +57,15 @@ import {FileUploadComponent} from "./_internal/file-upload.component";
         EditAddressComponent,
         GeoCoordinateComponent,
         EditContactPersonComponent,
-        FileUploadComponent
+        FileUploadComponent,
+        EditLogoComponent
     ],
     entryComponents: [
         PublishChangesConfirmationComponent,
         ChangesSentForReviewComponent,
         EditAddressComponent,
-        EditContactPersonComponent
+        EditContactPersonComponent,
+        EditLogoComponent
     ]
 })
 export class EditModule {

@@ -205,6 +205,21 @@
                 <text-diff [text1]="organization?.description" [text2]="organizationEvent.description"></text-diff>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditLogoEventDto'">
+                <div class="float-right" *ngIf="organizationEvent.logo">
+                    <img [src]="'api/picture/' + organizationEvent.logo.value + '/icon' | authImage | async"
+                         class="img-thumbnail"
+                         width="100%"/>
+                </div>
+                <ng-container *ngIf="organization?.logo != null && organizationEvent.logo?.value != organization.logo?.value">
+                    <div class="float-right">
+                        <span class="material-icons md-48 image-arrow">keyboard_arrow_right</span>
+                    </div>
+                    <div class="float-right">
+                        <img [src]="'api/picture/' + organization.logo.value + '/icon' | authImage | async"
+                             class="img-thumbnail"
+                             width="100%" />
+                    </div>
+                </ng-container>
                 <h5 class="mb-1">{{ 'edit.organization.changes.logoChanged' | translate }}</h5>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditNameEventDto'">
