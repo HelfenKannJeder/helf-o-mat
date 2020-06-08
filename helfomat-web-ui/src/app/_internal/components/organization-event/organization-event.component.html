@@ -116,6 +116,7 @@
                 <span *ngIf="organizationEvent.contactPerson.mail">{{'organization.contact.mail' | translate}} {{organizationEvent.contactPerson.mail}}<br/></span>
             </ng-container>
             <ng-container *ngSwitchCase="'.OrganizationEditChangeContactPersonEventDto'">
+                <change-position [indexOffset]="organizationEvent.indexOffset"></change-position>
                 <div class="float-right" *ngIf="organizationEvent.contactPerson.picture">
                     <img [src]="'api/picture/' + organizationEvent.contactPerson.picture.value + '/icon' | authImage | async"
                          width="100%"

@@ -11,4 +11,5 @@ object ProfileRegistry {
     const val ENABLE_EMAIL = "enable-email"
     const val TEST = "test"
     const val AZURE = "azure"
+    const val IMPORT = "import"
 }

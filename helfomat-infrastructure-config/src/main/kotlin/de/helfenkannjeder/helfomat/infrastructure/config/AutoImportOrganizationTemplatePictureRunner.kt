@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 
 
 @Component
-@Profile("!${ProfileRegistry.TEST}")
+@Profile("!${ProfileRegistry.TEST} & !${ProfileRegistry.IMPORT}")
 open class AutoImportOrganizationTemplatePictureRunner(
     val pictureApplicationService: PictureApplicationService,
     val pictureRepository: PictureRepository

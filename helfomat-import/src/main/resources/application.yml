@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: import
   legacy:
     datasource:
       url: jdbc:mysql://127.0.0.1:3306/helfenkannjeder

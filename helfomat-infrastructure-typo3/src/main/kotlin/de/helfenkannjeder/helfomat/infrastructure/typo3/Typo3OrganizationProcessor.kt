@@ -16,6 +16,7 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.collections.ArrayList
 
 /**
  * @author Valentin Zickner
@@ -31,6 +32,8 @@ open class Typo3OrganizationProcessor(
             LOGGER.info("Ignore TYPO3 organization '" + tOrganization.name + "'")
             return null
         }
+        val defaultAddress = toNullableAddress(tOrganization.defaultaddress)
+        val addresses = tOrganization.addresses.map { toAddress(it) }
         return Organization.Builder(
             id = OrganizationId(),
             name = tOrganization.name,
@@ -42,9 +45,9 @@ open class Typo3OrganizationProcessor(
             .setWebsite(UrlUnifier.unifyOrganizationWebsiteUrl(tOrganization.website))
             .setMapPin(unifyOrganizationPins(tOrganization.organizationtype.picture))
             .setPictures(toPictures(extractPictures(tOrganization.pictures)))
-            .setContactPersons(toContactPersons(tOrganization.contactPersons))
-            .setAddresses(tOrganization.addresses.map { toAddress(it) })
-            .setDefaultAddress(toNullableAddress(tOrganization.defaultaddress))
+            .setContactPersons(toContactPersons(tOrganization.contactPersons).sortedBy { it.firstname })
+            .setAddresses(moveDefaultAddressToTheBeginning(addresses, defaultAddress))
+            .setDefaultAddress(defaultAddress)
             .setGroups(
                 tOrganization.groups.stream().map { tGroup: TGroup -> toGroup(tGroup) }.collect(Collectors.toList())
             )
@@ -53,6 +56,17 @@ open class Typo3OrganizationProcessor(
                 !(it.motivation?.isEmpty() ?: true)
             }.map { toVolunteer(it) })
             .build()
+    }
+
+    private fun moveDefaultAddressToTheBeginning(addresses: List<Address>, defaultAddress: Address?): ArrayList<Address> {
+        val newAddresses = ArrayList<Address>(addresses)
+        if (defaultAddress != null) {
+            if (addresses.contains(defaultAddress)) {
+                newAddresses.remove(defaultAddress)
+            }
+            newAddresses.add(0, defaultAddress)
+        }
+        return newAddresses
     }
 
     private fun toNullableAddress(tAddress: TAddress?): Address? = when (tAddress) {
