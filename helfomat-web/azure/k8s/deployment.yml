@@ -17,7 +17,7 @@ spec:
           image: helfenkannjedercontainer.azurecr.io/helf-o-mat.web
           resources:
             limits:
-              cpu: 1000m
+              cpu: 500m
               memory: 900Mi
             requests:
               cpu: 100m
