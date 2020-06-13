@@ -37,6 +37,8 @@ export function resolveAuthenticationProviderHostName(currentHost?: string): str
     } else {
         if (currentHost.startsWith("www.")) {
             currentHost = currentHost.substring(4);
+        } else if (currentHost.startsWith("test.")) {
+            currentHost = currentHost.substring(5);
         }
         return "login." + currentHost;
     }
