@@ -8,7 +8,7 @@ security:
 
 helfomat:
   importer:
-    web-api-url: http://localhost:8080
+    web-api-url: http://localhost:8080/helf-o-mat
 
 keycloak:
   realm: helfomat
