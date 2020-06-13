@@ -1,4 +1,19 @@
-helfomat.picture.picture-folder: pictures/
+helfomat:
+  picture.picture-folder: pictures/
+  questions:
+    - id: "8dd070ed-a9de-42af-a017-57a096cf8ec1"
+      question: "Möchtest Du Dich in medizinischer Hilfe ausbilden lassen und diese leisten?"
+      description: "Wenn in Folge z. B. eines Unfalls Menschen ernsthafte Verletzungen erlitten haben, benötigen sie Deine Hilfe. Du bist für das Erkennen von Gefahren für den Betroffenen sowie die Durchführung der richtigen Maßnahmen verantwortlich."
+      defaultAnswer: "MAYBE"
+      groups:
+        - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
+          answer: "YES"
+        - phrase: "Rettungsdienst" # ASB / DRK
+          answer: "YES"
+        - organizationType: "BW"
+          phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
+          answer: "YES"
+
 spring:
   datasource:
     url: jdbc:h2:mem:testdb

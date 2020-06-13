@@ -45,6 +45,7 @@ img.thumb {
 
 .logo-container {
   position: relative;
+  background-color: $gray;
 
   .logo {
     position: absolute;
@@ -52,26 +53,15 @@ img.thumb {
     bottom: 10%;
     padding: 1em 1em 1em 1.2em;
     background-color: white;
+
+    .btn {
+      margin-left: 1em;
+    }
   }
 }
 
 .invalid-feedback {
   display: block;
-}
-
-.upload-file-container {
-  padding-top: 0.5em;
-  padding-bottom: 0.4em;
-  font-size: 6em;
-  cursor: pointer;
-  text-align: center;
-  background-color: $lightgray;
-  color: $darkblue;
-
-  .progress {
-    background-color: $darkgray;
-    margin: 0 1em;
-  }
 }
 
 .navbar.sticky-top {
@@ -85,4 +75,8 @@ img.thumb {
   background-repeat: no-repeat;
   background-size: 1.125rem 1.125rem;
   background-position: right 4rem center;
+}
+
+.marginTop {
+  margin-top: 0.5em;
 }

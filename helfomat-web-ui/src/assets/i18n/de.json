@@ -118,6 +118,7 @@
       "name": "Name:",
       "website": "Webseite:",
       "description": "Beschreibung:",
+      "teaserImage": "Titelbild",
       "groups": {
         "newGroupName": "Neue Gruppe",
         "groupName": "{{groupName}}",
@@ -162,7 +163,8 @@
         },
         "contactPerson": {
           "add.title": "Ansprechpartner hinzugefügt",
-          "delete.title": "Ansprechpartner gelöscht"
+          "delete.title": "Ansprechpartner gelöscht",
+          "change.title": "Ansprechpartner geändert"
         },
         "group": {
           "add.title": "Einheit hinzugefügt: {{groupTitle}}",
@@ -176,13 +178,14 @@
         },
         "questionAnswer": {
           "add.title": "Helf-O-Mat Frage hinzugefügt",
-          "delete.title": "Helf-O-Mat Frage gelöscht"
+          "delete.title": "Helf-O-Mat Frage gelöscht",
+          "change.title": "Helf-O-Mat Frage geändert"
         },
         "volunteer": {
           "add.title": "Mitmacher hinzugefügt",
           "delete.title": "Mitmacher gelöscht"
         },
-        "logoChanged": "Logo gändert",
+        "logoChanged": "Logo geändert",
         "teaserImageChanged": "Titelbild geändert",
         "urlNameChanged": "URL geändert",
         "websiteChanged": "Webseite geändert",
@@ -215,6 +218,23 @@
         "latitude": "Breitengrad",
         "longitude": "Längengrad",
         "confirm": "Bestätigen"
+      },
+      "contactPerson": {
+        "headline": "Ansprechpartner",
+        "firstname": "Vorname",
+        "lastname": "Nachname",
+        "rank":  "Position",
+        "telephone": "Telefon",
+        "mail":  "E-Mail",
+        "confirm": "Bestätigen"
+      },
+      "logo": {
+        "headline": "Logo",
+        "buttonLabel": "Logo",
+        "current": "Aktuelles Logo",
+        "template": "Vorlagen für Logos",
+        "upload": "Eigens Logo hochladen",
+        "remove": "Löschen"
       }
     }
   },

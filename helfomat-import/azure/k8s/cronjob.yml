@@ -1,0 +1,100 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: helfomat-import
+spec:
+  schedule: "0 1 * * *"
+
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Replace
+
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+            - name: helfomat-import
+              image: helfenkannjedercontainer.azurecr.io/helf-o-mat.import
+              imagePullPolicy: IfNotPresent
+
+              resources:
+                limits:
+                  cpu: 400m
+                  memory: 600Mi
+                requests:
+                  cpu: 200m
+                  memory: 400Mi
+
+              env:
+                - name: SPRING_PROFILES_INCLUDE
+                  value: kubernetes
+
+                - name: SPRING_EVENT_DATASOURCE_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-import-config
+                      key: helfomat.import.db.events.url
+                - name: SPRING_EVENT_DATASOURCE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: helfomat-import-db-secret
+                      key: helfomat.import.postgres.user
+                - name: SPRING_EVENT_DATASOURCE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: helfomat-import-db-secret
+                      key: helfomat.import.postgres.password
+
+                - name: SPRING_LEGACY_DATASOURCE_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-import-config
+                      key: helfomat.import.db.legacy.url
+                - name: SPRING_LEGACY_DATASOURCE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: helfomat-import-secret
+                      key: helfomat.import.db.legacy.username
+                - name: SPRING_LEGACY_DATASOURCE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: helfomat-import-secret
+                      key: helfomat.import.db.legacy.password
+
+                - name: SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-web-config
+                      key: helfomat.web.elastic.url
+                - name: SPRING_DATA_ELASTICSEARCH_CLUSTER-NAME
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-web-config
+                      key: helfomat.web.elastic.cluster.name
+
+                - name: GOOGLEMAPS_API-KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: helfomat-web-secret
+                      key: helfomat.web.googlemaps.api.key
+
+                - name: HELFOMAT_IMPORTER_WEB-API-URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-import-config
+                      key: helfomat.import.helfomat-web.url
+                - name: SECURITY_OAUTH2_CLIENT_CLIENT-SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: helfomat-import-secret
+                      key: helfomat.import.helfomat-web.oauth-client
+
+                - name: KEYCLOAK_AUTH-SERVER-URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-import-config
+                      key: helfomat.import.keycloak.url
+
+          restartPolicy: Never

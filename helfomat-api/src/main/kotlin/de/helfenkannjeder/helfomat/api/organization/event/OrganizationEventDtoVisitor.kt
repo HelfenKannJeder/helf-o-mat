@@ -33,4 +33,6 @@ interface OrganizationEventDtoVisitor<T> {
     fun visit(organizationEditChangePictureEventDto: OrganizationEditChangePictureEventDto): T
     fun visit(organizationEditChangeAttendanceTimeEventDto: OrganizationEditChangeAttendanceTimeEventDto): T
     fun visit(organizationEditChangeAddressEventDto: OrganizationEditChangeAddressEventDto): T
+    fun visit(organizationEditChangeQuestionAnswerEventDto: OrganizationEditChangeQuestionAnswerEventDto): T
+    fun visit(organizationEditChangeContactPersonEventDto: OrganizationEditChangeContactPersonEventDto): T
 }

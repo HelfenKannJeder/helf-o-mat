@@ -28,7 +28,9 @@ import org.springframework.stereotype.Service
 open class OrganizationApplicationService(
     private var organizationRepository: OrganizationRepository,
     private var questionRepository: QuestionRepository,
-    private var applicationEventPublisher: ApplicationEventPublisher) {
+    private var applicationEventPublisher: ApplicationEventPublisher,
+    private var answerOrganizationQuestionService: AnswerOrganizationQuestionService
+) {
 
     open fun findOrganizationDetails(urlName: String): OrganizationDetailDto? {
         val organization = organizationRepository.findByUrlName(urlName)
@@ -80,17 +82,16 @@ open class OrganizationApplicationService(
     open fun compareOrganizations(compareOrganizationDto: CompareOrganizationDto): List<OrganizationEventDto> {
         val original = compareOrganizationDto.original?.toOrganization()
         val updated = compareOrganizationDto.updated.toOrganization()
+        val updatedWithAnsweredQuestions = answerOrganizationQuestionService.answerQuestions(updated)
         val questions = questionRepository.findQuestions()
-        return updated.compareTo(original).toOrganizationEventDtos(questions)
+        return updatedWithAnsweredQuestions.compareTo(original).toOrganizationEventDtos(questions)
     }
 
     @PreAuthorize("isAuthenticated()")
     open fun submitOrganization(organizationSubmitEventDto: OrganizationSubmitEventDto) {
         val organizationEvents = OrganizationEventDtoAssembler.toOrganizationEvent(organizationSubmitEventDto.events)
         val organizationId = organizationSubmitEventDto.organizationId
-        if (!isOrganizationSubmitValid(organizationId, organizationEvents)) {
-            throw OrganizationNotFoundException(organizationId)
-        }
+        assertOrganizationSubmitValid(organizationId, organizationEvents)
         val proposedChangeOrganizationEvent = ProposedChangeOrganizationEvent(
             organizationId,
             currentUsername(),
@@ -110,8 +111,8 @@ open class OrganizationApplicationService(
         return organizations.toOrganizationDetailsDto(questions)
     }
 
-    private fun isOrganizationSubmitValid(organizationId: OrganizationId, events: List<OrganizationEvent>): Boolean {
-        val isNewOrganization = organizationRepository.findOne(organizationId.value) == null
+    private fun assertOrganizationSubmitValid(organizationId: OrganizationId, events: List<OrganizationEvent>) {
+        val databaseOrganization = organizationRepository.findOne(organizationId.value)
         val isCreate = events
             .mapNotNull {
                 it.visit(object : NullableOrganizationEventVisitor<OrganizationCreateEvent> {
@@ -119,12 +120,20 @@ open class OrganizationApplicationService(
                 })
             }
             .any()
-        var isUrlNameNew = true
         val urlName = getUrlName(events)
         if (urlName != null) {
-            isUrlNameNew = organizationRepository.findByUrlName(urlName) == null
+            val organizationWithSameName = organizationRepository.findByUrlName(urlName)
+            if (organizationWithSameName != null) {
+                throw OrganizationConflictException(organizationId, organizationWithSameName.id)
+            }
         }
-        return (isNewOrganization && isCreate || !isNewOrganization && !isCreate) && isUrlNameNew
+
+        if (databaseOrganization != null && isCreate) {
+            throw OrganizationConflictException(organizationId, databaseOrganization.id)
+        }
+        if (databaseOrganization == null && !isCreate) {
+            throw OrganizationNotFoundException(organizationId)
+        }
     }
 
     private fun getUrlName(events: List<OrganizationEvent>): String? {

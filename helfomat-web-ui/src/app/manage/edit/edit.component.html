@@ -8,12 +8,23 @@
             </div>
         </nav>
         <div class="custom-content">
-            <div class="logo-container" *ngIf="organization.pictures.length > 0">
-                <div class="logo" *ngIf="organization.logo">
-                    <img src="api/picture/{{organization.logo.value}}/icon"
-                         [attr.alt]="organization.name">
+            <div class="logo-container">
+                <div class="logo">
+                    <img [src]="'api/picture/' + organization.logo.value + '/icon' | authImage | async"
+                         [attr.alt]="organization.name"
+                         *ngIf="organization.logo">
+                    <span *ngIf="!organization.logo">{{ 'edit.organization.logo.buttonLabel' | translate }}</span>
+                    <button class="btn btn-primary btn-sm" (click)="editLogo(organization);" type="button">
+                        <i class="material-icons">edit</i>
+                    </button>
                 </div>
-                <img [src]="'api/picture/' + organization.pictures[0].value + '/teaser' | authImage | async" width="100%"/>
+                <img *ngIf="organization.pictures.length > 0" [src]="'api/picture/' + organization.pictures[0].value + '/teaser' | authImage | async" width="100%"/>
+                <ng-container *ngIf="organization.pictures.length == 0">
+                    <div class="card card-default">
+                        <div class="card-header">{{ 'edit.organization.teaserImage' | translate }}</div>
+                    </div>
+                    <file-upload (onPictureUploaded)="onPictureUploaded(organization.pictures, $event)"></file-upload>
+                </ng-container>
             </div>
         </div>
 
@@ -152,7 +163,7 @@
                         [organization]="organization$"
                         [allowUpdatePosition]="false"
                         [showMapResizeButton]="false"></helfomat-single-map>
-                    <ul class="list-group"  cdkDropList (cdkDropListDropped)="drop(organization.addresses, $event, organization)">
+                    <ul class="list-group" cdkDropList (cdkDropListDropped)="drop(organization.addresses, $event, organization)">
                         <li *ngFor="let address of organization.addresses" class="list-group-item draggable"
                             [ngClass]="{'list-group-item-info': areAddressesEqual(organization.defaultAddress, address)}" cdkDrag [id]="address.__id">
                             <div class="float-right btn-group" role="group">
@@ -172,16 +183,28 @@
                     <br class="clearfix"/>
                 </div>
 
-                <div class="card card-default" *ngIf="organization.contactPersons.length > 0">
+                <div class="card card-default">
                     <div class="card-header">
                         {{'organization.contact.title' | translate}}
+                        <button class="btn btn-success btn-sm float-right" (click)="editContactPerson(organization.contactPersons, {}, organization)" type="button">
+                            <i class="material-icons">add</i>
+                        </button>
                     </div>
                     <div class="card-body">
                         <div *ngFor="let contactPerson of organization.contactPersons" class="row">
-                            <div class="col-md-4" *ngIf="contactPerson.picture">
-                                <img src="api/picture/{{contactPerson.picture.value}}/icon"
+                            <div class="col-md-4">
+                                <img *ngIf="contactPerson.picture"
+                                     [src]="'api/picture/' + contactPerson.picture.value + '/icon' | authImage | async"
                                      width="100%"
                                      alt="{{contactPerson.firstname}} {{contactPerson.lastname}}"/>
+                                <div class="btn-group marginTop" role="group">
+                                    <button class="btn btn-primary btn-sm" (click)="editContactPerson(organization.contactPersons, contactPerson, organization);" type="button">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" (click)="remove(organization.contactPersons, contactPerson, organization);" type="button">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="col">
                                 <h4>{{contactPerson.firstname}} {{contactPerson.lastname}}</h4>
@@ -203,18 +226,12 @@
                     </div>
                     <div class="draggable" cdkDrag *ngFor="let picture of organization.pictures" [cdkDragData]="picture">
                         <button class="btn btn-danger btn-sm position-top-right" (click)="remove(organization.pictures, picture, organization);" type="button">
-                            <i class="material-icons" (click)="remove(organization.pictures, picture, organization);">delete</i>
+                            <i class="material-icons">delete</i>
                         </button>
                         <img [src]="'api/picture/' + picture.value + '/medium' | authImage | async" style="width:100%"/>
                         <div class="cdk-drag-placeholder" *cdkDragPlaceholder style="height:200px"></div>
                     </div>
-                    <div class="upload-file-container" (click)="fileInput.click()" dragDrop (onFileDropped)="uploadFile(organization.pictures, $event)">
-                        <input hidden type="file" #fileInput (change)="uploadFile(organization.pictures, $event.target.files)" multiple>
-                        <i class="material-icons">cloud_upload</i>
-                        <div class="progress" *ngIf="uploadProgress | async; let uploadProgress">
-                            <div class="progress-bar" role="progressbar" [ngStyle]="{width: uploadProgress + '%'}" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
+                    <file-upload (onPictureUploaded)="onPictureUploaded(organization.pictures, $event)"></file-upload>
                 </div>
 
             </div>

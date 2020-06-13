@@ -1,4 +1,4 @@
-package de.helfenkannjeder.helfomat.infrastructure.batch.processor
+package de.helfenkannjeder.helfomat.api.organization
 
 import de.helfenkannjeder.helfomat.api.QuestionConfiguration
 import de.helfenkannjeder.helfomat.api.QuestionConfiguration.QuestionMapping
@@ -6,7 +6,7 @@ import de.helfenkannjeder.helfomat.core.organization.Answer
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.QuestionAnswer
 import de.helfenkannjeder.helfomat.core.question.QuestionId
-import org.springframework.batch.item.ItemProcessor
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
 import java.util.stream.Collectors
 
@@ -14,11 +14,12 @@ import java.util.stream.Collectors
  * @author Valentin Zickner
  */
 @Component
-class AnswerQuestionsProcessor(
+@EnableConfigurationProperties(QuestionConfiguration::class)
+class AnswerOrganizationQuestionService(
     private val questionConfiguration: QuestionConfiguration
-) : ItemProcessor<Organization, Organization> {
+) {
 
-    override fun process(organization: Organization): Organization {
+    fun answerQuestions(organization: Organization): Organization {
         return Organization.Builder(organization)
             .setQuestionAnswers(answerAllQuestionsForOrganization(organization))
             .build()
@@ -38,7 +39,7 @@ class AnswerQuestionsProcessor(
 
     private fun answerQuestionForOrganization(question: QuestionMapping, organization: Organization): Answer {
         return question.groups
-            .filter { organization.organizationType == it.organizationType && organization.hasGroupWithPhrase(it.phrase) }
+            .filter { (it.organizationType == null || organization.organizationType == it.organizationType) && organization.hasGroupWithPhrase(it.phrase) }
             .map { it.answer }
             .firstOrNull()
             ?: question.defaultAnswer

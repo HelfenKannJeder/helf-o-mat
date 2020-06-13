@@ -88,8 +88,19 @@ data class Organization(
                 override fun compareWithMetric(element1: PictureId, element2: PictureId) = 0.0f
             }
         ))
-        differences.addAll(getDiff(organization.contactPersons, contactPersons).map { OrganizationEditDeleteContactPersonEvent(id, it.first) })
-        differences.addAll(getDiff(contactPersons, organization.contactPersons).map { OrganizationEditAddContactPersonEvent(id, it.second, it.first) })
+        differences.addAll(compare(
+            organization.contactPersons,
+            contactPersons,
+            object : ElementComparisonStrategy<ContactPerson, OrganizationEditChangeContactPersonEvent> {
+                override fun create(index: Int, element: ContactPerson): OrganizationEvent = OrganizationEditAddContactPersonEvent(id, index, element)
+                override fun update(indexOffset: Int, oldElement: ContactPerson, element: ContactPerson): OrganizationEditChangeContactPersonEvent = OrganizationEditChangeContactPersonEvent(id, indexOffset, oldElement, element)
+                override fun delete(element: ContactPerson): OrganizationEvent = OrganizationEditDeleteContactPersonEvent(id, element)
+                override fun isUpdateContent(event: OrganizationEditChangeContactPersonEvent): Boolean = event.contactPerson != event.oldContactPerson
+                override fun updateWithChangedIndex(indexOffset: Int, event: OrganizationEditChangeContactPersonEvent): OrganizationEditChangeContactPersonEvent = OrganizationEditChangeContactPersonEvent(id, indexOffset, event.oldContactPerson, event.contactPerson)
+                override fun isSimilar(element1: ContactPerson, element2: ContactPerson): Boolean = element1.firstname == element2.firstname && element2.lastname == element2.lastname
+                override fun compareWithMetric(element1: ContactPerson, element2: ContactPerson) = metric.compare("${element1.firstname} ${element1.lastname}", "${element2.firstname} ${element2.lastname}")
+            }
+        ))
         differences.addAll(compare(
             organization.addresses,
             addresses,
@@ -103,8 +114,18 @@ data class Organization(
                 override fun compareWithMetric(element1: Address, element2: Address) = max((5.0 - element1.location.distanceInKm(element2.location)) / 5.0, 0.0).toFloat()
             }
         ))
-        differences.addAll(getDiff(organization.questionAnswers, questionAnswers).map { OrganizationEditDeleteQuestionAnswerEvent(id, it.first) })
-        differences.addAll(getDiff(questionAnswers, organization.questionAnswers).map { OrganizationEditAddQuestionAnswerEvent(id, it.second, it.first) })
+        differences.addAll(compare(
+            organization.questionAnswers,
+            questionAnswers,
+            object : ElementComparisonStrategy<QuestionAnswer, OrganizationEditChangeQuestionAnswerEvent> {
+                override fun create(index: Int, element: QuestionAnswer): OrganizationEvent = OrganizationEditAddQuestionAnswerEvent(id, index, element)
+                override fun update(indexOffset: Int, oldElement: QuestionAnswer, element: QuestionAnswer): OrganizationEditChangeQuestionAnswerEvent = OrganizationEditChangeQuestionAnswerEvent(id, indexOffset, oldElement, element)
+                override fun delete(element: QuestionAnswer): OrganizationEvent = OrganizationEditDeleteQuestionAnswerEvent(id, element)
+                override fun isUpdateContent(event: OrganizationEditChangeQuestionAnswerEvent): Boolean = event.oldQuestionAnswer != event.questionAnswer
+                override fun isSimilar(element1: QuestionAnswer, element2: QuestionAnswer): Boolean = element1.questionId == element2.questionId
+                override fun updateWithChangedIndex(indexOffset: Int, event: OrganizationEditChangeQuestionAnswerEvent): OrganizationEditChangeQuestionAnswerEvent = OrganizationEditChangeQuestionAnswerEvent(id, indexOffset, event.oldQuestionAnswer, event.questionAnswer)
+            }
+        ))
         differences.addAll(compare(
             organization.groups,
             groups,

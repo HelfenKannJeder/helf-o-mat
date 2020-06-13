@@ -221,6 +221,9 @@ helfomat:
   organization-templates:
     - name: Technisches Hilfswerk
       acronym: THW
+      logo-suggestions:
+        - 094155b5-ee71-4359-b97a-bb658c48f375
+        - 0fca067c-c1d3-49cc-8dc7-5320da899d85
       groups:
         - name: OV-Stab
           description: "Der OV-Stab bildet die Verwaltungseinheit eines Ortsverbands und dient der Führung und Organisation. Alle Mitglieder einschließlich des Leiters eines THW-Ortsverbandes (Ortsbeauftragte), sind rein ehrenamtlich tägig."
@@ -351,6 +354,9 @@ Für diese Tätigkeit werden die Einsatzkräfte speziell geschult und nehmen reg
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
     - name: Arbeiter-Samariter-Bund
       acronym: ASB
+      logo-suggestions:
+        - cc0fe404-03b7-4f80-888c-7e2c7409d83c
+        - 0cbd2f78-7142-41da-8bb4-10104a8a7a5e
       groups:
         - name: Ortsverband allgemein
           description: "Unsere Aktivitäten sind vielfältig:
@@ -454,11 +460,10 @@ Hinzu kommt die Versorgung mit Verbrauchsgütern (Kraftstoff) sowie kleinere han
           description: "Wir treffen uns regelmäßig zum Fußballspielen, ..."
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad im unwegsamen Gelände wertvolle Dienste zum Transport verletzter Personen."
-    - name: Bayerisches Rotes Kreuz
-      acronym: BRK
-      groups:
     - name: Bergwacht
       acronym: BW
+      logo-suggestions:
+        - 4429b0bb-309f-439d-90ea-14571d8be3b6
       groups:
         - name: Ortsgruppe (Basisausstattung/-Tätigkeit)
           description: "Rettungsdienst
@@ -495,6 +500,8 @@ Bei Rettungseinsätzen sind alle Beteiligten oft sehr stark voneinander abhängi
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
     - name: Deutsche Lebens-Rettungs-Gesellschaft
       acronym: DLRG
+      logo-suggestions:
+        - 1ff801a8-c687-458f-9cf7-bf3c6827d005
       groups:
         - name: DLRG-Ortsgruppe
           description: "Die DLRG unterteilt ihre Ziele und Aufgaben in Hauptaufgaben und zusätzliche Aufgaben. Als ihre Hauptaufgabe sieht sie die Bekämpfung des Ertrinkungstodes. Dies will sie durch frühzeitige und fortgesetzte Information über Gefahren und sicherheitsbewusstes Verhalten im und am Wasser erreichen. Des Weiteren bildet sie Personen in der Selbstrettung, im Schwimmen und im Rettungsschwimmen aus, um einen sicheren Aufenthalt im Wasser zu gewährleisten."
@@ -567,6 +574,8 @@ In Wettkämpfen kannst Du Dich beweisen!"
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
     - name: Deutsches Rotes Kreuz
       acronym: DRK
+      logo-suggestions:
+        - e50637e1-cc7d-418f-bc02-973a3ce3cbac
       groups:
         - name: DRK-Ortsverein allgemein
           description: "Unsere Aktivitäten sind vielfältig:
@@ -679,6 +688,9 @@ Zur Basisausrüstung auf allen Motorrädern gehören ein Notfallkoffer, EKG mit 
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
     - name: Freiwillige Feuerwehr
       acronym: FF
+      logo-suggestions:
+        - f37a9767-4c44-459b-a3b4-05506ddc039d
+        - 91d2e7c9-0d78-4ea1-aa38-109a09ad89eb
       groups:
         - name: Abteilung allgemein
           description: "Entgegen der weitverbreiteten Meinung, in den meisten Städten Deutschlands würde es eine Berufsfeuerwehr geben, wird der Brandschutz in Deutschland hauptsächlich durch freiwillige Kräfte sichergestellt. Bei einer Gesamtzahl von 2.074 Städten in Deutschland existieren lediglich knapp über 100 dieser Städte Berufsfeuerwehren. In allen diesen Städten gibt es zur Verstärkung der Berufsfeuerwehr auch freiwillige Abteilungen."
@@ -715,6 +727,8 @@ Auch für den Löschangriff von außen kann die Drehleiter eingesetzt werden. Hi
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
     - name: Johanniter-Unfall-Hilfe
       acronym: JUH
+      logo-suggestions:
+        - 8515798e-8fb5-4f44-9053-765e4fdb9ae6
       groups:
         - name: Ortsverband allgemein
           description: "Unsere Aktivitäten sind vielfältig:
@@ -815,6 +829,8 @@ Zur Basisausrüstung auf allen Motorrädern gehören ein Notfallkoffer, EKG mit 
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
     - name: Malteser Hilfsdienst
       acronym: MHD
+      logo-suggestions:
+        - c6549e8a-5161-45ba-b606-d7677ab196a0
       groups:
         - name: Ortsgruppe allgemein
           description: "Unsere Aktivitäten sind vielfältig:
@@ -892,9 +908,6 @@ Zur Basisausrüstung auf allen Motorrädern gehören ein Notfallkoffer, EKG mit 
           description: ""
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
-    - name: Notfallseelsorge / Kriseninterventionsteam
-      acronym:
-      groups:
     - name: Privater Sanitätsdienst
       acronym: Privater SAN
       groups:
@@ -1009,6 +1022,8 @@ Zur Basisausrüstung auf allen Motorrädern gehören ein Notfallkoffer, EKG mit 
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
     - name: Bundesverband Rettungshunde
       acronym: BRH
+      logo-suggestions:
+        - c36af88c-f487-4014-8dd5-377d39d94832
       groups:
         - name: Staffel (Basisausstattung/-Tätigkeit)
           description: "Rettungshunde sind unsere Kompetenz.

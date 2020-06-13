@@ -21,6 +21,9 @@ import {GeoCoordinateComponent} from "./_internal/geo-coordinate.component";
 import {PictureService} from "../../_internal/resources/picture.service";
 import {AuthenticationModule} from "../../_internal/authentication/authentication.module";
 import {Ng2ImgMaxModule} from "ng2-img-max";
+import {EditContactPersonComponent} from "./_internal/edit-contact-person.component";
+import {FileUploadComponent} from "./_internal/file-upload.component";
+import {EditLogoComponent} from "./_internal/edit-logo.component";
 
 @NgModule({
     providers: [
@@ -52,12 +55,17 @@ import {Ng2ImgMaxModule} from "ng2-img-max";
         PublishChangesConfirmationComponent,
         ChangesSentForReviewComponent,
         EditAddressComponent,
-        GeoCoordinateComponent
+        GeoCoordinateComponent,
+        EditContactPersonComponent,
+        FileUploadComponent,
+        EditLogoComponent
     ],
     entryComponents: [
         PublishChangesConfirmationComponent,
         ChangesSentForReviewComponent,
-        EditAddressComponent
+        EditAddressComponent,
+        EditContactPersonComponent,
+        EditLogoComponent
     ]
 })
 export class EditModule {

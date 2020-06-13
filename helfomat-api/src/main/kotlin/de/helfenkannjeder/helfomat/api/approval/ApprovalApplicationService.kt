@@ -48,6 +48,9 @@ open class ApprovalApplicationService(
 
     open fun confirmOrganizationChange(approvalId: ApprovalId) {
         val approval = this.approvalRepository.getOne(approvalId)
+        if (approval.approvedDomainEvent != null) {
+            return
+        }
         val proposedChangeOrganizationEvent = approval.requestedDomainEvent
         val confirmedChangeOrganizationEvent = ConfirmedChangeOrganizationEvent(
             proposedChangeOrganizationEvent.organizationId,
@@ -84,6 +87,11 @@ open class ApprovalApplicationService(
 
             override fun visit(organizationEditLogoEvent: OrganizationEditLogoEvent): List<PictureId>? {
                 val pictureId = organizationEditLogoEvent.logo ?: return null
+                return listOf(pictureId)
+            }
+
+            override fun visit(organizationEditChangeContactPersonEvent: OrganizationEditChangeContactPersonEvent): List<PictureId>? {
+                val pictureId = organizationEditChangeContactPersonEvent.contactPerson.picture ?: return null
                 return listOf(pictureId)
             }
         }

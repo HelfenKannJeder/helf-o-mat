@@ -3,6 +3,7 @@ import {ObservableUtil} from "../../shared/observable.util";
 import {debounceTime, distinctUntilChanged, filter, first, flatMap, map, mergeMap, switchMap} from "rxjs/operators";
 import {
     Address,
+    ContactPerson,
     Group,
     Organization,
     OrganizationEvent,
@@ -26,11 +27,12 @@ import {ChangesSentForReviewComponent} from "./_internal/changes-sent-for-review
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from "@ngx-translate/core";
 import {EditAddressComponent} from "./_internal/edit-address.component";
-import {PictureId, PictureService} from "../../_internal/resources/picture.service";
+import {PictureId} from "../../_internal/resources/picture.service";
 import {v4 as uuidv4} from 'uuid';
-import {Ng2ImgMaxService} from "ng2-img-max";
 import {hasRole, Roles} from "../../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
+import {EditContactPersonComponent} from "./_internal/edit-contact-person.component";
+import {EditLogoComponent} from "./_internal/edit-logo.component";
 
 @Component({
     selector: 'organization-edit',
@@ -51,7 +53,6 @@ export class EditComponent implements OnInit {
     public originalOrganization: Organization = null;
     public organizationTemplate: OrganizationTemplate;
     public publishContent: PublishContent = {} as PublishContent;
-    public uploadProgress: Subject<number> = new BehaviorSubject(null);
     public isNew: boolean = false;
     public formTouched: boolean = false;
 
@@ -74,8 +75,6 @@ export class EditComponent implements OnInit {
         private router: Router,
         private toastr: ToastrService,
         private translateService: TranslateService,
-        private pictureService: PictureService,
-        private ng2ImgMax: Ng2ImgMaxService,
         private oAuthService: OAuthService,
         @Inject(DOCUMENT) private document: Document
     ) {
@@ -139,17 +138,6 @@ export class EditComponent implements OnInit {
                 mergeMap(organization => this.organizationService.compareOrganization(this.originalOrganization, organization))
             )
             .subscribe(changes => this.changes.next(changes));
-
-        this.uploadProgress
-            .pipe(
-                distinctUntilChanged(),
-                debounceTime(5000),
-            )
-            .subscribe(percentage => {
-                if (percentage == 100) {
-                    this.uploadProgress.next(null);
-                }
-            })
     }
 
     private removeIncompleteFields(organization: Organization) {
@@ -224,35 +212,9 @@ export class EditComponent implements OnInit {
         return field.invalid && (field.dirty || field.touched);
     }
 
-    uploadFile(pictures: PictureId[], event: FileList) {
-        const numberOfImages = event.length;
-        let aggregatedPercentComplete = 0;
-        this.uploadProgress.next(1);
-        for (let index: number = 0; index < numberOfImages; index++) {
-            const pictureId: PictureId = {value: uuidv4()};
-            this.ng2ImgMax.compressImage(event[index], 3).subscribe(
-                result => {
-                    const imageToUpload = new File([result], result.name, {type: event[index].type});
-                    aggregatedPercentComplete += 50;
-                    this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
-                    this.pictureService.uploadPicture(pictureId, imageToUpload)
-                        .subscribe(() => {
-                            aggregatedPercentComplete += 50;
-                            pictures.push(pictureId);
-                            this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
-                        });
-                },
-                error => {
-                    console.error('Scaling went wrong, tyring to just upload it as is', error);
-                    this.pictureService.uploadPicture(pictureId, event[index])
-                        .subscribe(() => {
-                            aggregatedPercentComplete += 100;
-                            pictures.push(pictureId);
-                            this.uploadProgress.next(aggregatedPercentComplete / numberOfImages);
-                        });
-                }
-            );
-        }
+    onPictureUploaded(pictures: PictureId[], pictureId: PictureId) {
+        console.log('just uploaded', pictureId);
+        pictures.push(pictureId);
     }
 
     calculateChanges(organization: Organization) {
@@ -266,7 +228,7 @@ export class EditComponent implements OnInit {
     editAddress(addresses: Address[], address: Address, organization: Organization) {
         const oldIndex = addresses.indexOf(address);
         const isDefaultAddress = Address.isEqual(organization.defaultAddress, address);
-        let modalRef = this.modalService.open(EditAddressComponent, {
+        const modalRef = this.modalService.open(EditAddressComponent, {
             size: 'lg',
         });
         modalRef.componentInstance.address = {...address};
@@ -284,6 +246,38 @@ export class EditComponent implements OnInit {
                 }
                 this.calculateChanges(newOrganization);
             });
+    }
+
+    editContactPerson(contactPersons: ContactPerson[], contactPerson: ContactPerson, organization: Organization) {
+        const oldIndex = contactPersons.indexOf(contactPerson);
+        const modalRef = this.modalService.open(EditContactPersonComponent, {
+            size: 'lg',
+        });
+        modalRef.componentInstance.contactPerson = {...contactPerson};
+        modalRef.result
+            .then((newContactPerson: ContactPerson) => {
+                const newOrganization = {...organization};
+                if (oldIndex < 0) {
+                    newOrganization.contactPersons.push(newContactPerson);
+                } else {
+                    newOrganization.contactPersons[oldIndex] = newContactPerson;
+                }
+                this.calculateChanges(newOrganization);
+            });
+    }
+
+    editLogo(organization: Organization) {
+        const modalRef = this.modalService.open(EditLogoComponent, {
+            size: 'md',
+        });
+        modalRef.componentInstance.logo = organization.logo;
+        modalRef.componentInstance.logoSuggestions = this.organizationTemplate.logoSuggestions;
+        modalRef.result
+            .then((logo) => {
+                const newOrganization = {...organization};
+                newOrganization.logo = logo;
+                this.calculateChanges(newOrganization);
+            })
     }
 
     areAddressesValid(organization: Organization) {

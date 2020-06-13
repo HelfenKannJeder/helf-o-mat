@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: helfomat-web-service
+  labels:
+    app: helfomat-web
+spec:
+  ports:
+    - name: helfomat-web-port
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: helfomat-web

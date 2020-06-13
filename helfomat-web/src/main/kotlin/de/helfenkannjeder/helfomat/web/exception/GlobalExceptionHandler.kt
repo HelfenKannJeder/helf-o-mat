@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.web.exception
 
+import de.helfenkannjeder.helfomat.api.organization.OrganizationConflictException
 import de.helfenkannjeder.helfomat.api.organization.OrganizationNotFoundException
 import de.helfenkannjeder.helfomat.api.picture.PictureAlreadyExistException
 import de.helfenkannjeder.helfomat.api.picture.PictureNotFoundException
@@ -25,22 +26,24 @@ open class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler
-    open fun handleOrganizationNotFoundException(organizationNotFoundException: OrganizationNotFoundException): ResponseEntity<ErrorDetails> {
-        return createErrorResponse(HttpStatus.NOT_FOUND, organizationNotFoundException)
-    }
+    open fun handleOrganizationNotFoundException(organizationNotFoundException: OrganizationNotFoundException) =
+        createErrorResponse(HttpStatus.NOT_FOUND, organizationNotFoundException)
 
     @ExceptionHandler
-    open fun handlePictureNotFoundException(pictureNotFoundException: PictureNotFoundException): ResponseEntity<ErrorDetails> =
+    open fun handleOrganizationConflictException(organizationConflictException: OrganizationConflictException) =
+        createErrorResponse(HttpStatus.CONFLICT, organizationConflictException)
+
+    @ExceptionHandler
+    open fun handlePictureNotFoundException(pictureNotFoundException: PictureNotFoundException) =
         createErrorResponse(HttpStatus.NOT_FOUND, pictureNotFoundException)
 
     @ExceptionHandler
-    open fun handlePictureAlreadyExistException(pictureAlreadyExistException: PictureAlreadyExistException): ResponseEntity<ErrorDetails> =
+    open fun handlePictureAlreadyExistException(pictureAlreadyExistException: PictureAlreadyExistException) =
         createErrorResponse(HttpStatus.CONFLICT, pictureAlreadyExistException)
 
-    private fun createErrorResponse(status: HttpStatus, e: Exception): ResponseEntity<ErrorDetails> {
-        return ResponseEntity(ErrorDetails(e.javaClass.simpleName), HttpHeaders(), status)
-    }
+    private fun createErrorResponse(status: HttpStatus, e: Exception): ResponseEntity<ErrorDetails> =
+        ResponseEntity(ErrorDetails(e.javaClass.simpleName, e.message), HttpHeaders(), status)
 
-    class ErrorDetails(val exceptionName: String)
+    class ErrorDetails(val exceptionName: String, val message: String?)
 
 }

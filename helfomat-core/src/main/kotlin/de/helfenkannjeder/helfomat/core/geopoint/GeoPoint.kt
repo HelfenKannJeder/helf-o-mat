@@ -1,5 +1,8 @@
 package de.helfenkannjeder.helfomat.core.geopoint
 
+import java.util.*
+import kotlin.math.roundToLong
+
 /**
  * @author Valentin Zickner
  */
@@ -22,4 +25,25 @@ data class GeoPoint(
     private fun deg2rad(deg: Double): Double {
         return deg * (Math.PI / 180)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false;
+        }
+        if (!(other is GeoPoint)) {
+            return false;
+        }
+
+        return compare(lat, other.lat) && compare(lon, other.lon)
+    }
+
+    private fun compare(double1: Double, double2: Double): Boolean =
+        toComparableLong(double1) == toComparableLong(double2)
+
+    override fun hashCode(): Int = Objects.hash(
+        toComparableLong(lat),
+        toComparableLong(lon)
+    )
+
+    private fun toComparableLong(double1: Double) = (double1 * 10000000000).roundToLong()
 }
