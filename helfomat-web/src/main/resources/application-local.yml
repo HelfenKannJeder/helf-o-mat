@@ -17,7 +17,7 @@ spring:
       cluster-nodes: localhost:9300
 
 keycloak:
-  realm: helfomat
+  realm: helfenkannjeder
   resource: helfenkannjeder-web-ui
   auth-server-url: http://localhost:8085/auth
   ssl-required: external

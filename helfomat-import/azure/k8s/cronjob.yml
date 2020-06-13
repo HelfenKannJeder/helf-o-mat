@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: helfomat-import
 spec:
-  schedule: "0 1 * * *"
+  schedule: "0 4 * * 1"
 
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
@@ -29,7 +29,10 @@ spec:
 
               env:
                 - name: SPRING_PROFILES_INCLUDE
-                  value: kubernetes
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-import-config
+                      key: helfomat.import.spring.profiles
 
                 - name: SPRING_EVENT_DATASOURCE_URL
                   valueFrom:

@@ -6,7 +6,7 @@ spring:
           jwk-set-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/certs
 
 keycloak:
-  realm: helfomat
+  realm: helfenkannjeder
   resource: helfenkannjeder-web-ui
   auth-server-url: http://keycloak/auth
   ssl-required: external

@@ -11,5 +11,5 @@ helfomat:
     web-api-url: http://helfomat-web/helf-o-mat
 
 keycloak:
-  realm: helfomat
+  realm: helfenkannjeder
   auth-server-url: http://keycloak/auth

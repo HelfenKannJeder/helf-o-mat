@@ -20,7 +20,7 @@ export const environment: Environment = {
     useHttps: false,
 
     auth: {
-        issuer: '/auth/realms/helfomat',
+        issuer: '/auth/realms/helfenkannjeder',
         clientId: 'helfomat-web-ui',
         scope: 'openid profile email offline_access',
         responseType: 'code',

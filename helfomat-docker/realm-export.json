@@ -1,6 +1,6 @@
 {
-  "id": "helfomat",
-  "realm": "helfomat",
+  "id": "helfenkannjeder",
+  "realm": "helfenkannjeder",
   "notBefore": 0,
   "revokeRefreshToken": false,
   "refreshTokenMaxReuse": 0,
@@ -43,7 +43,7 @@
         "name": "uma_authorization",
         "composite": false,
         "clientRole": false,
-        "containerId": "helfomat",
+        "containerId": "helfenkannjeder",
         "attributes": {}
       },
       {
@@ -51,7 +51,7 @@
         "name": "helfomat_user",
         "composite": false,
         "clientRole": false,
-        "containerId": "helfomat",
+        "containerId": "helfenkannjeder",
         "attributes": {}
       },
       {
@@ -59,7 +59,7 @@
         "name": "helfomat_reviewer",
         "composite": false,
         "clientRole": false,
-        "containerId": "helfomat",
+        "containerId": "helfenkannjeder",
         "attributes": {}
       },
       {
@@ -68,7 +68,7 @@
         "description": "${role_offline-access}",
         "composite": false,
         "clientRole": false,
-        "containerId": "helfomat",
+        "containerId": "helfenkannjeder",
         "attributes": {}
       },
       {
@@ -76,7 +76,7 @@
         "name": "helfomat_admin",
         "composite": false,
         "clientRole": false,
-        "containerId": "helfomat",
+        "containerId": "helfenkannjeder",
         "attributes": {}
       }
     ],
@@ -474,7 +474,7 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/helfomat/account/",
+      "baseUrl": "/realms/helfenkannjeder/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
@@ -485,7 +485,7 @@
         "manage-account"
       ],
       "redirectUris": [
-        "/realms/helfomat/account/*"
+        "/realms/helfenkannjeder/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -510,14 +510,14 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/helfomat/account/",
+      "baseUrl": "/realms/helfenkannjeder/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/realms/helfomat/account/*"
+        "/realms/helfenkannjeder/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -849,14 +849,14 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/helfomat/console/",
+      "baseUrl": "/admin/helfenkannjeder/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/admin/helfomat/console/*"
+        "/admin/helfenkannjeder/console/*"
       ],
       "webOrigins": [
         "+"
