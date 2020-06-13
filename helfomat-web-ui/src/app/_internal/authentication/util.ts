@@ -45,10 +45,14 @@ export function resolveAuthenticationProviderHostName(currentHost?: string): str
 }
 
 export function getOAuth2Configuration() {
+    let hostWithContextPath = window.location.host;
+    if (!hostWithContextPath.startsWith("localhost")) {
+        hostWithContextPath += '/helf-o-mat';
+    }
     return {
         ...environment.auth,
         issuer: resolveAuthenticationProviderUrl(),
-        redirectUri: `${getProtocol()}${window.location.host}/authenticate`
+        redirectUri: `${getProtocol()}${hostWithContextPath}/authenticate`
     };
 }
 
