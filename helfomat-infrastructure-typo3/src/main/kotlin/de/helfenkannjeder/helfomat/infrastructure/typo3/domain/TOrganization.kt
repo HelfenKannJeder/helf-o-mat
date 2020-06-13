@@ -27,6 +27,7 @@ data class TOrganization (
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
     @Where(clause = "deleted=0")
+    @OrderBy(clause = "crdate, uid")
     var addresses: List<TAddress> = emptyList(),
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -44,18 +45,19 @@ data class TOrganization (
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tx_helfenkannjeder_organisaton_contactperson_mm", joinColumns = [JoinColumn(name = "uid_local")], inverseJoinColumns = [JoinColumn(name = "uid_foreign")])
     @Where(clause = "deleted=0")
+    @OrderBy(clause = "uid")
     var contactPersons: List<TEmployee> = emptyList(),
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
     @Where(clause = "deleted=0")
-    @OrderBy(clause = "sort")
+    @OrderBy(clause = "sort, uid")
     var groups: List<TGroup> = emptyList(),
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation")
     @Where(clause = "deleted=0")
-    @OrderBy(clause = "day, starttimehour, starttimeminute")
+    @OrderBy(clause = "day, starttimehour, starttimeminute, uid")
     var workinghours: List<TWorkingHour> = emptyList(),
 
     var deleted: Boolean = false,

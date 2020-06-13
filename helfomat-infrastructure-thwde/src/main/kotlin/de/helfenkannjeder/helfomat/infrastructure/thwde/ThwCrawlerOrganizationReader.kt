@@ -130,7 +130,7 @@ open class ThwCrawlerOrganizationReader(
 
     private fun toPicture(picture: String): PictureId? {
         return try {
-            val pictureId = toPictureId(picture)
+            val pictureId = toPictureId(picture.substringBefore(";").substringBefore("?")) // JSESSIONID is after ; - to ensure that pictures have the same ID ignore session
             if (pictureStorageService.existPicture(pictureId)) {
                 return pictureId
             }
