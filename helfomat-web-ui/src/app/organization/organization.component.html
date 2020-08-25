@@ -23,10 +23,6 @@
                         {{attendanceTime.start | time}}-{{attendanceTime.end | time}}
                         {{'organization.attendanceTime.clock' | translate}}
                     </h4>
-                    <p>
-                        {{'organization.attendanceTime.groups' | translate}}
-                        {{attendanceTime.groups | groupNames: organization.groups}}
-                    </p>
                     <p *ngIf="attendanceTime.note">
                         {{'organization.attendanceTime.note' | translate}}
                         {{attendanceTime.note}}
