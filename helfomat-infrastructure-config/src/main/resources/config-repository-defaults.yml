@@ -5,12 +5,19 @@ helfomat:
       description: "Wenn in Folge z. B. eines Unfalls Menschen ernsthafte Verletzungen erlitten haben, benötigen sie Deine Hilfe. Du bist für das Erkennen von Gefahren für den Betroffenen sowie die Durchführung der richtigen Maßnahmen verantwortlich."
       defaultAnswer: "MAYBE"
       groups:
+        - organizationType: "DRK"
+          answer: "YES"
+        - organizationType: "ASB"
+          answer: "YES"
+        - organizationType: "JUH"
+          answer: "YES"
+        - organizationType: "MHD"
+          answer: "YES"
         - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
           answer: "YES"
         - phrase: "Rettungsdienst" # ASB / DRK
           answer: "YES"
         - organizationType: "BW"
-          phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
           answer: "YES"
 
     - id: "6487dd30-8d1a-4421-b424-2d822cb13e32"
