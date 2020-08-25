@@ -41,7 +41,7 @@ export class FileUploadComponent {
         this.uploadProgress.next(1);
         for (let index: number = 0; index < numberOfImages; index++) {
             const pictureId: PictureId = {value: uuidv4()};
-            this.ng2ImgMax.compressImage(event[index], 3).subscribe(
+            this.ng2ImgMax.compressImage(event[index], 0.8).subscribe(
                 result => {
                     const imageToUpload = new File([result], result.name, {type: event[index].type});
                     aggregatedPercentComplete += 50;
