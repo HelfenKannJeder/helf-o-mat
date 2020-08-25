@@ -40,7 +40,7 @@ class ElasticsearchOrganizationRepository(
         questionAnswers,
         filterDistance(position, distance)
     )
-        .sortedWith(compareBy<ScoredOrganization> { it.score }.thenComparingDouble { it.organization.defaultAddress?.location?.distanceInKm(position) ?: Double.MAX_VALUE })
+        .sortedWith(compareBy<ScoredOrganization> { it.score }.reversed().thenComparingDouble { it.organization.defaultAddress?.location?.distanceInKm(position) ?: Double.MAX_VALUE })
 
     override fun findOrganizationsByDistanceSortByDistance(position: GeoPoint, distance: Double) = search(filterDistance(position, distance))
         .sortedWith(compareBy { it.defaultAddress?.location?.distanceInKm(position) ?: Double.MAX_VALUE })
@@ -51,6 +51,7 @@ class ElasticsearchOrganizationRepository(
             .mustNot(QueryBuilders.existsQuery("defaultAddress"))
     )
         .sortedBy { it.score }
+        .reversed()
 
     override fun findGlobalOrganizations(): List<Organization> = search(
         QueryBuilders.boolQuery()
