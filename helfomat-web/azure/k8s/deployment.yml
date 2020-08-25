@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: helfomat-web
-  replicas: 2
+  replicas: 3
   template:
     metadata:
       labels:
@@ -17,8 +17,8 @@ spec:
           image: helfenkannjedercontainer.azurecr.io/helf-o-mat.web
           resources:
             limits:
-              cpu: 500m
-              memory: 900Mi
+              cpu: 600m
+              memory: 1200Mi
             requests:
               cpu: 100m
               memory: 400Mi
