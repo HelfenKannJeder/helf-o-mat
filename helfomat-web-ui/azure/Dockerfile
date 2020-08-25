@@ -3,6 +3,7 @@ FROM node:12.16.3-slim as builder
 WORKDIR /usr/src/app
 
 COPY package.json ./
+COPY npm-shrinkwrap.json ./
 RUN npm install
 
 COPY . .
