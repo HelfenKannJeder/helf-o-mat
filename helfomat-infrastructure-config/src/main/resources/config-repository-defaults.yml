@@ -50,7 +50,6 @@ helfomat:
         - phrase: "Schnelleinsatzgruppe" # ASB / DRK
           answer: "YES"
         - organizationType: "BW"
-          phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
           answer: "NO"
 
     - id: "89342f97-4a0e-457b-994b-5a4851618acc"
@@ -127,7 +126,6 @@ helfomat:
         - organizationType: "FF"
           answer: "MAYBE"
         - organizationType: "BW"
-          phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
           answer: "MAYBE"
         - phrase: "Kriseninterventionsteam" # ASB / DRK
           answer: "YES"
@@ -175,7 +173,6 @@ helfomat:
         - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
           answer: "YES"
         - organizationType: "BW"
-          phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
           answer: "MAYBE"
         - organizationType: "BRH"
           phrase: "Staffel"
@@ -203,7 +200,6 @@ helfomat:
         - phrase: "Höhenrettung" # FW / THW
           answer: "YES"
         - organizationType: "BW"
-          phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
           answer: "YES"
         - phrase: "Hubschraubergestützte Wasserrettung" # DLRG / ASB / DRK
           answer: "MAYBE"
@@ -467,6 +463,8 @@ Hinzu kommt die Versorgung mit Verbrauchsgütern (Kraftstoff) sowie kleinere han
           description: "Wir treffen uns regelmäßig zum Fußballspielen, ..."
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad im unwegsamen Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
     - name: Bergwacht
       acronym: BW
       logo-suggestions:
@@ -505,6 +503,8 @@ Bei Rettungseinsätzen sind alle Beteiligten oft sehr stark voneinander abhängi
           description: ""
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
     - name: Deutsche Lebens-Rettungs-Gesellschaft
       acronym: DLRG
       logo-suggestions:
@@ -579,6 +579,8 @@ In Wettkämpfen kannst Du Dich beweisen!"
           description: ""
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
     - name: Deutsches Rotes Kreuz
       acronym: DRK
       logo-suggestions:
@@ -693,6 +695,8 @@ Zur Basisausrüstung auf allen Motorrädern gehören ein Notfallkoffer, EKG mit 
           description: ""
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
     - name: Freiwillige Feuerwehr
       acronym: FF
       logo-suggestions:
@@ -732,6 +736,8 @@ Auch für den Löschangriff von außen kann die Drehleiter eingesetzt werden. Hi
           description: "Einsätze z. B. mit verunfallten Kindern steckt nicht jeder einfach so weg. Aus diesem Grund haben wir ein Team, welches Kollegen nach belastenden Einsätzen betreuend zur Seite steht."
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
     - name: Johanniter-Unfall-Hilfe
       acronym: JUH
       logo-suggestions:
@@ -834,6 +840,8 @@ Zur Basisausrüstung auf allen Motorrädern gehören ein Notfallkoffer, EKG mit 
           description: ""
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
     - name: Malteser Hilfsdienst
       acronym: MHD
       logo-suggestions:
@@ -915,6 +923,8 @@ Zur Basisausrüstung auf allen Motorrädern gehören ein Notfallkoffer, EKG mit 
           description: ""
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
     - name: Privater Sanitätsdienst
       acronym: Privater SAN
       groups:
@@ -1027,6 +1037,8 @@ Zur Basisausrüstung auf allen Motorrädern gehören ein Notfallkoffer, EKG mit 
           description: ""
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
     - name: Bundesverband Rettungshunde
       acronym: BRH
       logo-suggestions:
@@ -1045,6 +1057,8 @@ Die Staffel verfolgt ausschließlich und unmittelbar gemeinnützige beziehungswe
 Sie stellt sich mit allen ihr zur Verfügung stehenden Mitteln in den Dienst notleidender Menschen, ohne Ansehen der finanziellen Leistungsfähigkeit. Sie ist neutral gegenüber jeglicher sozialer Stellung, Nationalität, Rasse, Religion und politischer Überzeugung."
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
     - name: Deutscher Rettungshunde Verein
       acronym: DRV
       groups:
@@ -1058,3 +1072,5 @@ Viele von ihnen haben sich verlaufen, hatten einen Unfall, bekamen beim Waldspaz
 Wenn Menschen unter Trümmern begraben sind, ist ebenfalls höchste Eile geboten. Die Suchleistung, welche ein ausgebildeter Rettungshund mit seiner Nase vollbringen kann, ist manchen technischen Mitteln weit überlegen bzw. ergänzt deren Einsatz optimal."
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Feldkochherd
+          description: "Mit unserer mobilen Feldküche sind wir in der Lage, bis zu 120 Personen organisationsintern oder auch bei Veranstaltungen und Festen zu verpflegen."
