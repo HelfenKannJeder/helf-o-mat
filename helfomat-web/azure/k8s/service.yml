@@ -4,6 +4,8 @@ metadata:
   name: helfomat-web-service
   labels:
     app: helfomat-web
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   ports:
     - name: helfomat-web-port
