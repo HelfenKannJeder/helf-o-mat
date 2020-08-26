@@ -355,6 +355,12 @@ Für diese Tätigkeit werden die Einsatzkräfte speziell geschult und nehmen reg
           description: ""
         - name: ATV/Quad
           description: "Ein Quad (lat. quadri- „vier-“) oder ATV (kurz für All Terrain Vehicle, deutsch: „Geländefahrzeug“) ist ein kleines Kraftfahrzeug für ein bis zwei Personen mit vier Rädern. In Deutschland sind diese Fahrzeuge hauptsächlich als Sport- oder Freizeitfahrzeuge bekannt. Im Umfeld der Gefahrenabwehr leistet ein Quad in unwegsamem Gelände wertvolle Dienste zum Transport verletzter Personen."
+        - name: Trupp Einsatzstellensicherung
+          description: "Der Trupp Einsatzstellensicherung verfügt über spezielle Fähigkeiten im Bereich Vermessung und Einsatzstellensicherung. Einsatzstellensicherung bedeutet z.B. die Erfassung von Bewegungen jeglicher Art von angeschlagenen oder instabilen Konstruktionen, Erdmassen oder sonstigen Objekten um ein sicheres Arbeiten der Einsatzkräfte zu ermöglichen. Darüber hinaus stellt er beratende Fähigkeiten im Bereich der Bewertung von Bauwerksschäden zur Verfügung"
+        - name: Trupp Mobiler Hochwasserpegel
+          description: "Der Trupp Mobiler Hochwasserpegel verfügt über spezielle Fähigkeiten im Bereich der Messung von Wasserständen z.B. bei einem Hochwasser und stellt Lageänderungen in diesem Bereich den Führungsstellen zur Verfügung."
+        - name: Trupp Unbemannte Luftfahrtsysteme
+          description: "Der Trupp Unbemannte Luftfahrtsysteme verfügt über spezielle Fähigkeiten der Erkundung von Schadensgebieten aus der Luft. Hierbei können unterschiedliche unbemannte Luftfahrtsysteme zum Einsatz kommen. Die Art der Datenerfassung beziehungsweise das Sensorsystem ist vom Einsatzauftrag abhängig und kann modular angepasst werden."
     - name: Arbeiter-Samariter-Bund
       acronym: ASB
       logo-suggestions:
