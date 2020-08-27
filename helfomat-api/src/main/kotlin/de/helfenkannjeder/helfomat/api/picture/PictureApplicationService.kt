@@ -49,7 +49,7 @@ open class PictureApplicationService(
         return PictureDto(inputStream, pictureInformation.contentType)
     }
 
-    @Secured(Roles.ADMIN, Roles.REVIEWER, Roles.USER)
+    @PreAuthorize("isAuthenticated()")
     @Transactional
     open fun savePicture(pictureId: PictureId, inputStream: InputStream, size: Long): PictureId {
         if (pictureRepository.existsById(pictureId)) {
