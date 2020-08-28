@@ -7,9 +7,31 @@
         </div>
     </nav>
 
-    <div class="form-group">
-        <label for="author">{{ 'manage.organization.approval.review.author' | translate }}</label>
-        <input type="text" id="author" class="form-control" [value]="approval.proposedDomainEvent.author" readonly/>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="authorFirstName">{{ 'manage.organization.approval.review.author.firstName' | translate }}</label>
+                <input type="text" id="authorFirstName" class="form-control" [value]="approval.author.firstName" readonly/>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="authorLastName">{{ 'manage.organization.approval.review.author.lastName' | translate }}</label>
+                <input type="text" id="authorLastName" class="form-control" [value]="approval.author.lastName" readonly/>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="authorUsername">{{ 'manage.organization.approval.review.author.username' | translate }}</label>
+                <input type="text" id="authorUsername" class="form-control" [value]="approval.author.username" readonly/>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="authorEmail">{{ 'manage.organization.approval.review.author.email' | translate }}</label>
+                <input type="text" id="authorEmail" class="form-control" [value]="approval.author.email" readonly/>
+            </div>
+        </div>
     </div>
     <div class="form-group">
         <label for="sources">{{ 'manage.organization.approval.review.sources' | translate }}</label>

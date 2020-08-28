@@ -10,5 +10,6 @@ data class ApprovalDetailDto(
     val organizationName: String?,
     val date: OffsetDateTime?,
     val organization: OrganizationDetailDto?,
-    val proposedDomainEvent: OrganizationEventDto?
+    val proposedDomainEvent: OrganizationEventDto?,
+    val author: ApprovalAuthorDto?
 )

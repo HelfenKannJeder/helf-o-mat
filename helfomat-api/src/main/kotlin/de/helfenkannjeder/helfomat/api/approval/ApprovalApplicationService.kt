@@ -13,6 +13,7 @@ import de.helfenkannjeder.helfomat.core.organization.event.*
 import de.helfenkannjeder.helfomat.core.picture.PictureId
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository
+import de.helfenkannjeder.helfomat.core.user.UserRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
@@ -28,7 +29,8 @@ open class ApprovalApplicationService(
     private val organizationRepository: OrganizationRepository,
     private val questionRepository: QuestionRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
-    private val pictureRepository: PictureRepository
+    private val pictureRepository: PictureRepository,
+    private val userRepository: UserRepository
 ) {
 
     open fun findItemsToApprove(): List<ApprovalOverviewDto> {
@@ -43,9 +45,10 @@ open class ApprovalApplicationService(
     open fun findApprovalItem(approvalId: ApprovalId): ApprovalDetailDto {
         val questions = this.questionRepository.findQuestions()
         val approval = approvalRepository.getOne(approvalId)
+        val author = userRepository.findByUsername(approval.requestedDomainEvent.author)
         val organizationId = approval.requestedDomainEvent.organizationId
         val organization: Organization? = organizationRepository.findOne(organizationId.value)
-        return approval.toApprovalDetailDto(organization, questions)
+        return approval.toApprovalDetailDto(organization, questions, author)
     }
 
     open fun confirmOrganizationChange(approvalId: ApprovalId, confirmedEvents: List<OrganizationEventDto>) {

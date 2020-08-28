@@ -252,7 +252,12 @@
         "review": {
           "reject": "Ablehnen",
           "publishChanges": "Änderungen veröffentlichen",
-          "author":  "Autor",
+          "author": {
+            "username": "Benutzername",
+            "firstName": "Vorname",
+            "lastName": "Nachname",
+            "email": "E-Mail"
+          },
           "sources": "Quellen",
           "date": "Datum"
         },

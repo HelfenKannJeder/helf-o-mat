@@ -138,6 +138,18 @@ spec:
                   name: helfomat-web-config
                   key: helfomat.mail.receiver
 
+            - name: SECURITY_KEYCLOAK_CLIENT_CLIENT-ID
+              valueFrom:
+                secretMapKeyRef:
+                  name: helfomat-web-secret
+                  key: helfomat.keycloak.client.client-id
+            - name: SECURITY_KEYCLOAK_CLIENT_CLIENT-SECRET
+              valueFrom:
+                secretMapKeyRef:
+                  name: helfomat-web-secret
+                  key: helfomat.keycloak.client.client-secret
+
+
 #          livenessProbe:
 #            httpGet:
 #              path: /actuator/health

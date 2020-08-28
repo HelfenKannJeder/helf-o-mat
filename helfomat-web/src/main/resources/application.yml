@@ -33,6 +33,11 @@ spring.servlet.multipart:
   max-file-size: 7MB
   max-request-size: 7MB
 
+security:
+  keycloak:
+    client:
+      access-token-uri: ${keycloak.auth-server-url}/realms/master/protocol/openid-connect/token
+      token-info-uri: ${keycloak.auth-server-url}/realms/master/protocol/openid-connect/token/introspect
 
 logging:
   level:

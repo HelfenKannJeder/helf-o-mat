@@ -16,6 +16,13 @@ spring:
       cluster-name: application
       cluster-nodes: localhost:9300
 
+security:
+  keycloak:
+    client:
+      client-id: helfomat-web-profile-admin
+      client-secret: a7188212-d414-4f0e-afd2-71605acf9c4d
+
+
 keycloak:
   realm: helfenkannjeder
   resource: helfenkannjeder-web-ui

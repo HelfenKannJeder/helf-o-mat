@@ -32,11 +32,19 @@ export interface ApprovalOverviewDto {
 }
 
 export interface ApprovalDetailDto {
-    approvalId: ApprovalId,
-    organizationName: string,
-    date: string,
-    organization: Organization,
-    proposedDomainEvent: ProposedChangeOrganizationEventDto
+    approvalId: ApprovalId;
+    organizationName: string;
+    date: string;
+    organization: Organization;
+    proposedDomainEvent: ProposedChangeOrganizationEventDto;
+    author: ApprovalAuthorDto;
+}
+
+export interface ApprovalAuthorDto {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
 }
 
 export interface ProposedChangeOrganizationEventDto {
