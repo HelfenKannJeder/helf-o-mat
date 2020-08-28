@@ -13,6 +13,7 @@ import {NgxPageScrollCoreModule} from 'ngx-page-scroll-core';
 import {NgxPageScrollModule} from 'ngx-page-scroll';
 import {RouterModule} from "@angular/router";
 import {DistanceModule} from "../_internal/components/distance/distance.module";
+import {AuthenticationModule} from "../_internal/authentication/authentication.module";
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import {DistanceModule} from "../_internal/components/distance/distance.module";
         NgxPageScrollCoreModule,
         NgxPageScrollModule,
         RouterModule,
-        DistanceModule
+        DistanceModule,
+        AuthenticationModule
     ],
     declarations: [
         OrganizationComponent,

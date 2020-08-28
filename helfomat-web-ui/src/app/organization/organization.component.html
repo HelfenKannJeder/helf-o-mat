@@ -5,10 +5,14 @@
     <div class="custom-content">
         <div class="logo-container" *ngIf="organization.pictures.length > 0">
             <div class="logo">
-                <img src="api/picture/{{organization.logo.value}}/icon"
+                <img *ngIf="!organization.isPreview" [src]="'api/picture/' + organization.logo.value + '/icon'"
+                     [attr.alt]="organization.name">
+                <img *ngIf="organization.isPreview"
+                     [src]="'api/picture/' + organization.logo.value + '/icon' | authImage | async"
                      [attr.alt]="organization.name">
             </div>
-            <img src="api/picture/{{organization.pictures[0].value}}/teaser" width="100%"/>
+            <img *ngIf="!organization.isPreview" [src]="'api/picture/' + organization.pictures[0].value + '/teaser'" width="100%"/>
+            <img *ngIf="organization.isPreview" [src]="'api/picture/' + organization.pictures[0].value + '/teaser' | authImage | async" width="100%"/>
         </div>
     </div>
 
@@ -229,11 +233,18 @@
                 </table>
             </div>
 
-            <div class="card card-default" *ngIf="organization.pictures.length > 1">
+            <div class="card card-default" *ngIf="organization.pictures.length > 1 && !organization.isPreview">
                 <div class="card-header">
                     {{'organization.pictures.title' | translate}}
                 </div>
-                <img src="api/picture/{{picture.value}}/medium" width="100%"
+                <img [src]="'api/picture/' + picture.value + '/medium'" width="100%"
+                     *ngFor="let picture of organization.pictures.slice(1)"/>
+            </div>
+            <div class="card card-default" *ngIf="organization.pictures.length > 1 && organization.isPreview">
+                <div class="card-header">
+                    {{'organization.pictures.title' | translate}}
+                </div>
+                <img [src]="'api/picture/' + picture.value + '/medium' | authImage | async" width="100%"
                      *ngFor="let picture of organization.pictures.slice(1)"/>
             </div>
 
