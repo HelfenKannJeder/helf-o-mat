@@ -6,6 +6,7 @@ import {ObservableUtil} from "../../../shared/observable.util";
 import {BehaviorSubject, of, Subject} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
+import {OrganizationEvent} from "../../../_internal/resources/organization.service";
 
 @Component({
     templateUrl: './review.component.html',
@@ -14,7 +15,7 @@ import {ToastrService} from "ngx-toastr";
 export class ReviewComponent {
 
     public approval: Subject<ApprovalDetailDto> = new Subject<ApprovalDetailDto>();
-    private doApprove: Subject<ApprovalId> = new BehaviorSubject(null);
+    private doApprove: Subject<{ approvalId: ApprovalId, changes: OrganizationEvent[] }> = new BehaviorSubject(null);
 
     constructor(
         private route: ActivatedRoute,
@@ -35,24 +36,49 @@ export class ReviewComponent {
             })
         this.doApprove
             .pipe(
-                distinctUntilChanged((id1, id2) => id1?.value === id2?.value),
-                mergeMap((approvalId: ApprovalId) => {
-                    if (approvalId == null) {
+                distinctUntilChanged((approval1, approval2) => approval1?.approvalId?.value === approval2?.approvalId?.value),
+                mergeMap((approval) => {
+                    if (approval == null) {
                         return of(null);
                     }
-                    return this.approvalService.confirmApproval(approvalId)
-                        .pipe(map(() => approvalId));
+                    const {approvalId, changes} = approval;
+                    return this.approvalService.confirmApproval(approvalId, changes)
+                        .pipe(map(() => changes.length !== 0));
                 }),
                 filter(e => e != null)
             )
-            .subscribe(() => {
-                const message = this.translateService.instant('manage.organization.approval.success');
-                this.toastr.success(message);
+            .subscribe((isApprove) => {
+                if (isApprove) {
+                    this.toastr.success(
+                        this.translateService.instant(
+                            'manage.organization.approval.success'
+                        )
+                    );
+                } else {
+                    this.toastr.warning(
+                        this.translateService.instant(
+                            'manage.organization.decline.success'
+                        )
+                    );
+                }
                 this.router.navigate(["/admin/approval"])
             });
     }
 
-    approve(approvalId: ApprovalId) {
-        this.doApprove.next(approvalId);
+    approve(approval: ApprovalDetailDto) {
+        this.doApprove.next({
+            approvalId: approval.approvalId,
+            changes: approval.proposedDomainEvent.changes
+        });
+    }
+
+    decline(approval: ApprovalDetailDto) {
+        const result = window.confirm(this.translateService.instant('manage.organization.approval.confirmDecline'));
+        if (result) {
+            this.doApprove.next({
+                approvalId: approval.approvalId,
+                changes: []
+            });
+        }
     }
 }

@@ -17,8 +17,8 @@ export class ApprovalService {
         return this.httpClient.get<ApprovalDetailDto>(`api/approval/${approvalId.value}`);
     }
 
-    confirmApproval(approvalId: ApprovalId): Observable<void> {
-        return this.httpClient.put<void>(`api/approval/${approvalId.value}`, {});
+    confirmApproval(approvalId: ApprovalId, confirmedChanges: OrganizationEvent[]): Observable<void> {
+        return this.httpClient.put<void>(`api/approval/${approvalId.value}`, confirmedChanges);
     }
 }
 

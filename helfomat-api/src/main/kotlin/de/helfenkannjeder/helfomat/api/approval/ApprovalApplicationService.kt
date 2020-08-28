@@ -2,6 +2,8 @@ package de.helfenkannjeder.helfomat.api.approval
 
 import de.helfenkannjeder.helfomat.api.Roles
 import de.helfenkannjeder.helfomat.api.currentUsername
+import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto
+import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler
 import de.helfenkannjeder.helfomat.core.approval.ApprovalId
 import de.helfenkannjeder.helfomat.core.approval.ApprovalRepository
 import de.helfenkannjeder.helfomat.core.organization.NullableOrganizationEventVisitor
@@ -46,7 +48,7 @@ open class ApprovalApplicationService(
         return approval.toApprovalDetailDto(organization, questions)
     }
 
-    open fun confirmOrganizationChange(approvalId: ApprovalId) {
+    open fun confirmOrganizationChange(approvalId: ApprovalId, confirmedEvents: List<OrganizationEventDto>) {
         val approval = this.approvalRepository.getOne(approvalId)
         if (approval.approvedDomainEvent != null) {
             return
@@ -57,12 +59,15 @@ open class ApprovalApplicationService(
             currentUsername(),
             proposedChangeOrganizationEvent.author,
             proposedChangeOrganizationEvent.sources,
-            proposedChangeOrganizationEvent.changes
+            OrganizationEventDtoAssembler.toOrganizationEvent(confirmedEvents)
         )
-        publishNewPictures(proposedChangeOrganizationEvent)
         approval.approvedDomainEvent = confirmedChangeOrganizationEvent
+        approval.isDeclined = confirmedEvents.isEmpty()
         approvalRepository.save(approval)
-        applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent)
+        if (confirmedEvents.isNotEmpty()) {
+            publishNewPictures(proposedChangeOrganizationEvent)
+            applicationEventPublisher.publishEvent(confirmedChangeOrganizationEvent)
+        }
     }
 
     private fun publishNewPictures(proposedChangeOrganizationEvent: ProposedChangeOrganizationEvent) {

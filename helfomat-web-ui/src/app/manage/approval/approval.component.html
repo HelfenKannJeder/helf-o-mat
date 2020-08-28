@@ -2,9 +2,6 @@
 
     <nav class="navbar sticky-top navbar-dark bg-lightblue">
         <span class="navbar-brand">{{'manage.organization.approval.headline' | translate}}</span>
-        <div class="btn-group" *ngIf="isAdmin()">
-            <button class="btn btn-sm btn-danger" type="submit" (click)="approveAll(approvals)">{{'manage.organization.approval.publishAll' | translate}}</button>
-        </div>
     </nav>
 
     <table class="table">

@@ -256,7 +256,11 @@
           "sources": "Quellen",
           "date": "Datum"
         },
-        "success": "Die Organisation wurde erfolgreich freigegeben"
+        "success": "Die Organisation wurde erfolgreich freigegeben",
+        "confirmDecline": "Sollen die Änderungen wirklich abgelehnt werden?"
+      },
+      "decline": {
+        "success": "Die Änderungen wurden abgelehnt"
       }
     }
   },

@@ -35,6 +35,9 @@ data class Approval(
     @Column(columnDefinition = "jsonb")
     var approvedDomainEvent: ConfirmedChangeOrganizationEvent? = null,
 
+    @Column
+    var isDeclined: Boolean = false,
+
     @CreatedDate
     @Column(columnDefinition = "TIMESTAMPTZ")
     var createdDate: OffsetDateTime? = null,
