@@ -23,7 +23,7 @@
                     <div class="card card-default">
                         <div class="card-header">{{ 'edit.organization.teaserImage' | translate }}</div>
                     </div>
-                    <file-upload (onPictureUploaded)="onPictureUploaded(organization.pictures, $event)"></file-upload>
+                    <file-upload (onPictureUploaded)="onPictureUploaded(organization, $event)"></file-upload>
                 </ng-container>
             </div>
         </div>
@@ -231,7 +231,7 @@
                         <img [src]="'api/picture/' + picture.value + '/medium' | authImage | async" style="width:100%"/>
                         <div class="cdk-drag-placeholder" *cdkDragPlaceholder style="height:200px"></div>
                     </div>
-                    <file-upload (onPictureUploaded)="onPictureUploaded(organization.pictures, $event)"></file-upload>
+                    <file-upload (onPictureUploaded)="onPictureUploaded(organization, $event)"></file-upload>
                 </div>
 
             </div>

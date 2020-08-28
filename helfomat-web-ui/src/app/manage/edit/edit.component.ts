@@ -1,24 +1,13 @@
 import {Component, EventEmitter, Inject, OnInit} from "@angular/core";
 import {ObservableUtil} from "../../shared/observable.util";
 import {debounceTime, distinctUntilChanged, filter, first, flatMap, map, mergeMap, switchMap} from "rxjs/operators";
-import {
-    Address,
-    ContactPerson,
-    Group,
-    Organization,
-    OrganizationEvent,
-    OrganizationService,
-} from "../../_internal/resources/organization.service";
+import {Address, ContactPerson, Group, Organization, OrganizationEvent, OrganizationService,} from "../../_internal/resources/organization.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {PageScrollInstance, PageScrollService} from "ngx-page-scroll-core";
 import {DOCUMENT} from "@angular/common";
-import {
-    GroupTemplate,
-    OrganizationTemplate,
-    OrganizationTemplateService
-} from "../../_internal/resources/organization-template.service";
+import {GroupTemplate, OrganizationTemplate, OrganizationTemplateService} from "../../_internal/resources/organization-template.service";
 import {NgbModal, NgbTimeAdapter, NgbTypeaheadSelectItemEvent} from "@ng-bootstrap/ng-bootstrap";
 import {TimepickerAdapterService} from "./_internal/timepicker-adapter.service";
 import {NgForm, NgModel} from "@angular/forms";
@@ -212,9 +201,10 @@ export class EditComponent implements OnInit {
         return field.invalid && (field.dirty || field.touched);
     }
 
-    onPictureUploaded(pictures: PictureId[], pictureId: PictureId) {
-        console.log('just uploaded', pictureId);
-        pictures.push(pictureId);
+    onPictureUploaded(organization: Organization, pictureId: PictureId) {
+        const newOrganization = {...organization};
+        newOrganization.pictures.push(pictureId);
+        this.calculateChanges(newOrganization);
     }
 
     calculateChanges(organization: Organization) {
