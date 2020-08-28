@@ -140,12 +140,12 @@ spec:
 
             - name: SECURITY_KEYCLOAK_CLIENT_CLIENT-ID
               valueFrom:
-                secretMapKeyRef:
+                secretKeyRef:
                   name: helfomat-web-secret
                   key: helfomat.keycloak.client.client-id
             - name: SECURITY_KEYCLOAK_CLIENT_CLIENT-SECRET
               valueFrom:
-                secretMapKeyRef:
+                secretKeyRef:
                   name: helfomat-web-secret
                   key: helfomat.keycloak.client.client-secret
 
