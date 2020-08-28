@@ -10,4 +10,5 @@ object Roles {
 
     const val USER = "ROLE_helfomat_user"
 
+    const val ANONYMOUS = "ROLE_ANONYMOUS"
 }

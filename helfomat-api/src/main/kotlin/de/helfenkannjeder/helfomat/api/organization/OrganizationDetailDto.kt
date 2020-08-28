@@ -23,5 +23,6 @@ data class OrganizationDetailDto(
     val mapPin: String? = null,
     val groups: List<GroupDto> = arrayListOf(),
     val attendanceTimes: List<AttendanceTimeDto> = arrayListOf(),
-    val volunteers: List<VolunteerDto> = arrayListOf()
+    val volunteers: List<VolunteerDto> = arrayListOf(),
+    val isPreview: Boolean = false
 )

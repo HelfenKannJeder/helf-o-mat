@@ -1,4 +1,7 @@
 <div *ngIf="organization$ | async; let organization; else loading">
+    <nav class="navbar sticky-top navbar-dark bg-grey" *ngIf="organization.isPreview">
+        <span class="navbar-brand">{{ 'organization.isPreviewRendered' | translate }}</span>
+    </nav>
     <div class="custom-content">
         <div class="logo-container" *ngIf="organization.pictures.length > 0">
             <div class="logo">

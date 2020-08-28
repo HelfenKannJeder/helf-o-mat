@@ -29,6 +29,7 @@
   },
   "organization": {
     "dataLoading": "Die Daten werde geladen, bitte gedulde Dich einen Moment.",
+    "isPreviewRendered": "Diese Ansicht beinhaltet von Dir bereits eingereichte Änderungen, die noch nicht freigegeben sind.",
     "facts": {
       "title": "Fakten",
       "helfomatResult": {

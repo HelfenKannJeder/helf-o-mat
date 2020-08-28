@@ -44,7 +44,7 @@ fun Organization.toOrganizationDto() = OrganizationDto(
 )
 
 fun List<Organization>.toOrganizationDetailsDto(questions: List<Question>) = this.map { it.toOrganizationDetailDto(questions) }
-fun Organization.toOrganizationDetailDto(questions: List<Question>) = OrganizationDetailDto(
+fun Organization.toOrganizationDetailDto(questions: List<Question>, isPreview: Boolean = false) = OrganizationDetailDto(
     this.id.value,
     this.name,
     this.urlName,
@@ -60,7 +60,8 @@ fun Organization.toOrganizationDetailDto(questions: List<Question>) = Organizati
     this.mapPin,
     this.groups.toGroupDtos(),
     this.attendanceTimes.toAttendanceTimeDtos(),
-    this.volunteers.toVolunteerDtos()
+    this.volunteers.toVolunteerDtos(),
+    isPreview
 )
 
 fun List<Volunteer>.toVolunteerDtos() = this.map { it.toVolunteerDto() }

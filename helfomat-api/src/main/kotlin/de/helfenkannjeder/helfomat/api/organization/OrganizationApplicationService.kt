@@ -2,15 +2,14 @@ package de.helfenkannjeder.helfomat.api.organization
 
 import de.helfenkannjeder.helfomat.api.Roles
 import de.helfenkannjeder.helfomat.api.currentUsername
+import de.helfenkannjeder.helfomat.api.isAuthenticated
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler
 import de.helfenkannjeder.helfomat.api.organization.event.toOrganizationEventDtos
+import de.helfenkannjeder.helfomat.core.approval.ApprovalRepository
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
-import de.helfenkannjeder.helfomat.core.organization.NullableOrganizationEventVisitor
-import de.helfenkannjeder.helfomat.core.organization.OrganizationId
-import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
-import de.helfenkannjeder.helfomat.core.organization.OrganizationType
+import de.helfenkannjeder.helfomat.core.organization.*
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationCreateEvent
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditUrlNameEvent
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
@@ -29,13 +28,25 @@ open class OrganizationApplicationService(
     private var organizationRepository: OrganizationRepository,
     private var questionRepository: QuestionRepository,
     private var applicationEventPublisher: ApplicationEventPublisher,
-    private var answerOrganizationQuestionService: AnswerOrganizationQuestionService
+    private var answerOrganizationQuestionService: AnswerOrganizationQuestionService,
+    private var approvalRepository: ApprovalRepository
 ) {
 
     open fun findOrganizationDetails(urlName: String): OrganizationDetailDto? {
-        val organization = organizationRepository.findByUrlName(urlName)
+        var organization = organizationRepository.findByUrlName(urlName)
         val questions = questionRepository.findQuestions()
-        return organization?.toOrganizationDetailDto(questions)
+        var isPreview = false
+        if (isAuthenticated() && organization != null) {
+            val findToApproveWithCreator = approvalRepository.findToApproveWithCreator(currentUsername())
+            isPreview = findToApproveWithCreator.isNotEmpty()
+            val builder = Organization.Builder(organization)
+            findToApproveWithCreator
+                .map { it.requestedDomainEvent }
+                .flatMap { it.changes }
+                .forEach { it.applyOnOrganizationBuilder(builder) }
+            organization = builder.build()
+        }
+        return organization?.toOrganizationDetailDto(questions, isPreview)
     }
 
     open fun findGlobalOrganizations(): List<OrganizationDto> {

@@ -102,6 +102,7 @@ export class Organization {
     public logo: PictureId;
     public volunteers: Volunteer[] = [];
     public attendanceTimes: AttendanceTime[] = [];
+    public isPreview: boolean = false;
 }
 
 export class TravelDistance {
