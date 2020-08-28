@@ -37,7 +37,7 @@ helfomat:
           answer: "YES"
         - phrase: "Rettungsdienst" # ASB / DRK
           answer: "MAYBE"
-        - phrase: "Bergungsgruppe" # THW
+        - organizationType: "THW"
           answer: "MAYBE"
 
     - id: "58aca3fe-1783-42ff-81d6-43212d76ce04"
@@ -85,7 +85,7 @@ helfomat:
       groups:
         - organizationType: "FF"
           answer: "MAYBE"
-        - phrase: "Bergungsgruppe" # THW
+        - organizationType: "THW"
           answer: "YES"
 
     - id: "44d1132f-3407-4387-808d-47368c8d7ffc"
@@ -93,6 +93,8 @@ helfomat:
       description: "Möchtest Du Tauchen lernen oder den Bootsführerschein machen? Einige Einsatzorganisationen haben ihren Schwerpunkt im Bereich der Wasserrettung gesetzt und könnten Deine Hilfe gebrauchen."
       defaultAnswer: "NO"
       groups:
+        - organizationType: "DLRG"
+          answer: "YES"
         - phrase: "Wassergefahren" # THW
           answer: "YES"
         - phrase: "Rettungsschwimm" # DLRG / ASB / DRK
@@ -110,12 +112,10 @@ helfomat:
       defaultAnswer: "NO"
       groups:
         - organizationType: "BW"
-          phrase: "Ortsgruppe (Basisausstattung/-Tätigkeit)"
           answer: "YES"
         - phrase: "Höhenrettung" # ASB / DRK / THW
           answer: "MAYBE"
         - organizationType: "BRH"
-          phrase: "Staffel"
           answer: "MAYBE"
 
     - id: "ae4cdb0c-c35f-42fe-8996-599bfffc8fc2"
@@ -132,7 +132,6 @@ helfomat:
         - phrase: "Betreuung" # DLRG / ASB / DRK
           answer: "MAYBE"
         - organizationType: "BRH"
-          phrase: "Staffel"
           answer: "MAYBE"
 
     - id: "c9204024-1399-4b34-b7a4-6919c09cdc41"
@@ -142,13 +141,21 @@ helfomat:
       groups:
         - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
           answer: "YES"
+        - organizationType: "DRK"
+          answer: "MAYBE"
+        - organizationType: "ASB"
+          answer: "MAYBE"
+        - organizationType: "JUH"
+          answer: "MAYBE"
+        - organizationType: "MHD"
+          answer: "MAYBE"
 
     - id: "0d76d16a-c640-40ec-af4e-2111ad36ee46"
       question: "Bist Du handwerklich interessiert und kannst Strom, Heizung, Wasser, etc. in Notunterkünften installieren?"
       description: "Im Rahmen des Aufbaus von Notunterkünften im In- und Ausland ist die Bereitstellung von Strom und Wasser erforderlich. Wenn Du bereits handwerkliche Erfahrungen hast oder Dir solche aneignen möchtest, bist Du hier richtig."
       defaultAnswer: "NO"
       groups:
-        - phrase: "Bergungsgruppe"
+        - organizationType: "THW"
           answer: "YES"
         - phrase: "Technik und Sicherheit" # ASB / DRK
           answer: "MAYBE"
@@ -162,7 +169,9 @@ helfomat:
       groups:
         - phrase: "Motorrad"
           answer: "YES"
-        - phrase: "ATV/Quad"
+        - phrase: "ATV"
+          answer: "YES"
+        - phrase: "Quad"
           answer: "YES"
 
     - id: "e025aa16-4b69-42db-9fce-d34792d99a77"
@@ -170,12 +179,23 @@ helfomat:
       description: "Du bist medizinisch interessiert und möchtest in diesem Umfeld bei Unfällen oder Großveranstaltungen professionelle Hilfe leisten?"
       defaultAnswer: "NO"
       groups:
+        - organizationType: "DRK"
+          answer: "YES"
+        - organizationType: "ASB"
+          answer: "YES"
+        - organizationType: "JUH"
+          answer: "YES"
+        - organizationType: "MHD"
+          answer: "YES"
         - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
+          answer: "YES"
+        - phrase: "First Responder" # FF
+          answer: "YES"
+        - phrase: "Helfer vor Ort" # FF
           answer: "YES"
         - organizationType: "BW"
           answer: "MAYBE"
         - organizationType: "BRH"
-          phrase: "Staffel"
           answer: "MAYBE"
 
     - id: "82113a83-d99a-4a63-89eb-9e5f4268917b"
@@ -201,9 +221,9 @@ helfomat:
           answer: "YES"
         - organizationType: "BW"
           answer: "YES"
-        - phrase: "Hubschraubergestützte Wasserrettung" # DLRG / ASB / DRK
+        - phrase: "Hubschrauber" # (Hubschraubergestützte Wasserrettung) DLRG / ASB / DRK
           answer: "MAYBE"
-        - phrase: "Bergungsgruppe" # THW
+        - organizationType: "THW"
           answer: "MAYBE"
 
     - id: "2e82c293-1f6a-4b4c-8366-f773d42f1caf"
@@ -211,14 +231,14 @@ helfomat:
       description: "Die Rettungshundeausbildung ist sowohl für den Hund als auch für den Rettungshundeführer anspruchsvoll. Dank Dir und Deinem Hund können jedoch viele Menschen in hilfloser Lage vor dem sicheren Tod gerettet werden."
       defaultAnswer: "NO"
       groups:
-        - phrase: "Ortung Typ A"
+        - organizationType: "THW"
+          phrase: "Ortung Typ A"
           answer: "YES"
         - phrase: "Fachgruppe Ortung"
           answer: "YES"
         - phrase: "Rettungshunde" # DLRG / ASB / BW / DRK
           answer: "YES"
         - organizationType: "BRH"
-          phrase: "Staffel"
           answer: "YES"
 
   organization-templates:
