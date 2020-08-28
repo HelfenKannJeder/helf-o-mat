@@ -38,7 +38,8 @@ export class MapIconComponent {
             scoreNorm: null,
             urlName: "",
             volunteers: [],
-            website: ""
+            website: "",
+            isPreview: false
         })
     }
 
