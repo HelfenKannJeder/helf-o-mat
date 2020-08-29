@@ -38,11 +38,14 @@ open class OrganizationApplicationService(
         var isPreview = false
         if (isAuthenticated() && organization != null) {
             val findToApproveWithCreator = approvalRepository.findToApproveWithCreator(currentUsername())
-            isPreview = findToApproveWithCreator.isNotEmpty()
             val builder = Organization.Builder(organization)
-            findToApproveWithCreator
+            val id = organization.id
+            val allChanges = findToApproveWithCreator
                 .map { it.requestedDomainEvent }
+                .filter { it.organizationId == id }
                 .flatMap { it.changes }
+            isPreview = allChanges.isNotEmpty()
+            allChanges
                 .forEach { it.applyOnOrganizationBuilder(builder) }
             organization = builder.build()
         }
