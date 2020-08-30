@@ -22,7 +22,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.Resource
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.util.StreamUtils
 import java.io.IOException
@@ -42,7 +42,7 @@ open class ImportBatchConfig {
                          organizationReaders: List<OrganizationReader>,
                          answerOrganizationQuestionService: AnswerOrganizationQuestionService,
                          elasticsearchConfiguration: ElasticsearchConfiguration,
-                         elasticsearchTemplate: ElasticsearchTemplate,
+                         elasticsearchRestTemplate: ElasticsearchRestTemplate,
                          restOrganizationEventPublisher: RestOrganizationEventPublisher,
                          organizationRepository: OrganizationRepository,
                          @Value("classpath:/mapping/organization.json") organizationMapping: Resource,
@@ -51,7 +51,7 @@ open class ImportBatchConfig {
             .map {
                 val uniqueOrganizationUrlNameOrganizationProcessor = UniqueOrganizationUrlNameOrganizationProcessor()
                 val indexName = elasticsearchConfiguration.index + "-" + it.name
-                val elasticsearchOrganizationRepository = ElasticsearchOrganizationRepository(elasticsearchConfiguration, elasticsearchTemplate, indexName)
+                val elasticsearchOrganizationRepository = ElasticsearchOrganizationRepository(elasticsearchRestTemplate, indexName)
                 val organizationDifferenceProcessor = OrganizationDifferenceProcessor(elasticsearchOrganizationRepository, organizationRepository)
                 stepBuilderFactory["import" + it.javaClass.simpleName]
                     .chunk<Organization, Pair<Organization, List<OrganizationEvent>>>(5)
