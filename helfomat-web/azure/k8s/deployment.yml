@@ -148,6 +148,11 @@ spec:
                 secretKeyRef:
                   name: helfomat-web-secret
                   key: helfomat.keycloak.client.client-secret
+            - name: MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.health.show.details
 
 
 #          livenessProbe:
