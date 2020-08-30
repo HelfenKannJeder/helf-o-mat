@@ -161,24 +161,24 @@ spec:
                   key: helfomat.health.show.details
 
 
-#          livenessProbe:
-#            httpGet:
-#              path: /actuator/health
-#              port: 8080
-#              scheme: HTTP
-#            initialDelaySeconds: 90
-#            periodSeconds: 3
-#            successThreshold: 1
-#            failureThreshold: 3
-#            timeoutSeconds: 3
-#
-#          readinessProbe:
-#            httpGet:
-#              path: /actuator/health
-#              port: 8080
-#              scheme: HTTP
-#            initialDelaySeconds: 30
-#            periodSeconds: 1
-#            successThreshold: 1
-#            failureThreshold: 3
-#            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /helf-o-mat/actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 90
+            periodSeconds: 3
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 3
+
+          readinessProbe:
+            httpGet:
+              path: /helf-o-mat/actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 1
