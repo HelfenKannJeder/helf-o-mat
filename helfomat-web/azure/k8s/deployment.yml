@@ -167,18 +167,18 @@ spec:
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 90
-            periodSeconds: 3
+            periodSeconds: 30
             successThreshold: 1
             failureThreshold: 3
-            timeoutSeconds: 3
+            timeoutSeconds: 10
 
           readinessProbe:
             httpGet:
               path: /helf-o-mat/actuator/health
               port: 8080
               scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 1
+            initialDelaySeconds: 60
+            periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
-            timeoutSeconds: 1
+            timeoutSeconds: 10
