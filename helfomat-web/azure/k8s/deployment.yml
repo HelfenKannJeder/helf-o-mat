@@ -62,6 +62,12 @@ spec:
                   name: helfomat-web-config
                   key: helfomat.web.elastic.cluster.name
 
+            - name: SPRING_ELASTICSEARCH_REST_URIS
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-web-config
+                  key: helfomat.web.elastic.resturis
+
             - name: GOOGLEMAPS_API-KEY
               valueFrom:
                 secretKeyRef:
