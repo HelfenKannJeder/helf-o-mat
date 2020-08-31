@@ -5,8 +5,8 @@ data class KeycloakUserSearchResponseDto(
     val createdTimestamp: Long,
     val username: String,
     val enabled: String,
-    val emailVerified: String,
-    val firstName: String,
-    val lastName: String,
+    val emailVerified: String?,
+    val firstName: String?,
+    val lastName: String?,
     val email: String
 )
