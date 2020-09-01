@@ -17,23 +17,26 @@ open class KeycloakUserRepository(
 ) : UserRepository {
 
     override fun findByUsername(username: String): User? {
-        var response = keycloakRestTemplate.exchange(
-            "${keycloakConfigurationProperties.authServerUrl}/admin/realms/${keycloakConfigurationProperties.realm}/users",
+        val response = keycloakRestTemplate.exchange(
+            "${keycloakConfigurationProperties.authServerUrl}/admin/realms/${keycloakConfigurationProperties.realm}/users?username={username}",
             HttpMethod.GET,
             null,
-            object : ParameterizedTypeReference<List<KeycloakUserSearchResponseDto>>() {}
+            object : ParameterizedTypeReference<List<KeycloakUserSearchResponseDto>>() {},
+            username
         )
         LOGGER.info(
             "retrieved user info for username={} with responseStatusCode={} bodyToString={}",
             username,
             response.statusCodeValue,
-            response.body.toString()
+            response.body?.toString()
         )
 
-        return response
-            .body
-            ?.firstOrNull { it.username == username }
-            ?.toUser()
+        val maybeUser = response.body?.firstOrNull { it.username == username }
+        if(maybeUser == null) {
+            LOGGER.error("Can not retrieve user profile info for username={}", username)
+        }
+
+        return maybeUser?.toUser()
     }
 
     companion object {
