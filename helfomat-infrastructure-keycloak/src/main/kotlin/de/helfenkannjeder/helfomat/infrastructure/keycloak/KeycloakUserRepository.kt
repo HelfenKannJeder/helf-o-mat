@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.infrastructure.keycloak
 
 import de.helfenkannjeder.helfomat.core.user.User
 import de.helfenkannjeder.helfomat.core.user.UserRepository
+import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
@@ -15,15 +16,26 @@ open class KeycloakUserRepository(
     val keycloakConfigurationProperties: KeycloakConfigurationProperties
 ) : UserRepository {
 
-    override fun findByUsername(username: String) = keycloakRestTemplate.exchange(
-        "${keycloakConfigurationProperties.authServerUrl}/admin/realms/${keycloakConfigurationProperties.realm}/users",
-        HttpMethod.GET,
-        null,
-        object : ParameterizedTypeReference<List<KeycloakUserSearchResponseDto>>() {}
-    )
-        .body
-        ?.firstOrNull { it.username == username }
-        ?.toUser()
+    override fun findByUsername(username: String): User? {
+        val response = keycloakRestTemplate.exchange(
+            "${keycloakConfigurationProperties.authServerUrl}/admin/realms/${keycloakConfigurationProperties.realm}/users?username={username}",
+            HttpMethod.GET,
+            null,
+            object : ParameterizedTypeReference<List<KeycloakUserSearchResponseDto>>() {},
+            username
+        )
+
+        val maybeUser = response.body?.firstOrNull { it.username == username }
+        if(maybeUser == null) {
+            LOGGER.error("Can not retrieve user profile info for username={}", username)
+        }
+
+        return maybeUser?.toUser()
+    }
+
+    companion object {
+        private var LOGGER = LoggerFactory.getLogger(KeycloakUserRepository::class.java)
+    }
 
 }
 
