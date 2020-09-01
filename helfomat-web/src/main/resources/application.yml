@@ -43,5 +43,3 @@ logging:
   level:
     root: ERROR
     de.helfenkannjeder: DEBUG
-    org.springframework.web.client..RestTemplate: DEBUG
-    org.springframework.security.oauth2.client.OAuth2RestTemplate: INFO

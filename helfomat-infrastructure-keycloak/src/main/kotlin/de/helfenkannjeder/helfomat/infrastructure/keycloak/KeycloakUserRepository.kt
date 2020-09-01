@@ -24,12 +24,6 @@ open class KeycloakUserRepository(
             object : ParameterizedTypeReference<List<KeycloakUserSearchResponseDto>>() {},
             username
         )
-        LOGGER.info(
-            "retrieved user info for username={} with responseStatusCode={} bodyToString={}",
-            username,
-            response.statusCodeValue,
-            response.body?.toString()
-        )
 
         val maybeUser = response.body?.firstOrNull { it.username == username }
         if(maybeUser == null) {
