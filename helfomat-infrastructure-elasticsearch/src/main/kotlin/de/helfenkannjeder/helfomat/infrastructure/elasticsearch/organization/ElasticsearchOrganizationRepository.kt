@@ -3,21 +3,21 @@ package de.helfenkannjeder.helfomat.infrastructure.elasticsearch.organization
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
 import de.helfenkannjeder.helfomat.core.organization.*
-import de.helfenkannjeder.helfomat.infrastructure.elasticsearch.ElasticsearchConfiguration
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.common.unit.DistanceUnit
 import org.elasticsearch.index.IndexNotFoundException
 import org.elasticsearch.index.query.*
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.core.document.Document
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery
 import org.springframework.data.elasticsearch.core.query.Query
 import java.util.*
 
 class ElasticsearchOrganizationRepository(
-    private val elasticsearchConfiguration: ElasticsearchConfiguration,
-    private val elasticsearchTemplate: ElasticsearchTemplate,
+    private val elasticsearchRestTemplate: ElasticsearchRestTemplate,
     private val indexName: String
 ) : OrganizationRepository {
 
@@ -32,7 +32,7 @@ class ElasticsearchOrganizationRepository(
 
     override fun findByUrlName(urlName: String) = search(QueryBuilders.termQuery("urlName", urlName)).firstOrNull()
 
-    override fun findOne(id: String) = search(QueryBuilders.idsQuery(elasticsearchConfiguration.type.organization).addIds(id)).firstOrNull()
+    override fun findOne(id: String) = search(QueryBuilders.idsQuery().addIds(id)).firstOrNull()
 
     override fun findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
         questionAnswers: List<QuestionAnswer>, position: GeoPoint, distance: Double
@@ -77,25 +77,26 @@ class ElasticsearchOrganizationRepository(
 
     override fun save(organizations: List<Organization>) {
         val indexQueries = organizations
-            .map { item: Organization ->
+            .map {
                 IndexQueryBuilder()
-                    .withId(item.id.value)
-                    .withObject(item)
+                    .withId(it.id.value)
+                    .withObject(it)
             }
-            .map { builder: IndexQueryBuilder -> builder.withType(elasticsearchConfiguration.type.organization) }
-            .map { builder: IndexQueryBuilder -> builder.withIndexName(indexName) }
-            .map { obj: IndexQueryBuilder -> obj.build() }
-        elasticsearchTemplate.bulkIndex(indexQueries)
+            .map { it.build() }
+        elasticsearchRestTemplate.bulkIndex(indexQueries, IndexCoordinates.of(indexName))
     }
 
     override fun remove(organizationId: OrganizationId) {
-        elasticsearchTemplate.delete(indexName, elasticsearchConfiguration.type.organization, organizationId.value)
+        elasticsearchRestTemplate.delete(organizationId.value, IndexCoordinates.of(indexName))
     }
 
     fun createIndex(mapping: String?) {
-        if (!elasticsearchTemplate.indexExists(indexName)) {
-            elasticsearchTemplate.createIndex(indexName)
-            elasticsearchTemplate.putMapping(indexName, elasticsearchConfiguration.type.organization, mapping)
+        val indexOps = elasticsearchRestTemplate.indexOps(IndexCoordinates.of(indexName))
+        if (!indexOps.exists()) {
+            indexOps.create()
+            if (mapping != null) {
+                indexOps.putMapping(Document.parse(mapping))
+            }
         }
     }
 
@@ -180,11 +181,9 @@ class ElasticsearchOrganizationRepository(
 
     private fun search(query: QueryBuilder): List<Organization> {
         val nativeSearchQuery = NativeSearchQuery(query)
-        nativeSearchQuery.addIndices(indexName)
-        nativeSearchQuery.addTypes(elasticsearchConfiguration.type.organization)
         nativeSearchQuery.setPageable<Query>(PageRequest.of(0, DEFAULT_MAX_RESULT_SIZE))
         val result = arrayListOf<Organization>()
-        for (organization in elasticsearchTemplate.stream(nativeSearchQuery, Organization::class.java)) {
+        for (organization in elasticsearchRestTemplate.stream(nativeSearchQuery, Organization::class.java, IndexCoordinates.of(indexName))) {
             result.add(organization)
         }
         return result
