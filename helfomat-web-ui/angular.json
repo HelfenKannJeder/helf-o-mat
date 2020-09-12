@@ -37,14 +37,29 @@
               ]
             },
             "kiosk": {
+              "index": "src/kiosk.html",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.kiosk.ts"
-                },
+                }
+              ]
+            },
+            "kiosk-production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "index": "src/kiosk.html",
+              "fileReplacements": [
                 {
-                  "replace": "src/index.html",
-                  "with": "src/kiosk.html"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.kiosk.ts"
                 }
               ]
             },

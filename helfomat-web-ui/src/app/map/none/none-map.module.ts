@@ -1,16 +1,19 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NoneMapComponent} from "./none-map.component";
+import {NoneAddressSearchComponent} from "./none-address-search.component";
 
 @NgModule({
     imports: [
         BrowserModule
     ],
     declarations: [
-        NoneMapComponent
+        NoneMapComponent,
+        NoneAddressSearchComponent
     ],
     exports: [
-        NoneMapComponent
+        NoneMapComponent,
+        NoneAddressSearchComponent
     ]
 })
 export class NoneMapModule {
