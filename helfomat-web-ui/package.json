@@ -7,6 +7,7 @@
     "start": "./node_modules/.bin/ng serve --proxy-config proxy.conf.json",
     "start:prod": "./node_modules/.bin/ng serve --prod --build-optimizer --proxy-config proxy.conf.json",
     "start:offline": "./node_modules/.bin/ng serve -e offline --proxy-config proxy.conf.json",
+    "start:kiosk": "./node_modules/.bin/ng serve --configuration=kiosk --port 4201 --proxy-config proxy.conf.json",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "./node_modules/.bin/ng test",
     "pree2e": "webdriver-manager update",

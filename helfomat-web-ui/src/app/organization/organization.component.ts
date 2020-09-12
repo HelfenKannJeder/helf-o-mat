@@ -1,26 +1,20 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, Optional} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {ObservableUtil} from '../shared/observable.util';
-import {
-    Address,
-    Organization,
-    OrganizationService,
-    TravelDistance,
-    TravelMode
-} from '../_internal/resources/organization.service';
+import {Address, Organization, OrganizationService, TravelDistance, TravelMode} from '../_internal/resources/organization.service';
 import {GeoPoint} from '../../_internal/geopoint';
 import {filter, flatMap, map, switchMap, tap} from "rxjs/operators";
 import {hasRole, Roles} from "../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'organization',
     templateUrl: './organization.component.html',
-    styleUrls: ['./organization.component.scss'],
-    providers: [OrganizationService]
+    styleUrls: ['./organization.component.scss']
 })
 export class OrganizationComponent implements OnInit, AfterViewInit {
 
@@ -40,7 +34,7 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         private route: ActivatedRoute,
         private router: Router,
         private organizationService: OrganizationService,
-        private oAuthService: OAuthService
+        @Optional() private oAuthService: OAuthService
     ) {
         this._back$ = new Subject<void>();
 
@@ -128,7 +122,14 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         return Address.isEqual(address1, address2);
     }
 
+    public showUrls(): boolean {
+        return !environment.kiosk;
+    }
+
     public isReviewer() {
+        if (this.oAuthService === null) {
+            return false;
+        }
         const accessToken = this.oAuthService.getAccessToken();
         return hasRole(accessToken, Roles.ADMIN) || hasRole(accessToken, Roles.REVIEWER);
     }

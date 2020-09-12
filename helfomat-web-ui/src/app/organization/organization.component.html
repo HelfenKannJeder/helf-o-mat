@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-lg-8">
             <h1>{{organization.name}}</h1>
-            <p><a href="{{organization.website}}">{{organization.website}}</a></p>
+            <p *ngIf="showUrls()"><a href="{{organization.website}}">{{organization.website}}</a></p>
             <p>{{organization.description}}</p>
 
             <div *ngIf="organization.attendanceTimes.length > 0">

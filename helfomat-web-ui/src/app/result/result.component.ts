@@ -14,7 +14,6 @@ import {CreateOrganizationDialogService} from "../_internal/components/create-or
     selector: 'app-result',
     templateUrl: './result.component.html',
     styleUrls: ['./result.component.scss'],
-    providers: [OrganizationService],
     animations: [
         trigger('slide', [
             state('question', style({
@@ -233,4 +232,7 @@ export class ResultComponent implements OnInit {
         this._organization$.next(organization);
     }
 
+    public isReadOnlyMode(): boolean {
+        return environment.readonly;
+    }
 }

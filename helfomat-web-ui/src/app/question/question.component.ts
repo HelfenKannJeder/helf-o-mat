@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ObservableUtil} from '../shared/observable.util';
 import {combineLatest, concat, Observable, of, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-question',
@@ -79,6 +80,10 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
                 return ['answer-yes'];
         }
         return [];
+    }
+
+    public showSkipQuestions(): boolean {
+        return !environment.kiosk;
     }
 
     protected getCurrentAnswers(): Observable<string> {

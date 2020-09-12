@@ -3,6 +3,7 @@ import {combineLatest, Observable} from 'rxjs';
 import {Organization} from '../_internal/resources/organization.service';
 import {PictureId} from "../_internal/resources/picture.service";
 import {GeoPoint} from "../../_internal/geopoint";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'helfomat-list',
@@ -38,8 +39,13 @@ export class ListComponent implements OnInit {
                 this.changeDetectorRef.detectChanges();
             });
     }
-    getImagePath(image: PictureId): string {
+
+    public getImagePath(image: PictureId): string {
         return `api/picture/${image.value}/icon`;
+    }
+
+    public showUrls(): boolean {
+        return !environment.kiosk;
     }
 
 }

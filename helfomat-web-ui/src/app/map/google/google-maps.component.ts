@@ -1,15 +1,4 @@
-import {
-    AfterViewChecked,
-    AfterViewInit,
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    NgZone,
-    OnInit,
-    Output,
-    ViewChild
-} from '@angular/core';
+import {AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, OnInit, Output, ViewChild} from '@angular/core';
 import {combineLatest, Observable} from 'rxjs';
 import MarkerClusterer from 'node-js-marker-clusterer';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -27,7 +16,7 @@ import ControlPosition = google.maps.ControlPosition;
 import Autocomplete = google.maps.places.Autocomplete;
 
 @Component({
-    selector: 'helfomat-google-maps',
+    selector: 'map',
     templateUrl: './google-maps.component.html',
     styleUrls: ['./google-maps.component.scss'],
     animations: [

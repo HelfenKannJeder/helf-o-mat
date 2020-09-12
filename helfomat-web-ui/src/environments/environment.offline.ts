@@ -4,6 +4,8 @@ import {Environment} from "../_internal/environment.interface";
 export const environment: Environment = {
     offline: true,
     production: false,
+    kiosk: false,
+    readonly: false,
     defaults: {
         countries: ['de'],
         mapCenter: new GeoPoint(51.163375, 10.447683),
@@ -23,3 +25,5 @@ export const environment: Environment = {
         showDebugInformation: true
     }
 };
+
+export {AlternativeMapModule as MapImplementationModule} from '../app/map/alternative/alternative-map.module';

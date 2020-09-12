@@ -36,6 +36,18 @@
                 }
               ]
             },
+            "kiosk": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.kiosk.ts"
+                },
+                {
+                  "replace": "src/index.html",
+                  "with": "src/kiosk.html"
+                }
+              ]
+            },
             "production": {
               "optimization": true,
               "outputHashing": "all",
@@ -63,6 +75,9 @@
           "configurations": {
             "offline": {
               "browserTarget": "helfomat-client:build:offline"
+            },
+            "kiosk": {
+              "browserTarget": "helfomat-client:build:kiosk"
             },
             "production": {
               "browserTarget": "helfomat-client:build:production"

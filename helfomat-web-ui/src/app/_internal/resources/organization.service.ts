@@ -5,7 +5,9 @@ import {GeoPoint} from '../../../_internal/geopoint';
 import {HttpClient} from "@angular/common/http";
 import {PictureId} from "./picture.service";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class OrganizationService {
 
     constructor(private httpClient: HttpClient) {

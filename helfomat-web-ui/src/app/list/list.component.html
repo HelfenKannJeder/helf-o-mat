@@ -25,7 +25,7 @@
                         <br/>
                     </span>
                 </p>
-                <p>
+                <p *ngIf="showUrls()">
                     <a [attr.href]="obj.organization.website">{{obj.organization.website}}</a>
                 </p>
                 <p><a class="float-right" (click)="openOrganization.emit(obj.organization)" (keyup.enter)="openOrganization.emit(obj.organization)" tabindex="50">{{'result.list.more' | translate}}</a></p>
