@@ -10,6 +10,7 @@ import {filter, flatMap, map, switchMap, tap} from "rxjs/operators";
 import {hasRole, Roles} from "../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
 import {environment} from "../../environments/environment";
+import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
 
 @Component({
     selector: 'organization',
@@ -34,6 +35,7 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         private route: ActivatedRoute,
         private router: Router,
         private organizationService: OrganizationService,
+        private qrCodeService: QrCodeService,
         @Optional() private oAuthService: OAuthService
     ) {
         this._back$ = new Subject<void>();
@@ -124,6 +126,23 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
 
     public showUrls(): boolean {
         return !environment.kiosk;
+    }
+
+    public showQrCode(): boolean {
+        return environment.kiosk;
+    }
+
+    public getQrCodeLink(organization: Organization, userAnswers: Answer[]) {
+        const questionAnswers: QuestionAnswers[] = [];
+        if (userAnswers != null) {
+            for (let i = 0; i < organization.questions.length; i++) {
+                questionAnswers.push({
+                    questionId: organization.questions[i].questionId,
+                    answer: userAnswers[i]
+                });
+            }
+        }
+        return this.qrCodeService.generateLink(organization.organizationType, questionAnswers);
     }
 
     public isReviewer() {

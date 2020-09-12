@@ -6,6 +6,7 @@ export interface Environment {
     production: boolean;
     kiosk: boolean;
     readonly: boolean;
+    qrCodeUrl: string;
     defaults: {
         countries: string[];
         mapCenter: GeoPoint;

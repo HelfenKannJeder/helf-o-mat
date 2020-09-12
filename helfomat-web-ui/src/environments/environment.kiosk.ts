@@ -6,6 +6,7 @@ export const environment: Environment = {
     production: false,
     kiosk: true,
     readonly: true,
+    qrCodeUrl: 'https://www.helfenkannjeder.de/kiosk',
     defaults: {
         countries: ['de'],
         mapCenter: new GeoPoint(51.163375, 10.447683),

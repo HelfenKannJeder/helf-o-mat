@@ -11,6 +11,7 @@ export const environment: Environment = {
     production: false,
     kiosk: false,
     readonly: false,
+    qrCodeUrl: '',
     defaults: {
         countries: ['de'],
         mapCenter: new GeoPoint(51.163375, 10.447683),

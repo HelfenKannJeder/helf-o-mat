@@ -54,6 +54,9 @@
         "kilometer": "{{ kilometers }}km",
         "meter": "{{ meters }}m",
         "time": "{{ hours }}:{{ minutes }}h"
+      },
+      "qrcode": {
+        "title": "In deiner Nähe?"
       }
     },
     "address": {

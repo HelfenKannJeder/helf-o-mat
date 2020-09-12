@@ -32,6 +32,7 @@
     "@ngx-translate/core": "12.1.2",
     "@ngx-translate/http-loader": "4.0.0",
     "angular-oauth2-oidc": "9.2.2",
+    "angularx-qrcode": "^2.3.5",
     "blueimp-canvas-to-blob": "3.27.0",
     "bootstrap": "4.5.0",
     "core-js": "3.6.5",

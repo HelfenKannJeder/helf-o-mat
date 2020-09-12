@@ -14,6 +14,7 @@ import {NgxPageScrollModule} from 'ngx-page-scroll';
 import {RouterModule} from "@angular/router";
 import {DistanceModule} from "../_internal/components/distance/distance.module";
 import {AuthenticationModule} from "../_internal/authentication/authentication.module";
+import {QRCodeModule} from "angularx-qrcode";
 
 @NgModule({
     imports: [
@@ -27,7 +28,8 @@ import {AuthenticationModule} from "../_internal/authentication/authentication.m
         NgxPageScrollModule,
         RouterModule,
         DistanceModule,
-        AuthenticationModule
+        AuthenticationModule,
+        QRCodeModule
     ],
     declarations: [
         OrganizationComponent,

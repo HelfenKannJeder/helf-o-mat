@@ -174,13 +174,16 @@ export class Address {
 }
 
 export class AnsweredQuestion {
+    public questionId: QuestionId;
     public question: string;
     public answer: string;
     public description: string;
-    public id: string;
     public position: number;
 }
 
+export interface QuestionId {
+    value: string;
+}
 
 export class AttendanceTime {
     public day: DayOfWeek;
