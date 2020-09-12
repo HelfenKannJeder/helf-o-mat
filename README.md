@@ -20,13 +20,13 @@ To build only one of the different packages, please go ahead and specify the pro
 For the execution of the web app there are two dependencies:
 
 * PostgreSQL Database (or another JDBC database if you change the configuration)
-* Elasticsearch 6.x
+* Elasticsearch 7.x
 
 For the execution of the import app there are three dependencies:
 
 * PostgreSQL Database (or another JDBC database if you change the configuration)
 * MySQL (or another JDBC database if you change the configuration)
-* Elasticsearch 6.x
+* Elasticsearch 7.x
 
 The MySQL Database is the legacy database which is necessary since we are importing data from the old HelfenKannJeder V1.
 For the basic setup you need the following custom TYPO3 databases tables:
