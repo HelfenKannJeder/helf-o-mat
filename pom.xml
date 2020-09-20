@@ -73,6 +73,7 @@
                 <module>helfomat-infrastructure-keycloak</module>
                 <module>helfomat-infrastructure-filesystem</module>
                 <module>helfomat-infrastructure-email</module>
+                <module>helfomat-infrastructure-download</module>
                 <module>helfomat-web</module>
             </modules>
         </profile>
@@ -176,6 +177,11 @@
             <dependency>
                 <groupId>de.helfenkannjeder.helfomat</groupId>
                 <artifactId>helfomat-infrastructure-azure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-download</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
