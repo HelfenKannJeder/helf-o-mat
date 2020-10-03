@@ -6,23 +6,29 @@ import {environment} from "../../environments/environment";
 @Injectable({providedIn: 'root'})
 export class QrCodeService {
 
-    private readonly updateLocationInterval = 3600*1000;
+    private readonly updateLocationInterval = 3600 * 1000;
     private latitude: number = null;
     private longitude: number = null;
+    private interval: number = null;
 
     constructor() {
-        const updateLocation = () => {
-            console.log('try to retrieve location');
-            navigator.geolocation.getCurrentPosition((position) => {
-                this.latitude  = position.coords.latitude;
-                this.longitude = position.coords.longitude;
-                console.log('user location is', this.latitude, this.longitude);
-            }, () => {
-                console.log('failed to get location');
-            });
-        };
-        updateLocation();
-        window.setInterval(updateLocation, this.updateLocationInterval);
+    }
+
+    public triggerUpdateLocation(): void {
+        if (this.interval === null) {
+            const updateLocation = () => {
+                console.log('try to retrieve location');
+                navigator.geolocation.getCurrentPosition((position) => {
+                    this.latitude = position.coords.latitude;
+                    this.longitude = position.coords.longitude;
+                    console.log('user location is', this.latitude, this.longitude);
+                }, () => {
+                    console.log('failed to get location');
+                });
+            };
+            updateLocation();
+            this.interval = window.setInterval(updateLocation, this.updateLocationInterval);
+        }
     }
 
     generateLink(organizationType: string, questionAnswers: QuestionAnswers[]) {
