@@ -76,7 +76,7 @@ stages:
           containerRegistry: $(publicDockerRegistryServiceConnection)
           tags: |
             $(tagDevelop)
-            lastest-develop
+            latest-develop
 
   - stage: DeployDevStage
     displayName: Deploy Stage
@@ -139,7 +139,7 @@ stages:
               containerRegistry: $(publicDockerRegistryServiceConnection)
               tags: |
                 $(tagMaster)
-                lastest
+                latest
 
 
   - stage: DeployProdStage
