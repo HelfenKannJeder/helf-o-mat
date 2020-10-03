@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: helfomat-web-ui-kiosk
-          image: helfenkannjeder/helfomat-web-ui-kiosk:latest-develop
+          image: helfenkannjeder/helfomat-web-ui-kiosk
           resources:
             limits:
               cpu: 200m
