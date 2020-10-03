@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: helfomat-web-ui-kiosk-service
+  labels:
+    app: helfomat-web-ui-kiosk
+spec:
+  ports:
+    - name: helfomat-kiosk-port
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: helfomat-web-ui-kiosk
