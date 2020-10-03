@@ -7,13 +7,16 @@
     "start": "./node_modules/.bin/ng serve --proxy-config proxy.conf.json",
     "start:prod": "./node_modules/.bin/ng serve --prod --build-optimizer --proxy-config proxy.conf.json",
     "start:offline": "./node_modules/.bin/ng serve -e offline --proxy-config proxy.conf.json",
+    "start:kiosk": "./node_modules/.bin/ng serve --configuration=kiosk --port 4201 --proxy-config proxy.conf.json",
+    "start:kiosk:prod": "./node_modules/.bin/ng serve --configuration=kiosk-production --port 4201 --proxy-config proxy.conf.json",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "./node_modules/.bin/ng test",
     "pree2e": "webdriver-manager update",
     "e2e": "protractor",
     "postinstall": "./node_modules/.bin/ng build --prod --build-optimizer --output-path=target/client --base-href=/helf-o-mat/",
     "docker": "rm -rf docker/html && npm install && ./node_modules/.bin/ng build --prod --build-optimizer --output-path=docker/html/helf-o-mat --base-href=/helf-o-mat/",
-    "build-prod": "./node_modules/.bin/ng build --prod --build-optimizer --base-href=/helf-o-mat/"
+    "build-prod": "./node_modules/.bin/ng build --prod --build-optimizer --base-href=/helf-o-mat/",
+    "build-prod:kiosk": "./node_modules/.bin/ng build --configuration=kiosk-production --build-optimizer --base-href=/helf-o-mat/"
   },
   "private": true,
   "dependencies": {
@@ -31,6 +34,7 @@
     "@ngx-translate/core": "12.1.2",
     "@ngx-translate/http-loader": "4.0.0",
     "angular-oauth2-oidc": "9.2.2",
+    "angularx-qrcode": "^2.3.5",
     "blueimp-canvas-to-blob": "3.27.0",
     "bootstrap": "4.5.0",
     "core-js": "3.6.5",

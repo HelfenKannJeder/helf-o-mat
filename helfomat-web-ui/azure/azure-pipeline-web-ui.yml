@@ -6,13 +6,17 @@ trigger:
 
 variables:
   dockerRegistryServiceConnection: 'HelfenKannJeder-containers'
+  publicDockerRegistryServiceConnection: 'DockerHub'
   containerRegistry: 'helfenkannjedercontainer.azurecr.io'
   imageRepository: 'helf-o-mat.web-ui'
+  publicImageRepository: 'helfenkannjeder/helfomat-web-ui-kiosk'
   dockerFilePath: 'helfomat-web-ui/azure/Dockerfile'
+  dockerKioskFilePath: 'helfomat-web-ui/azure/Dockerfile-kiosk'
   dockerBuildContext: 'helfomat-web-ui'
-  tagDevelop: '$(Build.BuildId)-develop'
-  tagMaster: '$(Build.BuildId)-master'
+  tagDevelop: '$(Build.SourceVersion)'
+  tagMaster: '$(Build.SourceVersion)'
   k8sDirectory: 'helfomat-web-ui/azure/k8s'
+  k8sKioskDirectory: 'helfomat-web-ui/azure/k8s-kiosk'
 
 
 stages:
@@ -57,6 +61,28 @@ stages:
       - upload: $(k8sDirectory)
         artifact: k8s
 
+  - stage: BuildDevelopKiosk
+    displayName: Build Docker Develop Kiosk
+    dependsOn: Build
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq(variables['Build.Reason'], 'Manual')))
+    jobs:
+    - job: BuildPushDockerDevelopKiosk
+      displayName: Build & Push Docker Develop Kiosk
+      steps:
+        - task: Docker@2
+          displayName: Build and push an image to public container registry
+          inputs:
+            command: buildAndPush
+            repository: $(publicImageRepository)
+            dockerfile: $(dockerKioskFilePath)
+            buildContext: $(dockerBuildContext)
+            containerRegistry: $(publicDockerRegistryServiceConnection)
+            tags: |
+              $(tagDevelop)
+              latest-develop
+
+        - upload: $(k8sKioskDirectory)
+          artifact: k8s-kiosk
 
   - stage: DeployDevStage
     displayName: Deploy Stage
@@ -77,6 +103,26 @@ stages:
                   $(Pipeline.Workspace)/k8s/*.yml
                 containers: |
                   $(containerRegistry)/$(imageRepository):$(tagDevelop)
+
+  - stage: DeployDevStageKiosk
+    displayName: Deploy Stage Kiosk
+    dependsOn: BuildDevelopKiosk
+    jobs:
+    - deployment: DeployDevStage
+      displayName: Deploy Dev Stage
+      environment: 'HelfenKannJeder.dev'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: KubernetesManifest@0
+              displayName: Deploy to Kubernetes cluster
+              inputs:
+                action: deploy
+                manifests: |
+                  $(Pipeline.Workspace)/k8s-kiosk/*.yml
+                containers: |
+                  $(publicImageRepository):$(tagDevelop)
 
 
   - stage: BuildMaster
@@ -101,6 +147,26 @@ stages:
       - upload: $(k8sDirectory)
         artifact: k8s
 
+  - stage: BuildMasterKiosk
+    displayName: Build Docker Master Kiosk
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+      - job: BuildPushDockerMasterKiosk
+        displayName: Build & Push Docker Master Kiosk
+        steps:
+          - task: Docker@2
+            displayName: Build and push an image to public container registry
+            inputs:
+              command: buildAndPush
+              repository: helfenkannjeder/helfomat-web-ui-kiosk
+              dockerfile: $(dockerKioskFilePath)
+              buildContext: $(dockerBuildContext)
+              containerRegistry: $(publicDockerRegistryServiceConnection)
+              tags: |
+                $(tagMaster)
+                latest
+
 
   - stage: DeployProdStage
     displayName: Prod Stage
@@ -121,3 +187,23 @@ stages:
                   $(Pipeline.Workspace)/k8s/*.yml
                 containers: |
                   $(containerRegistry)/$(imageRepository):$(tagMaster)
+
+  - stage: DeployProdStageKiosk
+    displayName: Deploy Stage Kiosk
+    dependsOn: BuildMasterKiosk
+    jobs:
+      - deployment: DeployProdStage
+        displayName: Deploy Prod Stage
+        environment: 'HelfenKannJeder.prod'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: KubernetesManifest@0
+                  displayName: Deploy to Kubernetes cluster
+                  inputs:
+                    action: deploy
+                    manifests: |
+                      $(Pipeline.Workspace)/k8s-kiosk/*.yml
+                    containers: |
+                      $(publicImageRepository):$(tagMaster)

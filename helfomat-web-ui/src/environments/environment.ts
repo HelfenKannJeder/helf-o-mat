@@ -9,6 +9,9 @@ import {Environment} from "../_internal/environment.interface";
 export const environment: Environment = {
     offline: false,
     production: false,
+    kiosk: false,
+    readonly: false,
+    qrCodeUrl: '',
     defaults: {
         countries: ['de'],
         mapCenter: new GeoPoint(51.163375, 10.447683),
@@ -18,7 +21,6 @@ export const environment: Environment = {
         }
     },
     useHttps: false,
-
     auth: {
         issuer: '/auth/realms/helfenkannjeder',
         clientId: 'helfomat-web-ui',
@@ -29,3 +31,5 @@ export const environment: Environment = {
         showDebugInformation: true
     }
 };
+
+export {GoogleMapsModule as MapImplementationModule} from '../app/map/google/google-maps.module';

@@ -1,26 +1,21 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, Optional} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {ObservableUtil} from '../shared/observable.util';
-import {
-    Address,
-    Organization,
-    OrganizationService,
-    TravelDistance,
-    TravelMode
-} from '../_internal/resources/organization.service';
+import {Address, Organization, OrganizationService, TravelDistance, TravelMode} from '../_internal/resources/organization.service';
 import {GeoPoint} from '../../_internal/geopoint';
 import {filter, flatMap, map, switchMap, tap} from "rxjs/operators";
 import {hasRole, Roles} from "../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
+import {environment} from "../../environments/environment";
+import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
 
 @Component({
     selector: 'organization',
     templateUrl: './organization.component.html',
-    styleUrls: ['./organization.component.scss'],
-    providers: [OrganizationService]
+    styleUrls: ['./organization.component.scss']
 })
 export class OrganizationComponent implements OnInit, AfterViewInit {
 
@@ -40,7 +35,8 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         private route: ActivatedRoute,
         private router: Router,
         private organizationService: OrganizationService,
-        private oAuthService: OAuthService
+        private qrCodeService: QrCodeService,
+        @Optional() private oAuthService: OAuthService
     ) {
         this._back$ = new Subject<void>();
 
@@ -128,7 +124,31 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         return Address.isEqual(address1, address2);
     }
 
+    public showUrls(): boolean {
+        return !environment.kiosk;
+    }
+
+    public showQrCode(): boolean {
+        return environment.kiosk;
+    }
+
+    public getQrCodeLink(organization: Organization, userAnswers: Answer[]) {
+        const questionAnswers: QuestionAnswers[] = [];
+        if (userAnswers != null) {
+            for (let i = 0; i < organization.questions.length; i++) {
+                questionAnswers.push({
+                    questionId: organization.questions[i].questionId,
+                    answer: userAnswers[i]
+                });
+            }
+        }
+        return this.qrCodeService.generateLink(organization.organizationType, questionAnswers);
+    }
+
     public isReviewer() {
+        if (this.oAuthService === null) {
+            return false;
+        }
         const accessToken = this.oAuthService.getAccessToken();
         return hasRole(accessToken, Roles.ADMIN) || hasRole(accessToken, Roles.REVIEWER);
     }

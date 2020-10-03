@@ -10,8 +10,8 @@ variables:
   imageRepository: 'helf-o-mat.import'
   dockerFilePath: 'helfomat-import/azure/Dockerfile'
   dockerBuildContext: '.'
-  tagDevelop: '$(Build.BuildId)-develop'
-  tagMaster: '$(Build.BuildId)-master'
+  tagDevelop: '$(Build.SourceVersion)'
+  tagMaster: '$(Build.SourceVersion)'
   k8sDirectory: 'helfomat-import/azure/k8s'
 
 

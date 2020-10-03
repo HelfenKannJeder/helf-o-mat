@@ -1,16 +1,16 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstract-question.component';
-import {HelfomatService} from './helfomat.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ObservableUtil} from '../shared/observable.util';
 import {combineLatest, concat, Observable, of, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
+import {environment} from "../../environments/environment";
+import {QuestionService} from "../_internal/resources/question.service";
 
 @Component({
     selector: 'app-question',
     templateUrl: './question.component.html',
-    styleUrls: ['./question.component.scss'],
-    providers: [HelfomatService]
+    styleUrls: ['./question.component.scss']
 })
 export class QuestionComponent extends AbstractQuestionComponent implements OnInit, OnDestroy {
 
@@ -18,9 +18,11 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
 
     private questionWithUserAnswersSubscription: Subscription;
 
-    constructor(protected router: Router,
-                private route: ActivatedRoute,
-                protected helfomatService: HelfomatService) {
+    constructor(
+        protected router: Router,
+        private route: ActivatedRoute,
+        protected questionService: QuestionService
+    ) {
         super();
 
         combineLatest([
@@ -68,17 +70,22 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
 
     public classOfAnswer(answer: Answer): string[] {
         if (answer == null) {
-            return ['answer-missing'];
+            return ['material-icons', 'answer', 'answer-missing'];
         }
         switch (answer) {
             case Answer.NO:
-                return ['answer-no'];
+                return ['material-icons', 'answer', 'answer-no'];
             case Answer.MAYBE:
-                return ['answer-maybe'];
+                return ['material-icons', 'answer', 'answer-maybe'];
             case Answer.YES:
-                return ['answer-yes'];
+                return ['material-icons', 'answer', 'answer-yes'];
         }
-        return [];
+        console.error('unexpected answer for question', answer);
+        return ['material-icons', 'answer', 'answer-missing'];
+    }
+
+    public showSkipQuestions(): boolean {
+        return !environment.kiosk;
     }
 
     protected getCurrentAnswers(): Observable<string> {

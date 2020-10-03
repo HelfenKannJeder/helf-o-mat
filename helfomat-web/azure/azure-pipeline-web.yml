@@ -6,12 +6,13 @@ trigger:
 
 variables:
   dockerRegistryServiceConnection: 'HelfenKannJeder-containers'
+  publicDockerRegistryServiceConnection: 'DockerHub'
   containerRegistry: 'helfenkannjedercontainer.azurecr.io'
   imageRepository: 'helf-o-mat.web'
   dockerFilePath: 'helfomat-web/azure/Dockerfile'
   dockerBuildContext: '.'
-  tagDevelop: '$(Build.BuildId)-develop'
-  tagMaster: '$(Build.BuildId)-master'
+  tagDevelop: '$(Build.SourceVersion)'
+  tagMaster: '$(Build.SourceVersion)'
   k8sDirectory: 'helfomat-web/azure/k8s'
 
 
@@ -57,6 +58,25 @@ stages:
       - upload: $(k8sDirectory)
         artifact: k8s
 
+  - stage: BuildDevelopDockerHub
+    displayName: Build Docker Develop (DockerHub)
+    dependsOn: Build
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq(variables['Build.Reason'], 'Manual')))
+    jobs:
+    - job: BuildPushDockerDevelop
+      displayName: Build & Push Docker Develop
+      steps:
+      - task: Docker@2
+        displayName: Build and push an image to container registry
+        inputs:
+          command: buildAndPush
+          repository: helfenkannjeder/helfomat-web
+          dockerfile: $(dockerFilePath)
+          buildContext: $(dockerBuildContext)
+          containerRegistry: $(publicDockerRegistryServiceConnection)
+          tags: |
+            $(tagDevelop)
+            latest-develop
 
   - stage: DeployDevStage
     displayName: Deploy Stage
@@ -100,6 +120,26 @@ stages:
 
       - upload: $(k8sDirectory)
         artifact: k8s
+
+  - stage: BuildMasterDockerHub
+    displayName: Build Docker Master (DockerHub)
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+      - job: BuildPushDockerMaster
+        displayName: Build & Push Docker Master
+        steps:
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: helfenkannjeder/helfomat-web
+              dockerfile: $(dockerFilePath)
+              buildContext: $(dockerBuildContext)
+              containerRegistry: $(publicDockerRegistryServiceConnection)
+              tags: |
+                $(tagMaster)
+                latest
 
 
   - stage: DeployProdStage

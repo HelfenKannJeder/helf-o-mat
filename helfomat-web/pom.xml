@@ -95,6 +95,15 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+            <id>kiosk</id>
+            <dependencies>
+                <dependency>
+                    <groupId>de.helfenkannjeder.helfomat</groupId>
+                    <artifactId>helfomat-infrastructure-download</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
     <build>

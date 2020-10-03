@@ -4,6 +4,9 @@ import {Environment} from "../_internal/environment.interface";
 export const environment: Environment = {
     offline: false,
     production: true,
+    kiosk: false,
+    readonly: false,
+    qrCodeUrl: '',
     defaults: {
         countries: ['de'],
         mapCenter: new GeoPoint(51.163375, 10.447683),
@@ -23,3 +26,5 @@ export const environment: Environment = {
         showDebugInformation: true
     }
 };
+
+export {GoogleMapsModule as MapImplementationModule} from '../app/map/google/google-maps.module';

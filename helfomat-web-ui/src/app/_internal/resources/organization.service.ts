@@ -5,7 +5,9 @@ import {GeoPoint} from '../../../_internal/geopoint';
 import {HttpClient} from "@angular/common/http";
 import {PictureId} from "./picture.service";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class OrganizationService {
 
     constructor(private httpClient: HttpClient) {
@@ -172,13 +174,16 @@ export class Address {
 }
 
 export class AnsweredQuestion {
+    public questionId: QuestionId;
     public question: string;
     public answer: string;
     public description: string;
-    public id: string;
     public position: number;
 }
 
+export interface QuestionId {
+    value: string;
+}
 
 export class AttendanceTime {
     public day: DayOfWeek;

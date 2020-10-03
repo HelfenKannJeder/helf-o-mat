@@ -1,4 +1,4 @@
-<helfomat-map
+<map
     [organizations]="organizations"
     [center]="center"
     [position]="position"
@@ -13,4 +13,4 @@
     (updateZoom)="updateZoom.next($event)"
     (openOrganization)="openOrganization.next($event)"
     (mapResize)="mapResize.next($event)"
-><ng-content></ng-content></helfomat-map>
+><ng-content></ng-content></map>

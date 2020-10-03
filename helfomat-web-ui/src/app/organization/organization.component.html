@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-lg-8">
             <h1>{{organization.name}}</h1>
-            <p><a href="{{organization.website}}">{{organization.website}}</a></p>
+            <p *ngIf="showUrls()"><a href="{{organization.website}}">{{organization.website}}</a></p>
             <p>{{organization.description}}</p>
 
             <div *ngIf="organization.attendanceTimes.length > 0">
@@ -134,6 +134,26 @@
                             </p>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="card card-default" *ngIf="showQrCode()">
+                <div class="card-header">
+                    {{'organization.facts.qrcode.title' | translate}}
+                </div>
+                <div class="card-body">
+                    <qrcode *ngIf="userAnswers | async; let userAnswers; else qrCodeWithoutAnswers"
+                            [margin]="0"
+                            [qrdata]="getQrCodeLink(organization, userAnswers)"
+                            [width]="256"
+                            [errorCorrectionLevel]="'M'"></qrcode>
+                    <ng-template #qrCodeWithoutAnswers>
+                        <qrcode
+                                [margin]="0"
+                                [qrdata]="getQrCodeLink(organization, null)"
+                                [width]="256"
+                                [errorCorrectionLevel]="'M'"></qrcode>
+                    </ng-template>
                 </div>
             </div>
 

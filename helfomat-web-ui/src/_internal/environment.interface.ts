@@ -4,6 +4,9 @@ import {AuthConfig} from "angular-oauth2-oidc";
 export interface Environment {
     offline: boolean;
     production: boolean;
+    kiosk: boolean;
+    readonly: boolean;
+    qrCodeUrl: string;
     defaults: {
         countries: string[];
         mapCenter: GeoPoint;

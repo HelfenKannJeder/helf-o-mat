@@ -16,6 +16,7 @@ import {OAuthModule} from "angular-oauth2-oidc";
 import {ProfileModule} from "./profile/profile.module";
 import {HttpErrorInterceptor} from "./_internal/http-error.interceptor";
 import {AuthenticateModule} from "./authenticate/authenticate.module";
+import {KioskRouteModule} from "./kiosk/kiosk-route.module";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -36,6 +37,7 @@ export function createTranslateLoader(http: HttpClient) {
         HttpClientModule,
         ProfileModule,
         AuthenticateModule,
+        KioskRouteModule,
         routing,
         TranslateModule.forRoot({
             loader: {

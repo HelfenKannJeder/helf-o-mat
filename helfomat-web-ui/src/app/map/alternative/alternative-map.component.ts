@@ -4,7 +4,7 @@ import {BoundingBox, Organization} from '../../_internal/resources/organization.
 import {GeoPoint} from '../../../_internal/geopoint';
 
 @Component({
-    selector: 'helfomat-alternative-map',
+    selector: 'map',
     templateUrl: './alternative-map.component.html'
 })
 export class AlternativeMapComponent {

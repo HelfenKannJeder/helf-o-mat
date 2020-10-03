@@ -1,17 +1,16 @@
-import {HelfomatService} from './helfomat.service';
-import {Question} from './question.model';
 import {EventEmitter, OnDestroy, OnInit} from '@angular/core';
-import {combineLatest, merge, Observable, of, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, merge, Observable, of, Subject, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
 import {UserAnswer} from '../_internal/resources/organization.service';
 import {distinctUntilChanged, map} from "rxjs/operators";
+import {Question, QuestionService} from "../_internal/resources/question.service";
 
 export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
 
     // input & output
     public currentAnswers: Observable<string>;
     public newAnswers: EventEmitter<string> = new EventEmitter<string>();
-    public questionWithUserAnswers: Subject<Array<QuestionWithUserAnswer>> = new Subject<Array<QuestionWithUserAnswer>>();
+    public questionWithUserAnswers: Subject<Array<QuestionWithUserAnswer>> = new BehaviorSubject<Array<QuestionWithUserAnswer>>([]);
 
     // internal
     private nextAnswer: EventEmitter<UserAnswer> = new EventEmitter<UserAnswer>();
@@ -19,7 +18,7 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
     private questionsAndAnswersSubscription: Subscription;
     private newAnswersSubscription: Subscription;
 
-    protected helfomatService: HelfomatService;
+    protected questionService: QuestionService;
 
     constructor() {
     }
@@ -27,10 +26,10 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.userAnswers = this.getCurrentUserAnswers();
 
-        let questionsAndAnswers: Observable<[Array<UserAnswer>, Array<Question>]> = combineLatest(
+        let questionsAndAnswers: Observable<[Array<UserAnswer>, Array<Question>]> = combineLatest([
             this.getCombinedUserAnswersWithNewUserAnswer(),
-            this.helfomatService.findQuestions()
-        );
+            this.questionService.findQuestions()
+        ]);
 
         this.questionsAndAnswersSubscription = questionsAndAnswers
             .pipe(
@@ -66,7 +65,7 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
     protected abstract getCurrentAnswers(): Observable<string>;
 
     private getCombinedUserAnswersWithNewUserAnswer(): Observable<Array<UserAnswer>> {
-        return combineLatest(
+        return combineLatest([
             merge(
                 of([]),
                 this.getCurrentUserAnswers()
@@ -75,7 +74,7 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
                 of(null),
                 this.nextAnswer
             )
-        )
+        ])
             .pipe(map(([userAnswers, newAnswer]: [Array<UserAnswer>, UserAnswer]) => AbstractQuestionComponent.combineUserAnswersWithNewAnswer(userAnswers, newAnswer)));
     }
 
@@ -145,7 +144,7 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
             this.getCurrentAnswers().pipe(
                 map(string => JSON.parse(string))
             ),
-            this.helfomatService.findQuestions()
+            this.questionService.findQuestions()
         )
             .pipe(
                 map(([answers, questions]: [Array<Answer>, Array<Question>]) => this.toUserAnswers(questions, answers))

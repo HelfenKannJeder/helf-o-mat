@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helfomat-web-ui-kiosk
+spec:
+  selector:
+    matchLabels:
+      app: helfomat-web-ui-kiosk
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: helfomat-web-ui-kiosk
+    spec:
+      containers:
+        - name: helfomat-web-ui-kiosk
+          image: helfenkannjeder/helfomat-web-ui-kiosk
+          resources:
+            limits:
+              cpu: 200m
+              memory: 100Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi
+
+          ports:
+            - containerPort: 80

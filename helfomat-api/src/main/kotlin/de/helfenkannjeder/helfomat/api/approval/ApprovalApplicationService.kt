@@ -6,11 +6,11 @@ import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDto
 import de.helfenkannjeder.helfomat.api.organization.event.OrganizationEventDtoAssembler
 import de.helfenkannjeder.helfomat.core.approval.ApprovalId
 import de.helfenkannjeder.helfomat.core.approval.ApprovalRepository
-import de.helfenkannjeder.helfomat.core.organization.NullableOrganizationEventVisitor
 import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
-import de.helfenkannjeder.helfomat.core.organization.event.*
-import de.helfenkannjeder.helfomat.core.picture.PictureId
+import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent.Companion.toPictureIds
+import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository
 import de.helfenkannjeder.helfomat.core.user.UserRepository
@@ -74,38 +74,8 @@ open class ApprovalApplicationService(
     }
 
     private fun publishNewPictures(proposedChangeOrganizationEvent: ProposedChangeOrganizationEvent) {
-        val visitor = object : NullableOrganizationEventVisitor<List<PictureId>> {
-            override fun visit(organizationEditAddPictureEvent: OrganizationEditAddPictureEvent): List<PictureId>? =
-                listOf(organizationEditAddPictureEvent.pictureId)
-
-            override fun visit(organizationEditTeaserImageEvent: OrganizationEditTeaserImageEvent): List<PictureId>? {
-                val pictureId = organizationEditTeaserImageEvent.teaserImage ?: return null
-                return listOf(pictureId)
-            }
-
-            override fun visit(organizationEditAddContactPersonEvent: OrganizationEditAddContactPersonEvent): List<PictureId>? {
-                val pictureId = organizationEditAddContactPersonEvent.contactPerson.picture ?: return null
-                return listOf(pictureId)
-            }
-
-            override fun visit(organizationEditAddVolunteerEvent: OrganizationEditAddVolunteerEvent): List<PictureId>? {
-                val pictureId = organizationEditAddVolunteerEvent.volunteer.picture ?: return null
-                return listOf(pictureId)
-            }
-
-            override fun visit(organizationEditLogoEvent: OrganizationEditLogoEvent): List<PictureId>? {
-                val pictureId = organizationEditLogoEvent.logo ?: return null
-                return listOf(pictureId)
-            }
-
-            override fun visit(organizationEditChangeContactPersonEvent: OrganizationEditChangeContactPersonEvent): List<PictureId>? {
-                val pictureId = organizationEditChangeContactPersonEvent.contactPerson.picture ?: return null
-                return listOf(pictureId)
-            }
-        }
-        val picturesToMakePublic = proposedChangeOrganizationEvent.changes.flatMap { it.visit(visitor) ?: emptyList() }
         this.pictureRepository.saveAll(
-            pictureRepository.findAllById(picturesToMakePublic)
+            pictureRepository.findAllById(toPictureIds(proposedChangeOrganizationEvent.changes))
                 .map { it.apply { public = true } }
         )
     }

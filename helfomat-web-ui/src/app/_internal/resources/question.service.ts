@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
-import {Question} from './question.model';
 import {Observable} from 'rxjs';
 import {HttpClient} from "@angular/common/http";
 
-@Injectable()
-export class HelfomatService {
+@Injectable({
+    providedIn: 'root'
+})
+export class QuestionService {
 
     constructor(private httpClient: HttpClient) {
     }
@@ -13,4 +14,11 @@ export class HelfomatService {
         return this.httpClient.get<Array<Question>>('api/questions');
     }
 
+}
+
+export class Question {
+    public id: string;
+    public question: string;
+    public description: string;
+    public position: number;
 }

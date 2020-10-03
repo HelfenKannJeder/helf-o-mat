@@ -5,6 +5,7 @@ import {ResultComponent} from './result/result.component';
 import {OrganizationComponent} from './organization/organization.component';
 import {NoAuthGuard} from "./_internal/authentication/no-auth.guard";
 import {AuthenticateComponent} from "./authenticate/authenticate.component";
+import {KioskRouteComponent} from "./kiosk/kiosk-route.component";
 
 const appRoutes: Routes = [
     {
@@ -16,6 +17,10 @@ const appRoutes: Routes = [
             {path: 'location', component: ResultComponent, canActivate: [NoAuthGuard]},
             {path: '', redirectTo: 'question', pathMatch: 'full'}
         ]
+    },
+    {
+        path: 'kiosk/:organizationType/:latitude/:longitude',
+        component: KioskRouteComponent
     },
     {path: 'result', redirectTo: '/volunteer/result'},
     {path: 'question', redirectTo: '/volunteer/question'},
