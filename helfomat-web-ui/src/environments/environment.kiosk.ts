@@ -3,7 +3,7 @@ import {Environment} from "../_internal/environment.interface";
 
 export const environment: Environment = {
     offline: true,
-    production: false,
+    production: true,
     kiosk: true,
     readonly: true,
     qrCodeUrl: 'https://www.helfenkannjeder.de/kiosk',
