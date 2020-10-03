@@ -177,8 +177,8 @@ spec:
               path: /helf-o-mat/actuator/health
               port: 8080
               scheme: HTTP
-            initialDelaySeconds: 180
+            initialDelaySeconds: 120
             periodSeconds: 20
             successThreshold: 1
-            failureThreshold: 3
+            failureThreshold: 5
             timeoutSeconds: 20
