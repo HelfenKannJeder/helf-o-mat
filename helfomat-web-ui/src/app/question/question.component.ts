@@ -70,18 +70,18 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
 
     public classOfAnswer(answer: Answer): string[] {
         if (answer == null) {
-            return ['answer-missing'];
+            return ['material-icons', 'answer', 'answer-missing'];
         }
         switch (answer) {
             case Answer.NO:
-                return ['answer-no'];
+                return ['material-icons', 'answer', 'answer-no'];
             case Answer.MAYBE:
-                return ['answer-maybe'];
+                return ['material-icons', 'answer', 'answer-maybe'];
             case Answer.YES:
-                return ['answer-yes'];
+                return ['material-icons', 'answer', 'answer-yes'];
         }
         console.error('unexpected answer for question', answer);
-        return [];
+        return ['material-icons', 'answer', 'answer-missing'];
     }
 
     public showSkipQuestions(): boolean {
