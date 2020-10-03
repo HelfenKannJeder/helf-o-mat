@@ -290,7 +290,7 @@
       "list": "Aufgrund Deiner Antworten haben wir hier die Übereinstimmung mit den Hilfsorganisationen, die auf HelfenKannJeder.de erfasst sind, dargestellt.",
       "createOrganization": "Neue Organisation anlegen",
       "removeOrganizationTypeFilter": "Filter löschen",
-      "filterOrganizationType": "Die Suche ist aktuell auf einen einzigen Organisationstyp eingeschränkt der zu dir passt. Um alle Organisationen zu vergleichen lösche bitte den Filter."
+      "filterOrganizationType": "Moment zeigen wir deine ausgewählte Organisation an. Um alle Organisationen anzuzeigen entferne diesen Filter."
     },
     "mobile": {
       "swipe": {
