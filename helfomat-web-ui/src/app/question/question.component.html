@@ -32,7 +32,7 @@
             </a>
         </p>
         <p class="text-center question-progress">
-        <span *ngFor="let subQuestionWithUserAnswer of questionWithUserAnswersSync"
+        <span *ngFor="let subQuestionWithUserAnswer of (questionWithUserAnswers | async)"
               class="material-icons answer"
               [ngClass]="classOfAnswer(subQuestionWithUserAnswer.userAnswer?.answer)">fiber_manual_record</span>
         </p>

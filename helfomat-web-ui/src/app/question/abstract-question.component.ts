@@ -1,5 +1,5 @@
 import {EventEmitter, OnDestroy, OnInit} from '@angular/core';
-import {combineLatest, merge, Observable, of, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, merge, Observable, of, Subject, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
 import {UserAnswer} from '../_internal/resources/organization.service';
 import {distinctUntilChanged, map} from "rxjs/operators";
@@ -10,7 +10,7 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
     // input & output
     public currentAnswers: Observable<string>;
     public newAnswers: EventEmitter<string> = new EventEmitter<string>();
-    public questionWithUserAnswers: Subject<Array<QuestionWithUserAnswer>> = new Subject<Array<QuestionWithUserAnswer>>();
+    public questionWithUserAnswers: Subject<Array<QuestionWithUserAnswer>> = new BehaviorSubject<Array<QuestionWithUserAnswer>>([]);
 
     // internal
     private nextAnswer: EventEmitter<UserAnswer> = new EventEmitter<UserAnswer>();

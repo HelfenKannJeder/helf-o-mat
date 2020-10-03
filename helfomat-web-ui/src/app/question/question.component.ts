@@ -80,6 +80,7 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
             case Answer.YES:
                 return ['answer-yes'];
         }
+        console.error('unexpected answer for question', answer);
         return [];
     }
 

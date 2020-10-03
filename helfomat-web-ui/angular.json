@@ -94,6 +94,9 @@
             "kiosk": {
               "browserTarget": "helfomat-client:build:kiosk"
             },
+            "kiosk-production": {
+              "browserTarget": "helfomat-client:build:kiosk:production"
+            },
             "production": {
               "browserTarget": "helfomat-client:build:production"
             }
