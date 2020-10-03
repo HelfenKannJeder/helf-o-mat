@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 
 import {inject, TestBed} from '@angular/core/testing';
-import {HelfomatService} from './helfomat.service';
+import {Question, QuestionService} from './question.service';
 import {MockBackend, MockConnection} from '@angular/http/testing';
 import {BaseRequestOptions, ConnectionBackend, Http, RequestOptions, Response, ResponseOptions} from '@angular/http';
 
@@ -14,18 +14,18 @@ describe('Component: Question', () => {
                     {provide: RequestOptions, useClass: BaseRequestOptions},
                     {provide: ConnectionBackend, useClass: MockBackend},
                     Http,
-                    HelfomatService
+                    QuestionService
                 ]
             });
         });
 
-        it('should inject the service', inject([HelfomatService], (service: HelfomatService) => {
+        it('should inject the service', inject([QuestionService], (service: QuestionService) => {
             expect(service).toBeTruthy();
         }));
 
-        it('should download all questions if requested', inject([ConnectionBackend, HelfomatService],
+        it('should download all questions if requested', inject([ConnectionBackend, QuestionService],
             (backend: MockBackend,
-             service: HelfomatService) => {
+             service: QuestionService) => {
                 // Arrange
                 let questions = null;
                 backend.connections.subscribe((c: MockConnection) => {
@@ -34,7 +34,7 @@ describe('Component: Question', () => {
                 });
 
                 // Act
-                service.findQuestions().subscribe((q) => {
+                service.findQuestions().subscribe((q: Question[]) => {
                     questions = q;
                 });
 

@@ -29,10 +29,25 @@ export class QrCodeService {
         let answers = "";
         for (const questionAnswer of questionAnswers) {
             const firstPartOfUuid = questionAnswer.questionId.value.split("-")[0];
-            answers += `${firstPartOfUuid}=${questionAnswer.answer};`;
+            answers += `;${firstPartOfUuid}=${questionAnswer.answer}`;
         }
-        return `${environment.qrCodeUrl}/${organizationType}/${this.latitude}/${this.longitude}/${answers}`;
+        const qrCodeUrl = this.getQrCodeUrl();
+        return `${qrCodeUrl}/${organizationType}/${this.latitude}/${this.longitude}${answers}`;
     }
+
+    private getQrCodeUrl() {
+        const qrCodeUrl = environment.qrCodeUrl;
+
+        const currentHost = window.location.host;
+        if (currentHost.startsWith("localhost")) {
+            return "http://localhost:4200/kiosk";
+        } else if (currentHost.startsWith("kiosk.")) {
+            return "https://" + currentHost.substring("kiosk.".length) + "/kiosk";
+        } else {
+            return qrCodeUrl;
+        }
+    }
+
 }
 
 export interface QuestionAnswers {

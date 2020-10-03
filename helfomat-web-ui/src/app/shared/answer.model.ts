@@ -5,6 +5,20 @@ export enum Answer {
 }
 
 export class AnswerUtil {
+
+    public static toAnswer(answer: string): Answer {
+        switch (answer) {
+            case "NO":
+                return Answer.NO;
+            case "MAYBE":
+                return Answer.MAYBE;
+            case "YES":
+                return Answer.YES;
+            default:
+                return null;
+        }
+    }
+
     public static getNeighbours(answer: Answer): Answer[] {
         switch (answer) {
             case Answer.NO:

@@ -1,16 +1,15 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {AbstractQuestionComponent, QuestionWithUserAnswer} from './abstract-question.component';
-import {HelfomatService} from './helfomat.service';
 import {Router} from '@angular/router';
 import {Observable, Subscription} from 'rxjs';
 import {UserAnswer} from '../_internal/resources/organization.service';
 import {map} from "rxjs/operators";
+import {QuestionService} from "../_internal/resources/question.service";
 
 @Component({
     selector: 'app-question-overview',
     templateUrl: './question-overview.component.html',
-    styleUrls: ['./question-overview.component.scss'],
-    providers: [HelfomatService]
+    styleUrls: ['./question-overview.component.scss']
 })
 export class QuestionOverviewComponent extends AbstractQuestionComponent implements OnInit, OnDestroy {
 
@@ -21,7 +20,7 @@ export class QuestionOverviewComponent extends AbstractQuestionComponent impleme
     private questionUserAnswersSubscription: Subscription;
 
     constructor(protected router: Router,
-                protected helfomatService: HelfomatService) {
+                protected questionService: QuestionService) {
         super();
     }
 

@@ -36,11 +36,13 @@ export class ResultComponent implements OnInit {
     public _zoom$: Subject<number> = new BehaviorSubject<number>(environment.defaults.zoomLevel.withoutPosition);
     public _organization$: Subject<Organization> = new Subject<Organization>();
     public _newAnswers$: Subject<string> = new Subject<string>();
+    public _organizationType$: Subject<string | null> = new BehaviorSubject<string | null>(null);
     public answers: Observable<string>;
     public position: Observable<GeoPoint>;
     public center: Observable<GeoPoint>;
     public distance = from([10]);
     public zoom: Observable<number>;
+    public organizationType: Observable<string | null>;
     public _mapSize$: Subject<string> = new BehaviorSubject<string>('normal');
     public mapSize: Observable<string>;
     public hasPosition: boolean = true;
@@ -113,8 +115,6 @@ export class ResultComponent implements OnInit {
                 distinctUntilChanged()
             );
 
-        this.zoom.subscribe((zoom) => console.log("current zoom", zoom));
-
         this.answers = ObservableUtil.extractObjectMember(this.route.params, 'answers');
 
         ObservableUtil.extractObjectMember(this.route.params, 'mapSize')
@@ -128,6 +128,15 @@ export class ResultComponent implements OnInit {
                 return this._mapSize$.next(mapSize);
             });
         this.mapSize = this._mapSize$.asObservable();
+
+        ObservableUtil.extractObjectMember(this.route.params, 'organizationType')
+            .subscribe(organizationType => this._organizationType$.next(<string>organizationType || null));
+
+        this.organizationType = this._organizationType$.asObservable()
+            .pipe(
+                debounceTime(100),
+                distinctUntilChanged()
+            );
     }
 
     ngOnInit() {
@@ -136,15 +145,17 @@ export class ResultComponent implements OnInit {
             this._position$.asObservable(),
             this.distance,
             this._boundingBox$.asObservable(),
-            this._zoom$.asObservable()
+            this._zoom$.asObservable(),
+            this._organizationType$.asObservable()
         ])
-            .subscribe(([userAnswers, position, distance, boundingBox, zoom]: [UserAnswer[], GeoPoint, number, BoundingBox, number]) => {
+            .subscribe(([userAnswers, position, distance, boundingBox, zoom, organizationType]: [UserAnswer[], GeoPoint, number, BoundingBox, number, string]) => {
                 this.router.navigate(['/volunteer/result', {
                     answers: UrlParamBuilder.buildAnswersFromUserAnswer(userAnswers),
                     position: UrlParamBuilder.buildGeoPoint(position),
                     distance: distance,
                     boundingBox: UrlParamBuilder.buildBoundingBox(boundingBox),
-                    zoom: zoom
+                    zoom: zoom,
+                    organizationType
                 }], {
                     replaceUrl: true
                 });
@@ -153,22 +164,26 @@ export class ResultComponent implements OnInit {
         combineLatest([
             this._answers$.asObservable(),
             this.position,
-            this.distance
+            this.distance,
+            this.organizationType
         ])
             .pipe(
-                flatMap(([answers, position, distance]: [Array<UserAnswer>, GeoPoint, number]) => {
+                flatMap(([answers, position, distance, organizationType]: [Array<UserAnswer>, GeoPoint, number, string | null]) => {
+                    let organizations;
                     if (answers.length == 0 && position == null) {
-                        return this.organizationService.findGlobal();
+                        organizations = this.organizationService.findGlobal();
                     } else if (answers.length == 0) {
-                        return this.organizationService.findByPosition(position, distance);
+                        organizations = this.organizationService.findByPosition(position, distance);
                     } else if (position == null) {
-                        return this.organizationService.findGlobalByQuestionAnswers(answers);
+                        organizations = this.organizationService.findGlobalByQuestionAnswers(answers);
                     } else {
-                        return this.organizationService.findByQuestionAnswersAndPosition(answers, position, distance);
+                        organizations = this.organizationService.findByQuestionAnswersAndPosition(answers, position, distance);
                     }
+                    return organizations
+                        .pipe(map(organizations => this.filterOrganizations(organizations, organizationType)));
                 })
             )
-            .subscribe((organizations) => {
+            .subscribe((organizations: Organization[]) => {
                 this.organizations.next(organizations);
             });
 
@@ -234,5 +249,16 @@ export class ResultComponent implements OnInit {
 
     public isReadOnlyMode(): boolean {
         return environment.readonly;
+    }
+
+    public removeOrganizationTypeFilter(): void {
+        this._organizationType$.next(null);
+    }
+
+    private filterOrganizations(organizations: Organization[], organizationType: string | null): Organization[] {
+        if (organizationType == null) {
+            return organizations;
+        }
+        return organizations.filter(organization => organization.organizationType == organizationType);
     }
 }

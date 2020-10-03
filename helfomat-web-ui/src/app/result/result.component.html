@@ -74,6 +74,18 @@
                     </div>
                 </div>
                 <br class="clearfix"/>
+                <div *ngIf="organizationType | async; let organizationType">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="float-right">
+                                <a (click)="removeOrganizationTypeFilter()" [title]="'result.header.removeOrganizationTypeFilter' | translate"><i
+                                    class="material-icons md-36 text-danger">delete</i></a>
+                            </div>
+                            {{ 'result.header.filterOrganizationType' | translate: {organizationType: organizationType} }}
+                        </div>
+                    </div>
+                    <br class="clearfix"/>
+                </div>
                 <helfomat-list
                     [organizations]="organizations"
                     [position]="position"
