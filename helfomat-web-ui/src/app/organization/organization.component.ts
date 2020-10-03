@@ -38,6 +38,9 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         private qrCodeService: QrCodeService,
         @Optional() private oAuthService: OAuthService
     ) {
+        if (this.showQrCode()) {
+            qrCodeService.triggerUpdateLocation();
+        }
         this._back$ = new Subject<void>();
 
         this.userAnswers = ObservableUtil.extractObjectMember(this.route.params, 'answers')

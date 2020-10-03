@@ -10,6 +10,7 @@ variables:
   containerRegistry: 'helfenkannjedercontainer.azurecr.io'
   imageRepository: 'helf-o-mat.web'
   dockerFilePath: 'helfomat-web/azure/Dockerfile'
+  dockerKioskFilePath: 'helfomat-web/azure/Dockerfile-kiosk'
   dockerBuildContext: '.'
   tagDevelop: '$(Build.SourceVersion)'
   tagMaster: '$(Build.SourceVersion)'
@@ -70,8 +71,8 @@ stages:
         displayName: Build and push an image to container registry
         inputs:
           command: buildAndPush
-          repository: helfenkannjeder/helfomat-web
-          dockerfile: $(dockerFilePath)
+          repository: helfenkannjeder/helfomat-web-kiosk
+          dockerfile: $(dockerKioskFilePath)
           buildContext: $(dockerBuildContext)
           containerRegistry: $(publicDockerRegistryServiceConnection)
           tags: |
@@ -133,8 +134,8 @@ stages:
             displayName: Build and push an image to container registry
             inputs:
               command: buildAndPush
-              repository: helfenkannjeder/helfomat-web
-              dockerfile: $(dockerFilePath)
+              repository: helfenkannjeder/helfomat-web-kiosk
+              dockerfile: $(dockerKioskFilePath)
               buildContext: $(dockerBuildContext)
               containerRegistry: $(publicDockerRegistryServiceConnection)
               tags: |
