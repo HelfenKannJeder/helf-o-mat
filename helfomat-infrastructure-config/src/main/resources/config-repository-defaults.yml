@@ -35,7 +35,7 @@ helfomat:
       groups:
         - organizationType: "FF"
           answer: "YES"
-        - phrase: "Rettungsdienst" # ASB / DRK
+        - phrase: "Rettungsdienst" # ASB / DRK / MHD / JUH
           answer: "MAYBE"
         - organizationType: "THW"
           answer: "MAYBE"
@@ -47,7 +47,7 @@ helfomat:
       groups:
         - organizationType: "FF"
           answer: "YES"
-        - phrase: "Schnelleinsatzgruppe" # ASB / DRK
+        - phrase: "Schnelleinsatzgruppe" # ASB / DRK / JUH / MHD
           answer: "YES"
         - organizationType: "BW"
           answer: "NO"
@@ -60,6 +60,10 @@ helfomat:
         - phrase: "Feldkochherd"
           answer: "YES"
         - phrase: "Logistik-Verpflegungstrupp"
+          answer: "YES"
+        - phrase: "Verpflegung"
+          answer: "YES"
+        - phrase: "Kochgruppe"
           answer: "YES"
         - phrase: "Betreuung" # DLRG / ASB / DRK
           answer: "MAYBE"
@@ -115,6 +119,8 @@ helfomat:
           answer: "YES"
         - phrase: "Höhenrettung" # ASB / DRK / THW
           answer: "MAYBE"
+        - phrase: "Geländerettung" # ASB / DRK / JUH / MHD
+          answer: "MAYBE"
         - organizationType: "BRH"
           answer: "MAYBE"
 
@@ -127,10 +133,12 @@ helfomat:
           answer: "MAYBE"
         - organizationType: "BW"
           answer: "MAYBE"
-        - phrase: "Kriseninterventionsteam" # ASB / DRK
+        - phrase: "Kriseninterventionsteam" # ASB / DRK / JUH / MHD
           answer: "YES"
-        - phrase: "Betreuung" # DLRG / ASB / DRK
-          answer: "MAYBE"
+        - phrase: "Betreuung" # DLRG / ASB / DRK / JUH / MHD
+          answer: "YES"
+        - phrase: "Pflegeunterstützung" # ASB / DRK / MHD / JUH
+          answer: "YES"
         - organizationType: "BRH"
           answer: "MAYBE"
 
@@ -140,6 +148,8 @@ helfomat:
       defaultAnswer: "NO"
       groups:
         - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
+          answer: "YES"
+        - phrase: "Rettungsdienst" # ASB / DRK / JUH / MHD
           answer: "YES"
         - organizationType: "DRK"
           answer: "MAYBE"
@@ -151,20 +161,20 @@ helfomat:
           answer: "MAYBE"
 
     - id: "0d76d16a-c640-40ec-af4e-2111ad36ee46"
-      question: "Bist Du handwerklich interessiert und kannst Strom, Heizung, Wasser, etc. in Notunterkünften installieren?"
+      question: "Bist Du handwerklich interessiert und kannst Strom, Heizung, Wasser, etc. in Notunterkünften oder Betreuungs- und Behandlungseinrichtungen installieren?"
       description: "Im Rahmen des Aufbaus von Notunterkünften im In- und Ausland ist die Bereitstellung von Strom und Wasser erforderlich. Wenn Du bereits handwerkliche Erfahrungen hast oder Dir solche aneignen möchtest, bist Du hier richtig."
       defaultAnswer: "NO"
       groups:
         - organizationType: "THW"
           answer: "YES"
-        - phrase: "Technik und Sicherheit" # ASB / DRK
-          answer: "MAYBE"
+        - phrase: "Technik und Sicherheit" # ASB / DRK / MHD / JUH
+          answer: "YES"
         - organizationType: "FF"
           answer: "MAYBE"
 
     - id: "18662fa9-a854-4174-9ea9-37bb08c65484"
-      question: "Fährst Du gerne Motorrad? Kommst Du auch mit etwas größeren Maschinen klar?"
-      description: "Ein Unfall auf der Autobahn mit Verletzten. Schnell entwickelt sich ein Stau. Mit dem mit Blaulicht ausgestatteten Motorrad kommst Du schnell zur Unfallstelle und kannst Hilfe leisten."
+      question: "Fährst Du gerne Motorrad oder ATV? Kommst Du auch mit etwas größeren Maschinen klar?"
+      description: "Ein Unfall auf der Autobahn mit Verletzten. Schnell entwickelt sich ein Stau. Mit dem mit Blaulicht ausgestatteten Motorrad kommst Du schnell zur Unfallstelle und kannst Hilfe leisten. Unterstützung in der Geländerettung, das ATV bringt Material und Personal an die Einsatzstelle"
       defaultAnswer: "NO"
       groups:
         - phrase: "Motorrad"
@@ -187,11 +197,11 @@ helfomat:
           answer: "YES"
         - organizationType: "MHD"
           answer: "YES"
-        - phrase: "Sanitätsdienst" # DLRG / ASB / DRK
+        - phrase: "Sanitätsdienst" # DLRG / ASB / DRK / JUH / MHD
           answer: "YES"
-        - phrase: "First Responder" # FF
+        - phrase: "First Responder" # FF / DLRG / ASB / DRK / JUH / MHD / BW
           answer: "YES"
-        - phrase: "Helfer vor Ort" # FF
+        - phrase: "Helfer vor Ort" # FF / DLRG / ASB / DRK / JUH / MHD / BW
           answer: "YES"
         - organizationType: "BW"
           answer: "MAYBE"
@@ -225,6 +235,8 @@ helfomat:
           answer: "MAYBE"
         - organizationType: "THW"
           answer: "MAYBE"
+        - phrase: "Geländerettung"
+          answer: "YES"
 
     - id: "2e82c293-1f6a-4b4c-8366-f773d42f1caf"
       question: "Deinen Hund zum Suchhund ausbilden, mit ihm vermisste Menschen orten und retten? Interesse?"
@@ -239,6 +251,18 @@ helfomat:
         - phrase: "Rettungshunde" # DLRG / ASB / BW / DRK
           answer: "YES"
         - organizationType: "BRH"
+          answer: "YES"
+
+    - id: "949fcfeb-7b08-4a7f-99de-cc3bf48d7e28"
+      question: "Vermisste Personen suchen und orten, Glutnester finden, Foto- und Videodokumentationen machen oder aber einfach nur die Einsatzleitung bei der Lagebeurteilung unterstützen. All das aus der Luft mit Drohnen. Ist das was für Dich?"
+      description: "Nach der Ausbildung zum Drohnenpilot oder zum Luftbildauswerter bist Du wichtiger Bestandteil so mancher Einsatzleitung. Du kannst aktiv helfen, vermisste Personen zu finden, Du kannst aktiv helfen Glutnester auszumachen und der Einsatzleitung der Feuerwehr die richtigen Tipps geben. Bei Großschadenslagen sorgst du für die Bilder von oben."
+      defaultAnswer: "NO"
+      groups:
+        - phrase: "Drohne" # FW / FF / DLRG / ASB / JUH / MHD / DRK / THW / BRH / BW
+          answer: "YES"
+        - phrase: "UAV" # FW / FF / DLRG / ASB / JUH / MHD / DRK / THW / BRH / BW
+          answer: "YES"
+        - phrase: "Luftaufklärung" # FW / FF / DLRG / ASB / JUH / MHD / DRK / THW / BRH / BW
           answer: "YES"
 
   organization-templates:
