@@ -30,7 +30,8 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
             this.questionWithUserAnswers
         ])
             .subscribe(([answers, questionWithUserAnswers]: [string, Array<QuestionWithUserAnswer>]) => {
-                let url = QuestionComponent.getNavigateUrl(this.getLastAnsweredQuestion(questionWithUserAnswers) == questionWithUserAnswers.length);
+                const lastAnsweredQuestion = this.getLastAnsweredQuestion(questionWithUserAnswers);
+                let url = QuestionComponent.getNavigateUrl(lastAnsweredQuestion == questionWithUserAnswers.length && lastAnsweredQuestion != 0);
                 this.router.navigate([url, {answers, position: null, mapSize: 'fullscreen'}]);
             })
     }

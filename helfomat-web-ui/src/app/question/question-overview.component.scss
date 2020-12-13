@@ -1,11 +1,3 @@
-.badge {
-  background: none;
-}
-
-.badge a {
-  border: none;
-}
-
 img.thumb {
   width: 2em;
   height: 2.32em;
@@ -13,4 +5,18 @@ img.thumb {
 
 .list-group .list-group-item {
   border: 0;
+}
+
+.question {
+  display: flex;
+  align-items: center;
+
+  .badge {
+    background: none;
+    margin-right: 10px;
+  }
+
+  .badge a {
+    border: none;
+  }
 }

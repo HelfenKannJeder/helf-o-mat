@@ -43,6 +43,11 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.kiosk.ts"
                 }
+              ],
+              "styles": [
+                "node_modules/bootstrap/dist/css/bootstrap.css",
+                "src/styles.scss",
+                "src/kiosk.scss"
               ]
             },
             "kiosk-production": {
@@ -61,6 +66,11 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.kiosk.ts"
                 }
+              ],
+              "styles": [
+                "node_modules/bootstrap/dist/css/bootstrap.css",
+                "src/styles.scss",
+                "src/kiosk.scss"
               ]
             },
             "production": {

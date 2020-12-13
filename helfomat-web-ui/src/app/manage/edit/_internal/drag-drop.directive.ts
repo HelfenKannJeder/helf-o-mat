@@ -1,5 +1,12 @@
 import {Directive, EventEmitter, HostBinding, HostListener, Output} from '@angular/core';
 
+interface DragEvent extends Event {
+    /**
+     * Returns the DataTransfer object for the event.
+     */
+    readonly dataTransfer: DataTransfer | null;
+}
+
 /**
  * source: https://medium.com/@mariemchabeni/angular-7-drag-and-drop-simple-file-uploadin-in-less-than-5-minutes-d57eb010c0dc
  */

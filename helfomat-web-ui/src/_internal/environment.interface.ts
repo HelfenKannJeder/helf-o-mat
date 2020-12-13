@@ -13,6 +13,10 @@ export interface Environment {
         zoomLevel: {
             withoutPosition: number;
             withPosition: number;
+        },
+        kiosk: {
+            showCountdownAfter: number;
+            navigateToHomeAfter: number;
         }
     },
     useHttps: boolean;

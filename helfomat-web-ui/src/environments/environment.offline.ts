@@ -13,6 +13,10 @@ export const environment: Environment = {
         zoomLevel: {
             withoutPosition: 6,
             withPosition: 12
+        },
+        kiosk: {
+            showCountdownAfter: 60,
+            navigateToHomeAfter: 90
         }
     },
     useHttps: false,

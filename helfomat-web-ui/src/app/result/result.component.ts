@@ -9,6 +9,7 @@ import {environment} from '../../environments/environment';
 import {GeoPoint} from '../../_internal/geopoint';
 import {debounceTime, distinctUntilChanged, filter, first, flatMap, map} from "rxjs/operators";
 import {CreateOrganizationDialogService} from "../_internal/components/create-organization-dialog/create-organization-dialog.service";
+import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
 
 @Component({
     selector: 'app-result',
@@ -31,6 +32,7 @@ export class ResultComponent implements OnInit {
 
     // Inputs
     private _answers$: Subject<UserAnswer[]> = new Subject<UserAnswer[]>();
+    public userAnswers: Observable<UserAnswer[]> = this._answers$.asObservable();
     public _position$: Subject<GeoPoint> = new BehaviorSubject<GeoPoint>(null);
     public _boundingBox$: Subject<BoundingBox> = new Subject<BoundingBox>();
     public _zoom$: Subject<number> = new BehaviorSubject<number>(environment.defaults.zoomLevel.withoutPosition);
@@ -54,11 +56,14 @@ export class ResultComponent implements OnInit {
     public visibleComponent: 'list' | 'question' = 'list';
     private explainScore: boolean = false;
 
-    constructor(private organizationService: OrganizationService,
-                private router: Router,
-                private route: ActivatedRoute,
-                private createOrganizationDialogService: CreateOrganizationDialogService,
-                private changeDetectorRef: ChangeDetectorRef) {
+    constructor(
+        private organizationService: OrganizationService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private createOrganizationDialogService: CreateOrganizationDialogService,
+        private changeDetectorRef: ChangeDetectorRef,
+        private qrCodeService: QrCodeService
+    ) {
         ObservableUtil.extractObjectMember(this.route.params, 'position')
             .pipe(
                 map(UrlParamBuilder.parseGeoPoint)
@@ -253,6 +258,24 @@ export class ResultComponent implements OnInit {
 
     public removeOrganizationTypeFilter(): void {
         this._organizationType$.next(null);
+    }
+
+
+    public showQrCode(): boolean {
+        return environment.kiosk;
+    }
+
+    public getQrCodeLink(userAnswers: UserAnswer[]) {
+        const questionAnswers: QuestionAnswers[] = [];
+        if (userAnswers != null) {
+            for (let i = 0; i < userAnswers.length; i++) {
+                questionAnswers.push({
+                    questionId: {value: userAnswers[i].id},
+                    answer: userAnswers[i].answer
+                });
+            }
+        }
+        return this.qrCodeService.generateLink('all', questionAnswers);
     }
 
     private filterOrganizations(organizations: Organization[], organizationType: string | null): Organization[] {
