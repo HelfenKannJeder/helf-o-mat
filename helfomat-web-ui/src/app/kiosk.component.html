@@ -2,7 +2,7 @@
     <div id="main">
         <div id="header">
             <div id="headerlink">
-                <a href="/"><img src="assets/images/blank.gif" width="300"
+                <a routerLink="/"><img src="assets/images/blank.gif" width="600"
                                  height="105"/></a>
             </div>
             <h1>{{ 'header.title1' | translate }}</h1>
@@ -10,30 +10,9 @@
         </div>
         <div class="content clearfix">
             <div class="container-fluid">
+                <kiosk-navigate></kiosk-navigate>
                 <router-outlet></router-outlet>
             </div>
-        </div>
-        <div id="sponsors">
-            <div>
-                <img
-                    src="assets/sponsors/land_bw.png" width="47" height="62"
-                    alt="Land Baden-Württemberg">
-            </div>
-            <div>
-                <img
-                    src="assets/sponsors/telematis.png" width="150" height="53"
-                    alt="Telematis">
-            </div>
-            <div>
-                <img
-                    src="assets/sponsors/bohling-eisele.png" width="170" height="72"
-                    alt="Motorradhaus Bohling+Eisele">
-            </div>
-            <div>
-                <img src="assets/sponsors/google-impact-challenge.jpg" width="210" height="86"
-                     alt="Gewinner der Google Impact Challenge Deutschland 2016">
-            </div>
-            <br class="clear"/>
         </div>
     </div>
     <div class="clear"></div>

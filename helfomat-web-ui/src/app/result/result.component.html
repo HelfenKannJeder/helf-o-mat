@@ -86,6 +86,25 @@
                     </div>
                     <br class="clearfix"/>
                 </div>
+                <div class="card card-default" *ngIf="showQrCode()">
+                    <div class="card-header">
+                        {{'organization.facts.qrcode.title' | translate}}
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-md-6">
+                        <qrcode *ngIf="userAnswers | async; let userAnswers"
+                                [margin]="0"
+                                [qrdata]="getQrCodeLink(userAnswers)"
+                                [width]="256"
+                                [errorCorrectionLevel]="'M'"></qrcode>
+                    </div>
+                    <div class="col-md-6">
+                        {{'organization.facts.qrcode.description' | translate}}
+                    </div>
+                        </div>
+                    </div>
+                </div>
                 <helfomat-list
                     [organizations]="organizations"
                     [position]="position"

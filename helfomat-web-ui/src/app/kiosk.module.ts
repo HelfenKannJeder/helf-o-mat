@@ -13,6 +13,8 @@ import {ProfileModule} from "./profile/profile.module";
 import {HttpErrorInterceptor} from "./_internal/http-error.interceptor";
 import {KioskComponent} from "./kiosk.component";
 import {kioskRouting, kioskRoutingProviders} from "./kiosk.routing";
+import {KioskNavigateComponent} from "./kiosk/navigate/kiosk-navigate.component";
+import {KioskHomeComponent} from "./kiosk/home/kiosk-home.component";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -20,7 +22,9 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
     declarations: [
-        KioskComponent
+        KioskComponent,
+        KioskHomeComponent,
+        KioskNavigateComponent
     ],
     imports: [
         QuestionModule,

@@ -27,6 +27,14 @@
     "contentEnd3": ". In diesem Fall werden wir Hilfsorganisationen allgemein vorschlagen.",
     "buttonContinueWithoutAddress": "Fortfahren ohne Adresse"
   },
+  "kiosk": {
+    "header": {
+      "home": "Startseite",
+      "back": "Zurück",
+      "abort": "Abbrechen",
+      "countdownTime": "Aufgrund fehlender Interaktion wirst Du in {{ timeRemaining }}s zum Start navigiert"
+    }
+  },
   "organization": {
     "dataLoading": "Die Daten werde geladen, bitte gedulde Dich einen Moment.",
     "isPreviewRendered": "Diese Ansicht beinhaltet von Dir bereits eingereichte Änderungen, die noch nicht freigegeben sind.",
@@ -56,7 +64,8 @@
         "time": "{{ hours }}:{{ minutes }}h"
       },
       "qrcode": {
-        "title": "In deiner Nähe?"
+        "title": "In Deiner Nähe?",
+        "description": "Um Organisationen in deiner Nähe zu finden kannst Du diesen QR-Code einscannen."
       }
     },
     "address": {

@@ -4,7 +4,9 @@ import {TranslateService} from "@ngx-translate/core";
 @Component({
     selector: 'app-root',
     templateUrl: './kiosk.component.html',
-    styleUrls: []
+    styleUrls: [
+        './kiosk.component.scss'
+    ]
 })
 export class KioskComponent {
 

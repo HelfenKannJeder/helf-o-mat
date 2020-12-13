@@ -7,6 +7,7 @@ import {QuestionModule} from '../question/question.module';
 import {TranslateModule} from '@ngx-translate/core';
 import {RouterModule} from "@angular/router";
 import {CreateOrganizationDialogModule} from "../_internal/components/create-organization-dialog/create-organization-dialog.module";
+import {QRCodeModule} from "angularx-qrcode";
 
 @NgModule({
     imports: [
@@ -16,7 +17,8 @@ import {CreateOrganizationDialogModule} from "../_internal/components/create-org
         MapModule,
         ListModule,
         RouterModule,
-        CreateOrganizationDialogModule
+        CreateOrganizationDialogModule,
+        QRCodeModule
     ],
     declarations: [
         ResultComponent
