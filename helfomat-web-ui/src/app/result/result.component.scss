@@ -23,3 +23,12 @@
     transform: none !important;
   }
 }
+
+.qrcode {
+  display: flex;
+  align-items: center;
+
+  .qrcode__description {
+    padding: 5px;
+  }
+}
