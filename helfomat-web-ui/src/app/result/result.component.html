@@ -65,12 +65,13 @@
                 <button class="btn btn-secondary d-md-none" (click)="visibleComponent = 'question'">
                     {{'result.mobile.swipe.questions' | translate}}
                 </button>
-                <div class="card">
+                <div class="card" [ngClass]="{'bg-success': !isReadOnlyMode()}">
                     <div class="card-header">
                         <div class="float-right" *ngIf="!isReadOnlyMode()">
-                            <a (click)="createOrganization()" [title]="'result.header.createOrganization' | translate"><i class="material-icons md-36 text-success">create_new_folder</i></a>
+                            <a (click)="createOrganization()" [title]="'result.header.createOrganization' | translate"><i class="material-icons md-36 text-white">create_new_folder</i></a>
                         </div>
-                        {{ 'result.header.list' | translate }}
+                        <span *ngIf="!isReadOnlyMode()">{{ 'result.header.listRegister' | translate }}</span>
+                        <span *ngIf="isReadOnlyMode()">{{ 'result.header.list' | translate }}</span>
                     </div>
                 </div>
                 <br class="clearfix"/>

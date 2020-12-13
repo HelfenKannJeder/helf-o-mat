@@ -297,6 +297,7 @@
     "header": {
       "questions": "Du kannst Deine Antworten noch durch Klick auf die jeweils anderen Daumen anpassen. Anschließend wird das Ergebnis automatisch angepasst.",
       "list": "Aufgrund Deiner Antworten haben wir hier die Übereinstimmung mit den Hilfsorganisationen, die auf HelfenKannJeder.de erfasst sind, dargestellt.",
+      "listRegister": "(M)eine Einsatzorganisation erfassen, auf dass diese interessierten Mitmachern angeboten wird.",
       "createOrganization": "Neue Organisation anlegen",
       "removeOrganizationTypeFilter": "Filter löschen",
       "filterOrganizationType": "Moment zeigen wir deine ausgewählte Organisation an. Um alle Organisationen anzuzeigen entferne diesen Filter."
