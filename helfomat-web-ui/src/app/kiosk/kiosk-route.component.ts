@@ -33,14 +33,18 @@ export class KioskRouteComponent {
                 if (!isNaN(latitude) && !isNaN(longitude)) {
                     position = JSON.stringify(new GeoPoint(latitude, longitude))
                 }
-                const organizationType = params.get('organizationType');
+                let organizationType: string;
+                organizationType = params.get('organizationType');
+                if (organizationType == 'all') {
+                    organizationType = '';
+                }
 
                 this.router.navigate(['/volunteer/result', {
                     answers: JSON.stringify(answers),
                     position: position,
                     mapSize: 'normal',
                     organizationType
-                }])
+                }]);
             });
     }
 
