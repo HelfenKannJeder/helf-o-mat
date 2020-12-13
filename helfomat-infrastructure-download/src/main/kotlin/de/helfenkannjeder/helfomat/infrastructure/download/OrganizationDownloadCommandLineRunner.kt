@@ -9,6 +9,8 @@ import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent.Com
 import de.helfenkannjeder.helfomat.core.picture.Picture
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository
 import org.apache.tika.Tika
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
@@ -18,6 +20,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.stereotype.Component
 import java.io.File
+import java.io.IOException
 import java.nio.file.Files
 
 @Component
@@ -46,25 +49,33 @@ open class OrganizationDownloadCommandLineRunner(
     }
 
     private fun run() {
-        val events = organizationDownloadService.getOrganizationList()
-            .flatMap { it.compareTo(organizationRepository.findOne(it.id.value)) }
-        toPictureIds(events)
-            .filter { !pictureRepository.existsById(it) }
-            .forEach {
-                val bytes = organizationDownloadService.getPicture(it) ?: return@forEach
-                val tempFile = File.createTempFile("cache", null)
-                Files.write(tempFile.toPath(), bytes)
-                pictureStorageService.savePicture(it, tempFile.inputStream(), tempFile.length())
-                val contentType = Tika().detect(tempFile)
-                for (pictureSize in pictureConfiguration.pictureSizes) {
-                    val inputStreamToResize = tempFile.inputStream()
-                    val resizedImage = resizeImageService.resize(inputStreamToResize, pictureSize.width, pictureSize.height, contentType)
-                    pictureStorageService.savePicture(it, resizedImage.first, resizedImage.second, pictureSize.name)
+        try {
+            val events = organizationDownloadService.getOrganizationList()
+                .flatMap { it.compareTo(organizationRepository.findOne(it.id.value)) }
+            toPictureIds(events)
+                .filter { !pictureRepository.existsById(it) }
+                .forEach {
+                    val bytes = organizationDownloadService.getPicture(it) ?: return@forEach
+                    val tempFile = File.createTempFile("cache", null)
+                    Files.write(tempFile.toPath(), bytes)
+                    pictureStorageService.savePicture(it, tempFile.inputStream(), tempFile.length())
+                    val contentType = Tika().detect(tempFile)
+                    for (pictureSize in pictureConfiguration.pictureSizes) {
+                        val inputStreamToResize = tempFile.inputStream()
+                        val resizedImage = resizeImageService.resize(inputStreamToResize, pictureSize.width, pictureSize.height, contentType)
+                        pictureStorageService.savePicture(it, resizedImage.first, resizedImage.second, pictureSize.name)
+                    }
+                    tempFile.delete()
+                    pictureRepository.save(Picture(it, true, contentType))
                 }
-                tempFile.delete()
-                pictureRepository.save(Picture(it, true, contentType))
-            }
-        events.forEach { applicationEventPublisher.publishEvent(it) }
+            events.forEach { applicationEventPublisher.publishEvent(it) }
+        } catch (e: IOException) {
+            LOG.error("Failed to download organization updates", e)
+        }
+    }
+
+    companion object {
+        val LOG: Logger = LoggerFactory.getLogger(javaClass)
     }
 
 }
