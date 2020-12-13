@@ -9,10 +9,13 @@ import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent.Com
 import de.helfenkannjeder.helfomat.core.picture.Picture
 import de.helfenkannjeder.helfomat.core.picture.PictureRepository
 import org.apache.tika.Tika
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
+import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.stereotype.Component
 import java.io.File
 import java.nio.file.Files
@@ -28,9 +31,21 @@ open class OrganizationDownloadCommandLineRunner(
     private val pictureConfiguration: PictureConfiguration,
     private val resizeImageService: ResizeImageService,
     private val applicationEventPublisher: ApplicationEventPublisher
-) : CommandLineRunner {
+) : ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
 
-    override fun run(vararg args: String?) {
+    private var applicationContext: ApplicationContext? = null
+
+    override fun setApplicationContext(applicationContext: ApplicationContext) {
+        this.applicationContext = applicationContext
+    }
+
+    override fun onApplicationEvent(event: ContextRefreshedEvent) {
+        if (event.applicationContext == applicationContext) {
+            this.run()
+        }
+    }
+
+    private fun run() {
         val events = organizationDownloadService.getOrganizationList()
             .flatMap { it.compareTo(organizationRepository.findOne(it.id.value)) }
         toPictureIds(events)
