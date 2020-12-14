@@ -12,7 +12,7 @@ abstract class OrganizationEditEvent(organizationId: OrganizationId) : Organizat
         if (indexOf != -1) {
             items.removeAt(indexOf)
             val newIndex = indexOf + indexOffset
-            if (newIndex > items.size) {
+            if (newIndex > items.size || newIndex < 0) {
                 items.add(newElement)
             } else {
                 items.add(newIndex, newElement)
