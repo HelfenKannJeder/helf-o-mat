@@ -19,8 +19,8 @@ import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Profile
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.stereotype.Component
+import org.springframework.web.client.RestClientException
 import java.io.File
-import java.io.IOException
 import java.nio.file.Files
 
 @Component
@@ -69,7 +69,7 @@ open class OrganizationDownloadCommandLineRunner(
                     pictureRepository.save(Picture(it, true, contentType))
                 }
             events.forEach { applicationEventPublisher.publishEvent(it) }
-        } catch (e: IOException) {
+        } catch (e: RestClientException) {
             LOG.error("Failed to download organization updates", e)
         }
     }
