@@ -15,7 +15,13 @@ data class OrganizationEditAddGroupEvent(
 ) : OrganizationEditEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
-        organizationBuilder?.groups?.add(index, group)
+        if (organizationBuilder?.groups != null) {
+            if (organizationBuilder.groups.size > index) {
+                organizationBuilder.groups.add(index, group)
+            } else {
+                organizationBuilder.groups.add(group)
+            }
+        }
         return organizationBuilder
     }
 
