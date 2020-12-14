@@ -15,7 +15,13 @@ data class OrganizationEditAddPictureEvent(
 ) : OrganizationEditEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
-        organizationBuilder?.pictures?.add(index, pictureId)
+        if (organizationBuilder?.pictures != null) {
+            if (organizationBuilder.pictures.size > index) {
+                organizationBuilder.pictures.add(index, pictureId)
+            } else {
+                organizationBuilder.pictures.add(pictureId)
+            }
+        }
         return organizationBuilder
     }
 

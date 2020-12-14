@@ -15,7 +15,13 @@ data class OrganizationEditAddAddressEvent(
 ) : OrganizationEditEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
-        organizationBuilder?.addresses?.add(index, address)
+        if (organizationBuilder?.addresses != null) {
+            if (organizationBuilder.addresses.size > index) {
+                organizationBuilder.addresses.add(index, address)
+            } else {
+                organizationBuilder.addresses.add(address)
+            }
+        }
         return organizationBuilder
     }
 

@@ -15,7 +15,13 @@ data class OrganizationEditAddVolunteerEvent(
 ) : OrganizationEditEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
-        organizationBuilder?.volunteers?.add(index, volunteer)
+        if (organizationBuilder?.volunteers != null) {
+            if (organizationBuilder.volunteers.size > index) {
+                organizationBuilder.volunteers.add(index, volunteer)
+            } else {
+                organizationBuilder.volunteers.add(volunteer)
+            }
+        }
         return organizationBuilder
     }
 

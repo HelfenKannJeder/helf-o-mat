@@ -15,7 +15,13 @@ data class OrganizationEditAddAttendanceTimeEvent(
 ) : OrganizationEditEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
-        organizationBuilder?.attendanceTimes?.add(index, attendanceTime)
+        if (organizationBuilder?.attendanceTimes != null) {
+            if (organizationBuilder.attendanceTimes.size > index) {
+                organizationBuilder.attendanceTimes.add(index, attendanceTime)
+            } else {
+                organizationBuilder.attendanceTimes.add(attendanceTime)
+            }
+        }
         return organizationBuilder
     }
 

@@ -15,7 +15,13 @@ data class OrganizationEditAddQuestionAnswerEvent(
 ) : OrganizationEditEvent(organizationId) {
 
     override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
-        organizationBuilder?.questionAnswers?.add(index, questionAnswer)
+        if (organizationBuilder?.questionAnswers != null) {
+            if (organizationBuilder.questionAnswers.size > index) {
+                organizationBuilder.questionAnswers.add(index, questionAnswer)
+            } else {
+                organizationBuilder.questionAnswers.add(questionAnswer)
+            }
+        }
         return organizationBuilder
     }
 
