@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.Resource
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
-import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.util.StreamUtils
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -45,8 +44,7 @@ open class ImportBatchConfig {
                          elasticsearchRestTemplate: ElasticsearchRestTemplate,
                          restOrganizationEventPublisher: RestOrganizationEventPublisher,
                          organizationRepository: OrganizationRepository,
-                         @Value("classpath:/mapping/organization.json") organizationMapping: Resource,
-                         @Qualifier("legacyTransactionManager") transactionManager: PlatformTransactionManager): List<Step> {
+                         @Value("classpath:/mapping/organization.json") organizationMapping: Resource): List<Step> {
         return organizationReaders
             .map {
                 val uniqueOrganizationUrlNameOrganizationProcessor = UniqueOrganizationUrlNameOrganizationProcessor()
@@ -72,7 +70,6 @@ open class ImportBatchConfig {
                     }
                     .listener(OrganizationStepExecutionListener(elasticsearchOrganizationRepository, organizationMapping))
                     .listener(uniqueOrganizationUrlNameOrganizationProcessor)
-                    .transactionManager(transactionManager)
                     .build()
             }
     }

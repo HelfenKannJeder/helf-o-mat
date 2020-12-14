@@ -11,5 +11,5 @@ helfomat:
     web-api-url: http://localhost:8080/helf-o-mat
 
 keycloak:
-  realm: helfomat
+  realm: helfenkannjeder
   auth-server-url: http://localhost:8085/auth

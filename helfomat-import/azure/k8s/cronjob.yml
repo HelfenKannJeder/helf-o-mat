@@ -50,22 +50,6 @@ spec:
                       name: helfomat-import-db-secret
                       key: helfomat.import.postgres.password
 
-                - name: SPRING_LEGACY_DATASOURCE_URL
-                  valueFrom:
-                    configMapKeyRef:
-                      name: helfomat-import-config
-                      key: helfomat.import.db.legacy.url
-                - name: SPRING_LEGACY_DATASOURCE_USERNAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: helfomat-import-secret
-                      key: helfomat.import.db.legacy.username
-                - name: SPRING_LEGACY_DATASOURCE_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: helfomat-import-secret
-                      key: helfomat.import.db.legacy.password
-
                 - name: SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES
                   valueFrom:
                     configMapKeyRef:

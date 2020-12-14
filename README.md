@@ -28,23 +28,8 @@ For the execution of the import app there are three dependencies:
 * MySQL (or another JDBC database if you change the configuration)
 * Elasticsearch 7.x
 
-The MySQL Database is the legacy database which is necessary since we are importing data from the old HelfenKannJeder V1.
-For the basic setup you need the following custom TYPO3 databases tables:
-* tx_helfenkannjeder_domain_model_address
-* tx_helfenkannjeder_domain_model_employee
-* tx_helfenkannjeder_domain_model_group
-* tx_helfenkannjeder_domain_model_grouptemplate
-* tx_helfenkannjeder_domain_model_grouptemplatecategory
-* tx_helfenkannjeder_domain_model_organisation
-* tx_helfenkannjeder_domain_model_organisationtype
-* tx_helfenkannjeder_domain_model_workinghour
-* tx_helfenkannjeder_organisaton_contactperson_mm
-* tx_helfenkannjeder_group_contactperson_mm
-* tx_helfenkannjeder_workinghour_group_mm
-
-The schema can be found [in the legacy repository](https://github.com/HelfenKannJeder/TYPO3-helfen_kann_jeder/blob/master/ext_tables.sql)
-
-When you would like to have a quick start for the import, please reach out to [vzickner](mailto:valentin.zickner(at)helfenkannjeder(dot)de) for a database export including organizations.
+To download the basic organizations you can enable the Spring Boot profile `enable-download` which will give you the main organizations available at HelfenKannJeder.de.
+Based on them, you are able to create location specific organizations.
 
 ## Deployment
 
