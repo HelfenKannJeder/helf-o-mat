@@ -167,6 +167,9 @@ stages:
                 $(tagMaster)
                 latest
 
+          - upload: $(k8sKioskDirectory)
+            artifact: k8s-kiosk
+
 
   - stage: DeployProdStage
     displayName: Prod Stage
