@@ -142,17 +142,10 @@
                     {{'organization.facts.qrcode.title' | translate}}
                 </div>
                 <div class="card-body">
-                    <qrcode *ngIf="userAnswers | async; let userAnswers; else qrCodeWithoutAnswers"
-                            [margin]="0"
-                            [qrdata]="getQrCodeLink(organization, userAnswers)"
-                            [width]="256"
-                            [errorCorrectionLevel]="'M'"></qrcode>
+                    <qr-code *ngIf="userAnswers | async; let userAnswers; else qrCodeWithoutAnswers"
+                             [link]="getQrCodeLink(organization, userAnswers)"></qr-code>
                     <ng-template #qrCodeWithoutAnswers>
-                        <qrcode
-                                [margin]="0"
-                                [qrdata]="getQrCodeLink(organization, null)"
-                                [width]="256"
-                                [errorCorrectionLevel]="'M'"></qrcode>
+                        <qr-code [link]="getQrCodeLink(organization, null)"></qr-code>
                     </ng-template>
                 </div>
             </div>

@@ -93,12 +93,8 @@
                     </div>
                     <div class="card-body">
                         <div class="qrcode">
-                            <div>
-                                <qrcode *ngIf="userAnswers | async; let userAnswers"
-                                        [margin]="0"
-                                        [qrdata]="getQrCodeLink(userAnswers)"
-                                        [width]="256"
-                                        [errorCorrectionLevel]="'M'"></qrcode>
+                            <div *ngIf="userAnswers | async; let userAnswers">
+                                <qr-code [link]="getQrCodeLink(userAnswers)"></qr-code>
                             </div>
                             <div class="qrcode__description">
                                 {{'organization.facts.qrcode.description' | translate}}

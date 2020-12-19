@@ -65,7 +65,7 @@
       },
       "qrcode": {
         "title": "In Deiner Nähe?",
-        "description": "Um Organisationen in deiner Nähe zu finden kannst Du diesen QR-Code einscannen."
+        "description": "Um Organisationen in deiner Nähe zu finden kannst Du diesen QR-Code einscannen. Falls der QR-Code sich nicht scannen lässt, tippe diesen kurz an um ihn zu vergrößern."
       }
     },
     "address": {
