@@ -79,16 +79,38 @@ open class OrganizationApplicationService(
     }
 
     open fun findOrganizationsWith(position: GeoPoint, distance: Double): List<OrganizationDto> {
-        return organizationRepository.findOrganizationsByDistanceSortByDistance(position, distance).toOrganizationDtos()
+        val organizations = organizationRepository.findOrganizationsByDistanceSortByDistance(position, distance)
 
+        val organizationTypes = toOrganizationTypes(organizations)
+        val resultOrganizations = mutableListOf<Organization>()
+        resultOrganizations.addAll(organizations)
+        for (globalOrganization in organizationRepository.findGlobalOrganizations()) {
+            if (!organizationTypes.contains(globalOrganization.organizationType)) {
+                resultOrganizations.add(globalOrganization)
+            }
+        }
+        return resultOrganizations.toOrganizationDtos()
     }
 
     open fun findOrganizationsWith(questionAnswerDtos: List<QuestionAnswerDto>, position: GeoPoint, distance: Double): List<OrganizationDto> {
-        return organizationRepository.findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
-            questionAnswerDtos.toQuestionAnswers(),
+        val questionAnswers = questionAnswerDtos.toQuestionAnswers()
+        val organizations = organizationRepository.findOrganizationsByQuestionAnswersAndDistanceSortByAnswerMatchAndDistance(
+            questionAnswers,
             position,
             distance
-        ).toScoredOrganizationDtos()
+        )
+        val organizationTypes = toOrganizationTypes(organizations.map { it.organization })
+
+        val resultOrganizations = mutableListOf<ScoredOrganization>()
+        resultOrganizations.addAll(organizations)
+        for (globalOrganization in organizationRepository.findGlobalOrganizationsByQuestionAnswersSortByAnswerMatch(questionAnswers)) {
+            if (!organizationTypes.contains(globalOrganization.organization.organizationType)) {
+                resultOrganizations.add(globalOrganization)
+            }
+        }
+        return resultOrganizations
+            .sortedByDescending { it.score }
+            .toScoredOrganizationDtos()
     }
 
     open fun findClusteredGeoPoints(position: GeoPoint?, distance: Double, boundingBox: BoundingBox): List<GeoPoint> {
@@ -193,6 +215,12 @@ open class OrganizationApplicationService(
             }
             .lastOrNull()
 
+    }
+
+    private fun toOrganizationTypes(organizations: List<Organization>): List<OrganizationType> {
+        return organizations
+            .map { it.organizationType }
+            .distinct()
     }
 
     private fun isUrlReachable(websiteUrl: String): Boolean {
