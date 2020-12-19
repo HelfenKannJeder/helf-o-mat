@@ -4,6 +4,7 @@ import {QuestionComponent} from './question/question.component';
 import {ResultComponent} from './result/result.component';
 import {OrganizationComponent} from './organization/organization.component';
 import {KioskHomeComponent} from "./kiosk/home/kiosk-home.component";
+import {KioskModule} from "./kiosk.module";
 
 const kioskRoutes: Routes = [
     {
@@ -20,4 +21,4 @@ const kioskRoutes: Routes = [
 
 export const kioskRoutingProviders: any[] = [];
 
-export const kioskRouting: ModuleWithProviders = RouterModule.forRoot(kioskRoutes);
+export const kioskRouting: ModuleWithProviders<KioskModule> = RouterModule.forRoot(kioskRoutes);

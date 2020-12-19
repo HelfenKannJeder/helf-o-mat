@@ -6,6 +6,7 @@ import {OrganizationComponent} from './organization/organization.component';
 import {NoAuthGuard} from "./_internal/authentication/no-auth.guard";
 import {AuthenticateComponent} from "./authenticate/authenticate.component";
 import {KioskRouteComponent} from "./kiosk/kiosk-route.component";
+import {AppModule} from "./app.module";
 
 const appRoutes: Routes = [
     {
@@ -32,4 +33,4 @@ const appRoutes: Routes = [
 
 export const appRoutingProviders: any[] = [];
 
-export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
+export const routing: ModuleWithProviders<AppModule> = RouterModule.forRoot(appRoutes);

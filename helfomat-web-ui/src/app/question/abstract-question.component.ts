@@ -1,10 +1,13 @@
-import {EventEmitter, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, combineLatest, merge, Observable, of, Subject, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
 import {UserAnswer} from '../_internal/resources/organization.service';
 import {distinctUntilChanged, map} from "rxjs/operators";
 import {Question, QuestionService} from "../_internal/resources/question.service";
 
+@Component({
+    template: ''
+})
 export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
 
     // input & output
