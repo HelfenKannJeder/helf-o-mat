@@ -13,6 +13,10 @@ export class ApprovalService {
         return this.httpClient.get<ApprovalOverviewDto[]>('api/approval');
     }
 
+    findHistory(): Observable<ApprovalOverviewDto[]> {
+        return this.httpClient.get<ApprovalOverviewDto[]>('api/approval/history');
+    }
+
     findDetails(approvalId: ApprovalId): Observable<ApprovalDetailDto> {
         return this.httpClient.get<ApprovalDetailDto>(`api/approval/${approvalId.value}`);
     }
@@ -27,6 +31,7 @@ export interface ApprovalOverviewDto {
     organizationId: OrganizationId;
     organizationName: string;
     author: string;
+    approvedBy: string;
     date: string;
     sources: string;
 }
@@ -38,6 +43,7 @@ export interface ApprovalDetailDto {
     organization: Organization;
     proposedDomainEvent: ProposedChangeOrganizationEventDto;
     author: ApprovalAuthorDto;
+    approved: boolean
 }
 
 export interface ApprovalAuthorDto {

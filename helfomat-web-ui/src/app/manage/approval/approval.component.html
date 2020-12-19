@@ -1,4 +1,4 @@
-<div *ngIf="approvals | async; let approvals">
+<div>
 
     <nav class="navbar sticky-top navbar-dark bg-lightblue">
         <span class="navbar-brand">{{'manage.organization.approval.headline' | translate}}</span>
@@ -14,7 +14,7 @@
             <th scope="col"></th>
         </tr>
         </thead>
-        <tbody>
+        <tbody *ngIf="approvals | async; let approvals">
         <tr *ngFor="let approval of approvals">
             <td>{{approval.organizationName}}</td>
             <td>{{approval.author}}</td>
@@ -22,6 +22,21 @@
             <td>{{approval.sources}}</td>
             <td>
                 <button class="btn btn-primary btn-sm" [routerLink]="'review/' + approval.approvalId.value">{{ 'manage.organization.approval.reviewButton' | translate }}</button>
+            </td>
+        </tr>
+
+        </tbody>
+        <tbody *ngIf="approvalHistory | async; let approvalHistory">
+        <tr class="table-active">
+            <td colspan="5">{{ 'manage.organization.approval.historyHeadline' | translate }}</td>
+        </tr>
+        <tr *ngFor="let approval of approvalHistory">
+            <td>{{approval.organizationName}}</td>
+            <td>{{approval.author}} / {{approval.approvedBy}}</td>
+            <td>{{approval.date}}</td>
+            <td>{{approval.sources}}</td>
+            <td>
+                <button class="btn btn-secondary btn-sm" [routerLink]="'review/' + approval.approvalId.value">{{ 'manage.organization.approval.showButton' | translate }}</button>
             </td>
         </tr>
         </tbody>

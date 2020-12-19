@@ -9,6 +9,7 @@ import {Subject} from "rxjs";
 export class ApprovalComponent implements OnInit {
 
     public approvals: Subject<ApprovalOverviewDto[]> = new Subject<ApprovalOverviewDto[]>();
+    public approvalHistory: Subject<ApprovalOverviewDto[]> = new Subject<ApprovalOverviewDto[]>();
 
     constructor(
         private approvalService: ApprovalService
@@ -18,6 +19,8 @@ export class ApprovalComponent implements OnInit {
     ngOnInit(): void {
         this.approvalService.findAll()
             .subscribe(approvals => this.approvals.next(approvals));
+        this.approvalService.findHistory()
+            .subscribe(approvals => this.approvalHistory.next(approvals));
     }
 
 }
