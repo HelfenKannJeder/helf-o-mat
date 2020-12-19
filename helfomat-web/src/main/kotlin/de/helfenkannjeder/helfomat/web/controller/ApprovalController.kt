@@ -18,6 +18,9 @@ class ApprovalController(
     @GetMapping("/approval")
     fun findItemsToApprove() = approvalApplicationService.findItemsToApprove()
 
+    @GetMapping("/approval/history")
+    fun findApprovalHistory() = approvalApplicationService.findApprovalHistory()
+
     @GetMapping("/approval/{approvalId}")
     fun getApprovalItem(@PathVariable approvalId: ApprovalId) = approvalApplicationService.findApprovalItem(approvalId)
 

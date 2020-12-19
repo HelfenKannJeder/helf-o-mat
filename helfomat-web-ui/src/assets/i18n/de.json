@@ -257,11 +257,13 @@
     "organization": {
       "approval": {
         "headline": "Organisationen freischalten",
+        "historyHeadline": "Bisherige Freischaltungen",
         "organizationName": "Organisation",
         "author": "Autor",
         "date": "Datum",
         "sources": "Quellen",
         "reviewButton": "Review",
+        "showButton": "Anzeigen",
         "publishAll": "Alle Veröffentlichen",
         "review": {
           "reject": "Ablehnen",

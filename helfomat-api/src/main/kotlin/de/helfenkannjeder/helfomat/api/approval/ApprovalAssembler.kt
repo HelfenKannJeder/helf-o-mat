@@ -16,17 +16,19 @@ fun Approval.toApprovalOverviewDto(organizationId: OrganizationId, organization:
         organizationId,
         organization?.name ?: this.requestedDomainEvent.getNameForNewOrganization(),
         this.requestedDomainEvent.author,
+        this.approvedDomainEvent?.approvedBy,
         this.createdDate,
         this.requestedDomainEvent.sources
     )
 
-fun Approval.toApprovalDetailDto(organization: Organization?, questions: List<Question>, author: User?) = ApprovalDetailDto(
+fun Approval.toApprovalDetailDto(organization: Organization?, questions: List<Question>, author: User?, approved: Boolean) = ApprovalDetailDto(
     this.approvalId,
     organization?.name ?: this.requestedDomainEvent.getNameForNewOrganization(),
     this.createdDate,
     organization?.toOrganizationDetailDto(questions),
     this.requestedDomainEvent.toOrganizationEventDto(questions),
-    author?.toApprovalAuthorDto()
+    author?.toApprovalAuthorDto(),
+    approved
 )
 
 fun ProposedChangeOrganizationEvent.getNameForNewOrganization(): String? {

@@ -15,6 +15,7 @@ import de.helfenkannjeder.helfomat.core.picture.PictureRepository
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository
 import de.helfenkannjeder.helfomat.core.user.UserRepository
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.domain.PageRequest
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
 
@@ -42,13 +43,22 @@ open class ApprovalApplicationService(
             }
     }
 
+    open fun findApprovalHistory(): List<ApprovalOverviewDto> {
+        return approvalRepository.findApprovalHistory(PageRequest.of(0, 20))
+            .map {
+                val organizationId = it.requestedDomainEvent.organizationId
+                val organization: Organization? = organizationRepository.findOne(organizationId.value)
+                it.toApprovalOverviewDto(organizationId, organization)
+            }
+    }
+
     open fun findApprovalItem(approvalId: ApprovalId): ApprovalDetailDto {
         val questions = this.questionRepository.findQuestions()
         val approval = approvalRepository.getOne(approvalId)
         val author = userRepository.findByUsername(approval.requestedDomainEvent.author)
         val organizationId = approval.requestedDomainEvent.organizationId
         val organization: Organization? = organizationRepository.findOne(organizationId.value)
-        return approval.toApprovalDetailDto(organization, questions, author)
+        return approval.toApprovalDetailDto(organization, questions, author, approval.approvedDomainEvent != null)
     }
 
     open fun confirmOrganizationChange(approvalId: ApprovalId, confirmedEvents: List<OrganizationEventDto>) {
