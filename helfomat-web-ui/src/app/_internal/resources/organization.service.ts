@@ -85,6 +85,12 @@ export class OrganizationService {
             events
         });
     }
+
+    validateWebsite(websiteUrl: string): Observable<ValidateWebsiteResultDto> {
+        return this.httpClient.post<ValidateWebsiteResultDto>('api/organization/validate-website', {
+            websiteUrl
+        });
+    }
 }
 
 export class Organization {
@@ -220,4 +226,9 @@ export class OrganizationId {
 export interface OrganizationType {
     type: string;
     name: string;
+}
+
+export interface ValidateWebsiteResultDto {
+    resultUrl: string;
+    reachable: boolean;
 }

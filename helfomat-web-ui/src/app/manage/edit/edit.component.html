@@ -40,7 +40,13 @@
                 </div>
                 <div class="form-group">
                     <label for="website">{{ 'edit.organization.website' | translate }}</label>
-                    <input type="text" id="website" name="website" class="form-control" [(ngModel)]="organization.website"/>
+                    <input type="text" id="website" name="website" class="form-control" [(ngModel)]="organization.website" (blur)="checkWebsiteUrl(organization.website)" />
+                    <div *ngIf="websiteStatus | async; let websiteStatus" class="invalid-feedback">
+                        <div *ngIf="!websiteStatus.reachable">{{ 'edit.organization.error.websiteUnreachable' | translate }}</div>
+                        <div *ngIf="websiteStatus.resultUrl != organization.website">
+                            <a (click)="organization.website = websiteStatus.resultUrl">{{ 'edit.organization.error.changeToHttps' | translate: { websiteUrl: websiteStatus.resultUrl } }}</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="description">{{ 'edit.organization.description' | translate }}</label>
