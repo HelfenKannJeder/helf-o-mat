@@ -1,7 +1,15 @@
 import {Component, EventEmitter, Inject, OnInit} from "@angular/core";
 import {ObservableUtil} from "../../shared/observable.util";
 import {debounceTime, distinctUntilChanged, filter, first, flatMap, map, mergeMap, switchMap} from "rxjs/operators";
-import {Address, ContactPerson, Group, Organization, OrganizationEvent, OrganizationService,} from "../../_internal/resources/organization.service";
+import {
+    Address,
+    ContactPerson,
+    Group,
+    Organization,
+    OrganizationEvent,
+    OrganizationService,
+    ValidateWebsiteResultDto,
+} from "../../_internal/resources/organization.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -37,6 +45,7 @@ export class EditComponent implements OnInit {
 
     public organization$: Observable<Organization>;
     public _organization$: Subject<Organization> = new BehaviorSubject<Organization>(null);
+    public websiteStatus: Subject<ValidateWebsiteResultDto> = new BehaviorSubject<ValidateWebsiteResultDto>(null);
     public changes: Subject<Array<OrganizationEvent>> = new BehaviorSubject([]);
     public newOrganization: Subject<Organization> = new EventEmitter<Organization>();
     public originalOrganization: Organization = null;
@@ -267,6 +276,13 @@ export class EditComponent implements OnInit {
                 const newOrganization = {...organization};
                 newOrganization.logo = logo;
                 this.calculateChanges(newOrganization);
+            })
+    }
+
+    checkWebsiteUrl(websiteUrl: string) {
+        this.organizationService.validateWebsite(websiteUrl)
+            .subscribe(result => {
+                this.websiteStatus.next(result);
             })
     }
 

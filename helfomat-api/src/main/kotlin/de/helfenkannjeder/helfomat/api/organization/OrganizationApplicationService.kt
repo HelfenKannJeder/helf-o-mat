@@ -19,6 +19,10 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 
 /**
  * @author Valentin Zickner
@@ -115,6 +119,35 @@ open class OrganizationApplicationService(
         applicationEventPublisher.publishEvent(proposedChangeOrganizationEvent)
     }
 
+    @PreAuthorize("isAuthenticated()")
+    open fun validateWebsite(validateWebsiteDto: ValidateWebsiteDto): ValidateWebsiteResultDto {
+        var websiteUrl = validateWebsiteDto.websiteUrl
+        if (!websiteUrl.startsWith("http://") && !websiteUrl.startsWith("https://")) {
+            websiteUrl = "http://" + websiteUrl
+        }
+        if (websiteUrl.startsWith("http://")) {
+            val httpsUrl = websiteUrl.replace("http://", "https://")
+            if (isUrlReachable(httpsUrl)) {
+                return ValidateWebsiteResultDto(
+                    httpsUrl,
+                    true
+                )
+            }
+        }
+
+        if (isUrlReachable(websiteUrl)) {
+            return ValidateWebsiteResultDto(
+                websiteUrl,
+                true
+            )
+        }
+
+        return ValidateWebsiteResultDto(
+            websiteUrl,
+            false
+        )
+    }
+
     @Secured(Roles.ADMIN)
     open fun findSimilarOrganizations(searchSimilarOrganizationDto: SearchSimilarOrganizationDto): List<OrganizationDetailDto> {
         val address = searchSimilarOrganizationDto.address?.toAddress()
@@ -160,6 +193,20 @@ open class OrganizationApplicationService(
             }
             .lastOrNull()
 
+    }
+
+    private fun isUrlReachable(websiteUrl: String): Boolean {
+        try {
+            val client = HttpClient.newHttpClient()
+            val request = HttpRequest.newBuilder()
+                .uri(URI.create(websiteUrl))
+                .build()
+            val result = client.send(request, HttpResponse.BodyHandlers.ofString())
+                .statusCode()
+            return result in 200..399
+        } catch (e: Exception) {
+            return false
+        }
     }
 
 }
