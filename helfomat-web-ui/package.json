@@ -38,7 +38,7 @@
     "bootstrap": "4.5.3",
     "core-js": "3.8.1",
     "diff": "5.0.0",
-    "material-design-icons": "^3.0.1",
+    "material-design-icons": "3.0.1",
     "ng2-img-max": "2.2.4",
     "ngx-autosize": "1.8.4",
     "ngx-page-scroll": "7.0.3",
@@ -66,8 +66,8 @@
     "karma-chrome-launcher": "3.1.0",
     "karma-cli": "2.0.0",
     "karma-jasmine": "4.0.1",
-    "node-sass": "5.0.0",
     "protractor": "7.0.0",
+    "sass": "^1.30.0",
     "ts-node": "9.1.1",
     "tslint": "6.1.3",
     "typescript": "4.0.5"
