@@ -1,4 +1,7 @@
 {
+  "date": {
+    "format": "dd.MM.yyyy HH:mm'"
+  },
   "menu": {
     "helf-o-mat": "Helf-O-Mat",
     "helfenkannjeder": "HelfenKannJeder",

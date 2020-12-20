@@ -39,7 +39,7 @@
     </div>
     <div class="form-group">
         <label for="date">{{ 'manage.organization.approval.review.date' | translate }}</label>
-        <input type="text" id="date" class="form-control" [value]="approval.date" readonly/>
+        <input type="text" id="date" class="form-control" [value]="approval.date | date: ('date.format' | translate)" readonly/>
     </div>
 
     <organization-event

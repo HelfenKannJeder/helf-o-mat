@@ -19,7 +19,7 @@
             <td *ngIf="!approval.organizationUrl">{{approval.organizationName}}</td>
             <td *ngIf="approval.organizationUrl"><a [routerLink]="'/volunteer/organization/' + approval.organizationUrl">{{approval.organizationName}}</a></td>
             <td>{{approval.author}}</td>
-            <td>{{approval.date}}</td>
+            <td>{{approval.date | date: ('date.format' | translate)}}</td>
             <td>{{approval.sources}}</td>
             <td>
                 <button class="btn btn-primary btn-sm" [routerLink]="'review/' + approval.approvalId.value">{{ 'manage.organization.approval.reviewButton' | translate }}</button>
@@ -34,7 +34,7 @@
         <tr *ngFor="let approval of approvalHistory">
             <td><a [routerLink]="'/volunteer/organization/' + approval.organizationUrl">{{approval.organizationName}}</a></td>
             <td>{{approval.author}} / {{approval.approvedBy}}</td>
-            <td>{{approval.date}}</td>
+            <td>{{approval.date | date: ('date.format' | translate)}}</td>
             <td>{{approval.sources}}</td>
             <td>
                 <button class="btn btn-secondary btn-sm" [routerLink]="'review/' + approval.approvalId.value">{{ 'manage.organization.approval.showButton' | translate }}</button>
