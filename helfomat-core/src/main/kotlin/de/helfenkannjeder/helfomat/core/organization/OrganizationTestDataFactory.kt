@@ -10,7 +10,7 @@ import java.util.*
  * @author Valentin Zickner
  */
 object OrganizationTestDataFactory {
-    private val ORGANIZATION_1_ADDRESS = Address(
+    val ORGANIZATION_1_ADDRESS = Address(
         street = "Grünhutstr. 9",
         city = "Karlsruhe",
         zipcode = "76187",

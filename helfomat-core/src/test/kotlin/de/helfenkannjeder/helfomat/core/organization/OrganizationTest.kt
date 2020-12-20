@@ -2,6 +2,7 @@ package de.helfenkannjeder.helfomat.core.organization
 
 import de.helfenkannjeder.helfomat.core.event.DomainEvent
 import de.helfenkannjeder.helfomat.core.organization.OrganizationTestDataFactory.ORGANIZATION_1_ABSTUETZEN
+import de.helfenkannjeder.helfomat.core.organization.OrganizationTestDataFactory.ORGANIZATION_1_ADDRESS
 import de.helfenkannjeder.helfomat.core.organization.OrganizationTestDataFactory.ORGANIZATION_1_BAMBINIGRUPPE
 import de.helfenkannjeder.helfomat.core.organization.OrganizationTestDataFactory.ORGANIZATION_1_BEL
 import de.helfenkannjeder.helfomat.core.organization.OrganizationTestDataFactory.ORGANIZATION_1_BERGRUNGSGRUPPE
@@ -543,6 +544,53 @@ class OrganizationTest {
         assertThatOrganizationCanBeRebuildBasedOnEvents(originalOrganization, organizationEvents, newOrganization)
     }
 
+    @Test
+    fun compareTo_withDuplicateDefaultAddressRemovingOne_ensureOneIsRemoved() {
+        // Arrange
+        val originalOrganization = listOf(
+            ORGANIZATION_1_ADDRESS,
+            ORGANIZATION_1_ADDRESS
+        ).toAddressBasedTestOrganization()
+
+        val newOrganization = listOf(
+            ORGANIZATION_1_ADDRESS
+        ).toAddressBasedTestOrganization()
+
+        // Act
+        val organizationEvents = newOrganization.compareTo(originalOrganization)
+
+        // Assert
+        assertThat(organizationEvents).hasSize(1)
+        val organizationEvent = organizationEvents[0]
+        assertThat(organizationEvent).isInstanceOf(OrganizationEditDeleteAddressEvent::class.java)
+        assertThat(organizationEvent.organizationId).isEqualTo(originalOrganization.id)
+        val organizationEditDeleteAddressEvent = organizationEvent as OrganizationEditDeleteAddressEvent
+        assertThat(organizationEditDeleteAddressEvent.address).isEqualTo(ORGANIZATION_1_ADDRESS)
+
+        assertThatOrganizationCanBeRebuildBasedOnEvents(originalOrganization, organizationEvents, newOrganization)
+    }
+
+    @Test
+    fun applyOnOrganizationBuilder_withRemovingOneAddress_ensureAddressIsRemoved() {
+        val originalOrganization = listOf(
+            ORGANIZATION_1_ADDRESS,
+            ORGANIZATION_1_ADDRESS
+        ).toAddressBasedTestOrganization()
+        var organizationBuilder: Organization.Builder? = Organization.Builder(originalOrganization)
+
+
+        organizationBuilder = OrganizationEditDeleteAddressEvent(
+            originalOrganization.id,
+            ORGANIZATION_1_ADDRESS
+        ).applyOnOrganizationBuilder(organizationBuilder)
+
+        val addresses = organizationBuilder?.build()
+            ?.addresses ?: emptyList()
+        assertThat(addresses).hasSize(1)
+        assertThat(addresses[0]).isNotNull
+
+    }
+
     private fun assertThatOrganizationCanBeRebuildBasedOnEvents(original: Organization, difference: List<OrganizationEvent>, new: Organization) {
         var organizationBuilder: Organization.Builder? = Organization.Builder(original)
         for (domainEvent in difference) {
@@ -551,6 +599,7 @@ class OrganizationTest {
         assertThat(organizationBuilder).isNotNull
         val organization = organizationBuilder?.build() ?: throw IllegalStateException()
         assertThat(organization.groups).containsExactlyElementsOf(new.groups)
+        assertThat(organization.addresses).containsExactlyElementsOf(new.addresses)
     }
 
 }
@@ -558,4 +607,9 @@ class OrganizationTest {
 fun Group.toTestOrganization() = listOf(this).toTestOrganization()
 fun List<Group>.toTestOrganization() = Organization.Builder(OrganizationTestDataFactory.ORGANIZATION_1)
     .setGroups(this)
+    .build()
+
+fun List<Address>.toAddressBasedTestOrganization() = Organization.Builder(OrganizationTestDataFactory.ORGANIZATION_1)
+    .setAddresses(this)
+    .setDefaultAddress(this[0])
     .build()
