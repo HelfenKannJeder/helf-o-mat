@@ -30,6 +30,7 @@ export interface ApprovalOverviewDto {
     approvalId: ApprovalId;
     organizationId: OrganizationId;
     organizationName: string;
+    organizationUrl: string;
     author: string;
     approvedBy: string;
     date: string;

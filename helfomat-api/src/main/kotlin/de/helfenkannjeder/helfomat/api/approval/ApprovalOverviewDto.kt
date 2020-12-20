@@ -11,6 +11,7 @@ data class ApprovalOverviewDto(
     val approvalId: ApprovalId,
     val organizationId: OrganizationId,
     val organizationName: String?,
+    val organizationUrl: String?,
     val author: String,
     val approvedBy: String?,
     val date: OffsetDateTime?,

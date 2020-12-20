@@ -15,6 +15,7 @@ fun Approval.toApprovalOverviewDto(organizationId: OrganizationId, organization:
         this.approvalId,
         organizationId,
         organization?.name ?: this.requestedDomainEvent.getNameForNewOrganization(),
+        organization?.urlName,
         this.requestedDomainEvent.author,
         this.approvedDomainEvent?.approvedBy,
         this.createdDate,
