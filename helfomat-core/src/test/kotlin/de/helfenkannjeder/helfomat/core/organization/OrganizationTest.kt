@@ -517,6 +517,32 @@ class OrganizationTest {
         assertThatOrganizationCanBeRebuildBasedOnEvents(originalOrganization, organizationEvents, newOrganization)
     }
 
+    @Test
+    fun compareTo_withDuplicateGroupRemovingOne_ensureOneIsRemoved() {
+        // Arrange
+        val originalOrganization = listOf(
+            ORGANIZATION_1_OV_STAB,
+            ORGANIZATION_1_OV_STAB
+        ).toTestOrganization()
+
+        val newOrganization = listOf(
+            ORGANIZATION_1_OV_STAB
+        ).toTestOrganization()
+
+        // Act
+        val organizationEvents = newOrganization.compareTo(originalOrganization)
+
+        // Assert
+        assertThat(organizationEvents).hasSize(1)
+        val organizationEvent = organizationEvents[0]
+        assertThat(organizationEvent).isInstanceOf(OrganizationEditDeleteGroupEvent::class.java)
+        assertThat(organizationEvent.organizationId).isEqualTo(originalOrganization.id)
+        val organizationEditDeleteGroupEvent = organizationEvent as OrganizationEditDeleteGroupEvent
+        assertThat(organizationEditDeleteGroupEvent.group).isEqualTo(ORGANIZATION_1_OV_STAB)
+
+        assertThatOrganizationCanBeRebuildBasedOnEvents(originalOrganization, organizationEvents, newOrganization)
+    }
+
     private fun assertThatOrganizationCanBeRebuildBasedOnEvents(original: Organization, difference: List<OrganizationEvent>, new: Organization) {
         var organizationBuilder: Organization.Builder? = Organization.Builder(original)
         for (domainEvent in difference) {

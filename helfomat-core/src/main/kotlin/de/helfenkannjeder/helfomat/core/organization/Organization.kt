@@ -337,7 +337,12 @@ data class Organization(
 
         private fun <T> getDiff(list1: List<T>, list2: List<T>): List<Pair<T, Int>> {
             val list = ArrayList(list1)
-            list.removeAll(list2)
+            for (e in list2) {
+                val indexOf = list.indexOf(e)
+                if (indexOf != -1) {
+                    list.removeAt(indexOf)
+                }
+            }
             return list.map { Pair(it, list1.indexOf(it)) }
         }
 
