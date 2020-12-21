@@ -288,6 +288,12 @@ export class EditComponent implements OnInit {
             })
     }
 
+    updateWebsite(organization: Organization, websiteUrl: string) {
+        const newOrganization = {...organization};
+        newOrganization.website = websiteUrl;
+        this.calculateChanges(newOrganization);
+    }
+
     areAddressesValid(organization: Organization) {
         if (organization.addresses.length > 0) {
             return true;

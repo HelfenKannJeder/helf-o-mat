@@ -44,7 +44,7 @@
                     <div *ngIf="websiteStatus | async; let websiteStatus" class="invalid-feedback">
                         <div *ngIf="!websiteStatus.reachable">{{ 'edit.organization.error.websiteUnreachable' | translate }}</div>
                         <div *ngIf="websiteStatus.resultUrl != organization.website">
-                            <a (click)="organization.website = websiteStatus.resultUrl">{{ 'edit.organization.error.changeToHttps' | translate: { websiteUrl: websiteStatus.resultUrl } }}</a>
+                            <a (click)="updateWebsite(organization, websiteStatus.resultUrl)">{{ 'edit.organization.error.changeToHttps' | translate: { websiteUrl: websiteStatus.resultUrl } }}</a>
                         </div>
                     </div>
                 </div>
