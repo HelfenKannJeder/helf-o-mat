@@ -30,6 +30,7 @@ import {hasRole, Roles} from "../../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
 import {EditContactPersonComponent} from "./_internal/edit-contact-person.component";
 import {EditLogoComponent} from "./_internal/edit-logo.component";
+import {LoadingOverlayService} from "../../_internal/components/loading-overlay/loading-overlay.service";
 
 @Component({
     selector: 'organization-edit',
@@ -74,7 +75,8 @@ export class EditComponent implements OnInit {
         private toastr: ToastrService,
         private translateService: TranslateService,
         private oAuthService: OAuthService,
-        @Inject(DOCUMENT) private document: Document
+        @Inject(DOCUMENT) private document: Document,
+        private loadingOverlayService: LoadingOverlayService
     ) {
         ObservableUtil.extractObjectMember(this.route.params, 'organization')
             .pipe(
@@ -320,6 +322,7 @@ export class EditComponent implements OnInit {
             modalRef.result
                 .then((result) => {
                     this.publishContent = result;
+                    this.loadingOverlayService.open();
 
                     let organizationId = organization.id;
                     if (this.originalOrganization) {
@@ -332,6 +335,7 @@ export class EditComponent implements OnInit {
                     )
                         .toPromise()
                         .catch((result) => {
+                            this.loadingOverlayService.close();
                             const title = this.translateService.instant('edit.organization.changes.message.title');
                             const description = this.translateService.instant('edit.organization.changes.message.description');
                             this.toastr.error(description, title);
@@ -348,6 +352,7 @@ export class EditComponent implements OnInit {
                         }
                     };
 
+                    this.loadingOverlayService.close();
                     let confirmedRef = this.modalService.open(ChangesSentForReviewComponent);
                     confirmedRef.componentInstance.organizationName = this.originalOrganization?.name || organization.name;
                     confirmedRef.result
@@ -357,6 +362,7 @@ export class EditComponent implements OnInit {
                 .catch((result) => {
                     // keep content in case the dialog is opened again
                     this.publishContent = result;
+                    this.loadingOverlayService.close();
                 });
         });
     }

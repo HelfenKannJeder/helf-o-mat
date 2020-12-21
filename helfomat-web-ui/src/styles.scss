@@ -4,6 +4,11 @@
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
 @import '~ngx-toastr/toastr-bs4-alert';
+@import '~@angular/cdk/overlay-prebuilt.css';
+
+.dark-backdrop {
+  background-color: rgba(0, 0, 0, 0.85);
+}
 
 .material-icons {
   font-size: inherit;

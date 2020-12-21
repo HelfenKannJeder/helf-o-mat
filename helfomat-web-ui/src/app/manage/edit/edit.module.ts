@@ -24,6 +24,7 @@ import {Ng2ImgMaxModule} from "ng2-img-max";
 import {EditContactPersonComponent} from "./_internal/edit-contact-person.component";
 import {FileUploadComponent} from "./_internal/file-upload.component";
 import {EditLogoComponent} from "./_internal/edit-logo.component";
+import {LoadingOverlayModule} from "../../_internal/components/loading-overlay/loading-overlay.module";
 
 @NgModule({
     providers: [
@@ -47,7 +48,8 @@ import {EditLogoComponent} from "./_internal/edit-logo.component";
         MapModule,
         NgbNavModule,
         AuthenticationModule,
-        Ng2ImgMaxModule
+        Ng2ImgMaxModule,
+        LoadingOverlayModule
     ],
     declarations: [
         EditComponent,
