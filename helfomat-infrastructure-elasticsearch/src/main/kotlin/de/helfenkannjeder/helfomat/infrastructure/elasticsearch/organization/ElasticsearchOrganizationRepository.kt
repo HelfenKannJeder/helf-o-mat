@@ -9,6 +9,7 @@ import org.elasticsearch.index.IndexNotFoundException
 import org.elasticsearch.index.query.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.core.SearchHitsIterator
 import org.springframework.data.elasticsearch.core.document.Document
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder
@@ -183,8 +184,14 @@ class ElasticsearchOrganizationRepository(
         val nativeSearchQuery = NativeSearchQuery(query)
         nativeSearchQuery.setPageable<Query>(PageRequest.of(0, DEFAULT_MAX_RESULT_SIZE))
         val result = arrayListOf<Organization>()
-        for (organization in elasticsearchRestTemplate.stream(nativeSearchQuery, Organization::class.java, IndexCoordinates.of(indexName))) {
-            result.add(organization)
+        var stream: SearchHitsIterator<Organization>? = null
+        try {
+            stream = elasticsearchRestTemplate.searchForStream(nativeSearchQuery, Organization::class.java, IndexCoordinates.of(indexName))
+            for (searchHit in stream) {
+                result.add(searchHit.content)
+            }
+        } finally {
+            stream?.close()
         }
         return result
     }
