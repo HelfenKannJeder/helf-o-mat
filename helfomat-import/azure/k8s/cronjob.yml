@@ -50,16 +50,11 @@ spec:
                       name: helfomat-import-db-secret
                       key: helfomat.import.postgres.password
 
-                - name: SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES
+                - name: SPRING_ELASTICSEARCH_REST_URIS
                   valueFrom:
                     configMapKeyRef:
                       name: helfomat-web-config
-                      key: helfomat.web.elastic.url
-                - name: SPRING_DATA_ELASTICSEARCH_CLUSTER-NAME
-                  valueFrom:
-                    configMapKeyRef:
-                      name: helfomat-web-config
-                      key: helfomat.web.elastic.cluster.name
+                      key: helfomat.web.elastic.resturis
 
                 - name: GOOGLEMAPS_API-KEY
                   valueFrom:
