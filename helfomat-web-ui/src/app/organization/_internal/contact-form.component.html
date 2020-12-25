@@ -6,7 +6,7 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<form (ngSubmit)="submit()" #form="ngForm">
+<form (ngSubmit)="submit(form)" #form="ngForm">
     <div class="modal-body text-left">
         <div class="clearfix">
             <div class="col-md-2 float-right" *ngIf="contact.picture">
@@ -20,18 +20,28 @@
         </div>
         <div class="form-group">
             <label for="textFieldEmailAddress">{{ 'dialog.contact-organization.emailAddress' | translate }}</label>
-            <input type="email" class="form-control" id="textFieldEmailAddress" name="email" [(ngModel)]="contactFormContent.email">
+            <input type="email" class="form-control" id="textFieldEmailAddress" name="email" [ngClass]="{'is-invalid': hasError(emailField)}" [(ngModel)]="contactFormContent.email" #emailField="ngModel" required email="true">
+            <div *ngIf="hasError(emailField)" class="invalid-feedback">
+                <div *ngIf="emailField.errors.required">{{ 'dialog.contact-organization.error.emailIsRequired' | translate }}</div>
+                <div *ngIf="emailField.errors.email">{{ 'dialog.contact-organization.error.emailNeedsToBeFormatted' | translate }}</div>
+            </div>
         </div>
         <div class="form-group">
             <label for="textFieldSubject">{{ 'dialog.contact-organization.subject' | translate }}</label>
-            <input type="text" class="form-control" id="textFieldSubject" name="subject" [(ngModel)]="contactFormContent.subject">
+            <input type="text" class="form-control" id="textFieldSubject" name="subject" [ngClass]="{'is-invalid': hasError(subjectField)}" [(ngModel)]="contactFormContent.subject" #subjectField="ngModel" required>
+            <div *ngIf="hasError(subjectField)" class="invalid-feedback">
+                <div *ngIf="subjectField.errors.required">{{ 'dialog.contact-organization.error.subjectIsRequired' | translate }}</div>
+            </div>
         </div>
         <div class="form-group">
             <label for="textFieldBody">{{ 'dialog.contact-organization.body' | translate }}</label>
-            <textarea class="form-control" id="textFieldBody" rows="8" name="message" [(ngModel)]="contactFormContent.message"></textarea>
+            <textarea class="form-control" id="textFieldBody" rows="8" name="message" [ngClass]="{'is-invalid': hasError(messageField)}" [(ngModel)]="contactFormContent.message" #messageField="ngModel" required></textarea>
+            <div *ngIf="hasError(messageField)" class="invalid-feedback">
+                <div *ngIf="messageField.errors.required">{{ 'dialog.contact-organization.error.messageIsRequired' | translate }}</div>
+            </div>
         </div>
         <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="acceptPrivacyNotice">
+            <input type="checkbox" class="form-check-input" id="acceptPrivacyNotice" name="acceptPrivacyNotice" [ngClass]="{'is-invalid': hasError(privacyNoticeField)}" required [(ngModel)]="privacyNotice" #privacyNoticeField="ngModel">
             <label class="form-check-label" for="acceptPrivacyNotice" [innerHTML]="'dialog.contact-organization.acceptPrivacyNotice' | translate"></label>
         </div>
         <div class="text-right">

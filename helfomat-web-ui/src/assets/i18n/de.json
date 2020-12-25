@@ -21,7 +21,8 @@
   "error": {
     "server": "Es ist ein Verbindungsfehler aufgetreten, bitte versuche es später noch einmal.",
     "client": "Irgendwas hat hier nicht geklappt. Stimmen alle Eingaben?",
-    "captchaInvalid": "Die Sicherheitsüberprüfung während deiner Anfrage ist fehlgeschlagen. Bitte versuche es erneut."
+    "captchaInvalid": "Die Sicherheitsüberprüfung während deiner Anfrage ist fehlgeschlagen. Bitte versuche es erneut.",
+    "invalidForm": "Bitte überprüfe Deine Eingaben. Das scheint nicht ganz vollständig und korrekt zu sein."
   },
   "location": {
     "headline": "Ort / Adresse",
@@ -335,12 +336,21 @@
     "contact-organization": {
       "title": "Kontaktiere {{ contact.firstname }} {{ contact.lastname }} von {{ organization.name }}",
       "description": "Wir freuen uns das Du an '{{ organization.name }}' interessiert bist. Nur noch wenige Schritte um Kontakt aufzunehmen. Bitte füll untenstehendes Formular aus, um Kontakt mit {{ contact.firstname }} {{ contact.lastname }} aufzunehmen.",
-      "emailAddress": "E-Mail Adresse",
+      "emailAddress": "E-Mail-Adresse",
       "subject": "Betreff",
       "body": "Nachricht",
       "acceptPrivacyNotice": "Ich bestätige hiermit, dass ich <a href='https://helfenkannjeder.de/datenschutz/' target=_blank>die Datenschutzbedingungen</a> gelesen habe und akzeptiere.",
       "captcha": "Sicherheitsüberprüfung",
-      "sendEmail": "E-Mail senden"
+      "sendEmail": "E-Mail senden",
+      "error": {
+        "emailIsRequired": "Bitte gebe bitte deine E-Mail-Adresse an, um mit der Organisation Kontakt aufzunehmen. Andernfalls kann die Organisation nicht deine Anfrage zuordnen.",
+        "subjectIsRequired": "Bitte gebe einen Betreff an, um mit der Organisation Kontakt aufzunehmen.",
+        "messageIsRequired": "Bitte gebe ein persönliche Nachricht an die Organisation an, sodass der Ansprechpartner direkt weiß, wie er dir weiterhelfen kann.",
+        "emailNeedsToBeFormatted": "Die angegebene E-Mail-Adresse sieht nicht nach einer E-Mail-Adresse aus, stimmt hier was nicht?"
+      },
+      "toast": {
+        "success": "Deine Anfrage wurde erfolgreich an {{ contact.firstname }} geschickt!"
+      }
     }
   },
   "navigation": {
