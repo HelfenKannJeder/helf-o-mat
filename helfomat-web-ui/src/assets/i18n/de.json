@@ -79,7 +79,8 @@
     "contact": {
       "title": "Ansprechpartner",
       "mail": "E-Mail: ",
-      "telephone": "Telefon: "
+      "telephone": "Telefon: ",
+      "contactForm": "Kontaktiere {{ contact.firstname }}"
     },
     "description": {
       "title": "Beschreibung"
@@ -329,6 +330,15 @@
       "title": "Neue Organisation anlegen",
       "organizationType": "Um eine neue Organisation anzulegen gebe bitte zuerst den Dachverband der Organisation an:",
       "continue": "Weiter"
+    },
+    "contact-organization": {
+      "title": "Kontaktiere {{ contact.firstname }} {{ contact.lastname }} von {{ organization.name }}",
+      "description": "Wir freuen uns das Du an '{{ organization.name }}' interessiert bist. Nur noch wenige Schritte um Kontakt aufzunehmen. Bitte füll untenstehendes Formular aus, um Kontakt mit {{ contact.firstname }} {{ contact.lastname }} aufzunehmen.",
+      "emailAddress": "E-Mail Adresse",
+      "subject": "Betreff",
+      "body": "Nachricht",
+      "acceptPrivacyNotice": "Ich bestätige hiermit, dass ich <a href='https://helfenkannjeder.de/datenschutz/' target=_blank>die Datenschutzbedingungen</a> gelesen habe und akzeptiere.",
+      "sendEmail": "E-Mail senden"
     }
   },
   "navigation": {
