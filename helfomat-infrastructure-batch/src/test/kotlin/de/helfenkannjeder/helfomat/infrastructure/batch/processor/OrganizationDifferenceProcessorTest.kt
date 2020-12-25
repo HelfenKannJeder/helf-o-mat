@@ -90,7 +90,7 @@ internal class OrganizationDifferenceProcessorTest {
             .setDescription("Same Description")
             .setDefaultAddress(address)
             .build()
-        `when`(generalOrganizationRepository.findOrganizationWithSameTypeInDistance(organization1.defaultAddress, OrganizationType.THW, 5L)).thenReturn(listOf(organization2))
+        `when`(generalOrganizationRepository.findOrganizationWithSameTypeInDistance(organization1.defaultAddress, OrganizationType.THW, 1000L)).thenReturn(listOf(organization2))
 
         // Act
         val organizationDifferenceResult = organizationDifferenceProcessor.process(organization1)
