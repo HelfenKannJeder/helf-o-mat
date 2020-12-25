@@ -6,6 +6,7 @@ import {ReCaptchaV3Service} from "ng-recaptcha";
 import {mergeMap} from "rxjs/operators";
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from "@ngx-translate/core";
+import {NgForm, NgModel} from "@angular/forms";
 
 @Component({
     templateUrl: './contact-form.component.html'
@@ -18,6 +19,7 @@ export class ContactFormComponent {
     @Input()
     public organization: Organization;
 
+    public privacyNotice: boolean = false;
     public contactFormContent: ContactFormContent = {
         email: '',
         subject: '',
@@ -33,7 +35,18 @@ export class ContactFormComponent {
     ) {
     }
 
-    public submit() {
+    public hasError(field: NgModel): boolean {
+        return field.invalid && (field.dirty || field.touched);
+    }
+
+    public submit(form: NgForm) {
+        if (!form.valid || !this.privacyNotice) {
+            for (const i in form.controls) {
+                form.controls[i].markAsTouched();
+            }
+            this.toastr.warning(this.translateService.instant('error.invalidForm'));
+            return;
+        }
         this.recaptchaV3Service.execute('submit')
             .pipe(
                 mergeMap(
@@ -48,6 +61,7 @@ export class ContactFormComponent {
                 )
             )
             .subscribe(() => {
+                this.toastr.success(this.translateService.instant('dialog.contact-organization.toast.success', {contact: this.contact}))
                 this.modal.close({});
             }, (error) => {
                 this.toastr.error(this.translateService.instant('error.captchaInvalid'));
