@@ -19,4 +19,8 @@ open class TestApplication {
 
     @MockBean
     lateinit var questionRepository: QuestionRepository
+
+    @MockBean
+    lateinit var captchaValidator: CaptchaValidator
+
 }

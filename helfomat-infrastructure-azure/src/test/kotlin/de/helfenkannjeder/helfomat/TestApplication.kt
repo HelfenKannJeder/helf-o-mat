@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat
 
+import de.helfenkannjeder.helfomat.api.CaptchaValidator
 import de.helfenkannjeder.helfomat.api.geopoint.DistanceMatrixApplicationService
 import de.helfenkannjeder.helfomat.core.approval.ApprovalRepository
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
@@ -25,5 +26,8 @@ open class TestApplication {
 
     @MockBean
     lateinit var approvalRepository: ApprovalRepository
+
+    @MockBean
+    lateinit var captchaValidator: CaptchaValidator
 
 }
