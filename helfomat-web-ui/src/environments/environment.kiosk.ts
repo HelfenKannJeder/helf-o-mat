@@ -28,7 +28,8 @@ export const environment: Environment = {
         // at_hash is not present in JWT token
         disableAtHashCheck: true,
         showDebugInformation: true
-    }
+    },
+    recaptchaSiteKey: ''
 };
 
 export {NoneMapModule as MapImplementationModule} from '../app/map/none/none-map.module';

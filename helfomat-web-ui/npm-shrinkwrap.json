@@ -2635,6 +2635,11 @@
       "integrity": "sha512-L8O9HAVFZj0TuiS8h5ORthiMsrrhjxTC8XUusp5k47oXCst4VTm+qWKvrAvmYMybZVokbp4Udco1mNwJrTNZPQ==",
       "dev": true
     },
+    "@types/grecaptcha": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/@types/grecaptcha/-/grecaptcha-3.0.1.tgz",
+      "integrity": "sha512-eMA/2quQoxwSe8oOBB1H6KNXNqginzt9BHAt2vVVUoQswZNct2QwSAmEMsN/VHj/XSNxM3p+Py15B7omEaAC9w=="
+    },
     "@types/jasmine": {
       "version": "3.6.2",
       "resolved": "https://registry.npmjs.org/@types/jasmine/-/jasmine-3.6.2.tgz",
@@ -8985,6 +8990,22 @@
       "resolved": "https://registry.npmjs.org/next-tick/-/next-tick-1.0.0.tgz",
       "integrity": "sha1-yobR/ogoFpsBICCOPchCS524NCw=",
       "dev": true
+    },
+    "ng-recaptcha": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/ng-recaptcha/-/ng-recaptcha-7.0.0.tgz",
+      "integrity": "sha512-POw/Dhziu+MOww3chZ+dgyIKjFm7tA71xqdBl9y0ruS4l0TmfTwRiEkmPAYWuDvXAAM8S9NtVYe6RrejeWLsSA==",
+      "requires": {
+        "@types/grecaptcha": "^3.0.1",
+        "tslib": "^2.0.0"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "2.0.3",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.0.3.tgz",
+          "integrity": "sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ=="
+        }
+      }
     },
     "ng2-img-max": {
       "version": "2.2.4",

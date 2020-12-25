@@ -17,6 +17,8 @@ import {ProfileModule} from "./profile/profile.module";
 import {HttpErrorInterceptor} from "./_internal/http-error.interceptor";
 import {AuthenticateModule} from "./authenticate/authenticate.module";
 import {KioskRouteModule} from "./kiosk/kiosk-route.module";
+import {RECAPTCHA_V3_SITE_KEY} from "ng-recaptcha";
+import {environment} from "../environments/environment";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -62,6 +64,10 @@ export function createTranslateLoader(http: HttpClient) {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpErrorInterceptor,
             multi: true
+        },
+        {
+            provide: RECAPTCHA_V3_SITE_KEY,
+            useValue:  environment.recaptchaSiteKey,
         }
     ],
     bootstrap: [

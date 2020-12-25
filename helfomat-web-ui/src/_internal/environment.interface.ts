@@ -21,4 +21,5 @@ export interface Environment {
     },
     useHttps: boolean;
     auth: AuthConfig;
+    recaptchaSiteKey: string;
 }

@@ -17,6 +17,7 @@ import {AuthenticationModule} from "../_internal/authentication/authentication.m
 import {QrCodeModule} from "../_internal/components/qr-code/qr-code.module";
 import {ContactFormComponent} from "./_internal/contact-form.component";
 import {FormsModule} from "@angular/forms";
+import {RecaptchaV3Module} from "ng-recaptcha";
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import {FormsModule} from "@angular/forms";
         DistanceModule,
         AuthenticationModule,
         QrCodeModule,
-        FormsModule
+        FormsModule,
+        RecaptchaV3Module
     ],
     declarations: [
         OrganizationComponent,
