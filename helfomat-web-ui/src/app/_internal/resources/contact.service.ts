@@ -12,7 +12,7 @@ export class ContactService {
     ) {
     }
 
-    public createContactRequest(createContactRequest: CreateContactRequest): Observable<void> {
+    public createContactRequest(createContactRequest: CreateContactRequest): Observable<any> {
         return this.httpClient.post('api/contact/request', createContactRequest);
     }
 
