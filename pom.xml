@@ -50,6 +50,7 @@
         <module>helfomat-infrastructure-elasticsearch</module>
         <module>helfomat-infrastructure-jpa</module>
         <module>helfomat-infrastructure-config</module>
+        <module>helfomat-infrastructure-recaptcha</module>
     </modules>
 
     <dependencies>
@@ -161,6 +162,11 @@
             <dependency>
                 <groupId>de.helfenkannjeder.helfomat</groupId>
                 <artifactId>helfomat-infrastructure-email</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.helfenkannjeder.helfomat</groupId>
+                <artifactId>helfomat-infrastructure-recaptcha</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

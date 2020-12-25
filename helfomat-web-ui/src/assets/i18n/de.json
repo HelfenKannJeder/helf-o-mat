@@ -20,7 +20,8 @@
   },
   "error": {
     "server": "Es ist ein Verbindungsfehler aufgetreten, bitte versuche es später noch einmal.",
-    "client": "Irgendwas hat hier nicht geklappt. Stimmen alle Eingaben?"
+    "client": "Irgendwas hat hier nicht geklappt. Stimmen alle Eingaben?",
+    "captchaInvalid": "Die Sicherheitsüberprüfung während deiner Anfrage ist fehlgeschlagen. Bitte versuche es erneut."
   },
   "location": {
     "headline": "Ort / Adresse",
@@ -338,6 +339,7 @@
       "subject": "Betreff",
       "body": "Nachricht",
       "acceptPrivacyNotice": "Ich bestätige hiermit, dass ich <a href='https://helfenkannjeder.de/datenschutz/' target=_blank>die Datenschutzbedingungen</a> gelesen habe und akzeptiere.",
+      "captcha": "Sicherheitsüberprüfung",
       "sendEmail": "E-Mail senden"
     }
   },

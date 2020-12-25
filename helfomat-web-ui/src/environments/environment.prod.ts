@@ -28,7 +28,8 @@ export const environment: Environment = {
         // at_hash is not present in JWT token
         disableAtHashCheck: true,
         showDebugInformation: true
-    }
+    },
+    recaptchaSiteKey: '6Lc5sxQaAAAAADTPI9Yc-HmxbOj5SBtms3u0h3bV'
 };
 
 export {GoogleMapsModule as MapImplementationModule} from '../app/map/google/google-maps.module';

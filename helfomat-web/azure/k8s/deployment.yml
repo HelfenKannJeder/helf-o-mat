@@ -160,6 +160,11 @@ spec:
                   name: helfomat-web-config
                   key: helfomat.health.show.details
 
+            - name: HELFOMAT_RECAPTCHA_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: helfomat-db-secret
+                  key: helfomat.recaptcha.secret
 
           livenessProbe:
             httpGet:
