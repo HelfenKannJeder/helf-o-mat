@@ -6,7 +6,7 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<form (ngSubmit)="modal.close()" #form="ngForm">
+<form (ngSubmit)="submit()" #form="ngForm">
     <div class="modal-body text-left">
         <div class="clearfix">
             <div class="col-md-2 float-right" *ngIf="contact.picture">
@@ -20,15 +20,15 @@
         </div>
         <div class="form-group">
             <label for="textFieldEmailAddress">{{ 'dialog.contact-organization.emailAddress' | translate }}</label>
-            <input type="email" class="form-control" id="textFieldEmailAddress" >
+            <input type="email" class="form-control" id="textFieldEmailAddress" name="email" [(ngModel)]="contactFormContent.email">
         </div>
         <div class="form-group">
             <label for="textFieldSubject">{{ 'dialog.contact-organization.subject' | translate }}</label>
-            <input type="text" class="form-control" id="textFieldSubject">
+            <input type="text" class="form-control" id="textFieldSubject" name="subject" [(ngModel)]="contactFormContent.subject">
         </div>
         <div class="form-group">
             <label for="textFieldBody">{{ 'dialog.contact-organization.body' | translate }}</label>
-            <textarea class="form-control" id="textFieldBody" rows="8"></textarea>
+            <textarea class="form-control" id="textFieldBody" rows="8" name="message" [(ngModel)]="contactFormContent.message"></textarea>
         </div>
         <div class="form-group form-check">
             <input type="checkbox" class="form-check-input" id="acceptPrivacyNotice">
