@@ -25,7 +25,7 @@ class OrganizationDifferenceProcessor(
 
     private fun generateExistingOrganizationFromOtherDatasource(updatedOrganization: Organization): Pair<Organization, List<OrganizationEvent>> {
         val alreadyAvailableOrganization = findClosestMatch(
-            generalOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization.defaultAddress, updatedOrganization.organizationType, 5L),
+            generalOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization.defaultAddress, updatedOrganization.organizationType, 1000L),
             updatedOrganization.urlName
         )
             ?: return updatedOrganization.updateRecordInComparisonWith(null)
