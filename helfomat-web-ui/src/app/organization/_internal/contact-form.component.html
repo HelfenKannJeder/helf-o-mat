@@ -1,0 +1,41 @@
+<div class="modal-header bg-lightblue text-white">
+    <h4 class="modal-title" id="modal-title">
+        {{ 'dialog.contact-organization.title' | translate: { contact: contact, organization: organization } }}
+    </h4>
+    <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form (ngSubmit)="modal.close()" #form="ngForm">
+    <div class="modal-body text-left">
+        <div class="clearfix">
+            <div class="col-md-2 float-right" *ngIf="contact.picture">
+                <img src="api/picture/{{contact.picture.value}}/icon"
+                     width="100%"
+                     alt="{{contact.firstname}} {{contact.lastname}}"/>
+            </div>
+            <p>
+                {{ 'dialog.contact-organization.description' | translate: { contact: contact, organization: organization } }}
+            </p>
+        </div>
+        <div class="form-group">
+            <label for="textFieldEmailAddress">{{ 'dialog.contact-organization.emailAddress' | translate }}</label>
+            <input type="email" class="form-control" id="textFieldEmailAddress" >
+        </div>
+        <div class="form-group">
+            <label for="textFieldSubject">{{ 'dialog.contact-organization.subject' | translate }}</label>
+            <input type="text" class="form-control" id="textFieldSubject">
+        </div>
+        <div class="form-group">
+            <label for="textFieldBody">{{ 'dialog.contact-organization.body' | translate }}</label>
+            <textarea class="form-control" id="textFieldBody" rows="8"></textarea>
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="acceptPrivacyNotice">
+            <label class="form-check-label" for="acceptPrivacyNotice" [innerHTML]="'dialog.contact-organization.acceptPrivacyNotice' | translate"></label>
+        </div>
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary">{{ 'dialog.contact-organization.sendEmail' | translate }}</button>
+        </div>
+    </div>
+</form>

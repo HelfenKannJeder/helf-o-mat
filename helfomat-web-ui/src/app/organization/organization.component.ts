@@ -4,13 +4,15 @@ import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {ObservableUtil} from '../shared/observable.util';
-import {Address, Organization, OrganizationService, TravelDistance, TravelMode} from '../_internal/resources/organization.service';
+import {Address, ContactPerson, Organization, OrganizationService, TravelDistance, TravelMode} from '../_internal/resources/organization.service';
 import {GeoPoint} from '../../_internal/geopoint';
 import {filter, flatMap, map, switchMap, tap} from "rxjs/operators";
 import {hasRole, Roles} from "../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
 import {environment} from "../../environments/environment";
 import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ContactFormComponent} from "./_internal/contact-form.component";
 
 @Component({
     selector: 'organization',
@@ -36,6 +38,7 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         private router: Router,
         private organizationService: OrganizationService,
         private qrCodeService: QrCodeService,
+        private modalService: NgbModal,
         @Optional() private oAuthService: OAuthService
     ) {
         if (this.showQrCode()) {
@@ -154,6 +157,14 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         }
         const accessToken = this.oAuthService.getAccessToken();
         return hasRole(accessToken, Roles.ADMIN) || hasRole(accessToken, Roles.REVIEWER);
+    }
+
+    public openContactForm(organization: Organization, contactPerson: ContactPerson): void {
+        const modalRef = this.modalService.open(ContactFormComponent, {
+            size: 'lg',
+        });
+        modalRef.componentInstance.contact = contactPerson;
+        modalRef.componentInstance.organization = organization;
     }
 
 }

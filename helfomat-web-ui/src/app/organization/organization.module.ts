@@ -15,6 +15,8 @@ import {RouterModule} from "@angular/router";
 import {DistanceModule} from "../_internal/components/distance/distance.module";
 import {AuthenticationModule} from "../_internal/authentication/authentication.module";
 import {QrCodeModule} from "../_internal/components/qr-code/qr-code.module";
+import {ContactFormComponent} from "./_internal/contact-form.component";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
     imports: [
@@ -29,13 +31,15 @@ import {QrCodeModule} from "../_internal/components/qr-code/qr-code.module";
         RouterModule,
         DistanceModule,
         AuthenticationModule,
-        QrCodeModule
+        QrCodeModule,
+        FormsModule
     ],
     declarations: [
         OrganizationComponent,
         TimeComponent,
         CompareAnswerPipe,
-        GroupNamesPipe
+        GroupNamesPipe,
+        ContactFormComponent
     ],
     exports: [
         OrganizationComponent

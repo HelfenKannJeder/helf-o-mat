@@ -131,6 +131,9 @@
                                     {{contactPerson.telephone}}<br/></span>
                                 <span *ngIf="contactPerson.mail">{{'organization.contact.mail' | translate}}
                                     {{contactPerson.mail}}<br/></span>
+                                <span *ngIf="contactPerson.mail && isReviewer()"><a class="contact-person" (click)="openContactForm(organization, contactPerson)">
+                                    {{'organization.contact.contactForm' | translate: {contact: contactPerson} }}
+                                </a><br/></span>
                             </p>
                         </div>
                     </div>
