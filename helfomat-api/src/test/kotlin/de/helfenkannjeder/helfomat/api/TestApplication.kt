@@ -23,4 +23,7 @@ open class TestApplication {
     @MockBean
     lateinit var captchaValidator: CaptchaValidator
 
+    @MockBean
+    lateinit var emailService: EmailService
+
 }
