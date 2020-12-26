@@ -55,7 +55,9 @@ export class ContactFormComponent {
                                 email: this.contactFormContent.email,
                                 subject: this.contactFormContent.subject,
                                 message: this.contactFormContent.message,
-                                captcha: token
+                                captcha: token,
+                                organizationId: {value: this.organization.id},
+                                organizationContactPersonIndex: this.organization.contactPersons.indexOf(this.contact)
                             }
                         )
                 )
