@@ -43,3 +43,7 @@ logging:
   level:
     root: ERROR
     de.helfenkannjeder: DEBUG
+
+spring:
+  messages:
+    basename: i18n/messages

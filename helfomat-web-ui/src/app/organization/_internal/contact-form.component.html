@@ -19,6 +19,13 @@
             </p>
         </div>
         <div class="form-group">
+            <label for="textFieldNameAddress">{{ 'dialog.contact-organization.name' | translate }}</label>
+            <input type="text" class="form-control" id="textFieldNameAddress" name="name" [ngClass]="{'is-invalid': hasError(nameField)}" [(ngModel)]="contactFormContent.name" #nameField="ngModel" required>
+            <div *ngIf="hasError(nameField)" class="invalid-feedback">
+                <div *ngIf="nameField.errors.required">{{ 'dialog.contact-organization.error.nameIsRequired' | translate }}</div>
+            </div>
+        </div>
+        <div class="form-group">
             <label for="textFieldEmailAddress">{{ 'dialog.contact-organization.emailAddress' | translate }}</label>
             <input type="email" class="form-control" id="textFieldEmailAddress" name="email" [ngClass]="{'is-invalid': hasError(emailField)}" [(ngModel)]="contactFormContent.email" #emailField="ngModel" required email="true">
             <div *ngIf="hasError(emailField)" class="invalid-feedback">

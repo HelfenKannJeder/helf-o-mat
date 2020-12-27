@@ -18,6 +18,8 @@ data class ContactRequest(
     @EmbeddedId
     val contactRequestId: ContactRequestId,
 
+    val name: String,
+
     val email: String,
 
     val subject: String,

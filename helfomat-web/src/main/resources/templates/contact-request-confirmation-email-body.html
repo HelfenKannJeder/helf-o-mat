@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">Template for HTML email with inline image</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<img th:src="|cid:logo|" src="./logo.jpg" alt="HelfenKannJeder.de"/>
+<p th:text="${#messages.msg('contact-request-confirmation-body.title', contactRequest.name)}">Hallo Valentin,</p>
+<p th:text="${#messages.msg('contact-request-confirmation-body.content', organization.name)}">vielen Dank für deine E-Mail an THW Karlsruhe. Noch ein kleiner
+    Schritt bevor die E-Mail an das THW Karlsruhe herausgeschickt wird.</p>
+
+<p th:text="${#messages.msg('contact-request-confirmation-body.linkIntro')}">Klicke bitte auf den nachfolgenden Link um die E-Mail abzuschicken:</p>
+<a th:href="${#messages.msg('contact-request-confirmation-body.linkUrl', domain, contactRequest.contactRequestId.value, contactRequest.confirmationCode)}"
+   href="#"
+   th:text="${#messages.msg('contact-request-confirmation-body.linkUrl', domain, contactRequest.contactRequestId.value, contactRequest.confirmationCode)}">http://localhost:4200/volunteer/send-email/1234567890abcdefghijklmno</a>
+<p th:text="${#messages.msg('contact-request-confirmation-body.organizationIntro', organization.name)}">Zur Erinnerung, du kannst Informationen über THW
+    Karlsruhe hier abrufen:</p>
+<a th:href="${#messages.msg('contact-request-confirmation-body.organizationUrl', domain, organization.urlName)}" href="#"
+   th:text="${#messages.msg('contact-request-confirmation-body.organizationUrl', domain, organization.urlName)}">http://localhost:4200/volunteer/organization/thw-karlsruhe</a>
+<h1 th:text="${#messages.msg('contact-request-confirmation-body.yourMessage')}">Deine Nachricht:</h1>
+<strong th:text="${contactRequest.subject}">Dein Betreff</strong>
+<p>
+<pre th:text="${contactRequest.message}">Deine Nachricht</pre>
+</p>
+</body>
+</html>

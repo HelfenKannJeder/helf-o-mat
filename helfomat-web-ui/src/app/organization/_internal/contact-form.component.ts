@@ -21,6 +21,7 @@ export class ContactFormComponent {
 
     public privacyNotice: boolean = false;
     public contactFormContent: ContactFormContent = {
+        name: '',
         email: '',
         subject: '',
         message: ''
@@ -52,6 +53,7 @@ export class ContactFormComponent {
                 mergeMap(
                     token =>
                         this.contactService.createContactRequest({
+                                name: this.contactFormContent.name,
                                 email: this.contactFormContent.email,
                                 subject: this.contactFormContent.subject,
                                 message: this.contactFormContent.message,
@@ -74,6 +76,7 @@ export class ContactFormComponent {
 }
 
 export interface ContactFormContent {
+    name: string;
     email: string;
     subject: string;
     message: string;

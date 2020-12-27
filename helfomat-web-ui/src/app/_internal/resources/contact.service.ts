@@ -22,6 +22,7 @@ export class ContactService {
 
 export interface CreateContactRequest {
     captcha: string;
+    name: string;
     email: string;
     subject: string;
     message: string;
