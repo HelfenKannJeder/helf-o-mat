@@ -8,6 +8,7 @@ import de.helfenkannjeder.helfomat.core.organization.Organization
 
 fun CreateContactRequestDto.toContactRequest(confirmationCode: String, organization: Organization) = ContactRequest(
     ContactRequestId(),
+    this.name,
     this.email,
     this.subject,
     this.message,

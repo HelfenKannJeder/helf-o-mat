@@ -7,6 +7,7 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationId
  */
 data class CreateContactRequestDto(
     val captcha: String,
+    val name: String,
     val email: String,
     val subject: String,
     val message: String,

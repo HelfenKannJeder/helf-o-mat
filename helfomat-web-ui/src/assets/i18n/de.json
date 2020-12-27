@@ -336,6 +336,7 @@
     "contact-organization": {
       "title": "Kontaktiere {{ contact.firstname }} {{ contact.lastname }} von {{ organization.name }}",
       "description": "Wir freuen uns das Du an '{{ organization.name }}' interessiert bist. Nur noch wenige Schritte um Kontakt aufzunehmen. Bitte füll untenstehendes Formular aus, um Kontakt mit {{ contact.firstname }} {{ contact.lastname }} aufzunehmen.",
+      "name": "Name",
       "emailAddress": "E-Mail-Adresse",
       "subject": "Betreff",
       "body": "Nachricht",
@@ -343,9 +344,10 @@
       "captcha": "Sicherheitsüberprüfung",
       "sendEmail": "E-Mail senden",
       "error": {
-        "emailIsRequired": "Bitte gebe bitte deine E-Mail-Adresse an, um mit der Organisation Kontakt aufzunehmen. Andernfalls kann die Organisation nicht deine Anfrage zuordnen.",
+        "nameIsRequired": "Bitte gebe Deinen Namen an.",
+        "emailIsRequired": "Bitte gebe bitte Deine E-Mail-Adresse an, um mit der Organisation Kontakt aufzunehmen. Andernfalls kann die Organisation nicht Deine Anfrage zuordnen.",
         "subjectIsRequired": "Bitte gebe einen Betreff an, um mit der Organisation Kontakt aufzunehmen.",
-        "messageIsRequired": "Bitte gebe ein persönliche Nachricht an die Organisation an, sodass der Ansprechpartner direkt weiß, wie er dir weiterhelfen kann.",
+        "messageIsRequired": "Bitte gebe ein persönliche Nachricht an die Organisation an, sodass der Ansprechpartner direkt weiß, wie er Dir weiterhelfen kann.",
         "emailNeedsToBeFormatted": "Die angegebene E-Mail-Adresse sieht nicht nach einer E-Mail-Adresse aus, stimmt hier was nicht?"
       },
       "toast": {
