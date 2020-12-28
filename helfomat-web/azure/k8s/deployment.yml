@@ -163,7 +163,7 @@ spec:
             - name: HELFOMAT_RECAPTCHA_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: helfomat-db-secret
+                  name: helfomat-web-secret
                   key: helfomat.recaptcha.secret
 
             - name: HELFOMAT_CONTACT-FORM_LOCALE
