@@ -356,6 +356,13 @@
       }
     }
   },
+  "confirm-email": {
+    "wait": "Die E-Mail wird verschickt, einen Moment bitte!",
+    "toast": {
+      "success": "Die E-Mail wurde erfolgreich verschickt!",
+      "failed": "Es hat leider nicht geklappt die E-Mail zu senden. Bitte probiere es später nochmal oder schreibe an webmaster@helfenkannjeder.de."
+    }
+  },
   "navigation": {
     "instagram": "@Instagram",
     "facebook": "@Facebook",

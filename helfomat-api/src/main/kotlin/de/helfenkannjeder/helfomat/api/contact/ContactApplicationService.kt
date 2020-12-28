@@ -8,6 +8,7 @@ import de.helfenkannjeder.helfomat.core.contact.ContactRequestRepository
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ClassPathResource
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -49,6 +50,23 @@ open class ContactApplicationService(
         emailService.sendEmail(contactRequest.email, "contact-request-confirmation-email", arrayOf(contactRequest.subject), attributes, attachments, newLocale)
         contactRequest.markConfirmationAsSent()
         return contactRequestRepository.save(contactRequest).toContactRequestResult()
+    }
+
+    open fun confirmContactRequest(confirmContactRequestDto: ConfirmContactRequestDto): ConfirmContactRequestResult {
+        try {
+            val contactRequest = this.contactRequestRepository.getOne(confirmContactRequestDto.contactRequestId)
+            if (contactRequest.confirmationCode != confirmContactRequestDto.confirmationCode) {
+                throw ContactRequestInvalid()
+            }
+            val organization = this.organizationRepository.findOne(contactRequest.organizationId.value) ?: throw ContactRequestInvalid()
+            // TODO: send email
+            return ConfirmContactRequestResult(
+                contactRequest.organizationId,
+                organization.urlName
+            )
+        } catch (e: JpaObjectRetrievalFailureException) {
+            throw ContactRequestInvalid()
+        }
     }
 
 }

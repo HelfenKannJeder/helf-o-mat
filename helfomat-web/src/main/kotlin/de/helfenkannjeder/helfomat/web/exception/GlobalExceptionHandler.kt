@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.web.exception
 
 import de.helfenkannjeder.helfomat.api.CaptchaValidationFailedException
+import de.helfenkannjeder.helfomat.api.contact.ContactRequestInvalid
 import de.helfenkannjeder.helfomat.api.organization.OrganizationConflictException
 import de.helfenkannjeder.helfomat.api.organization.OrganizationNotFoundException
 import de.helfenkannjeder.helfomat.api.picture.PictureAlreadyExistException
@@ -45,6 +46,10 @@ open class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler
     open fun handleCaptchaValidationFailedException(captchaValidationFailedException: CaptchaValidationFailedException) =
         createErrorResponse(HttpStatus.PRECONDITION_REQUIRED, captchaValidationFailedException)
+
+    @ExceptionHandler
+    open fun handleContactRequestInvalid(contactRequestInvalid: ContactRequestInvalid) =
+        createErrorResponse(HttpStatus.BAD_REQUEST, contactRequestInvalid)
 
     private fun createErrorResponse(status: HttpStatus, e: Exception): ResponseEntity<ErrorDetails> =
         ResponseEntity(ErrorDetails(e.javaClass.simpleName, e.message), HttpHeaders(), status)

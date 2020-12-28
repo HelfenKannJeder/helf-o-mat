@@ -7,6 +7,7 @@ import {NoAuthGuard} from "./_internal/authentication/no-auth.guard";
 import {AuthenticateComponent} from "./authenticate/authenticate.component";
 import {KioskRouteComponent} from "./kiosk/kiosk-route.component";
 import {AppModule} from "./app.module";
+import {ConfirmEmailComponent} from "./confirm-email/confirm-email.component";
 
 const appRoutes: Routes = [
     {
@@ -16,6 +17,7 @@ const appRoutes: Routes = [
             {path: 'result', component: ResultComponent, canActivate: [NoAuthGuard]},
             {path: 'question', component: QuestionComponent, canActivate: [NoAuthGuard]},
             {path: 'location', component: ResultComponent, canActivate: [NoAuthGuard]},
+            {path: 'confirm-email/:contactRequestId/:contactConfirmationToken', component: ConfirmEmailComponent, canActivate: [NoAuthGuard]},
             {path: '', redirectTo: 'question', pathMatch: 'full'}
         ]
     },

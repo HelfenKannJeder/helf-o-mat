@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.web.controller
 
+import de.helfenkannjeder.helfomat.api.contact.ConfirmContactRequestDto
 import de.helfenkannjeder.helfomat.api.contact.ContactApplicationService
 import de.helfenkannjeder.helfomat.api.contact.CreateContactRequestDto
 import org.springframework.http.MediaType
@@ -19,4 +20,7 @@ class ContactController(
 
     @PostMapping("/contact/request")
     fun createContactRequest(@RequestBody contactRequestDto: CreateContactRequestDto) = contactApplicationService.createContactRequest(contactRequestDto)
+
+    @PostMapping("/contact/confirm")
+    fun confirmContactRequest(@RequestBody confirmContactRequestDto: ConfirmContactRequestDto) = contactApplicationService.confirmContactRequest(confirmContactRequestDto)
 }
