@@ -17,6 +17,10 @@ export class ContactService {
         return this.httpClient.post<ContactRequestResult>('api/contact/request', createContactRequest);
     }
 
+    public confirmContactRequest(confirmContactRequest: ConfirmContactRequest): Observable<ConfirmContactRequestResult> {
+        return this.httpClient.post<ConfirmContactRequestResult>('api/contact/confirm', confirmContactRequest);
+    }
+
 }
 
 
@@ -30,8 +34,18 @@ export interface CreateContactRequest {
     organizationContactPersonIndex: number;
 }
 
+export interface ConfirmContactRequest {
+    contactRequestId: ContactRequestId;
+    confirmationCode: string;
+}
+
 export interface ContactRequestResult {
     contactRequestId: ContactRequestId;
+}
+
+export interface ConfirmContactRequestResult {
+    organizationId: OrganizationId;
+    organizationUrl: string;
 }
 
 export interface ContactRequestId {
