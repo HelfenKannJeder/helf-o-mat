@@ -169,17 +169,17 @@ spec:
             - name: HELFOMAT_CONTACT-FORM_LOCALE
               valueFrom:
                 configMapKeyRef:
-                  name: helfomat-db-config
+                  name: helfomat-web-config
                   key: helfomat.contact.locale
             - name: HELFOMAT_CONTACT-FORM_DOMAIN
               valueFrom:
                 configMapKeyRef:
-                  name: helfomat-db-config
+                  name: helfomat-web-config
                   key: helfomat.contact.domain
             - name: HELFOMAT_CONTACT-FORM_FORCE-TO
               valueFrom:
                 configMapKeyRef:
-                  name: helfomat-db-config
+                  name: helfomat-web-config
                   key: helfomat.contact.force-to
 
           livenessProbe:
