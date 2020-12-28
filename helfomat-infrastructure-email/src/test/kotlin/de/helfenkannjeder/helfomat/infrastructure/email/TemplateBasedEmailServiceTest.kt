@@ -38,7 +38,7 @@ internal class TemplateBasedEmailServiceTest {
         `when`(emailSender.createMimeMessage()).thenReturn(message)
 
         val attributes = mapOf(Pair("myVariable", "awesome"))
-        this.templateBasedEmailService.sendEmail("test@helfenkannjeder.de", templatePrefix, arrayOf("awesome"), attributes, listOf(), Locale.US)
+        this.templateBasedEmailService.sendEmail("test@helfenkannjeder.de", templatePrefix, arrayOf("awesome"), attributes, listOf(), Locale.US, null)
 
         verify(message).setSubject(expectedSubject, "UTF-8")
         val argumentCaptor = ArgumentCaptor.forClass(MimeMultipart::class.java)

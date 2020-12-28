@@ -5,6 +5,7 @@ import de.helfenkannjeder.helfomat.api.CaptchaValidator
 import de.helfenkannjeder.helfomat.api.EmailService
 import de.helfenkannjeder.helfomat.api.randomString
 import de.helfenkannjeder.helfomat.core.contact.ContactRequestRepository
+import de.helfenkannjeder.helfomat.core.contact.ContactRequestStatus
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ClassPathResource
@@ -42,12 +43,7 @@ open class ContactApplicationService(
         val attachments = listOf(
             Triple("logo", ClassPathResource("templates/logo.jpg"), "image/jpeg")
         )
-        val localeParts = locale.split("_")
-        val newLocale = when (localeParts.size) {
-            2 -> Locale(localeParts[0], localeParts[1])
-            else -> Locale.getDefault()
-        }
-        emailService.sendEmail(contactRequest.email, "contact-request-confirmation-email", arrayOf(contactRequest.subject), attributes, attachments, newLocale)
+        emailService.sendEmail(contactRequest.email, "contact-request-confirmation-email", arrayOf(contactRequest.subject), attributes, attachments, toLocale(), null)
         contactRequest.markConfirmationAsSent()
         return contactRequestRepository.save(contactRequest).toContactRequestResult()
     }
@@ -58,14 +54,37 @@ open class ContactApplicationService(
             if (contactRequest.confirmationCode != confirmContactRequestDto.confirmationCode) {
                 throw ContactRequestInvalid()
             }
+            if (contactRequest.status != ContactRequestStatus.CONFIRMATION_REQUEST_SENT) {
+                throw ContactRequestInvalid()
+            }
             val organization = this.organizationRepository.findOne(contactRequest.organizationId.value) ?: throw ContactRequestInvalid()
-            // TODO: send email
+
+            val attributes = mapOf(
+                Pair("domain", domain),
+                Pair("contactRequest", contactRequest),
+                Pair("organization", organization)
+            )
+            val attachments = listOf(
+                Triple("logo", ClassPathResource("templates/logo.jpg"), "image/jpeg")
+            )
+            emailService.sendEmail(contactRequest.contactPerson.email, "contact-request-send-email", arrayOf(contactRequest.subject), attributes, attachments, toLocale(), contactRequest.email)
+
+            contactRequest.status = ContactRequestStatus.EMAIL_CONFIRMED
+            this.contactRequestRepository.save(contactRequest)
             return ConfirmContactRequestResult(
                 contactRequest.organizationId,
                 organization.urlName
             )
         } catch (e: JpaObjectRetrievalFailureException) {
             throw ContactRequestInvalid()
+        }
+    }
+
+    private fun toLocale(): Locale {
+        val localeParts = locale.split("_")
+        return when (localeParts.size) {
+            2 -> Locale(localeParts[0], localeParts[1])
+            else -> Locale.getDefault()
         }
     }
 
