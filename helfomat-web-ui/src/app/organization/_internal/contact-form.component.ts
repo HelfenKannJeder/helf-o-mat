@@ -1,12 +1,14 @@
 import {Component, Input} from "@angular/core";
 import {ContactPerson, Organization} from "../../_internal/resources/organization.service";
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ContactService} from "../../_internal/resources/contact.service";
 import {ReCaptchaV3Service} from "ng-recaptcha";
 import {mergeMap} from "rxjs/operators";
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from "@ngx-translate/core";
 import {NgForm, NgModel} from "@angular/forms";
+import {LoadingOverlayService} from "../../_internal/components/loading-overlay/loading-overlay.service";
+import {ContactFormConfirmComponent} from "./contact-form-confirm.component";
 
 @Component({
     templateUrl: './contact-form.component.html'
@@ -32,7 +34,9 @@ export class ContactFormComponent {
         private contactService: ContactService,
         private recaptchaV3Service: ReCaptchaV3Service,
         private toastr: ToastrService,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private loadingOverlayService: LoadingOverlayService,
+        private modalService: NgbModal
     ) {
     }
 
@@ -48,6 +52,7 @@ export class ContactFormComponent {
             this.toastr.warning(this.translateService.instant('error.invalidForm'));
             return;
         }
+        this.loadingOverlayService.open();
         this.recaptchaV3Service.execute('submit')
             .pipe(
                 mergeMap(
@@ -64,11 +69,19 @@ export class ContactFormComponent {
                         )
                 )
             )
-            .subscribe(() => {
+            .subscribe(contactRequestResult => {
                 this.toastr.success(this.translateService.instant('dialog.contact-organization.toast.success', {contact: this.contact}))
+                this.loadingOverlayService.close();
+                const ref = this.modalService.open(ContactFormConfirmComponent, {
+                    size: 'md',
+                });
+                ref.componentInstance.contact = this.contact;
+                ref.componentInstance.organization = this.organization;
+                ref.componentInstance.contactRequestResult = contactRequestResult;
                 this.modal.close({});
             }, (error) => {
                 this.toastr.error(this.translateService.instant('error.captchaInvalid'));
+                this.loadingOverlayService.close();
                 console.warn('failed during submit', error);
             });
     }

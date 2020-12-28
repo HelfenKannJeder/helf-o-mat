@@ -26,7 +26,7 @@ open class ContactApplicationService(
     @Value("\${helfomat.locale:de_DE}") val locale: String
 ) {
 
-    open fun createContactRequest(contactRequestDto: CreateContactRequestDto) {
+    open fun createContactRequest(contactRequestDto: CreateContactRequestDto): ContactRequestResult {
         if (!this.captchaValidator.validate(contactRequestDto.captcha)) {
             throw CaptchaValidationFailedException()
         }
@@ -48,7 +48,7 @@ open class ContactApplicationService(
         }
         emailService.sendEmail(contactRequest.email, "contact-request-confirmation-email", arrayOf(contactRequest.subject), attributes, attachments, newLocale)
         contactRequest.markConfirmationAsSent()
-        contactRequestRepository.save(contactRequest)
+        return contactRequestRepository.save(contactRequest).toContactRequestResult()
     }
 
 }

@@ -23,3 +23,5 @@ fun ContactPerson.toContactRequestContactPerson() = ContactRequestContactPerson(
     this.mail ?: throw ContactRequestInvalid(),
     this.telephone
 )
+
+fun ContactRequest.toContactRequestResult() = ContactRequestResult(this.contactRequestId)
