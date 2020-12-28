@@ -36,7 +36,7 @@ open class EventDataSourceConfig {
         val vendorAdapter = HibernateJpaVendorAdapter()
         entityManagerFactoryBean.jpaVendorAdapter = vendorAdapter
         val jpaProperties: MutableMap<String, String> = hashMapOf()
-        jpaProperties["hibernate.hbm2ddl.auto"] = "update"
+        jpaProperties["hibernate.hbm2ddl.auto"] = "validate"
         jpaProperties["hibernate.physical_naming_strategy"] = SpringPhysicalNamingStrategy::class.java.name
         jpaProperties["hibernate.implicit_naming_strategy"] = SpringImplicitNamingStrategy::class.java.name
         entityManagerFactoryBean.setJpaPropertyMap(jpaProperties)
