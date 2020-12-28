@@ -166,6 +166,22 @@ spec:
                   name: helfomat-db-secret
                   key: helfomat.recaptcha.secret
 
+            - name: HELFOMAT_CONTACT-FORM_LOCALE
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-db-config
+                  key: helfomat.contact.locale
+            - name: HELFOMAT_CONTACT-FORM_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-db-config
+                  key: helfomat.contact.domain
+            - name: HELFOMAT_CONTACT-FORM_FORCE-TO
+              valueFrom:
+                configMapKeyRef:
+                  name: helfomat-db-config
+                  key: helfomat.contact.force-to
+
           livenessProbe:
             httpGet:
               path: /helf-o-mat/actuator/health
