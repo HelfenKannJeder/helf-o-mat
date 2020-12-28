@@ -47,3 +47,7 @@ logging:
 spring:
   messages:
     basename: i18n/messages
+
+  jpa:
+    hibernate:
+      ddl-auto: none

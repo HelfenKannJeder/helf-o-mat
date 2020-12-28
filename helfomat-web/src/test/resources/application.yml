@@ -9,6 +9,10 @@ spring:
     datasource:
       url: jdbc:h2:mem:event_test
 
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
 keycloak:
   realm: helfomat
   resource: helfenkannjeder-web-ui

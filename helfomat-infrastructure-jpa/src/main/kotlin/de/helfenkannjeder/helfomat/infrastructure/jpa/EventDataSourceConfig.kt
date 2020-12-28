@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.jpa
 
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
@@ -29,14 +30,17 @@ open class EventDataSourceConfig {
 
     @Bean
     @Primary
-    open fun eventEntityManager(@Qualifier("eventDataSource") eventDataSource: DataSource): LocalContainerEntityManagerFactoryBean {
+    open fun eventEntityManager(
+        @Qualifier("eventDataSource") eventDataSource: DataSource,
+        @Value("\${spring.jpa.hibernate.ddl-auto:validate}") hbm2ddlAuto: String
+    ): LocalContainerEntityManagerFactoryBean {
         val entityManagerFactoryBean = LocalContainerEntityManagerFactoryBean()
         entityManagerFactoryBean.dataSource = eventDataSource
         entityManagerFactoryBean.setPackagesToScan(this.javaClass.getPackage().name, "de.helfenkannjeder.helfomat.core")
         val vendorAdapter = HibernateJpaVendorAdapter()
         entityManagerFactoryBean.jpaVendorAdapter = vendorAdapter
         val jpaProperties: MutableMap<String, String> = hashMapOf()
-        jpaProperties["hibernate.hbm2ddl.auto"] = "validate"
+        jpaProperties["hibernate.hbm2ddl.auto"] = hbm2ddlAuto
         jpaProperties["hibernate.physical_naming_strategy"] = SpringPhysicalNamingStrategy::class.java.name
         jpaProperties["hibernate.implicit_naming_strategy"] = SpringImplicitNamingStrategy::class.java.name
         entityManagerFactoryBean.setJpaPropertyMap(jpaProperties)
