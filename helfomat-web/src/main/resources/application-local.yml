@@ -21,9 +21,10 @@ security:
       client-id: helfomat-web-profile-admin
       client-secret: a7188212-d414-4f0e-afd2-71605acf9c4d
 
-helfomat:
+helfomat.contact-form:
   locale: de_DE
   domain: http://localhost:4200/
+  force-to: valentin.zickner@helfenkannjeder.de
 
 keycloak:
   realm: helfenkannjeder

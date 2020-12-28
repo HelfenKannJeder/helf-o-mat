@@ -24,8 +24,9 @@ open class ContactApplicationService(
     val contactRequestRepository: ContactRequestRepository,
     val captchaValidator: CaptchaValidator,
     val emailService: EmailService,
-    @Value("\${helfomat.domain:https://www.helfenkannjeder.de/}") val domain: String,
-    @Value("\${helfomat.locale:de_DE}") val locale: String
+    @Value("\${helfomat.contact-form.domain:https://www.helfenkannjeder.de/}") val domain: String,
+    @Value("\${helfomat.contact-form.locale:de_DE}") val locale: String,
+    @Value("\${helfomat.contact-form.force-to:}") val contactFormForceTo: String
 ) {
 
     open fun createContactRequest(contactRequestDto: CreateContactRequestDto): ContactRequestResult {
@@ -67,7 +68,11 @@ open class ContactApplicationService(
             val attachments = listOf(
                 Triple("logo", ClassPathResource("templates/logo.jpg"), "image/jpeg")
             )
-            emailService.sendEmail(contactRequest.contactPerson.email, "contact-request-send-email", arrayOf(contactRequest.subject), attributes, attachments, toLocale(), contactRequest.email)
+            var to = contactRequest.contactPerson.email
+            if (contactFormForceTo != "") {
+                to = contactFormForceTo
+            }
+            emailService.sendEmail(to, "contact-request-send-email", arrayOf(contactRequest.subject), attributes, attachments, toLocale(), contactRequest.email)
 
             contactRequest.status = ContactRequestStatus.EMAIL_CONFIRMED
             this.contactRequestRepository.save(contactRequest)
