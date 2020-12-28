@@ -13,8 +13,8 @@ export class ContactService {
     ) {
     }
 
-    public createContactRequest(createContactRequest: CreateContactRequest): Observable<any> {
-        return this.httpClient.post('api/contact/request', createContactRequest);
+    public createContactRequest(createContactRequest: CreateContactRequest): Observable<ContactRequestResult> {
+        return this.httpClient.post<ContactRequestResult>('api/contact/request', createContactRequest);
     }
 
 }
@@ -28,4 +28,12 @@ export interface CreateContactRequest {
     message: string;
     organizationId: OrganizationId;
     organizationContactPersonIndex: number;
+}
+
+export interface ContactRequestResult {
+    contactRequestId: ContactRequestId;
+}
+
+export interface ContactRequestId {
+    value: string;
 }

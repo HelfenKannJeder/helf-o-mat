@@ -18,6 +18,7 @@ import {QrCodeModule} from "../_internal/components/qr-code/qr-code.module";
 import {ContactFormComponent} from "./_internal/contact-form.component";
 import {FormsModule} from "@angular/forms";
 import {RecaptchaV3Module} from "ng-recaptcha";
+import {ContactFormConfirmComponent} from "./_internal/contact-form-confirm.component";
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import {RecaptchaV3Module} from "ng-recaptcha";
         TimeComponent,
         CompareAnswerPipe,
         GroupNamesPipe,
-        ContactFormComponent
+        ContactFormComponent,
+        ContactFormConfirmComponent
     ],
     exports: [
         OrganizationComponent
