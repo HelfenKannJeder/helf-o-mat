@@ -29,7 +29,7 @@ class TemplateBasedEmailService(
     val messageSource: MessageSource
 ) : EmailService {
 
-    override fun sendEmail(to: String, templatePrefix: String, subjectAttributes: Array<Any>, attributes: Map<String, Any?>, attachments: List<Triple<String, Resource, String>>, locale: Locale) {
+    override fun sendEmail(to: String, templatePrefix: String, subjectAttributes: Array<Any>, attributes: Map<String, Any?>, attachments: List<Triple<String, Resource, String>>, locale: Locale, replyTo: String?) {
         LOGGER.info("Send email to '${to}' with template '${templatePrefix}' and additional information '${attributes}'")
 
         val mimeMessage: MimeMessage = this.emailSender.createMimeMessage();
@@ -44,6 +44,9 @@ class TemplateBasedEmailService(
         message.setSubject(subject)
         message.setFrom(emailConfiguration.sender)
         message.setTo(to)
+        if (replyTo != null) {
+            message.setReplyTo(replyTo)
+        }
 
         val htmlContent: String = this.templateEngine.process("${templatePrefix}-body", ctx)
         message.setText(htmlContent, true)
