@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.web
 
+import de.helfenkannjeder.helfomat.api.EmailService
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
 import org.elasticsearch.client.Client
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -16,4 +17,8 @@ open class TestConfiguration {
 
     @MockBean
     lateinit var jwtDecoder: JwtDecoder
+
+    @MockBean
+    lateinit var emailService: EmailService
+
 }
