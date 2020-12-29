@@ -21,6 +21,10 @@ export class ContactService {
         return this.httpClient.post<ConfirmContactRequestResult>('api/contact/confirm', confirmContactRequest);
     }
 
+    public getContactRequest(contactRequestId: ContactRequestId): Observable<ConfirmContactRequestResult> {
+        return this.httpClient.get<ConfirmContactRequestResult>(`api/contact/${contactRequestId.value}`);
+    }
+
 }
 
 

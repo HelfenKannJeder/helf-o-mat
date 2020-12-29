@@ -1,4 +1,5 @@
-import {Component} from "@angular/core";
+import {Component, Inject} from "@angular/core";
+import {MESSAGE_DATA} from "./loading-overlay.service";
 
 @Component({
     templateUrl: './loading-overlay.component.html',
@@ -7,4 +8,10 @@ import {Component} from "@angular/core";
     ]
 })
 export class LoadingOverlayComponent {
+
+    constructor(
+        @Inject(MESSAGE_DATA) public message: string
+    ) {
+    }
+
 }

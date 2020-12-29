@@ -343,7 +343,7 @@
       "acceptPrivacyNotice": "Ich bestätige hiermit, dass ich <a href='https://helfenkannjeder.de/datenschutz/' target=_blank>die Datenschutzbedingungen</a> gelesen habe und akzeptiere.",
       "captcha": "Sicherheitsüberprüfung",
       "sendEmail": "E-Mail senden",
-      "confirmation-text": "Fast geschafft! Um die Kontaktanfrage zu senden, öffne bitte die Bestätigungsemail die wir Dir geschickt habe und drücke auf den Bestätigungslink.",
+      "confirmation-text": "Fast geschafft! Um die Kontaktanfrage zu senden, öffne bitte die Bestätigungsemail die wir Dir geschickt habe und drücke auf den Bestätigungslink.<br/><br/>Mit diesem Schritt stellen wir sicher, dass die angegebene E-Mail Adresse Dir gehört und die Organisation dir hier eine Antwort schicken kann.",
       "error": {
         "nameIsRequired": "Bitte gebe Deinen Namen an.",
         "emailIsRequired": "Bitte gebe bitte Deine E-Mail-Adresse an, um mit der Organisation Kontakt aufzunehmen. Andernfalls kann die Organisation nicht Deine Anfrage zuordnen.",
