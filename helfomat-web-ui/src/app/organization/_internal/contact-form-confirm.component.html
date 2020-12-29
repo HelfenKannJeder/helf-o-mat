@@ -6,6 +6,5 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<div class="modal-body text-left">
-    {{ 'dialog.contact-organization.confirmation-text' | translate: { contact: contact, organization: organization } }}
+<div class="modal-body text-left" [innerHTML]="'dialog.contact-organization.confirmation-text' | translate: { contact: contact, organization: organization }">
 </div>

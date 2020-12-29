@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ObservableUtil} from "../shared/observable.util";
 import {combineLatest} from "rxjs";
-import {ConfirmContactRequestResult, ContactService} from "../_internal/resources/contact.service";
+import {ContactService} from "../_internal/resources/contact.service";
 import {mergeMap} from "rxjs/operators";
 import {LoadingOverlayService} from "../_internal/components/loading-overlay/loading-overlay.service";
 import {ToastrService} from "ngx-toastr";
@@ -21,9 +21,18 @@ export class ConfirmEmailComponent {
         private toastrService: ToastrService,
         private router: Router
     ) {
-        this.loadingOverlayService.open();
+        this.loadingOverlayService.open(this.translateService.instant('confirm-email.wait'));
+        const contactRequestId = ObservableUtil.extractObjectMember<string>(this.route.params, 'contactRequestId');
+        contactRequestId
+            .pipe(
+                mergeMap(contactRequestId => this.contactService.getContactRequest({value: contactRequestId}))
+            )
+            .subscribe(contactRequest => {
+                this.router.navigate([`/volunteer/organization/${contactRequest.organizationUrl}`]);
+            });
+
         combineLatest([
-            ObservableUtil.extractObjectMember<string>(this.route.params, 'contactRequestId'),
+            contactRequestId,
             ObservableUtil.extractObjectMember<string>(this.route.params, 'contactConfirmationToken')
         ])
             .pipe(
@@ -34,10 +43,12 @@ export class ConfirmEmailComponent {
                     });
                 })
             )
-            .subscribe((confirmContactRequestResult: ConfirmContactRequestResult) => {
-                this.toastrService.success(this.translateService.instant('confirm-email.toast.success'));
+            .subscribe(() => {
+                this.toastrService.success(this.translateService.instant('confirm-email.toast.success'), null, {
+                    disableTimeOut: true,
+                    closeButton: true
+                });
                 this.loadingOverlayService.close();
-                this.router.navigate([`/volunteer/organization/${confirmContactRequestResult.organizationUrl}`]);
             }, () => {
                 this.toastrService.warning(this.translateService.instant('confirm-email.toast.failed'));
                 this.loadingOverlayService.close();

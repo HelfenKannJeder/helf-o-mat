@@ -1,7 +1,9 @@
-import {ComponentRef, Injectable} from "@angular/core";
+import {ComponentRef, Injectable, InjectionToken, Injector} from "@angular/core";
 import {Overlay, OverlayConfig, OverlayRef} from "@angular/cdk/overlay";
 import {LoadingOverlayComponent} from "./loading-overlay.component";
 import {ComponentPortal} from "@angular/cdk/portal";
+
+export const MESSAGE_DATA = new InjectionToken<string>('MESSAGE_DATA');
 
 @Injectable({providedIn: 'root'})
 export class LoadingOverlayService {
@@ -13,7 +15,7 @@ export class LoadingOverlayService {
     ) {
     }
 
-    public open() {
+    public open(message: string = '') {
         if (this.overlayRef != null) {
             return;
         }
@@ -29,7 +31,7 @@ export class LoadingOverlayService {
             positionStrategy
         });
         this.overlayRef = this.overlay.create(dialogConfig);
-        LoadingOverlayService.attachDialogContainer(this.overlayRef);
+        LoadingOverlayService.attachDialogContainer(this.overlayRef, message);
     }
 
     public close() {
@@ -38,9 +40,13 @@ export class LoadingOverlayService {
             this.overlayRef = null;
         }
     }
-
-    private static attachDialogContainer(overlayRef: OverlayRef): LoadingOverlayComponent {
-        const containerPortal = new ComponentPortal(LoadingOverlayComponent);
+    private static attachDialogContainer(overlayRef: OverlayRef, message: string): LoadingOverlayComponent {
+        const injector = Injector.create({
+            providers: [
+                {provide: MESSAGE_DATA, useValue: message}
+            ]
+        });
+        const containerPortal = new ComponentPortal(LoadingOverlayComponent, null, injector);
         const containerRef: ComponentRef<LoadingOverlayComponent> = overlayRef.attach(containerPortal);
         return containerRef.instance;
     }

@@ -129,9 +129,7 @@
                                 <span *ngIf="contactPerson.rank">({{contactPerson.rank}})<br/></span>
                                 <span *ngIf="contactPerson.telephone">{{'organization.contact.telephone' | translate}}
                                     {{contactPerson.telephone}}<br/></span>
-                                <span *ngIf="contactPerson.mail">{{'organization.contact.mail' | translate}}
-                                    {{contactPerson.mail}}<br/></span>
-                                <span *ngIf="contactPerson.mail"><a class="contact-person" (click)="openContactForm(organization, contactPerson)">
+                                <span *ngIf="contactPerson.mail"><a class="btn btn-sm btn-secondary" (click)="openContactForm(organization, contactPerson)">
                                     {{'organization.contact.contactForm' | translate: {contact: contactPerson} }}
                                 </a><br/></span>
                             </p>

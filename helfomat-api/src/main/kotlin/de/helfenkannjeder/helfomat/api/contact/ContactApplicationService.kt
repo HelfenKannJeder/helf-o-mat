@@ -4,6 +4,7 @@ import de.helfenkannjeder.helfomat.api.CaptchaValidationFailedException
 import de.helfenkannjeder.helfomat.api.CaptchaValidator
 import de.helfenkannjeder.helfomat.api.EmailService
 import de.helfenkannjeder.helfomat.api.randomString
+import de.helfenkannjeder.helfomat.core.contact.ContactRequestId
 import de.helfenkannjeder.helfomat.core.contact.ContactRequestRepository
 import de.helfenkannjeder.helfomat.core.contact.ContactRequestStatus
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
@@ -83,6 +84,15 @@ open class ContactApplicationService(
         } catch (e: JpaObjectRetrievalFailureException) {
             throw ContactRequestInvalid()
         }
+    }
+
+    open fun getById(contactRequestId: ContactRequestId): ConfirmContactRequestResult {
+        val contactRequest = this.contactRequestRepository.getOne(contactRequestId)
+        val organization = this.organizationRepository.findOne(contactRequest.organizationId.value) ?: throw ContactRequestInvalid()
+        return ConfirmContactRequestResult(
+            contactRequest.organizationId,
+            organization.urlName
+        )
     }
 
     private fun toLocale(): Locale {
