@@ -8,3 +8,6 @@
 </div>
 <div class="modal-body text-left" [innerHTML]="'dialog.contact-organization.confirmation-text' | translate: { contact: contact, organization: organization }">
 </div>
+<div class="modal-footer" *ngIf="canTriggerResend()">
+    <button type="button" ngbAutofocus class="btn btn-sm btn-primary" (click)="triggerResend()">{{'dialog.contact-organization.resendButton' | translate}}</button>
+</div>
