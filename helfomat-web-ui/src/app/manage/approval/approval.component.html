@@ -37,6 +37,9 @@
             <td>{{approval.date | date: ('date.format' | translate)}}</td>
             <td>{{approval.sources}}</td>
             <td>
+                <span class="badge badge-danger" *ngIf="!approval.isApproved">{{ 'manage.organization.approval.status.declined' | translate }}</span>
+                <span class="badge badge-success" *ngIf="approval.isApproved">{{ 'manage.organization.approval.status.approved' | translate }}</span>
+                <br />
                 <button class="btn btn-secondary btn-sm" [routerLink]="'review/' + approval.approvalId.value">{{ 'manage.organization.approval.showButton' | translate }}</button>
             </td>
         </tr>

@@ -18,6 +18,7 @@ fun Approval.toApprovalOverviewDto(organizationId: OrganizationId, organization:
         organization?.urlName,
         this.requestedDomainEvent.author,
         this.approvedDomainEvent?.approvedBy,
+        !this.isDeclined,
         this.createdDate,
         this.requestedDomainEvent.sources
     )
@@ -29,7 +30,8 @@ fun Approval.toApprovalDetailDto(organization: Organization?, questions: List<Qu
     organization?.toOrganizationDetailDto(questions),
     this.requestedDomainEvent.toOrganizationEventDto(questions),
     author?.toApprovalAuthorDto(),
-    approved
+    approved,
+    !this.isDeclined
 )
 
 fun ProposedChangeOrganizationEvent.getNameForNewOrganization(): String? {

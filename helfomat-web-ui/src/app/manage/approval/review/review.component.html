@@ -1,9 +1,15 @@
 <div *ngIf="approval | async; let approval">
     <nav class="navbar sticky-top navbar-dark bg-lightblue">
         <span class="navbar-brand">{{approval.organizationName}}</span>
-        <div class="btn-group" *ngIf="!approval.approved">
+        <div class="btn-group" *ngIf="!approval.reviewed">
             <button class="btn btn-danger" type="button" (click)="decline(approval)">{{'manage.organization.approval.review.reject' | translate}}</button>
             <button class="btn btn-success" type="submit" (click)="approve(approval)">{{'manage.organization.approval.review.publishChanges' | translate}}</button>
+        </div>
+        <div *ngIf="approval.reviewed">
+            <h4>
+                <span class="badge badge-danger" *ngIf="!approval.approved">{{ 'manage.organization.approval.status.declined' | translate }}</span>
+                <span class="badge badge-success" *ngIf="approval.approved">{{ 'manage.organization.approval.status.approved' | translate }}</span>
+            </h4>
         </div>
     </nav>
 

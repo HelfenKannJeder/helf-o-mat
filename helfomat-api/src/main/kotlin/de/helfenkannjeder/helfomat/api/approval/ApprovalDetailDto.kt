@@ -12,5 +12,6 @@ data class ApprovalDetailDto(
     val organization: OrganizationDetailDto?,
     val proposedDomainEvent: OrganizationEventDto?,
     val author: ApprovalAuthorDto?,
+    val reviewed: Boolean,
     val approved: Boolean
 )

@@ -284,7 +284,11 @@
           "date": "Datum"
         },
         "success": "Die Organisation wurde erfolgreich freigegeben",
-        "confirmDecline": "Sollen die Änderungen wirklich abgelehnt werden?"
+        "confirmDecline": "Sollen die Änderungen wirklich abgelehnt werden?",
+        "status": {
+          "approved": "Akzeptiert",
+          "declined": "Abgelehnt"
+        }
       },
       "decline": {
         "success": "Die Änderungen wurden abgelehnt"

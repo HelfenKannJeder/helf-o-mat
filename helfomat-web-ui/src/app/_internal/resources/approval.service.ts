@@ -33,6 +33,7 @@ export interface ApprovalOverviewDto {
     organizationUrl: string;
     author: string;
     approvedBy: string;
+    isApproved: boolean;
     date: string;
     sources: string;
 }
@@ -44,7 +45,8 @@ export interface ApprovalDetailDto {
     organization: Organization;
     proposedDomainEvent: ProposedChangeOrganizationEventDto;
     author: ApprovalAuthorDto;
-    approved: boolean
+    reviewed: boolean;
+    approved: boolean;
 }
 
 export interface ApprovalAuthorDto {
