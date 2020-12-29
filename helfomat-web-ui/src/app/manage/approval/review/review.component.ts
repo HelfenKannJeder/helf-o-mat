@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {distinctUntilChanged, filter, flatMap, map, mergeMap} from "rxjs/operators";
+import {distinctUntilChanged, filter, map, mergeMap} from "rxjs/operators";
 import {ApprovalDetailDto, ApprovalId, ApprovalService} from "../../../_internal/resources/approval.service";
 import {ObservableUtil} from "../../../shared/observable.util";
 import {BehaviorSubject, of, Subject} from "rxjs";
@@ -16,6 +16,7 @@ export class ReviewComponent {
 
     public approval: Subject<ApprovalDetailDto> = new Subject<ApprovalDetailDto>();
     private doApprove: Subject<{ approvalId: ApprovalId, changes: OrganizationEvent[] }> = new BehaviorSubject(null);
+    private organizationEvents: Array<OrganizationEvent> = [];
 
     constructor(
         private route: ActivatedRoute,
@@ -28,10 +29,11 @@ export class ReviewComponent {
 
     ngOnInit(): void {
         ObservableUtil.extractObjectMember(this.route.params, 'approvalId')
-            .pipe(flatMap((approvalId: string) => {
+            .pipe(mergeMap((approvalId: string) => {
                 return this.approvalService.findDetails({value: approvalId})
             }))
             .subscribe(approval => {
+                this.organizationEvents = approval.proposedDomainEvent.changes;
                 this.approval.next(approval);
             })
         this.doApprove
@@ -42,8 +44,8 @@ export class ReviewComponent {
                         return of(null);
                     }
                     const {approvalId, changes} = approval;
-                    return this.approvalService.confirmApproval(approvalId, changes)
-                        .pipe(map(() => changes.length !== 0));
+                    return this.approvalService.confirmApproval(approvalId, this.organizationEvents)
+                        .pipe(map(() => this.organizationEvents.length !== 0));
                 }),
                 filter(e => e != null)
             )
@@ -81,4 +83,18 @@ export class ReviewComponent {
             });
         }
     }
+
+    public enabledOrganizations(organizationEvents: Array<OrganizationEvent>) {
+        this.organizationEvents = organizationEvents;
+    }
+
+    public isPartialApprove(approval: ApprovalDetailDto) {
+        return approval.proposedDomainEvent.changes.length != this.organizationEvents.length
+            && this.organizationEvents.length > 0;
+    }
+
+    public isCompleteApprove(approval: ApprovalDetailDto) {
+        return approval.proposedDomainEvent.changes.length == this.organizationEvents.length;
+    }
+
 }

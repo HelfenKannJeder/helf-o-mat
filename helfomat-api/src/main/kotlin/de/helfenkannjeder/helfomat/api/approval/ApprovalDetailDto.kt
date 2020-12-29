@@ -11,6 +11,7 @@ data class ApprovalDetailDto(
     val date: OffsetDateTime?,
     val organization: OrganizationDetailDto?,
     val proposedDomainEvent: OrganizationEventDto?,
+    val approvedDomainEvent: OrganizationEventDto?,
     val author: ApprovalAuthorDto?,
     val reviewed: Boolean,
     val approved: Boolean

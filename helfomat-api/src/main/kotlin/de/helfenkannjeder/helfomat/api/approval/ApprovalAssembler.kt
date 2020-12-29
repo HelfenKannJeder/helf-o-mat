@@ -29,6 +29,7 @@ fun Approval.toApprovalDetailDto(organization: Organization?, questions: List<Qu
     this.createdDate,
     organization?.toOrganizationDetailDto(questions),
     this.requestedDomainEvent.toOrganizationEventDto(questions),
+    this.approvedDomainEvent?.toOrganizationEventDto(questions),
     author?.toApprovalAuthorDto(),
     approved,
     !this.isDeclined

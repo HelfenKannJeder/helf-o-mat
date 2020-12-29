@@ -3,7 +3,8 @@
         <span class="navbar-brand">{{approval.organizationName}}</span>
         <div class="btn-group" *ngIf="!approval.reviewed">
             <button class="btn btn-danger" type="button" (click)="decline(approval)">{{'manage.organization.approval.review.reject' | translate}}</button>
-            <button class="btn btn-success" type="submit" (click)="approve(approval)">{{'manage.organization.approval.review.publishChanges' | translate}}</button>
+            <button *ngIf="isCompleteApprove(approval)" class="btn btn-success" type="submit" (click)="approve(approval)">{{'manage.organization.approval.review.publishChanges' | translate}}</button>
+            <button *ngIf="isPartialApprove(approval)" class="btn btn-warning" type="submit" (click)="approve(approval)">{{'manage.organization.approval.review.partialApprove' | translate}}</button>
         </div>
         <div *ngIf="approval.reviewed">
             <h4>
@@ -49,6 +50,17 @@
     </div>
 
     <organization-event
+        *ngIf="!approval.reviewed || !approval.approved"
         [organization]="approval.organization"
-        [organizationEvents]="approval.proposedDomainEvent.changes"></organization-event>
+        [organizationEvents]="approval.proposedDomainEvent.changes"
+        [selectable]="!approval.reviewed"
+        (enabledOrganizations)="this.enabledOrganizations($event)">
+    </organization-event>
+    <organization-event
+        *ngIf="approval.reviewed && approval.approved"
+        [organization]="approval.organization"
+        [organizationEvents]="approval.approvedDomainEvent.changes"
+        [selectable]="false"
+        (enabledOrganizations)="this.enabledOrganizations($event)">
+    </organization-event>
 </div>

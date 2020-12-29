@@ -274,6 +274,7 @@
         "review": {
           "reject": "Ablehnen",
           "publishChanges": "Änderungen veröffentlichen",
+          "partialApprove": "Teiländerungen veröffentlichen",
           "author": {
             "username": "Benutzername",
             "firstName": "Vorname",

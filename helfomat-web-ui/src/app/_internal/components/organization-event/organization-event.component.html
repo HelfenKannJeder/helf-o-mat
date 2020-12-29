@@ -10,6 +10,9 @@
              'list-group-item-success': isCreateEvent(organizationEvent.type),
              'list-group-item-info': isChange(organizationEvent.type)
              }">
+            <div *ngIf="selectable" class="float-right form-check">
+                <input (change)="toggleEvent(organizationEvent, $event)" type="checkbox" checked />
+            </div>
             <ng-container *ngSwitchCase="'.OrganizationCreateEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.created.title' | translate: {name: organizationEvent.name} }}</h5>
                 {{ 'edit.organization.changes.created.description' | translate: {name: organizationEvent.name, urlName: organizationEvent.urlName, organizationType: organizationEvent.organizationType} }}

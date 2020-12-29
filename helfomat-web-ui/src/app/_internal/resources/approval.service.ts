@@ -44,6 +44,7 @@ export interface ApprovalDetailDto {
     date: string;
     organization: Organization;
     proposedDomainEvent: ProposedChangeOrganizationEventDto;
+    approvedDomainEvent: ProposedChangeOrganizationEventDto;
     author: ApprovalAuthorDto;
     reviewed: boolean;
     approved: boolean;
