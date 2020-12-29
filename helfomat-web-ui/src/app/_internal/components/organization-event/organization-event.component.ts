@@ -37,7 +37,7 @@ export class OrganizationEventComponent {
         return !this.isDeleteEvent(eventType) && !this.isCreateEvent(eventType);
     }
 
-    public toggleEvent(organizationEvent: OrganizationEvent, $event) {
+    public toggleEvent(organizationEvent: OrganizationEvent, $event: any) {
         this.organizationEventMapping.set(organizationEvent, $event.target.checked);
         this.enabledOrganizations.emit(this.getEnabledEvents());
     }
