@@ -4,9 +4,11 @@ import de.helfenkannjeder.helfomat.api.CaptchaValidationFailedException
 import de.helfenkannjeder.helfomat.api.CaptchaValidator
 import de.helfenkannjeder.helfomat.api.EmailService
 import de.helfenkannjeder.helfomat.api.randomString
+import de.helfenkannjeder.helfomat.core.contact.ContactRequest
 import de.helfenkannjeder.helfomat.core.contact.ContactRequestId
 import de.helfenkannjeder.helfomat.core.contact.ContactRequestRepository
 import de.helfenkannjeder.helfomat.core.contact.ContactRequestStatus
+import de.helfenkannjeder.helfomat.core.organization.Organization
 import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ClassPathResource
@@ -37,15 +39,24 @@ open class ContactApplicationService(
 
         val organization = organizationRepository.findOne(contactRequestDto.organizationId.value) ?: throw ContactRequestInvalid()
         val contactRequest = contactRequestDto.toContactRequest(randomString(25), organization)
-        val attributes = mapOf(
-            Pair("domain", domain),
-            Pair("contactRequest", contactRequest),
-            Pair("organization", organization)
-        )
-        val attachments = listOf(
-            Triple("logo", ClassPathResource("templates/logo.jpg"), "image/jpeg")
-        )
-        emailService.sendEmail(contactRequest.email, "contact-request-confirmation-email", arrayOf(contactRequest.subject), attributes, attachments, toLocale(), null)
+        sendConfirmationEmail(contactRequest, organization)
+        contactRequest.markConfirmationAsSent()
+        return contactRequestRepository.save(contactRequest).toContactRequestResult()
+    }
+
+    open fun resendContactRequest(resendContactRequestDto: ResendContactRequestDto): ContactRequestResult {
+        if (!this.captchaValidator.validate(resendContactRequestDto.captcha)) {
+            throw CaptchaValidationFailedException()
+        }
+
+        val contactRequest = contactRequestRepository.getOne(resendContactRequestDto.contactRequestId)
+        val organization = organizationRepository.findOne(contactRequest.organizationId.value) ?: throw ContactRequestInvalid()
+
+        if (contactRequest.numberOfConfirmationEmails > 3 || contactRequest.status != ContactRequestStatus.CONFIRMATION_REQUEST_SENT) {
+            throw MaxContactRequestReached()
+        }
+
+        sendConfirmationEmail(contactRequest, organization)
         contactRequest.markConfirmationAsSent()
         return contactRequestRepository.save(contactRequest).toContactRequestResult()
     }
@@ -101,6 +112,18 @@ open class ContactApplicationService(
             2 -> Locale(localeParts[0], localeParts[1])
             else -> Locale.getDefault()
         }
+    }
+
+    private fun sendConfirmationEmail(contactRequest: ContactRequest, organization: Organization) {
+        val attributes = mapOf(
+            Pair("domain", domain),
+            Pair("contactRequest", contactRequest),
+            Pair("organization", organization)
+        )
+        val attachments = listOf(
+            Triple("logo", ClassPathResource("templates/logo.jpg"), "image/jpeg")
+        )
+        emailService.sendEmail(contactRequest.email, "contact-request-confirmation-email", arrayOf(contactRequest.subject), attributes, attachments, toLocale(), null)
     }
 
 }

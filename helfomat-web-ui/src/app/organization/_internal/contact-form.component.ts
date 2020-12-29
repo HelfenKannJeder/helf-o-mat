@@ -70,7 +70,6 @@ export class ContactFormComponent {
                 )
             )
             .subscribe(contactRequestResult => {
-                this.toastr.success(this.translateService.instant('dialog.contact-organization.toast.success', {contact: this.contact}))
                 this.loadingOverlayService.close();
                 const ref = this.modalService.open(ContactFormConfirmComponent, {
                     size: 'md',
