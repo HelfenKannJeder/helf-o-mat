@@ -15,10 +15,9 @@ spring:
       username: helfenkannjeder
       password: helfenkannjeder
 
-  data:
-    elasticsearch:
-      cluster-name: application
-      cluster-nodes: localhost:9300
+  jpa:
+    hibernate:
+      ddl-auto: update
 
 elasticsearch:
   index: helfomat
