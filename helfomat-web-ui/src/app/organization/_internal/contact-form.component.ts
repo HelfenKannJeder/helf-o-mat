@@ -3,12 +3,13 @@ import {ContactPerson, Organization} from "../../_internal/resources/organizatio
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ContactService} from "../../_internal/resources/contact.service";
 import {ReCaptchaV3Service} from "ng-recaptcha";
-import {mergeMap} from "rxjs/operators";
+import {catchError, mergeMap} from "rxjs/operators";
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from "@ngx-translate/core";
 import {NgForm, NgModel} from "@angular/forms";
 import {LoadingOverlayService} from "../../_internal/components/loading-overlay/loading-overlay.service";
 import {ContactFormConfirmComponent} from "./contact-form-confirm.component";
+import {of} from "rxjs";
 
 @Component({
     templateUrl: './contact-form.component.html'
@@ -55,8 +56,14 @@ export class ContactFormComponent {
         this.loadingOverlayService.open();
         this.recaptchaV3Service.execute('submit')
             .pipe(
+                catchError(error => {
+                    this.toastr.error(this.translateService.instant('error.captchaInvalid'));
+                    this.loadingOverlayService.close();
+                    console.warn('failed during submit', error);
+                    return of()
+                }),
                 mergeMap(
-                    token =>
+                    (token: string) =>
                         this.contactService.createContactRequest({
                                 name: this.contactFormContent.name,
                                 email: this.contactFormContent.email,
@@ -79,7 +86,7 @@ export class ContactFormComponent {
                 ref.componentInstance.contactRequestResult = contactRequestResult;
                 this.modal.close({});
             }, (error) => {
-                this.toastr.error(this.translateService.instant('error.captchaInvalid'));
+                this.toastr.error(this.translateService.instant('dialog.contact-organization.error.errorSubmit'));
                 this.loadingOverlayService.close();
                 console.warn('failed during submit', error);
             });

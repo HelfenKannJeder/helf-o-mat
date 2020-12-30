@@ -355,7 +355,8 @@
         "emailIsRequired": "Bitte gebe bitte Deine E-Mail-Adresse an, um mit der Organisation Kontakt aufzunehmen. Andernfalls kann die Organisation nicht Deine Anfrage zuordnen.",
         "subjectIsRequired": "Bitte gebe einen Betreff an, um mit der Organisation Kontakt aufzunehmen.",
         "messageIsRequired": "Bitte gebe ein persönliche Nachricht an die Organisation an, sodass der Ansprechpartner direkt weiß, wie er Dir weiterhelfen kann.",
-        "emailNeedsToBeFormatted": "Die angegebene E-Mail-Adresse sieht nicht nach einer E-Mail-Adresse aus, stimmt hier was nicht?"
+        "emailNeedsToBeFormatted": "Die angegebene E-Mail-Adresse sieht nicht nach einer E-Mail-Adresse aus, stimmt hier was nicht?",
+        "errorSubmit": "Ein Fehler während dem Versenden ist aufgetretten. Ist die E-Mail-Adresse korrekt? Vielleicht probierst du es einfach später nochmal."
       },
       "toast": {
         "success": "Die Bestätigung wurde nochmals verschickt. Bitte überprüfe auch dein Spam Ordner.",
