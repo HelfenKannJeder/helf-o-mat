@@ -14,12 +14,20 @@ class OrganizationDifferenceProcessor(
     private val generalOrganizationRepository: OrganizationRepository
 ) : ItemProcessor<Organization, Pair<Organization, List<OrganizationEvent>>> {
 
+    private val processedOrganizationNames: MutableSet<String> = HashSet()
+
     override fun process(updatedOrganization: Organization): Pair<Organization, List<OrganizationEvent>> {
+        val organizationAndEvents = toOrganizationAndEvents(updatedOrganization)
+        processedOrganizationNames.add(organizationAndEvents.first.name)
+        return organizationAndEvents
+    }
+
+    private fun toOrganizationAndEvents(updatedOrganization: Organization): Pair<Organization, List<OrganizationEvent>> {
         val originalOrganization = findClosestMatch(
-            specificOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization.defaultAddress, updatedOrganization.organizationType, 5L),
-            updatedOrganization.urlName
+                specificOrganizationRepository.findOrganizationWithSameTypeInDistance(updatedOrganization.defaultAddress, updatedOrganization.organizationType, 5L),
+                updatedOrganization.urlName
         )
-            ?: return generateExistingOrganizationFromOtherDatasource(updatedOrganization)
+                ?: return generateExistingOrganizationFromOtherDatasource(updatedOrganization)
         return updatedOrganization.withOrganizationId(originalOrganization.id).updateRecordInComparisonWith(originalOrganization)
     }
 
@@ -36,9 +44,11 @@ class OrganizationDifferenceProcessor(
     }
 
     private fun findClosestMatch(organizations: List<Organization>, urlName: String?): Organization? {
-        return when (organizations.size) {
-            1 -> organizations[0]
-            else -> organizations.firstOrNull { it.urlName == urlName }
+        val relevantOrganizations = organizations
+            .filter { !processedOrganizationNames.contains(it.name) }
+        return when (relevantOrganizations.size) {
+            1 -> relevantOrganizations[0]
+            else -> relevantOrganizations.firstOrNull { it.urlName == urlName }
         }
     }
 
