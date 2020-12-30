@@ -50,6 +50,10 @@
         <div class="form-group form-check">
             <input type="checkbox" class="form-check-input" id="acceptPrivacyNotice" name="acceptPrivacyNotice" [ngClass]="{'is-invalid': hasError(privacyNoticeField)}" required [(ngModel)]="privacyNotice" #privacyNoticeField="ngModel">
             <label class="form-check-label" for="acceptPrivacyNotice" [innerHTML]="'dialog.contact-organization.acceptPrivacyNotice' | translate"></label>
+            <br />
+            This site is protected by reCAPTCHA and the Google
+            <a target="_blank" href="https://policies.google.com/privacy">Privacy Policy</a> and
+            <a target="_blank" href="https://policies.google.com/terms">Terms of Service</a> apply.
         </div>
         <div class="text-right">
             <button type="submit" class="btn btn-primary">{{ 'dialog.contact-organization.sendEmail' | translate }}</button>
