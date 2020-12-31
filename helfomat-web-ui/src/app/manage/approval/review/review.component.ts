@@ -44,8 +44,8 @@ export class ReviewComponent {
                         return of(null);
                     }
                     const {approvalId, changes} = approval;
-                    return this.approvalService.confirmApproval(approvalId, this.organizationEvents)
-                        .pipe(map(() => this.organizationEvents.length !== 0));
+                    return this.approvalService.confirmApproval(approvalId, changes)
+                        .pipe(map(() => changes.length !== 0));
                 }),
                 filter(e => e != null)
             )
@@ -70,7 +70,7 @@ export class ReviewComponent {
     approve(approval: ApprovalDetailDto) {
         this.doApprove.next({
             approvalId: approval.approvalId,
-            changes: approval.proposedDomainEvent.changes
+            changes: this.organizationEvents
         });
     }
 
