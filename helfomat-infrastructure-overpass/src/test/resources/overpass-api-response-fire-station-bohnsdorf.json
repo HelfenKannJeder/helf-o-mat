@@ -1,0 +1,20 @@
+{
+  "__copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "type": "node",
+  "id": 27378775,
+  "lat": 52.4016830,
+  "lon": 13.5743044,
+  "tags": {
+    "addr:city": "Berlin",
+    "addr:country": "DE",
+    "addr:housenumber": "107",
+    "addr:postcode": "12526",
+    "addr:street": "Waltersdorfer Straße",
+    "addr:suburb": "Bohnsdorf",
+    "amenity": "fire_station",
+    "name": "Freiwillige Feuerwehr Bohnsdorf",
+    "ref": "5320",
+    "short_name": "FF Bohnsdorf",
+    "website": "https://www.ff-bohnsdorf.de/"
+  }
+}

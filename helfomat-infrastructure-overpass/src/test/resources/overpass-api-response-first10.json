@@ -1,0 +1,122 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.56.8 7d656e78",
+  "osm3s": {
+    "timestamp_osm_base": "2021-01-03T17:59:03Z",
+    "timestamp_areas_base": "2021-01-03T17:12:02Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+    {
+      "type": "node",
+      "id": 21548296,
+      "lat": 48.6884848,
+      "lon": 11.6122123,
+      "tags": {
+        "amenity": "fire_station",
+        "name": "Freiwillige Feuerwehr Geisenfeld",
+        "phone": "+49 8452 322"
+      }
+    },
+    {
+      "type": "node",
+      "id": 22179554,
+      "lat": 52.9864246,
+      "lon": 8.8841000,
+      "tags": {
+        "amenity": "fire_station",
+        "name": "Freiwillige Feuerwehr Sudweyhe",
+        "website": "https://www.feuerwehr-weyhe.de/Ortsfeuerwehr/sudweyhe/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 22179557,
+      "lat": 52.9918244,
+      "lon": 8.8670350,
+      "tags": {
+        "amenity": "fire_station",
+        "name": "Freiwillige Feuerwehr Kirchweyhe",
+        "operator": "Gemeinde Weyhe"
+      }
+    },
+    {
+      "type": "node",
+      "id": 25870427,
+      "lat": 50.3187531,
+      "lon": 9.2977703,
+      "tags": {
+        "amenity": "fire_station",
+        "name": "Freiwillige Feuerwehr Hellstein"
+      }
+    },
+    {
+      "type": "node",
+      "id": 26463141,
+      "lat": 48.4532248,
+      "lon": 11.7803252,
+      "tags": {
+        "amenity": "fire_station",
+        "created_by": "JOSM"
+      }
+    },
+    {
+      "type": "node",
+      "id": 27219876,
+      "lat": 48.7780243,
+      "lon": 10.5792877,
+      "tags": {
+        "amenity": "fire_station",
+        "created_by": "JOSM"
+      }
+    },
+    {
+      "type": "node",
+      "id": 27378775,
+      "lat": 52.4016830,
+      "lon": 13.5743044,
+      "tags": {
+        "addr:city": "Berlin",
+        "addr:country": "DE",
+        "addr:housenumber": "107",
+        "addr:postcode": "12526",
+        "addr:street": "Waltersdorfer Straße",
+        "addr:suburb": "Bohnsdorf",
+        "amenity": "fire_station",
+        "name": "Freiwillige Feuerwehr Bohnsdorf",
+        "ref": "5320",
+        "short_name": "FF Bohnsdorf",
+        "website": "https://www.ff-bohnsdorf.de/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 27508739,
+      "lat": 48.4091929,
+      "lon": 11.7957260,
+      "tags": {
+        "amenity": "fire_station",
+        "name": "Freiwillige Feuerwehr Marzling"
+      }
+    },
+    {
+      "type": "node",
+      "id": 27558407,
+      "lat": 48.4650420,
+      "lon": 11.8616878,
+      "tags": {
+        "amenity": "fire_station",
+        "name": "fixme Feuerwehr"
+      }
+    },
+    {
+      "type": "node",
+      "id": 28098682,
+      "lat": 49.6532311,
+      "lon": 8.5642262,
+      "tags": {
+        "amenity": "fire_station"
+      }
+    }
+  ]
+}

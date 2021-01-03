@@ -89,6 +89,7 @@
             <modules>
                 <module>helfomat-infrastructure-batch</module>
                 <module>helfomat-infrastructure-thwde</module>
+                <module>helfomat-infrastructure-overpass</module>
                 <module>helfomat-import</module>
             </modules>
         </profile>
