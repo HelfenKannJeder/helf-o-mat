@@ -124,7 +124,7 @@ open class OrganizationApplicationService(
         val updated = compareOrganizationDto.updated.toOrganization()
         val updatedWithAnsweredQuestions = answerOrganizationQuestionService.answerQuestions(updated)
         val questions = questionRepository.findQuestions()
-        return updatedWithAnsweredQuestions.compareTo(original).toOrganizationEventDtos(questions)
+        return updatedWithAnsweredQuestions.compareTo(original).toOrganizationEventDtos(questions, original)
     }
 
     @PreAuthorize("isAuthenticated()")

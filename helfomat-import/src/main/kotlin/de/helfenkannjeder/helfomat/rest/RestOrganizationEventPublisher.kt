@@ -67,6 +67,6 @@ open class RestOrganizationEventPublisher(
 private const val IMPORT_SOURCE = "Helf-O-Mat Import Application"
 
 fun List<OrganizationEvent>.toOrganizationSubmitEventDto(organizationId: OrganizationId, questions: List<Question>): OrganizationSubmitEventDto {
-    val organizationEventDtos = this.toOrganizationEventDtos(questions)
+    val organizationEventDtos = this.toOrganizationEventDtos(questions, null)
     return OrganizationSubmitEventDto(organizationId, IMPORT_SOURCE, organizationEventDtos)
 }
