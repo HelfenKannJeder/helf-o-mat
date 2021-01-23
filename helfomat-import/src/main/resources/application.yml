@@ -19,6 +19,9 @@ spring:
     hibernate:
       ddl-auto: update
 
+  messages:
+    basename: i18n/messages
+
 elasticsearch:
   index: helfomat
   type:
@@ -38,3 +41,10 @@ logging:
   level:
     root: ERROR
     de.helfenkannjeder: DEBUG
+
+helfomat:
+  batch.error-notification-email: webmaster@helfenkannjeder.de
+  email:
+    receiver: webmaster@helfenkannjeder.de
+    sender: no-reply@helfenkannjeder.de
+    referencedUrl: ""

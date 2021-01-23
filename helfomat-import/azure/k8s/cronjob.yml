@@ -79,4 +79,40 @@ spec:
                       name: helfomat-import-config
                       key: helfomat.import.keycloak.url
 
+                - name: SPRING_MAIL_HOST
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-web-config
+                      key: helfomat.mail.host
+                - name: SPRING_MAIL_PORT
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-web-config
+                      key: helfomat.mail.port
+                - name: SPRING_MAIL_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: helfomat-web-secret
+                      key: helfomat.mail.username
+                - name: SPRING_MAIL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: helfomat-web-secret
+                      key: helfomat.mail.password
+                - name: SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-web-config
+                      key: helfomat.mail.properties.mail.smtp.auth
+                - name: SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-web-config
+                      key: helfomat.mail.properties.mail.smtp.starttls.enable
+                - name: HELFOMAT_EMAIL_SENDER
+                  valueFrom:
+                    configMapKeyRef:
+                      name: helfomat-web-config
+                      key: helfomat.mail.sender
+
           restartPolicy: Never

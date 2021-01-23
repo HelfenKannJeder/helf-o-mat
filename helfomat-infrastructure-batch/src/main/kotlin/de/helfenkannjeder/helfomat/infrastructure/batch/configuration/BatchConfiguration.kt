@@ -1,5 +1,6 @@
 package de.helfenkannjeder.helfomat.infrastructure.batch.configuration
 
+import de.helfenkannjeder.helfomat.infrastructure.batch.listener.ErrorNotificationListener
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
@@ -28,10 +29,17 @@ open class BatchConfiguration {
     }
 
     @Bean
-    open fun importDataJob(jobBuilderFactory: JobBuilderFactory, noopStep: Step, @Qualifier("importSteps") importSteps: List<Step>): Job {
+    open fun importDataJob(
+        jobBuilderFactory: JobBuilderFactory,
+        noopStep: Step,
+        @Qualifier("importSteps") importSteps: List<Step>,
+        emailNotificationListener: ErrorNotificationListener
+    ): Job {
         val importDataJob = jobBuilderFactory["importDataJob"].start(noopStep)
         importSteps.forEach { importDataJob.next(it) }
-        return importDataJob.build()
+        return importDataJob
+            .listener(emailNotificationListener)
+            .build()
     }
 
 }
