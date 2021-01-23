@@ -33,7 +33,13 @@ export class ReviewComponent {
                 return this.approvalService.findDetails({value: approvalId})
             }))
             .subscribe(approval => {
-                this.organizationEvents = approval.proposedDomainEvent.changes;
+                const organizationEvents = [];
+                for (const change of approval.proposedDomainEvent.changes) {
+                    if (change.eventApplicable) {
+                        organizationEvents.push(change);
+                    }
+                }
+                this.organizationEvents = organizationEvents;
                 this.approval.next(approval);
             })
         this.doApprove

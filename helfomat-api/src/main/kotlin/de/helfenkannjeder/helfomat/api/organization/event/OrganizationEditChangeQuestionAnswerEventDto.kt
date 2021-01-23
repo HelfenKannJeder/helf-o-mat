@@ -10,7 +10,8 @@ data class OrganizationEditChangeQuestionAnswerEventDto(
     override val organizationId: OrganizationId,
     val indexOffset: Int,
     val oldAnsweredQuestion: AnsweredQuestionDto,
-    val answeredQuestion: AnsweredQuestionDto
+    val answeredQuestion: AnsweredQuestionDto,
+    override val eventApplicable: Boolean
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {

@@ -217,6 +217,7 @@ export class Group {
 export class OrganizationEvent {
     public organizationId: OrganizationId;
     public type: string;
+    public eventApplicable: boolean;
 }
 
 export class OrganizationId {

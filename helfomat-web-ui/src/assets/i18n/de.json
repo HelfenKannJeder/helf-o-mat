@@ -169,6 +169,7 @@
           "title": "Organisation angelegt: {{name}}",
           "description": "Eine Organisation vom Typ {{organizationType}} wurde angelegt. Die Organization hat den URL Namen '{{urlName}}'"
         },
+        "notApplicable": "Diese Änderung passt nicht zu der Organisation die zum aktuellen Zeitpunkt existiert. Bitte überprüfe die Organisation ob die Änderung notwendig ist und führe sie ggf. manuell durch. Du kannst diese Änderung nicht annehmen.",
         "nameChanged": "Name geändert",
         "descriptionChanged": "Beschreibung geändert",
         "address": {

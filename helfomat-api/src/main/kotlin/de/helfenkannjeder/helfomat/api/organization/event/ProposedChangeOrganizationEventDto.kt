@@ -9,7 +9,8 @@ data class ProposedChangeOrganizationEventDto(
     override val organizationId: OrganizationId,
     val author: String,
     val sources: String,
-    val changes: List<OrganizationEventDto>
+    val changes: List<OrganizationEventDto>,
+    override val eventApplicable: Boolean
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {

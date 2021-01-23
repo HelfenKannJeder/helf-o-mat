@@ -8,7 +8,8 @@ import de.helfenkannjeder.helfomat.core.picture.PictureId
  */
 data class OrganizationEditDeletePictureEventDto(
     override val organizationId: OrganizationId,
-    val pictureId: PictureId
+    val pictureId: PictureId,
+    override val eventApplicable: Boolean
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {

@@ -9,7 +9,8 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 data class OrganizationEditAddGroupEventDto(
     override val organizationId: OrganizationId,
     val index: Int,
-    val group: GroupDto
+    val group: GroupDto,
+    override val eventApplicable: Boolean
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {

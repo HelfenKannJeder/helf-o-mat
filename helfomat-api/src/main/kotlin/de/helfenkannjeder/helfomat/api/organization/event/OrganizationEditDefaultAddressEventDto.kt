@@ -8,7 +8,8 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationId
  */
 class OrganizationEditDefaultAddressEventDto(
     override val organizationId: OrganizationId,
-    val address: AddressDto?
+    val address: AddressDto?,
+    override val eventApplicable: Boolean
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {

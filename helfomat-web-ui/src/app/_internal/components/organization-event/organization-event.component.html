@@ -10,9 +10,16 @@
              'list-group-item-success': isCreateEvent(organizationEvent.type),
              'list-group-item-info': isChange(organizationEvent.type)
              }">
-            <div *ngIf="selectable" class="float-right form-check">
-                <input (change)="toggleEvent(organizationEvent, $event)" type="checkbox" checked />
+            <div *ngIf="selectable && !organizationEvent.eventApplicable" class="alert alert-warning">
+                {{ 'edit.organization.changes.notApplicable' | translate }}
             </div>
+            <div *ngIf="selectable" class="float-right form-check">
+                <input (change)="toggleEvent(organizationEvent, $event)"
+                       type="checkbox"
+                       [checked]="organizationEvent.eventApplicable"
+                       [disabled]="!organizationEvent.eventApplicable" />
+            </div>
+            <div [class.not-applicable]="selectable && !organizationEvent.eventApplicable">
             <ng-container *ngSwitchCase="'.OrganizationCreateEventDto'">
                 <h5 class="mb-1">{{ 'edit.organization.changes.created.title' | translate: {name: organizationEvent.name} }}</h5>
                 {{ 'edit.organization.changes.created.description' | translate: {name: organizationEvent.name, urlName: organizationEvent.urlName, organizationType: organizationEvent.organizationType} }}
@@ -242,6 +249,7 @@
                 <text-diff [text1]="organization?.website" [text2]="organizationEvent.website"></text-diff>
             </ng-container>
             <ng-container *ngSwitchDefault>{{ 'edit.organization.changes.unknownEvent' | translate: {eventName: organizationEvent.type} }}</ng-container>
+            </div>
         </div>
     </ng-container>
 </div>
