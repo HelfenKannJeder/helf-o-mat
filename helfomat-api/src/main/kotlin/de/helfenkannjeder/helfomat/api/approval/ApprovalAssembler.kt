@@ -26,6 +26,7 @@ fun Approval.toApprovalOverviewDto(organizationId: OrganizationId, organization:
 fun Approval.toApprovalDetailDto(organization: Organization?, questions: List<Question>, author: User?, approved: Boolean) = ApprovalDetailDto(
     this.approvalId,
     organization?.name ?: this.requestedDomainEvent.getNameForNewOrganization(),
+    organization?.urlName,
     this.createdDate,
     organization?.toOrganizationDetailDto(questions),
     this.requestedDomainEvent.toOrganizationEventDto(questions, organization),

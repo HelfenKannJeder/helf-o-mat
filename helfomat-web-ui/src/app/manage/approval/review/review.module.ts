@@ -4,6 +4,7 @@ import {OrganizationEventModule} from "../../../_internal/components/organizatio
 import {BrowserModule} from "@angular/platform-browser";
 import {TranslateModule} from "@ngx-translate/core";
 import {AutosizeModule} from "ngx-autosize";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
     declarations: [
@@ -13,7 +14,8 @@ import {AutosizeModule} from "ngx-autosize";
         OrganizationEventModule,
         BrowserModule,
         TranslateModule,
-        AutosizeModule
+        AutosizeModule,
+        RouterModule
     ],
     exports: [
         ReviewComponent

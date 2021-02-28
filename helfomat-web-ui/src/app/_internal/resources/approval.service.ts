@@ -41,6 +41,7 @@ export interface ApprovalOverviewDto {
 export interface ApprovalDetailDto {
     approvalId: ApprovalId;
     organizationName: string;
+    organizationUrl: string;
     date: string;
     organization: Organization;
     proposedDomainEvent: ProposedChangeOrganizationEventDto;
