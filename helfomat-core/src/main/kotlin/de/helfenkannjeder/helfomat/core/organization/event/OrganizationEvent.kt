@@ -16,7 +16,7 @@ abstract class OrganizationEvent(
     open val organizationId: OrganizationId
 ) : DomainEvent() {
 
-    abstract fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder?
+    abstract fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder?
     abstract fun <T> visit(visitor: OrganizationEventVisitor<T>): T
 
     companion object {

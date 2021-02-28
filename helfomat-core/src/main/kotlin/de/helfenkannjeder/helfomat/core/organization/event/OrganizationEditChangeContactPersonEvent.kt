@@ -15,7 +15,7 @@ data class OrganizationEditChangeContactPersonEvent(
     val contactPerson: ContactPerson
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         val contactPersons = organizationBuilder?.contactPersons ?: return organizationBuilder
         organizationBuilder.contactPersons = changePosition(contactPersons, oldContactPerson, contactPerson, indexOffset)
         return organizationBuilder

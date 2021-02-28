@@ -100,7 +100,7 @@ class OrganizationEventAssembler(
             proposedChangeOrganizationEvent.author,
             proposedChangeOrganizationEvent.sources,
             proposedChangeOrganizationEvent.changes.map { it.visit(this) },
-            true
+            EventApplicability.UNAPPLICABLE
         )
 
     override fun visit(confirmedChangeOrganizationEvent: ConfirmedChangeOrganizationEvent) =
@@ -110,7 +110,7 @@ class OrganizationEventAssembler(
             confirmedChangeOrganizationEvent.author,
             confirmedChangeOrganizationEvent.sources,
             confirmedChangeOrganizationEvent.changes.map { it.visit(this) },
-            true
+            EventApplicability.UNAPPLICABLE
         )
 
     override fun visit(organizationEditChangeGroupEvent: OrganizationEditChangeGroupEvent): OrganizationEventDto =
@@ -166,14 +166,23 @@ class OrganizationEventAssembler(
             isEventApplicable(organizationEditChangeContactPersonEvent)
         )
 
-    private fun isEventApplicable(organizationEvent: OrganizationEvent): Boolean {
-        val organization = currentOrganization ?: return true
+    private fun isEventApplicable(organizationEvent: OrganizationEvent): EventApplicability {
+        val organization = currentOrganization ?: return EventApplicability.FULL
         val builder = Organization.Builder(organization)
-        organizationEvent.applyOnOrganizationBuilder(builder)
+        organizationEvent.applyOnOrganizationBuilder(builder, true)
+        val newOrganizationStrict = builder.build()
+        if (organization != newOrganizationStrict) {
+            currentOrganization = newOrganizationStrict
+            return EventApplicability.FULL
+        }
+        organizationEvent.applyOnOrganizationBuilder(builder, false)
         val newOrganization = builder.build()
         val isApplicable = organization != newOrganization
         currentOrganization = newOrganization
-        return isApplicable
+        return when (isApplicable) {
+            true -> EventApplicability.SOURCE_MISMATCH
+            false -> EventApplicability.NONE
+        }
     }
 }
 

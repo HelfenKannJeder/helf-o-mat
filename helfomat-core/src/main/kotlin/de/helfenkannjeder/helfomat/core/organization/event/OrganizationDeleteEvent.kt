@@ -11,7 +11,7 @@ data class OrganizationDeleteEvent(
     override val organizationId: OrganizationId
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?) = null
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean) = null
 
     override fun <T> visit(visitor: OrganizationEventVisitor<T>): T {
         return visitor.visit(this)

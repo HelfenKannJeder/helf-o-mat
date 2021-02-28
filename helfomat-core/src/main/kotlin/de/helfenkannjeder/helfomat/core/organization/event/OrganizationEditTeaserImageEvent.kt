@@ -13,7 +13,7 @@ data class OrganizationEditTeaserImageEvent(
     val teaserImage: PictureId?
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         return organizationBuilder?.setTeaserImage(teaserImage)
     }
 

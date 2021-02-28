@@ -10,7 +10,7 @@ data class OrganizationEditAddContactPersonEventDto(
     override val organizationId: OrganizationId,
     val index: Int,
     val contactPerson: ContactPersonDto,
-    override val eventApplicable: Boolean
+    override val eventApplicable: EventApplicability
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {

@@ -13,7 +13,7 @@ data class OrganizationEditLogoEvent(
     val logo: PictureId?
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         return organizationBuilder?.setLogo(logo)
     }
 

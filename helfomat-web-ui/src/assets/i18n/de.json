@@ -170,6 +170,7 @@
           "description": "Eine Organisation vom Typ {{organizationType}} wurde angelegt. Die Organization hat den URL Namen '{{urlName}}'"
         },
         "notApplicable": "Diese Änderung passt nicht zu der Organisation die zum aktuellen Zeitpunkt existiert. Bitte überprüfe die Organisation ob die Änderung notwendig ist und führe sie ggf. manuell durch. Du kannst diese Änderung nicht annehmen.",
+        "sourceMismatch": "Diese Änderung passt nicht zu der Organisation die zum aktuellen Zeitpunkt existiert. Jedoch kann die Änderung auf Basis alter Daten trotzdem ausgeführt werden. Bitte überprüfe bevor dem Akzeptieren ob du die Änderung für sinnvoll hältst. Der hier dargestellte Unterschied ist unter Umständen nicht korrekt.",
         "nameChanged": "Name geändert",
         "descriptionChanged": "Beschreibung geändert",
         "address": {

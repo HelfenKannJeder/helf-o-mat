@@ -14,7 +14,7 @@ data class ProposedChangeOrganizationEvent(
     val changes: List<OrganizationEvent>
 ) : OrganizationEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         // this builder is doing nothing, since the change is only done during the approval.
         return organizationBuilder
     }

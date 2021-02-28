@@ -9,7 +9,7 @@ import de.helfenkannjeder.helfomat.core.organization.OrganizationId
 data class OrganizationEditDeleteAttendanceTimeEventDto(
     override val organizationId: OrganizationId,
     val attendanceTime: AttendanceTimeDto,
-    override val eventApplicable: Boolean
+    override val eventApplicable: EventApplicability
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {

@@ -15,7 +15,7 @@ data class OrganizationCreateEvent(
     val organizationType: OrganizationType
 ) : OrganizationEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?) =
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean) =
         organizationBuilder
             ?.setId(organizationId)
             ?.setName(name)

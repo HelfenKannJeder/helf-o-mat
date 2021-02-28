@@ -13,7 +13,7 @@ data class OrganizationEditDeleteAttendanceTimeEvent(
     val attendanceTime: AttendanceTime
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         organizationBuilder?.attendanceTimes?.remove(attendanceTime)
         return organizationBuilder
     }

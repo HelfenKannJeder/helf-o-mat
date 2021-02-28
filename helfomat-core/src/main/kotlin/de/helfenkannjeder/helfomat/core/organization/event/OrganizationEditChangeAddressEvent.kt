@@ -15,7 +15,7 @@ data class OrganizationEditChangeAddressEvent(
     val address: Address
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         val addresses = organizationBuilder?.addresses ?: return organizationBuilder
         organizationBuilder.addresses = changePosition(addresses, oldAddress, address, indexOffset)
         return organizationBuilder

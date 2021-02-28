@@ -14,7 +14,7 @@ data class OrganizationEditAddAddressEvent(
     val address: Address
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         if (organizationBuilder?.addresses != null) {
             if (organizationBuilder.addresses.size > index) {
                 organizationBuilder.addresses.add(index, address)

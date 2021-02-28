@@ -1,8 +1,11 @@
 package de.helfenkannjeder.helfomat.api.organization.event
 
+import de.helfenkannjeder.helfomat.core.organization.Group
 import de.helfenkannjeder.helfomat.core.organization.OrganizationTestDataFactory
+import de.helfenkannjeder.helfomat.core.organization.OrganizationTestDataFactory.ORGANIZATION_1_BERGRUNG_1
 import de.helfenkannjeder.helfomat.core.organization.OrganizationTestDataFactory.ORGANIZATION_1_OV_STAB
 import de.helfenkannjeder.helfomat.core.organization.event.ConfirmedChangeOrganizationEvent
+import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditChangeGroupEvent
 import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditDeleteGroupEvent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -24,7 +27,7 @@ internal class OrganizationEventAssemblerTest {
         // Assert
         assertThat(event).isInstanceOf(OrganizationEditDeleteGroupEventDto::class.java)
         val organizationEditDeleteGroupEventDto = event as OrganizationEditDeleteGroupEventDto
-        assertThat(organizationEditDeleteGroupEventDto.eventApplicable).isFalse()
+        assertThat(organizationEditDeleteGroupEventDto.eventApplicable).isEqualTo(EventApplicability.NONE)
     }
 
     @Test
@@ -42,7 +45,7 @@ internal class OrganizationEventAssemblerTest {
         // Assert
         assertThat(event).isInstanceOf(OrganizationEditDeleteGroupEventDto::class.java)
         val organizationEditDeleteGroupEventDto = event as OrganizationEditDeleteGroupEventDto
-        assertThat(organizationEditDeleteGroupEventDto.eventApplicable).isTrue()
+        assertThat(organizationEditDeleteGroupEventDto.eventApplicable).isEqualTo(EventApplicability.FULL)
     }
 
     @Test
@@ -71,7 +74,7 @@ internal class OrganizationEventAssemblerTest {
         val detailEvent = confirmedChangeOrganizationEvent.changes[0]
         assertThat(detailEvent).isInstanceOf(OrganizationEditDeleteGroupEventDto::class.java)
         val organizationEditDeleteGroupEventDto = detailEvent as OrganizationEditDeleteGroupEventDto
-        assertThat(organizationEditDeleteGroupEventDto.eventApplicable).isFalse()
+        assertThat(organizationEditDeleteGroupEventDto.eventApplicable).isEqualTo(EventApplicability.NONE)
     }
 
     @Test
@@ -100,7 +103,7 @@ internal class OrganizationEventAssemblerTest {
         val detailEvent = confirmedChangeOrganizationEvent.changes[0]
         assertThat(detailEvent).isInstanceOf(OrganizationEditDeleteGroupEventDto::class.java)
         val organizationEditDeleteGroupEventDto = detailEvent as OrganizationEditDeleteGroupEventDto
-        assertThat(organizationEditDeleteGroupEventDto.eventApplicable).isTrue()
+        assertThat(organizationEditDeleteGroupEventDto.eventApplicable).isEqualTo(EventApplicability.FULL)
     }
 
     @Test
@@ -133,11 +136,32 @@ internal class OrganizationEventAssemblerTest {
         val detailEvent1 = confirmedChangeOrganizationEvent.changes[0]
         assertThat(detailEvent1).isInstanceOf(OrganizationEditDeleteGroupEventDto::class.java)
         val organizationEditDeleteGroupEventDto1 = detailEvent1 as OrganizationEditDeleteGroupEventDto
-        assertThat(organizationEditDeleteGroupEventDto1.eventApplicable).isTrue()
+        assertThat(organizationEditDeleteGroupEventDto1.eventApplicable).isEqualTo(EventApplicability.FULL)
         val detailEvent2 = confirmedChangeOrganizationEvent.changes[1]
         assertThat(detailEvent2).isInstanceOf(OrganizationEditDeleteGroupEventDto::class.java)
         val organizationEditDeleteGroupEventDto2 = detailEvent2 as OrganizationEditDeleteGroupEventDto
-        assertThat(organizationEditDeleteGroupEventDto2.eventApplicable).isFalse()
+        assertThat(organizationEditDeleteGroupEventDto2.eventApplicable).isEqualTo(EventApplicability.NONE)
     }
+
+    @Test
+    fun testEventApplicable_withSourceMismatchEventApplicable_ensureFlagIsSetToPartial() {
+        // Arrange
+        val organization = OrganizationTestDataFactory.ORGANIZATION_1
+        val changeOrganization = OrganizationEditChangeGroupEvent(
+            organizationId = organization.id,
+            indexOffset = 0,
+            oldGroup = Group(ORGANIZATION_1_BERGRUNG_1.name, description = null),
+            group = Group("Bergungsgruppe", description = "Bergungsgruppe ersetzt BG1")
+        )
+
+        // Act
+        val event = changeOrganization.toOrganizationEventDto(emptyList(), organization)
+
+        // Assert
+        assertThat(event).isInstanceOf(OrganizationEditChangeGroupEventDto::class.java)
+        val organizationEditChangeGroupEventDto = event as OrganizationEditChangeGroupEventDto
+        assertThat(organizationEditChangeGroupEventDto.eventApplicable).isEqualTo(EventApplicability.SOURCE_MISMATCH)
+    }
+
 
 }

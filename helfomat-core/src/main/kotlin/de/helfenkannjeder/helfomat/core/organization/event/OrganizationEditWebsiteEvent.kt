@@ -12,7 +12,7 @@ data class OrganizationEditWebsiteEvent(
     val website: String?
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         return organizationBuilder?.setWebsite(website)
     }
 

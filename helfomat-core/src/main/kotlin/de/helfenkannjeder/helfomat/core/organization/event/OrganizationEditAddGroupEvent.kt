@@ -14,7 +14,7 @@ data class OrganizationEditAddGroupEvent(
     val group: Group
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         if (organizationBuilder?.groups != null) {
             if (organizationBuilder.groups.size > index) {
                 organizationBuilder.groups.add(index, group)

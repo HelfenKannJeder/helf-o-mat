@@ -28,7 +28,7 @@ open class JpaEventOrganizationRepository(
         var newOrganizationBuilder: Organization.Builder? = null
         eventRepository.findByOrganizationId(organizationId)
             .map { it.domainEvent }
-            .forEach { newOrganizationBuilder = it.applyOnOrganizationBuilder(newOrganizationBuilder) }
+            .forEach { newOrganizationBuilder = it.applyOnOrganizationBuilder(newOrganizationBuilder, false) }
         return newOrganizationBuilder
     }
 

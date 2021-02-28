@@ -12,7 +12,7 @@ data class OrganizationEditNameEvent(
     val name: String
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         return organizationBuilder?.setName(name)
     }
 
