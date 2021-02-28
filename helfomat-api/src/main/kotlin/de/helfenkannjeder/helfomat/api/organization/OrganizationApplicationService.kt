@@ -50,7 +50,7 @@ open class OrganizationApplicationService(
                 .flatMap { it.changes }
             isPreview = allChanges.isNotEmpty()
             allChanges
-                .forEach { it.applyOnOrganizationBuilder(builder) }
+                .forEach { it.applyOnOrganizationBuilder(builder, false) }
             organization = builder.build()
         }
         return organization?.toOrganizationDetailDto(questions, isPreview)

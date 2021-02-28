@@ -14,7 +14,7 @@ data class OrganizationEditChangePictureEvent(
     val pictureId: PictureId
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         val pictures = organizationBuilder?.pictures ?: return organizationBuilder
         organizationBuilder.pictures = changePosition(pictures, pictureId, pictureId, indexOffset)
         return organizationBuilder

@@ -15,10 +15,10 @@ data class ConfirmedChangeOrganizationEvent(
     val changes: List<OrganizationEvent>
 ) : OrganizationEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         var result = organizationBuilder
         for (change in changes) {
-            result = change.applyOnOrganizationBuilder(result)
+            result = change.applyOnOrganizationBuilder(result, false)
         }
         return result
     }

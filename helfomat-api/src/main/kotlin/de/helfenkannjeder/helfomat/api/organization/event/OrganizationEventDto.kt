@@ -11,7 +11,7 @@ interface OrganizationEventDto {
 
     val organizationId: OrganizationId
 
-    val eventApplicable: Boolean
+    val eventApplicable: EventApplicability
 
     fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T
 

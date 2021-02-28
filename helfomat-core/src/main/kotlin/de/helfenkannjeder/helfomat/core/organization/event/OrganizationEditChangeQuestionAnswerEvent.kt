@@ -15,7 +15,7 @@ data class OrganizationEditChangeQuestionAnswerEvent(
     val questionAnswer: QuestionAnswer
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         val questionAnswers = organizationBuilder?.questionAnswers ?: return organizationBuilder
         organizationBuilder.questionAnswers = changePosition(questionAnswers, oldQuestionAnswer, questionAnswer, indexOffset)
         return organizationBuilder

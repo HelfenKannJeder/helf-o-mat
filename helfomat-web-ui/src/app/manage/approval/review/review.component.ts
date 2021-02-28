@@ -35,7 +35,7 @@ export class ReviewComponent {
             .subscribe(approval => {
                 const organizationEvents = [];
                 for (const change of approval.proposedDomainEvent.changes) {
-                    if (change.eventApplicable) {
+                    if (change.eventApplicable != "NONE") {
                         organizationEvents.push(change);
                     }
                 }

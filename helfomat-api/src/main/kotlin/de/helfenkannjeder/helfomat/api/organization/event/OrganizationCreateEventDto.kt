@@ -11,7 +11,7 @@ data class OrganizationCreateEventDto(
     val name: String,
     val urlName: String,
     val organizationType: OrganizationType,
-    override val eventApplicable: Boolean
+    override val eventApplicable: EventApplicability
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {

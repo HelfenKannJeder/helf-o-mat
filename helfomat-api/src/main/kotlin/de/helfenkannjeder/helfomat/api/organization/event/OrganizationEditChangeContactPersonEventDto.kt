@@ -8,7 +8,7 @@ data class OrganizationEditChangeContactPersonEventDto(
     val indexOffset: Int,
     val oldContactPerson: ContactPersonDto,
     val contactPerson: ContactPersonDto,
-    override val eventApplicable: Boolean
+    override val eventApplicable: EventApplicability
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T = visitor.visit(this)

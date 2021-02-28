@@ -11,7 +11,7 @@ data class ConfirmedChangeOrganizationEventDto(
     val author: String,
     val sources: String,
     val changes: List<OrganizationEventDto>,
-    override val eventApplicable: Boolean
+    override val eventApplicable: EventApplicability
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T {

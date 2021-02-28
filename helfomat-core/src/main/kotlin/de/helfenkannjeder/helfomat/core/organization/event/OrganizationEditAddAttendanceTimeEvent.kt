@@ -14,7 +14,7 @@ data class OrganizationEditAddAttendanceTimeEvent(
     val attendanceTime: AttendanceTime
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         if (organizationBuilder?.attendanceTimes != null) {
             if (organizationBuilder.attendanceTimes.size > index) {
                 organizationBuilder.attendanceTimes.add(index, attendanceTime)

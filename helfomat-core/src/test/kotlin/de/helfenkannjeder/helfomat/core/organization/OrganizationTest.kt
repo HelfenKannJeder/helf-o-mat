@@ -171,7 +171,7 @@ class OrganizationTest {
             organizationType = OrganizationType.DRV
         )
         for (domainEvent in domainEvents) {
-            organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder)
+            organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder, false)
         }
         assertThat(organizationBuilder).isNotNull
         val (id, name, urlName, organizationType, description, website, logo, teaserImage, defaultAddress, pictures, contactPersons, addresses, questionAnswers, _, groups, attendanceTimes, volunteers) = organizationBuilder!!.build()
@@ -582,7 +582,7 @@ class OrganizationTest {
         organizationBuilder = OrganizationEditDeleteAddressEvent(
             originalOrganization.id,
             ORGANIZATION_1_ADDRESS
-        ).applyOnOrganizationBuilder(organizationBuilder)
+        ).applyOnOrganizationBuilder(organizationBuilder, false)
 
         val addresses = organizationBuilder?.build()
             ?.addresses ?: emptyList()
@@ -591,10 +591,70 @@ class OrganizationTest {
 
     }
 
+    @Test
+    fun applyOnOrganizationBuilder_withPartiallyMatchingGroup_ensureGroupIsStillReplaced() {
+        // Arrange
+        val originalOrganization = listOf(
+            ORGANIZATION_1_BERGRUNG_1,
+            ORGANIZATION_1_BERGRUNG_2,
+            ORGANIZATION_1_OV_STAB,
+            ORGANIZATION_1_FELDKOCHHERD,
+            ORGANIZATION_1_BEL,
+            ORGANIZATION_1_R
+        ).toTestOrganization()
+        var organizationBuilder: Organization.Builder? = Organization.Builder(originalOrganization)
+
+        // Act
+        val newGroup = Group("Schwere Bergung", "Die Schwere Bergung ersetzt die Bergungsgruppe 2")
+        organizationBuilder = OrganizationEditChangeGroupEvent(
+            originalOrganization.id,
+            0,
+            Group(ORGANIZATION_1_BERGRUNG_2.name, null),
+            newGroup
+        ).applyOnOrganizationBuilder(organizationBuilder, false)
+
+        // Assert
+        val groups = organizationBuilder?.build()?.groups ?: emptyList()
+        assertThat(groups.size).isEqualTo(6)
+        assertThat(groups[1]).isNotNull
+        assertThat(groups[1].name).isEqualTo(newGroup.name)
+        assertThat(groups[1].description).isEqualTo(newGroup.description)
+    }
+
+    @Test
+    fun applyOnOrganizationBuilder_withPartiallyMatchingGroupAndStrictModeTrue_ensureGroupIsNotReplaced() {
+        // Arrange
+        val originalOrganization = listOf(
+            ORGANIZATION_1_BERGRUNG_1,
+            ORGANIZATION_1_BERGRUNG_2,
+            ORGANIZATION_1_OV_STAB,
+            ORGANIZATION_1_FELDKOCHHERD,
+            ORGANIZATION_1_BEL,
+            ORGANIZATION_1_R
+        ).toTestOrganization()
+        var organizationBuilder: Organization.Builder? = Organization.Builder(originalOrganization)
+
+        // Act
+        val newGroup = Group("Schwere Bergung", "Die Schwere Bergung ersetzt die Bergungsgruppe 2")
+        organizationBuilder = OrganizationEditChangeGroupEvent(
+            originalOrganization.id,
+            0,
+            Group(ORGANIZATION_1_BERGRUNG_2.name, null),
+            newGroup
+        ).applyOnOrganizationBuilder(organizationBuilder, true)
+
+        // Assert
+        val groups = organizationBuilder?.build()?.groups ?: emptyList()
+        assertThat(groups.size).isEqualTo(6)
+        assertThat(groups[1]).isNotNull
+        assertThat(groups[1].name).isEqualTo(ORGANIZATION_1_BERGRUNG_2.name)
+        assertThat(groups[1].description).isEqualTo(ORGANIZATION_1_BERGRUNG_2.description)
+    }
+
     private fun assertThatOrganizationCanBeRebuildBasedOnEvents(original: Organization, difference: List<OrganizationEvent>, new: Organization) {
         var organizationBuilder: Organization.Builder? = Organization.Builder(original)
         for (domainEvent in difference) {
-            organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder)
+            organizationBuilder = domainEvent.applyOnOrganizationBuilder(organizationBuilder, false)
         }
         assertThat(organizationBuilder).isNotNull
         val organization = organizationBuilder?.build() ?: throw IllegalStateException()

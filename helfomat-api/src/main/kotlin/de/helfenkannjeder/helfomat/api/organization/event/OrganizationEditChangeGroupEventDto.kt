@@ -8,7 +8,7 @@ data class OrganizationEditChangeGroupEventDto(
     val indexOffset: Int,
     val oldGroup: GroupDto,
     val group: GroupDto,
-    override val eventApplicable: Boolean
+    override val eventApplicable: EventApplicability
 ) : OrganizationEventDto {
 
     override fun <T> visit(visitor: OrganizationEventDtoVisitor<T>): T = visitor.visit(this)

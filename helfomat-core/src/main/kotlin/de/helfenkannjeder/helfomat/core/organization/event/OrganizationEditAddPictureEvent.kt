@@ -14,7 +14,7 @@ data class OrganizationEditAddPictureEvent(
     val pictureId: PictureId
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         if (organizationBuilder?.pictures != null) {
             if (organizationBuilder.pictures.size > index) {
                 organizationBuilder.pictures.add(index, pictureId)

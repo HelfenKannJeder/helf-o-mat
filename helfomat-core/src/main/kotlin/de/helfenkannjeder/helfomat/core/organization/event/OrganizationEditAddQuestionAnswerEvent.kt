@@ -14,7 +14,7 @@ data class OrganizationEditAddQuestionAnswerEvent(
     val questionAnswer: QuestionAnswer
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         if (organizationBuilder?.questionAnswers != null) {
             if (organizationBuilder.questionAnswers.size > index) {
                 organizationBuilder.questionAnswers.add(index, questionAnswer)

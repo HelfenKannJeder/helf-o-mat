@@ -15,7 +15,7 @@ data class OrganizationEditChangeAttendanceTimeEvent(
     val attendanceTime: AttendanceTime
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         val attendanceTimes = organizationBuilder?.attendanceTimes ?: return organizationBuilder
         organizationBuilder.attendanceTimes = changePosition(attendanceTimes, oldAttendanceTime, attendanceTime, indexOffset)
         return organizationBuilder

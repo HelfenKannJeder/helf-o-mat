@@ -13,7 +13,7 @@ data class OrganizationEditDeleteAddressEvent(
     val address: Address
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         organizationBuilder?.addresses?.remove(address)
         return organizationBuilder
     }

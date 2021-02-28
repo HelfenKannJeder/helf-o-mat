@@ -13,7 +13,7 @@ data class OrganizationEditDeleteGroupEvent(
     val group: Group
 ) : OrganizationEditEvent(organizationId) {
 
-    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?): Organization.Builder? {
+    override fun applyOnOrganizationBuilder(organizationBuilder: Organization.Builder?, strictMode: Boolean): Organization.Builder? {
         organizationBuilder?.groups?.remove(group)
         return organizationBuilder
     }
