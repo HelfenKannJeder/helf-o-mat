@@ -84,45 +84,45 @@ stages:
         - upload: $(k8sKioskDirectory)
           artifact: k8s-kiosk
 
-  - stage: DeployDevStage
-    displayName: Deploy Stage
-    dependsOn: BuildDevelop
-    jobs:
-    - deployment: DeployDevStage
-      displayName: Deploy Dev Stage
-      environment: 'HelfenKannJeder.dev'
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - task: KubernetesManifest@0
-              displayName: Deploy to Kubernetes cluster
-              inputs:
-                action: deploy
-                manifests: |
-                  $(Pipeline.Workspace)/k8s/*.yml
-                containers: |
-                  $(containerRegistry)/$(imageRepository):$(tagDevelop)
+#  - stage: DeployDevStage
+#    displayName: Deploy Stage
+#    dependsOn: BuildDevelop
+#    jobs:
+#    - deployment: DeployDevStage
+#      displayName: Deploy Dev Stage
+#      environment: 'HelfenKannJeder.dev'
+#      strategy:
+#        runOnce:
+#          deploy:
+#            steps:
+#            - task: KubernetesManifest@0
+#              displayName: Deploy to Kubernetes cluster
+#              inputs:
+#                action: deploy
+#                manifests: |
+#                  $(Pipeline.Workspace)/k8s/*.yml
+#                containers: |
+#                  $(containerRegistry)/$(imageRepository):$(tagDevelop)
 
-  - stage: DeployDevStageKiosk
-    displayName: Deploy Stage Kiosk
-    dependsOn: BuildDevelopKiosk
-    jobs:
-    - deployment: DeployDevStage
-      displayName: Deploy Dev Stage
-      environment: 'HelfenKannJeder.dev'
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - task: KubernetesManifest@0
-              displayName: Deploy to Kubernetes cluster
-              inputs:
-                action: deploy
-                manifests: |
-                  $(Pipeline.Workspace)/k8s-kiosk/*.yml
-                containers: |
-                  $(publicImageRepository):$(tagDevelop)
+#  - stage: DeployDevStageKiosk
+#    displayName: Deploy Stage Kiosk
+#    dependsOn: BuildDevelopKiosk
+#    jobs:
+#    - deployment: DeployDevStage
+#      displayName: Deploy Dev Stage
+#      environment: 'HelfenKannJeder.dev'
+#      strategy:
+#        runOnce:
+#          deploy:
+#            steps:
+#            - task: KubernetesManifest@0
+#              displayName: Deploy to Kubernetes cluster
+#              inputs:
+#                action: deploy
+#                manifests: |
+#                  $(Pipeline.Workspace)/k8s-kiosk/*.yml
+#                containers: |
+#                  $(publicImageRepository):$(tagDevelop)
 
 
   - stage: BuildMaster
