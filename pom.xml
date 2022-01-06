@@ -33,7 +33,7 @@
         <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
         <spring-security-oauth2.version>2.2.5.RELEASE</spring-security-oauth2.version>
         <tika-core.version>1.22</tika-core.version>
-        <assertk-jvm.version>0.22</assertk-jvm.version>
+        <assertk-jvm.version>0.25</assertk-jvm.version>
     </properties>
 
     <distributionManagement>
