@@ -31,7 +31,7 @@
         <imageio.version>3.2.1</imageio.version>
         <hibernate-types.version>2.9.7</hibernate-types.version>
         <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
-        <spring-security-oauth2.version>2.2.5.RELEASE</spring-security-oauth2.version>
+        <spring-security-oauth2.version>2.6.2</spring-security-oauth2.version>
         <tika-core.version>1.22</tika-core.version>
         <assertk-jvm.version>0.22</assertk-jvm.version>
     </properties>
