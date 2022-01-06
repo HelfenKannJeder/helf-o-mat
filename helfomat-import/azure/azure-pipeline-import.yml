@@ -57,28 +57,6 @@ stages:
       - upload: $(k8sDirectory)
         artifact: k8s
 
-
-#  - stage: DeployDevStage
-#    displayName: Deploy Stage
-#    dependsOn: BuildDevelop
-#    jobs:
-#    - deployment: DeployDevStage
-#      displayName: Deploy Dev Stage
-#      environment: 'HelfenKannJeder.dev'
-#      strategy:
-#        runOnce:
-#          deploy:
-#            steps:
-#            - task: KubernetesManifest@0
-#              displayName: Deploy to Kubernetes cluster
-#              inputs:
-#                action: deploy
-#                manifests: |
-#                  $(Pipeline.Workspace)/k8s/*.yml
-#                containers: |
-#                  $(containerRegistry)/$(imageRepository):$(tagDevelop)
-
-
   - stage: BuildMaster
     displayName: Build Docker Master
     dependsOn: Build
@@ -100,24 +78,3 @@ stages:
 
       - upload: $(k8sDirectory)
         artifact: k8s
-
-
-  - stage: DeployProdStage
-    displayName: Prod Stage
-    dependsOn: BuildMaster
-    jobs:
-    - deployment: DeployProdStage
-      displayName: Deploy Prod Stage
-      environment: 'HelfenKannJeder.prod'
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - task: KubernetesManifest@0
-              displayName: Deploy to Kubernetes cluster
-              inputs:
-                action: deploy
-                manifests: |
-                  $(Pipeline.Workspace)/k8s/*.yml
-                containers: |
-                  $(containerRegistry)/$(imageRepository):$(tagMaster)
