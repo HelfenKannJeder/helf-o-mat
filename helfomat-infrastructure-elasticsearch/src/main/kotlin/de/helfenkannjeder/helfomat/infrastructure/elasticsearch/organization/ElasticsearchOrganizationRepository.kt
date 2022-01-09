@@ -8,7 +8,7 @@ import org.elasticsearch.common.unit.DistanceUnit
 import org.elasticsearch.index.IndexNotFoundException
 import org.elasticsearch.index.query.*
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations
 import org.springframework.data.elasticsearch.core.SearchHitsIterator
 import org.springframework.data.elasticsearch.core.document.Document
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
@@ -18,7 +18,7 @@ import org.springframework.data.elasticsearch.core.query.Query
 import java.util.*
 
 class ElasticsearchOrganizationRepository(
-    private val elasticsearchRestTemplate: ElasticsearchRestTemplate,
+    private val elasticsearchOperations: ElasticsearchOperations,
     private val indexName: String
 ) : OrganizationRepository {
 
@@ -84,15 +84,15 @@ class ElasticsearchOrganizationRepository(
                     .withObject(it)
             }
             .map { it.build() }
-        elasticsearchRestTemplate.bulkIndex(indexQueries, IndexCoordinates.of(indexName))
+        elasticsearchOperations.bulkIndex(indexQueries, IndexCoordinates.of(indexName))
     }
 
     override fun remove(organizationId: OrganizationId) {
-        elasticsearchRestTemplate.delete(organizationId.value, IndexCoordinates.of(indexName))
+        elasticsearchOperations.delete(organizationId.value, IndexCoordinates.of(indexName))
     }
 
     fun createIndex(mapping: String?) {
-        val indexOps = elasticsearchRestTemplate.indexOps(IndexCoordinates.of(indexName))
+        val indexOps = elasticsearchOperations.indexOps(IndexCoordinates.of(indexName))
         if (!indexOps.exists()) {
             indexOps.create()
             if (mapping != null) {
@@ -186,7 +186,7 @@ class ElasticsearchOrganizationRepository(
         val result = arrayListOf<Organization>()
         var stream: SearchHitsIterator<Organization>? = null
         try {
-            stream = elasticsearchRestTemplate.searchForStream(nativeSearchQuery, Organization::class.java, IndexCoordinates.of(indexName))
+            stream = elasticsearchOperations.searchForStream(nativeSearchQuery, Organization::class.java, IndexCoordinates.of(indexName))
             for (searchHit in stream) {
                 result.add(searchHit.content)
             }
