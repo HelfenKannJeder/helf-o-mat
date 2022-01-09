@@ -11,15 +11,14 @@ spring:
       username: helfenkannjeder
       password: helfenkannjeder
 
-  elasticsearch:
-    rest:
-      uris: http://localhost:9200
+elasticsearch:
+  uri: localhost:9200
 
 security:
   keycloak:
     client:
       client-id: helfomat-web-profile-admin
-      client-secret: a7188212-d414-4f0e-afd2-71605acf9c4d
+      client-secret: 96e18544-f419-49ce-b21b-dc642850cf63
 
 helfomat.contact-form:
   locale: de_DE
