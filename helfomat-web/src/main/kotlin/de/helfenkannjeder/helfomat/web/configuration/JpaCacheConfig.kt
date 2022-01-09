@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.core.io.Resource
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations
 import org.springframework.util.StreamUtils
 import java.nio.charset.StandardCharsets
 
@@ -28,10 +28,10 @@ open class JpaCacheConfig {
         elasticsearchConfiguration: ElasticsearchConfiguration,
         @Value("classpath:/mapping/organization.json") organizationMapping: Resource,
         eventRepository: EventRepository,
-        elasticsearchRestTemplate: ElasticsearchRestTemplate
+        elasticsearchOperations: ElasticsearchOperations
     ): JpaEventOrganizationRepository {
         val elasticsearchOrganizationRepository = ElasticsearchOrganizationRepository(
-            elasticsearchRestTemplate,
+            elasticsearchOperations,
             elasticsearchConfiguration.index + "-jpa-cache"
         )
         val mapping = StreamUtils.copyToString(organizationMapping.inputStream, StandardCharsets.UTF_8)
