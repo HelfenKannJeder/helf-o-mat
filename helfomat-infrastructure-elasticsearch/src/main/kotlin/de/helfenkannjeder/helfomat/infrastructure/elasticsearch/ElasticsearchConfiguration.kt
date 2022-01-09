@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConstructorBinding
 @ConfigurationProperties("elasticsearch")
 data class ElasticsearchConfiguration(
+    var uri: String,
     var index: String,
     var type: TypeConfiguration
 ) {
