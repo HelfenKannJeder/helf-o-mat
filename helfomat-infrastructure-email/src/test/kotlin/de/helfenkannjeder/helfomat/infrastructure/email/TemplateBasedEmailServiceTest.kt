@@ -1,6 +1,7 @@
 package de.helfenkannjeder.helfomat.infrastructure.email
 
 import de.helfenkannjeder.helfomat.core.ProfileRegistry
+import de.helfenkannjeder.helfomat.core.organization.OrganizationRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -26,6 +27,9 @@ internal class TemplateBasedEmailServiceTest {
 
     @Autowired
     private lateinit var templateBasedEmailService: TemplateBasedEmailService
+
+    @MockBean
+    private lateinit var organizationRepository: OrganizationRepository
 
     @ParameterizedTest
     @CsvSource(value = [
