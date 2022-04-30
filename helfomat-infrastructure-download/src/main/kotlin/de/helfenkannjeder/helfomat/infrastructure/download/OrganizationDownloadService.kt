@@ -36,7 +36,9 @@ open class OrganizationDownloadService(
                 val organization = restTemplate.exchange("$api/organization/${it.urlName}", HttpMethod.GET, HttpEntity.EMPTY, typeReference<OrganizationDetailDto>())
                 return@map organization.body?.toOrganization()
             }
-            ?.filterNotNull() ?: emptyList()
+            ?.filterNotNull()
+            ?.filterNot { downloadConfigurationProperties.filterOrganizationTypes.contains(it.organizationType.name) }
+            ?: emptyList()
     }
 
     open fun getPicture(pictureId: PictureId): ByteArray? {
