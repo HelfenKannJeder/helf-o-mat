@@ -264,6 +264,8 @@ helfomat:
           answer: "YES"
         - phrase: "Luftaufklärung" # FW / FF / DLRG / ASB / JUH / MHD / DRK / THW / BRH / BW
           answer: "YES"
+        - phrase: "Luftfahrtsysteme" # FW / FF / DLRG / ASB / JUH / MHD / DRK / THW / BRH / BW
+          answer: "YES"
 
   organization-templates:
     - name: Technisches Hilfswerk
