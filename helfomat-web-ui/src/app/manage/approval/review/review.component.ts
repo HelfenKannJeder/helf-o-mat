@@ -88,16 +88,17 @@ export class ReviewComponent {
                         )
                     );
 
-                    if (this.nextApproval != null) {
-                        this.router.navigate([`/admin/approval/review/${this.nextApproval.approvalId.value}`]);
-                        return;
-                    }
                 } else {
                     this.toastr.warning(
                         this.translateService.instant(
                             'manage.organization.decline.success'
                         )
                     );
+                }
+
+                if (this.nextApproval != null) {
+                    this.router.navigate([`/admin/approval/review/${this.nextApproval.approvalId.value}`]);
+                    return;
                 }
                 this.router.navigate(["/admin/approval"])
             });
