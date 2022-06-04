@@ -1,9 +1,14 @@
 import {Component} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {distinctUntilChanged, filter, map, mergeMap} from "rxjs/operators";
-import {ApprovalDetailDto, ApprovalId, ApprovalService} from "../../../_internal/resources/approval.service";
+import {
+    ApprovalDetailDto,
+    ApprovalId,
+    ApprovalOverviewDto,
+    ApprovalService
+} from "../../../_internal/resources/approval.service";
 import {ObservableUtil} from "../../../shared/observable.util";
-import {BehaviorSubject, of, Subject} from "rxjs";
+import {BehaviorSubject, combineLatest, of, Subject} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
 import {OrganizationEvent} from "../../../_internal/resources/organization.service";
@@ -17,6 +22,7 @@ export class ReviewComponent {
     public approval: Subject<ApprovalDetailDto> = new Subject<ApprovalDetailDto>();
     private doApprove: Subject<{ approvalId: ApprovalId, changes: OrganizationEvent[] }> = new BehaviorSubject(null);
     private organizationEvents: Array<OrganizationEvent> = [];
+    private nextApproval: ApprovalOverviewDto = null;
 
     constructor(
         private route: ActivatedRoute,
@@ -42,6 +48,25 @@ export class ReviewComponent {
                 this.organizationEvents = organizationEvents;
                 this.approval.next(approval);
             })
+
+
+        combineLatest([
+            this.approvalService.findAll(),
+            this.approval.asObservable()
+        ])
+            .subscribe(([approvals, currentApproval]) => {
+                let isNext = false;
+                for (const approval of approvals) {
+                    if (isNext) {
+                        this.nextApproval = approval;
+                        return;
+                    }
+                    if (approval.approvalId.value == currentApproval.approvalId.value) {
+                        isNext = true;
+                    }
+                }
+                this.nextApproval = null;
+            });
         this.doApprove
             .pipe(
                 distinctUntilChanged((approval1, approval2) => approval1?.approvalId?.value === approval2?.approvalId?.value),
@@ -62,6 +87,11 @@ export class ReviewComponent {
                             'manage.organization.approval.success'
                         )
                     );
+
+                    if (this.nextApproval != null) {
+                        this.router.navigate([`/admin/approval/review/${this.nextApproval.approvalId.value}`]);
+                        return;
+                    }
                 } else {
                     this.toastr.warning(
                         this.translateService.instant(
