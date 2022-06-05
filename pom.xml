@@ -26,7 +26,7 @@
         <java.version>11</java.version>
         <jsoup.version>1.9.2</jsoup.version>
         <jna.version>4.1.0</jna.version>
-        <google-maps-services.version>0.2.2</google-maps-services.version>
+        <google-maps-services.version>2.1.0</google-maps-services.version>
         <imageio.version>3.8.2</imageio.version>
         <hibernate-types.version>2.14.0</hibernate-types.version>
         <spring-security-oauth2.version>2.6.6</spring-security-oauth2.version>
