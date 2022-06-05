@@ -29,10 +29,10 @@
         <google-maps-services.version>0.2.2</google-maps-services.version>
         <imageio.version>3.8.1</imageio.version>
         <hibernate-types.version>2.14.0</hibernate-types.version>
-        <jib-maven-plugin.version>2.1.0</jib-maven-plugin.version>
         <spring-security-oauth2.version>2.6.6</spring-security-oauth2.version>
         <tika-core.version>1.22</tika-core.version>
         <assertk-jvm.version>0.25</assertk-jvm.version>
+        <guava.version>31.0.1-jre</guava.version>
     </properties>
 
     <distributionManagement>
@@ -107,13 +107,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Brixton.SR5</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>de.helfenkannjeder.helfomat</groupId>
                 <artifactId>helfomat-core</artifactId>
@@ -214,6 +207,11 @@
                 <artifactId>assertk-jvm</artifactId>
                 <version>${assertk-jvm.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -248,20 +246,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>com.google.cloud.tools</groupId>
-                    <artifactId>jib-maven-plugin</artifactId>
-                    <version>${jib-maven-plugin.version}</version>
-                    <configuration>
-                        <container>
-                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-                        </container>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 
 </project>
