@@ -21,7 +21,7 @@ export const environment: Environment = {
     },
     useHttps: true,
     auth: {
-        issuer: '/auth/realms/helfenkannjeder',
+        issuer: '/realms/helfenkannjeder',
         clientId: 'helfomat-web-ui',
         scope: 'profile email',
         responseType: 'code',
