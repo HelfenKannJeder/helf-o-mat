@@ -32,7 +32,7 @@
         <spring-security-oauth2.version>2.6.8</spring-security-oauth2.version>
         <tika-core.version>2.4.0</tika-core.version>
         <assertk-jvm.version>0.25</assertk-jvm.version>
-        <guava.version>31.0.1-jre</guava.version>
+        <guava.version>31.1-jre</guava.version>
     </properties>
 
     <distributionManagement>
