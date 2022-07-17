@@ -41,7 +41,7 @@ export class KioskNavigateComponent {
 
         this.router.events.subscribe((event) => {
             if (event instanceof ActivationEnd) {
-                this.countdown.next();
+                this.countdown.next(0);
             } else if (event instanceof NavigationEnd) {
                 if (event.urlAfterRedirects == '/') {
                     this.history.length = 0;
@@ -64,7 +64,7 @@ export class KioskNavigateComponent {
     }
 
     public abortCountdown(): void {
-        this.countdown.next();
+        this.countdown.next(0);
     }
 
     public hasHistory() {
