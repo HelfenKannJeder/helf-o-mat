@@ -70,7 +70,6 @@ export abstract class AbstractQuestionComponent implements OnInit, OnDestroy {
     private getCombinedUserAnswersWithNewUserAnswer(): Observable<Array<UserAnswer>> {
         return combineLatest([
             merge(
-                of([]),
                 this.getCurrentUserAnswers()
             ),
             merge(
