@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {HttpClient} from "@angular/common/http";
+import questions from "./questions.json";
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +12,7 @@ export class QuestionService {
     }
 
     findQuestions(): Observable<Array<Question>> {
-        return this.httpClient.get<Array<Question>>('api/questions');
+        return new BehaviorSubject<Array<Question>>(questions).asObservable();
     }
 
 }
@@ -20,5 +21,5 @@ export class Question {
     public id: string;
     public question: string;
     public description: string;
-    public position: number;
+    public position?: number;
 }

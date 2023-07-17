@@ -4,13 +4,20 @@ import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {ObservableUtil} from '../shared/observable.util';
-import {Address, ContactPerson, Organization, OrganizationService, TravelDistance, TravelMode} from '../_internal/resources/organization.service';
+import {
+    Address,
+    ContactPerson,
+    Organization,
+    OrganizationService,
+    TravelDistance,
+    TravelMode
+} from '../_internal/resources/organization.service';
 import {GeoPoint} from '../../_internal/geopoint';
 import {filter, flatMap, map, switchMap, tap} from "rxjs/operators";
 import {hasRole, Roles} from "../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
 import {environment} from "../../environments/environment";
-import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
+import {QrCodeService} from "../_internal/qr-code.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ContactFormComponent} from "./_internal/contact-form.component";
 
@@ -41,9 +48,6 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         private modalService: NgbModal,
         @Optional() private oAuthService: OAuthService
     ) {
-        if (this.showQrCode()) {
-            qrCodeService.triggerUpdateLocation();
-        }
         this._back$ = new Subject<void>();
 
         this.userAnswers = ObservableUtil.extractObjectMember(this.route.params, 'answers')
@@ -132,23 +136,6 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
 
     public showUrls(): boolean {
         return !environment.kiosk;
-    }
-
-    public showQrCode(): boolean {
-        return environment.kiosk;
-    }
-
-    public getQrCodeLink(organization: Organization, userAnswers: Answer[]) {
-        const questionAnswers: QuestionAnswers[] = [];
-        if (userAnswers != null) {
-            for (let i = 0; i < organization.questions.length; i++) {
-                questionAnswers.push({
-                    questionId: organization.questions[i].questionId,
-                    answer: userAnswers[i]
-                });
-            }
-        }
-        return this.qrCodeService.generateLink(organization.organizationType, questionAnswers);
     }
 
     public isReviewer() {
