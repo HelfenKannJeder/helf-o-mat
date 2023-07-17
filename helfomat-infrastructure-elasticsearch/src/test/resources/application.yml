@@ -1,4 +1,0 @@
-elasticsearch:
-  index: helfomat-${random.value}
-  type:
-    organization: organization

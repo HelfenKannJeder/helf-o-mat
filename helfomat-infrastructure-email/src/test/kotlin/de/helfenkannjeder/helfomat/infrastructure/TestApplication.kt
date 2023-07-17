@@ -1,6 +1,0 @@
-package de.helfenkannjeder.helfomat.infrastructure
-
-import org.springframework.boot.autoconfigure.SpringBootApplication
-
-@SpringBootApplication
-open class TestApplication

@@ -1,35 +1,20 @@
 # HelfenKannJeder project: Helf-O-Mat
 
-[![Build Status](https://travis-ci.org/HelfenKannJeder/helf-o-mat.svg?branch=master)](https://travis-ci.org/HelfenKannJeder/helf-o-mat)
-
 This project is the [Helf-O-Mat](http://helf-o-mat.de) project of HelfenKannJeder.
-It is a single page application based on Spring Boot and Angular.
+It is a single page application based on Angular.
 
 ## Build
 
-Everything is available as maven task and the project can be build with `./mvnw -P helfomat-web,helfomat-web-ui,helfomat-import clean package` on the project root level.
-There is an embedded node environment which will build the frontend.
+To build the project, change to the `helfomat-web-ui` directory and enter the following commands:
 
-To build only one of the different packages, please go ahead and specify the profile accordingly (`-P`):
-* `helfomat-import` is going to build the backend service, the artifact is going to be placed in `helfomat-import/target`
-* `helfomat-web` is going to build the backend service, the artifact is going to be placed in `helfomat-web/target`
-* `helfomat-web-ui` is going to build the backend service, the artifact is going to be placed in `helfomat-web-ui/target`
+```bash
+npm install
+npm build build-prod:kiosk
+```
 
 ## Requirements
 
-For the execution of the web app there are two dependencies:
-
-* PostgreSQL Database (or another JDBC database if you change the configuration)
-* Elasticsearch 7.x
-
-For the execution of the import app there are three dependencies:
-
-* PostgreSQL Database (or another JDBC database if you change the configuration)
-* MySQL (or another JDBC database if you change the configuration)
-* Elasticsearch 7.x
-
-To download the basic organizations you can enable the Spring Boot profile `enable-download` which will give you the main organizations available at HelfenKannJeder.de.
-Based on them, you are able to create location specific organizations.
+Node and NPM are required to run the project.
 
 ## Deployment
 
@@ -38,14 +23,8 @@ The container names are aligned to the names of the maven modules.
 
 ## Development
 
-For your convenience there is a [docker-compose.yml](helfomat-docker/docker-compose.yml) file available.
-This file is starting all required dependencies.
-For development mode you can start `helfomat-web` like any normal spring boot applications.
-You should use the spring profile `local` to enable the default connectivity to the docker containers.
-Inside the frontend project `helfomat-web-ui` you can execute `npm run start` to run it in development mode.
-This command is automatically proxying the API to the backend service.
+Type `npm run start`
 
-You can reach the API at `http://localhost:8080/`.
 The frontend is running at `http://localhost:4200/`.
 
 ### Users

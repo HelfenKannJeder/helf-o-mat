@@ -1,8 +1,0 @@
-helfomat.email:
-  receiver: test@helfenkannjeder.de
-  referenced-url: http://localhost:4200/
-  sender: admin@helfenkannjeder.de
-
-spring:
-  messages:
-    basename: i18n/messages
