@@ -8,8 +8,10 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {environment} from '../../environments/environment';
 import {GeoPoint} from '../../_internal/geopoint';
 import {debounceTime, distinctUntilChanged, filter, first, flatMap, map} from "rxjs/operators";
-import {CreateOrganizationDialogService} from "../_internal/components/create-organization-dialog/create-organization-dialog.service";
-import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
+import {
+    CreateOrganizationDialogService
+} from "../_internal/components/create-organization-dialog/create-organization-dialog.service";
+import {QrCodeService} from "../_internal/qr-code.service";
 
 @Component({
     selector: 'app-result',
@@ -258,24 +260,6 @@ export class ResultComponent implements OnInit {
 
     public removeOrganizationTypeFilter(): void {
         this._organizationType$.next(null);
-    }
-
-
-    public showQrCode(): boolean {
-        return environment.kiosk;
-    }
-
-    public getQrCodeLink(userAnswers: UserAnswer[]) {
-        const questionAnswers: QuestionAnswers[] = [];
-        if (userAnswers != null) {
-            for (let i = 0; i < userAnswers.length; i++) {
-                questionAnswers.push({
-                    questionId: {value: userAnswers[i].id},
-                    answer: userAnswers[i].answer
-                });
-            }
-        }
-        return this.qrCodeService.generateLink('all', questionAnswers);
     }
 
     private filterOrganizations(organizations: Organization[], organizationType: string | null): Organization[] {

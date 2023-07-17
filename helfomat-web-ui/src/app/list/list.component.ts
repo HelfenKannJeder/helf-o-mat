@@ -41,7 +41,7 @@ export class ListComponent implements OnInit {
     }
 
     public getImagePath(image: PictureId): string {
-        return `api/picture/${image.value}/icon`;
+        return `assets/images/logos/${image.value}.jpg`;
     }
 
     public showUrls(): boolean {
