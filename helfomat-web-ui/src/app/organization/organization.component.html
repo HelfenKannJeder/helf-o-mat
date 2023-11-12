@@ -1,11 +1,22 @@
 <div *ngIf="organization$ | async; let organization; else loading">
+    <nav class="navbar sticky-top navbar-dark bg-grey" *ngIf="organization.isPreview">
+        <span class="navbar-brand">{{ 'organization.isPreviewRendered' | translate }}</span>
+    </nav>
     <div class="custom-content">
         <div class="logo-container" *ngIf="organization.pictures.length > 0">
             <div class="logo">
-                <img [src]="'assets/images/logos/' + organization.logo.value + '.jpg'"
+                <img *ngIf="!useLocalImages() && !organization.isPreview" [src]="'api/picture/' + organization.logo.value + '/icon'"
                      [attr.alt]="organization.name">
+                <img *ngIf="!useLocalImages() && organization.isPreview"
+                     [src]="'api/picture/' + organization.logo.value + '/icon' | authImage | async"
+                     [attr.alt]="organization.name">
+                <img *ngIf="useLocalImages()"
+                     [src]="'assets/images/logos/' + organization.logo.value + '.jpg'"
+                     [attr.alt]="organization.name"/>
             </div>
-            <img [src]="'assets/images/teaser/' + organization.pictures[0].value + '.jpg'" width="100%"/>
+            <img *ngIf="!useLocalImages() && !organization.isPreview" [src]="'api/picture/' + organization.pictures[0].value + '/teaser'" width="100%"/>
+            <img *ngIf="!useLocalImages() && organization.isPreview" [src]="'api/picture/' + organization.pictures[0].value + '/teaser' | authImage | async" width="100%"/>
+            <img *ngIf="useLocalImages()" [src]="'assets/images/teaser/' + organization.pictures[0].value + '.jpg'" width="100%"/>
         </div>
     </div>
 
@@ -131,6 +142,19 @@
                 </div>
             </div>
 
+            <div class="card card-default" *ngIf="showQrCode()">
+                <div class="card-header">
+                    {{'organization.facts.qrcode.title' | translate}}
+                </div>
+                <div class="card-body">
+                    <qr-code *ngIf="userAnswers | async; let userAnswers; else qrCodeWithoutAnswers"
+                             [link]="getQrCodeLink(organization, userAnswers)"></qr-code>
+                    <ng-template #qrCodeWithoutAnswers>
+                        <qr-code [link]="getQrCodeLink(organization, null)"></qr-code>
+                    </ng-template>
+                </div>
+            </div>
+
             <div class="card card-default" *ngIf="scoreNorm | async; else backLink">
                 <div class="card-header">
                     {{'organization.facts.helfomatResult.title' | translate}}
@@ -227,7 +251,21 @@
                 </table>
             </div>
 
-            <div class="card card-default" *ngIf="organization.pictures.length > 1">
+            <div class="card card-default" *ngIf="!useLocalImages() && organization.pictures.length > 1 && !organization.isPreview">
+                <div class="card-header">
+                    {{'organization.pictures.title' | translate}}
+                </div>
+                <img [src]="'api/picture/' + picture.value + '/medium'" width="100%"
+                     *ngFor="let picture of organization.pictures.slice(1)"/>
+            </div>
+            <div class="card card-default" *ngIf="!useLocalImages() && organization.pictures.length > 1 && organization.isPreview">
+                <div class="card-header">
+                    {{'organization.pictures.title' | translate}}
+                </div>
+                <img [src]="'api/picture/' + picture.value + '/medium' | authImage | async" width="100%"
+                     *ngFor="let picture of organization.pictures.slice(1)"/>
+            </div>
+            <div class="card card-default" *ngIf="useLocalImages() && organization.pictures.length > 1">
                 <div class="card-header">
                     {{'organization.pictures.title' | translate}}
                 </div>

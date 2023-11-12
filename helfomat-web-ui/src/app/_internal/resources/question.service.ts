@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {HttpClient} from "@angular/common/http";
 import questions from "./questions.json";
+import {environment} from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +13,11 @@ export class QuestionService {
     }
 
     findQuestions(): Observable<Array<Question>> {
-        return new BehaviorSubject<Array<Question>>(questions).asObservable();
+        if (environment.kiosk) {
+            return new BehaviorSubject<Array<Question>>(questions).asObservable();
+        } else {
+            return this.httpClient.get<Array<Question>>('api/questions');
+        }
     }
 
 }

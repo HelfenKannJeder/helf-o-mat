@@ -6,6 +6,7 @@ import {HttpClient} from "@angular/common/http";
 import {PictureId} from "./picture.service";
 import organizations from "./organizations.json";
 import {map} from "rxjs/operators";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
     providedIn: 'root'
@@ -28,13 +29,17 @@ export class OrganizationService {
     }
 
     findGlobalByQuestionAnswers(answers: UserAnswer[]): Observable<Organization[]> {
-        return of<Array<Organization>>(this.getScoredOrganizations(answers))
-            .pipe(map((organizations) => {
-                return organizations
-                    .sort((a, b) => {
-                        return b.scoreNorm - a.scoreNorm;
-                    });
-            }));
+        if (environment.kiosk) {
+            return of<Array<Organization>>(this.getScoredOrganizations(answers))
+                .pipe(map((organizations) => {
+                    return organizations
+                        .sort((a, b) => {
+                            return b.scoreNorm - a.scoreNorm;
+                        });
+                }));
+        } else {
+            return this.httpClient.post<Organization[]>('api/organization/global/byQuestionAnswers', answers);
+        }
     }
 
     findByPosition(position: GeoPoint, distance: number): Observable<Organization[]> {
@@ -67,13 +72,17 @@ export class OrganizationService {
     }
 
     getOrganization(urlName: string): Observable<Organization> {
-        for (const organization of organizations) {
-            if (organization.urlName == urlName) {
-                return of(organization);
+        if (environment.kiosk) {
+            for (const organization of organizations) {
+                if (organization.urlName == urlName) {
+                    return of(organization);
+                }
             }
-        }
 
-        return of(null);
+            return of(null);
+        } else {
+            return this.httpClient.get<Organization>('api/organization/' + urlName);
+        }
     }
 
     getTravelDistances(id: string, location: GeoPoint): Observable<Array<TravelDistance>> {
@@ -145,7 +154,7 @@ export class OrganizationService {
             numberOfQuestions++;
         }
         const RANGE_BETWEEN_ANSWERS = 2;
-        return Math.ceil(score / (numberOfQuestions * RANGE_BETWEEN_ANSWERS) * 100);
+        return Math.ceil(100 - (score / (numberOfQuestions * RANGE_BETWEEN_ANSWERS) * 100));
     }
 }
 
