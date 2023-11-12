@@ -8,7 +8,9 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {environment} from '../../environments/environment';
 import {GeoPoint} from '../../_internal/geopoint';
 import {debounceTime, distinctUntilChanged, filter, first, flatMap, map} from "rxjs/operators";
-import {CreateOrganizationDialogService} from "../_internal/components/create-organization-dialog/create-organization-dialog.service";
+import {
+    CreateOrganizationDialogService
+} from "../_internal/components/create-organization-dialog/create-organization-dialog.service";
 import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
 
 @Component({
@@ -31,7 +33,7 @@ import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
 export class ResultComponent implements OnInit {
 
     // Inputs
-    private _answers$: Subject<UserAnswer[]> = new Subject<UserAnswer[]>();
+    private _answers$: Subject<UserAnswer[]> = new BehaviorSubject<UserAnswer[]>([]);
     public userAnswers: Observable<UserAnswer[]> = this._answers$.asObservable();
     public _position$: Subject<GeoPoint> = new BehaviorSubject<GeoPoint>(null);
     public _boundingBox$: Subject<BoundingBox> = new Subject<BoundingBox>();

@@ -4,7 +4,14 @@ import {Answer} from '../shared/answer.model';
 import {UrlParamBuilder} from '../url-param.builder';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {ObservableUtil} from '../shared/observable.util';
-import {Address, ContactPerson, Organization, OrganizationService, TravelDistance, TravelMode} from '../_internal/resources/organization.service';
+import {
+    Address,
+    ContactPerson,
+    Organization,
+    OrganizationService,
+    TravelDistance,
+    TravelMode
+} from '../_internal/resources/organization.service';
 import {GeoPoint} from '../../_internal/geopoint';
 import {filter, flatMap, map, switchMap, tap} from "rxjs/operators";
 import {hasRole, Roles} from "../_internal/authentication/util";
@@ -135,6 +142,10 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
     }
 
     public showQrCode(): boolean {
+        return environment.kiosk;
+    }
+
+    public useLocalImages(): boolean {
         return environment.kiosk;
     }
 
