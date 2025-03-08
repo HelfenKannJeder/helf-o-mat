@@ -55,6 +55,9 @@ class OrganizationController(
                            @RequestParam("lon") lon: Double) =
         travelDistanceApplicationService.requestTravelDistances(OrganizationId(id), GeoPoint(lat, lon))
 
+    @DeleteMapping("/organization/{id}")
+    fun deleteOrganization(@PathVariable("id") organizationId: String) = organizationApplicationService.deleteOrganization(organizationId)
+
     @PostMapping("/organization/compare")
     fun compareOrganizations(@RequestBody compareOrganizationDto: CompareOrganizationDto) =
         organizationApplicationService.compareOrganizations(compareOrganizationDto)
