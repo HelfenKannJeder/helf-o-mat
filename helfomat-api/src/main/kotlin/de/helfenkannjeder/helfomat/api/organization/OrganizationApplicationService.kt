@@ -10,10 +10,7 @@ import de.helfenkannjeder.helfomat.core.approval.ApprovalRepository
 import de.helfenkannjeder.helfomat.core.geopoint.BoundingBox
 import de.helfenkannjeder.helfomat.core.geopoint.GeoPoint
 import de.helfenkannjeder.helfomat.core.organization.*
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationCreateEvent
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEditUrlNameEvent
-import de.helfenkannjeder.helfomat.core.organization.event.OrganizationEvent
-import de.helfenkannjeder.helfomat.core.organization.event.ProposedChangeOrganizationEvent
+import de.helfenkannjeder.helfomat.core.organization.event.*
 import de.helfenkannjeder.helfomat.core.question.QuestionRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.access.annotation.Secured
@@ -178,6 +175,12 @@ open class OrganizationApplicationService(
         val organizations = organizationRepository.findOrganizationWithSameTypeInDistance(address, organizationType, distance)
         val questions = questionRepository.findQuestions()
         return organizations.toOrganizationDetailsDto(questions)
+    }
+
+    @Secured(Roles.ADMIN)
+    open fun deleteOrganization(organizationId: String) {
+        val deleteOrganizationEvent = OrganizationDeleteEvent(OrganizationId(organizationId))
+        applicationEventPublisher.publishEvent(deleteOrganizationEvent)
     }
 
     private fun assertOrganizationSubmitValid(organizationId: OrganizationId, events: List<OrganizationEvent>) {
