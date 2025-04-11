@@ -7,8 +7,8 @@ HelfenKannJeder e. V. (Amtsgericht Mannheim, VR103717)
 
 Vertreten durch den Vorstand:<br>
 Carsten Schmidt (Vors.)<br>
+Felix Blechschmitt<br>
 Thomas Krug<br>
-Valentin Zickner<br>
 c/o Branddirektion der Stadt Karlsruhe<br>
 Zimmerstraße 1 (Hauptfeuerwache)<br>
 D-76137 Karlsruhe
