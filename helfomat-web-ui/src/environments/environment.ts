@@ -34,7 +34,11 @@ export const environment: Environment = {
         disableAtHashCheck: true,
         showDebugInformation: true
     },
-    recaptchaSiteKey: '6LcVrxQaAAAAAGZLwCnz1amYaXl6H8uIndl4OGja'
+    recaptchaSiteKey: '6LcVrxQaAAAAAGZLwCnz1amYaXl6H8uIndl4OGja',
+    umami: {
+        src: 'http://localhost:3000/script.js',
+        websiteId: 'a2cd9cbf-0a87-415a-bf3b-40036de12f7e',
+    },
 };
 
 export {GoogleMapsModule as MapImplementationModule} from '../app/map/google/google-maps.module';

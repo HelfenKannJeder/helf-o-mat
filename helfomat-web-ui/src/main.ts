@@ -10,6 +10,14 @@ if (environment.production) {
   enableProdMode();
 }
 
+if (environment.umami) {
+    const script = document.createElement('script');
+    script.defer = true;
+    script.src = environment.umami.src;
+    script.setAttribute('data-website-id', environment.umami.websiteId);
+    document.head.appendChild(script);
+}
+
 if (environment.kiosk) {
     platformBrowserDynamic().bootstrapModule(KioskModule);
 } else {

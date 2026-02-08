@@ -22,4 +22,8 @@ export interface Environment {
     useHttps: boolean;
     auth: AuthConfig;
     recaptchaSiteKey: string;
+    umami?: {
+        src: string;
+        websiteId: string;
+    };
 }
