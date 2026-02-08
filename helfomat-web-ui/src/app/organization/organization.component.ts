@@ -13,13 +13,14 @@ import {
     TravelMode
 } from '../_internal/resources/organization.service';
 import {GeoPoint} from '../../_internal/geopoint';
-import {filter, flatMap, map, switchMap, tap} from "rxjs/operators";
+import {filter, first, flatMap, map, switchMap, tap} from "rxjs/operators";
 import {hasRole, Roles} from "../_internal/authentication/util";
 import {OAuthService} from "angular-oauth2-oidc";
 import {environment} from "../../environments/environment";
 import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ContactFormComponent} from "./_internal/contact-form.component";
+import {AnalyticsService} from "../_internal/analytics.service";
 
 @Component({
     selector: 'organization',
@@ -46,7 +47,8 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         private organizationService: OrganizationService,
         private qrCodeService: QrCodeService,
         private modalService: NgbModal,
-        @Optional() private oAuthService: OAuthService
+        @Optional() private oAuthService: OAuthService,
+        private analyticsService: AnalyticsService
     ) {
         if (this.showQrCode()) {
             qrCodeService.triggerUpdateLocation();
@@ -74,6 +76,17 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
                 switchMap((organizationName: string) => this.organizationService.getOrganization(organizationName))
             );
 
+        this.organization$.pipe(first()).subscribe(org => {
+            const flow = AnalyticsService.deriveFlowType(
+                this.route.snapshot.params['answers'],
+                this.route.snapshot.params['position']
+            );
+            this.analyticsService.trackEvent('helfomat-organization-viewed', {
+                organizationName: org.urlName,
+                organizationType: org.organizationType,
+                flow
+            });
+        });
 
         combineLatest([
             this.position,
@@ -167,11 +180,21 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
     }
 
     public openContactForm(organization: Organization, contactPerson: ContactPerson): void {
+        const flowType = AnalyticsService.deriveFlowType(
+            this.route.snapshot.params['answers'],
+            this.route.snapshot.params['position']
+        );
+        this.analyticsService.trackEvent('helfomat-contact-form-opened', {
+            organizationName: organization.urlName,
+            organizationType: organization.organizationType,
+            flow: flowType
+        });
         const modalRef = this.modalService.open(ContactFormComponent, {
             size: 'lg',
         });
         modalRef.componentInstance.contact = contactPerson;
         modalRef.componentInstance.organization = organization;
+        modalRef.componentInstance.flowType = flowType;
     }
 
 }

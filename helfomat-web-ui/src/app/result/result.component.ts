@@ -12,6 +12,7 @@ import {
     CreateOrganizationDialogService
 } from "../_internal/components/create-organization-dialog/create-organization-dialog.service";
 import {QrCodeService, QuestionAnswers} from "../_internal/qr-code.service";
+import {AnalyticsService} from "../_internal/analytics.service";
 
 @Component({
     selector: 'app-result',
@@ -64,7 +65,8 @@ export class ResultComponent implements OnInit {
         private route: ActivatedRoute,
         private createOrganizationDialogService: CreateOrganizationDialogService,
         private changeDetectorRef: ChangeDetectorRef,
-        private qrCodeService: QrCodeService
+        private qrCodeService: QrCodeService,
+        private analyticsService: AnalyticsService
     ) {
         ObservableUtil.extractObjectMember(this.route.params, 'position')
             .pipe(
@@ -98,6 +100,9 @@ export class ResultComponent implements OnInit {
                 first()
             )
             .subscribe(() => {
+                if (!this.hasPosition) {
+                    this.analyticsService.trackEvent('helfomat-address-entered');
+                }
                 this.hasPosition = true;
                 this._mapSize$.next('normal');
                 this._zoom$.next(environment.defaults.zoomLevel.withPosition);
@@ -233,6 +238,7 @@ export class ResultComponent implements OnInit {
 
     public continueWithoutLocation(mapSize?: string): void {
         if (!this.hasPosition) {
+            this.analyticsService.trackEvent('helfomat-address-skipped');
             this.hasPosition = true;
             if (mapSize !== 'normal') {
                 this._mapSize$.next('normal');

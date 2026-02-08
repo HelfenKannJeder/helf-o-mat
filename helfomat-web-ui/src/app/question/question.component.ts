@@ -5,7 +5,8 @@ import {ObservableUtil} from '../shared/observable.util';
 import {combineLatest, concat, Observable, of, Subscription} from 'rxjs';
 import {Answer} from '../shared/answer.model';
 import {environment} from "../../environments/environment";
-import {QuestionService} from "../_internal/resources/question.service";
+import {Question, QuestionService} from "../_internal/resources/question.service";
+import {AnalyticsService} from "../_internal/analytics.service";
 
 @Component({
     selector: 'app-question',
@@ -21,7 +22,8 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
     constructor(
         protected router: Router,
         private route: ActivatedRoute,
-        protected questionService: QuestionService
+        protected questionService: QuestionService,
+        private analyticsService: AnalyticsService
     ) {
         super();
 
@@ -62,7 +64,18 @@ export class QuestionComponent extends AbstractQuestionComponent implements OnIn
         return numQuestion;
     }
 
+    public answerQuestion(answer: Answer, question: Question): void {
+        const idx = this.getLastAnsweredQuestion(this.questionWithUserAnswersSync);
+        const total = this.questionWithUserAnswersSync.length;
+        this.analyticsService.trackEvent('helfomat-question-answered', {questionIndex: idx, totalQuestions: total});
+        if (idx === total - 1) {
+            this.analyticsService.trackEvent('helfomat-questionnaire-completed', {totalQuestions: total});
+        }
+        super.answerQuestion(answer, question);
+    }
+
     public continueWithoutQuestions(): void {
+        this.analyticsService.trackEvent('helfomat-questionnaire-skipped');
         this.router.navigate([
             QuestionComponent.getNavigateUrl(true),
             {answers: null, position: null, mapSize: 'fullscreen'}

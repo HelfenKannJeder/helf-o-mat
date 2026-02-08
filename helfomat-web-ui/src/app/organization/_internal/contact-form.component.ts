@@ -10,6 +10,7 @@ import {NgForm, NgModel} from "@angular/forms";
 import {LoadingOverlayService} from "../../_internal/components/loading-overlay/loading-overlay.service";
 import {ContactFormConfirmComponent} from "./contact-form-confirm.component";
 import {of} from "rxjs";
+import {AnalyticsService} from "../../_internal/analytics.service";
 
 @Component({
     templateUrl: './contact-form.component.html'
@@ -21,6 +22,9 @@ export class ContactFormComponent {
 
     @Input()
     public organization: Organization;
+
+    @Input()
+    public flowType: string;
 
     public privacyNotice: boolean = false;
     public contactFormContent: ContactFormContent = {
@@ -37,7 +41,8 @@ export class ContactFormComponent {
         private toastr: ToastrService,
         private translateService: TranslateService,
         private loadingOverlayService: LoadingOverlayService,
-        private modalService: NgbModal
+        private modalService: NgbModal,
+        private analyticsService: AnalyticsService
     ) {
     }
 
@@ -77,6 +82,11 @@ export class ContactFormComponent {
                 )
             )
             .subscribe(contactRequestResult => {
+                this.analyticsService.trackEvent('helfomat-contact-message-sent', {
+                    organizationName: this.organization.urlName,
+                    organizationType: this.organization.organizationType,
+                    flow: this.flowType || 'unknown'
+                });
                 this.loadingOverlayService.close();
                 const ref = this.modalService.open(ContactFormConfirmComponent, {
                     size: 'md',
