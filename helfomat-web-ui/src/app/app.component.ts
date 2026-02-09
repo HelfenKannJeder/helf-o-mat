@@ -3,6 +3,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {OAuthService} from "angular-oauth2-oidc";
 import {hasRole, resolveAuthenticationProviderUrl, Roles} from "./_internal/authentication/util";
+import {AnalyticsService} from "./_internal/analytics.service";
 
 @Component({
     selector: 'app-root',
@@ -27,7 +28,8 @@ export class AppComponent {
 
     constructor(
         translate: TranslateService,
-        private oAuthService: OAuthService
+        private oAuthService: OAuthService,
+        _analyticsService: AnalyticsService
     ) {
         translate.setDefaultLang('de');
         translate.use('de');

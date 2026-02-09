@@ -15,6 +15,7 @@ if (environment.umami) {
     script.defer = true;
     script.src = environment.umami.src;
     script.setAttribute('data-website-id', environment.umami.websiteId);
+    script.setAttribute('data-auto-track', 'false');
     document.head.appendChild(script);
 }
 
