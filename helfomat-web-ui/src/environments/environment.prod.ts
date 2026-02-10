@@ -31,8 +31,14 @@ export const environment: Environment = {
     },
     recaptchaSiteKey: '6Lc5sxQaAAAAADTPI9Yc-HmxbOj5SBtms3u0h3bV',
     umami: {
-        src: '',
-        websiteId: '',
+        'helfenkannjeder.de': {
+            src: 'https://u.helfenkannjeder.de/script.js',
+            websiteId: '62fb97cd-e68a-4ee1-8350-68ad75761a50',
+        },
+        'dev.helf-o-mat.eu': {
+            src: 'https://u.dev.helf-o-mat.eu/script.js',
+            websiteId: '6721c1c6-dce4-4aee-8edb-ddec24711c80',
+        },
     },
 };
 

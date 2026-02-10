@@ -26,7 +26,7 @@ export const environment: Environment = {
     },
     useHttps: false,
     auth: {
-        issuer: '/auth/realms/helfenkannjeder',
+        issuer: '/realms/helfenkannjeder',
         clientId: 'helfomat-web-ui',
         scope: 'openid profile email offline_access',
         responseType: 'code',
@@ -36,8 +36,10 @@ export const environment: Environment = {
     },
     recaptchaSiteKey: '6LcVrxQaAAAAAGZLwCnz1amYaXl6H8uIndl4OGja',
     umami: {
-        src: 'http://localhost:3000/script.js',
-        websiteId: 'a2cd9cbf-0a87-415a-bf3b-40036de12f7e',
+        'localhost': {
+            src: 'http://localhost:3000/script.js',
+            websiteId: 'a2cd9cbf-0a87-415a-bf3b-40036de12f7e',
+        },
     },
 };
 

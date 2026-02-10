@@ -10,11 +10,23 @@ if (environment.production) {
   enableProdMode();
 }
 
-if (environment.umami) {
+function resolveUmamiConfig(): { src: string; websiteId: string } | undefined {
+    if (!environment.umami) return undefined;
+    const host = window.location.host;
+    for (const [pattern, config] of Object.entries(environment.umami)) {
+        if (host.includes(pattern)) {
+            return config;
+        }
+    }
+    return undefined;
+}
+
+const umamiConfig = resolveUmamiConfig();
+if (umamiConfig) {
     const script = document.createElement('script');
     script.defer = true;
-    script.src = environment.umami.src;
-    script.setAttribute('data-website-id', environment.umami.websiteId);
+    script.src = umamiConfig.src;
+    script.setAttribute('data-website-id', umamiConfig.websiteId);
     script.setAttribute('data-auto-track', 'false');
     document.head.appendChild(script);
 }

@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {AppComponent} from './app.component';
 import {appRoutingProviders, routing} from './app.routing';
@@ -15,6 +15,7 @@ import {ToastrModule} from 'ngx-toastr';
 import {OAuthModule} from "angular-oauth2-oidc";
 import {ProfileModule} from "./profile/profile.module";
 import {HttpErrorInterceptor} from "./_internal/http-error.interceptor";
+import {GlobalErrorHandler} from "./_internal/global-error-handler";
 import {AuthenticateModule} from "./authenticate/authenticate.module";
 import {KioskRouteModule} from "./kiosk/kiosk-route.module";
 import {RECAPTCHA_V3_SITE_KEY} from "ng-recaptcha";
@@ -68,6 +69,10 @@ export function createTranslateLoader(http: HttpClient) {
     ],
     providers: [
         appRoutingProviders,
+        {
+            provide: ErrorHandler,
+            useClass: GlobalErrorHandler
+        },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpErrorInterceptor,

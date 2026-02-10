@@ -179,6 +179,13 @@ export class OrganizationComponent implements OnInit, AfterViewInit {
         return hasRole(accessToken, Roles.ADMIN) || hasRole(accessToken, Roles.REVIEWER);
     }
 
+    public trackWebsiteClick(organization: Organization): void {
+        this.analyticsService.trackEvent('organization-website-click', {
+            organizationName: organization.urlName,
+            url: organization.website,
+        });
+    }
+
     public openContactForm(organization: Organization, contactPerson: ContactPerson): void {
         const flowType = AnalyticsService.deriveFlowType(
             this.route.snapshot.params['answers'],

@@ -4,6 +4,7 @@ import {Organization} from '../_internal/resources/organization.service';
 import {PictureId} from "../_internal/resources/picture.service";
 import {GeoPoint} from "../../_internal/geopoint";
 import {environment} from "../../environments/environment";
+import {AnalyticsService} from "../_internal/analytics.service";
 
 @Component({
     selector: 'helfomat-list',
@@ -22,7 +23,10 @@ export class ListComponent implements OnInit {
 
     public currentOrganizations: { organization: Organization, distance: number }[] = [];
 
-    constructor(private changeDetectorRef: ChangeDetectorRef) {
+    constructor(
+        private changeDetectorRef: ChangeDetectorRef,
+        private analyticsService: AnalyticsService
+    ) {
     }
 
     ngOnInit() {
@@ -46,6 +50,13 @@ export class ListComponent implements OnInit {
 
     public showUrls(): boolean {
         return !environment.kiosk;
+    }
+
+    public trackWebsiteClick(organization: Organization): void {
+        this.analyticsService.trackEvent('organization-website-click', {
+            organizationName: organization.urlName,
+            url: organization.website,
+        });
     }
 
 }

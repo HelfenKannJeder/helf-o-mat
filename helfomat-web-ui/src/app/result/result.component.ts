@@ -106,7 +106,7 @@ export class ResultComponent implements OnInit {
                 this.hasPosition = true;
                 this._mapSize$.next('normal');
                 this._zoom$.next(environment.defaults.zoomLevel.withPosition);
-                this.changeDetectorRef.detectChanges();
+                this.changeDetectorRef.markForCheck();
             });
 
         this.center = position
