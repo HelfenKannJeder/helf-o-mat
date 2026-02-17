@@ -12,4 +12,4 @@ helfomat:
 
 keycloak:
   realm: helfenkannjeder
-  auth-server-url: http://localhost:8085/auth
+  auth-server-url: http://localhost:8085
