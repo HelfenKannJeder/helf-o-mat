@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk as builder
+FROM eclipse-temurin:17-jdk as builder
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ RUN ./mvnw package -Phelfomat-web,azure,kiosk -DskipTests -pl helfomat-web -am
 
 
 
-FROM openjdk:11-jre-slim
+FROM eclipse-temurin:17-jre
 
 COPY --from=builder /app/helfomat-web/target/helfomat.jar /helfomat.jar
 
