@@ -66,7 +66,7 @@ open class OrganizationApplicationService(
                 id = OrganizationId().value,
                 name = organizationType.internalName,
                 organizationType = organizationType,
-                urlName = organizationType.name.toLowerCase()
+                urlName = organizationType.name.lowercase()
             )
     }
 
