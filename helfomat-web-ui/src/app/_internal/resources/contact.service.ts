@@ -40,6 +40,7 @@ export interface CreateContactRequest {
     message: string;
     organizationId: OrganizationId;
     organizationContactPersonIndex: number;
+    website?: string;
 }
 
 export interface ResendContactRequestDto {

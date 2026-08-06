@@ -31,7 +31,8 @@ export class ContactFormComponent {
         name: '',
         email: '',
         subject: '',
-        message: ''
+        message: '',
+        website: ''
     };
 
     constructor(
@@ -74,6 +75,7 @@ export class ContactFormComponent {
                                 email: this.contactFormContent.email,
                                 subject: this.contactFormContent.subject,
                                 message: this.contactFormContent.message,
+                                website: this.contactFormContent.website,
                                 captcha: token,
                                 organizationId: {value: this.organization.id},
                                 organizationContactPersonIndex: this.organization.contactPersons.indexOf(this.contact)
@@ -109,4 +111,6 @@ export interface ContactFormContent {
     email: string;
     subject: string;
     message: string;
+    /** Honeypot, see the contact form template. Always empty when a person filled in the form. */
+    website?: string;
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping(path = ["/api"], produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -15,6 +16,7 @@ class ContactFormController(
 ) {
 
     @PostMapping("/contact-form")
-    fun createGeneralContactRequest(@RequestBody generalContactRequestDto: CreateGeneralContactRequestDto) = contactApplicationService.createGeneralContactRequest(generalContactRequestDto)
+    fun createGeneralContactRequest(@RequestBody generalContactRequestDto: CreateGeneralContactRequestDto, request: HttpServletRequest) =
+        contactApplicationService.createGeneralContactRequest(generalContactRequestDto, ClientIpResolver.resolve(request))
 
 }

@@ -7,5 +7,11 @@ data class CreateGeneralContactRequestDto(
     val subject: String,
     val message: String,
     val location: String?,
-    val address: String?
+    val address: String?,
+
+    /**
+     * Anything but an empty value means the
+     * submission came from some automation that filled in every input it could find.
+     */
+    val website: String? = null
 )
