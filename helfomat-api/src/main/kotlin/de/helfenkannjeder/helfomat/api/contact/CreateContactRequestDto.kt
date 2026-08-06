@@ -12,5 +12,11 @@ data class CreateContactRequestDto(
     val subject: String,
     val message: String,
     val organizationId: OrganizationId,
-    val organizationContactPersonIndex: Int
+    val organizationContactPersonIndex: Int,
+
+    /**
+     * Anything but an empty value means the
+     * submission came from some automation that filled in every input it could find.
+     */
+    val website: String? = null
 )

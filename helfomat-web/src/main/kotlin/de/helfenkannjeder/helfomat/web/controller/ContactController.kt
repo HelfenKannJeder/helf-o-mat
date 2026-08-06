@@ -7,6 +7,7 @@ import de.helfenkannjeder.helfomat.api.contact.ResendContactRequestDto
 import de.helfenkannjeder.helfomat.core.contact.ContactRequestId
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
 
 /**
  * @author Valentin Zickner
@@ -21,10 +22,12 @@ class ContactController(
     fun getContactRequest(@PathVariable("contactRequestId") contactRequestId: ContactRequestId) = contactApplicationService.getById(contactRequestId)
 
     @PostMapping("/contact/request")
-    fun createContactRequest(@RequestBody contactRequestDto: CreateContactRequestDto) = contactApplicationService.createContactRequest(contactRequestDto)
+    fun createContactRequest(@RequestBody contactRequestDto: CreateContactRequestDto, request: HttpServletRequest) =
+        contactApplicationService.createContactRequest(contactRequestDto, ClientIpResolver.resolve(request))
 
     @PostMapping("/contact/resend")
-    fun resendContactRequest(@RequestBody resendContactRequestDto: ResendContactRequestDto) = contactApplicationService.resendContactRequest(resendContactRequestDto)
+    fun resendContactRequest(@RequestBody resendContactRequestDto: ResendContactRequestDto, request: HttpServletRequest) =
+        contactApplicationService.resendContactRequest(resendContactRequestDto, ClientIpResolver.resolve(request))
 
     @PostMapping("/contact/confirm")
     fun confirmContactRequest(@RequestBody confirmContactRequestDto: ConfirmContactRequestDto) = contactApplicationService.confirmContactRequest(confirmContactRequestDto)

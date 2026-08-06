@@ -33,6 +33,20 @@ spring.servlet.multipart:
   max-file-size: 7MB
   max-request-size: 7MB
 
+helfomat.recaptcha:
+  # reCAPTCHA v3 answers `success` for any well formed token, bot or not. Only a score at or above
+  # this threshold is accepted. Google suggests 0.5; watch the "Rejected captcha, score" warnings
+  # before changing it.
+  minimum-score: 0.5
+  # Domains a token may be solved on, empty means the check is skipped. Set this per environment.
+  allowed-hostnames: []
+
+helfomat.contact-form.rate-limit:
+  per-ip-limit: 5
+  per-ip-window: 1h
+  per-email-limit: 3
+  per-email-window: 24h
+
 security:
   keycloak:
     client:

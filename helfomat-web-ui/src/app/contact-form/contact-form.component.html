@@ -65,6 +65,11 @@
                           [(ngModel)]="contactFormContent.address"
                           #messageField="ngModel"></textarea>
             </div>
+            <div style="position: absolute; left: -9999px; top: -9999px;" aria-hidden="true">
+                <label for="textFieldWebsite">Website</label>
+                <input type="text" id="textFieldWebsite" name="website" tabindex="-1" autocomplete="off"
+                       [(ngModel)]="contactFormContent.website">
+            </div>
             <div class="form-group form-check">
                 <input type="checkbox" class="form-check-input" id="acceptPrivacyNotice" name="acceptPrivacyNotice"
                        [ngClass]="{'is-invalid': hasError(privacyNoticeField)}" required [(ngModel)]="privacyNotice"

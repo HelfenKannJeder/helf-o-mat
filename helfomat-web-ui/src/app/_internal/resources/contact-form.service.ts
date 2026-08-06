@@ -27,4 +27,5 @@ export interface CreateContactRequest {
     message: string;
     location?: string;
     address?: string;
+    website?: string;
 }

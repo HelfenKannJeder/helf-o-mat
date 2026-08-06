@@ -55,6 +55,7 @@ export class ContactFormComponent {
                                 message: this.contactFormContent.message,
                                 location: this.contactFormContent.location,
                                 address: this.contactFormContent.address,
+                                website: this.contactFormContent.website,
                                 captcha: token
                             }
                         )
@@ -79,7 +80,8 @@ export class ContactFormComponent {
             subject: '',
             message: '',
             location: null,
-            address: null
+            address: null,
+            website: ''
         };
     }
 
@@ -93,4 +95,6 @@ export interface ContactFormContent {
     message: string;
     location?: string;
     address?: string;
+    /** Honeypot, see the contact form template. Always empty when a person filled in the form. */
+    website?: string;
 }
